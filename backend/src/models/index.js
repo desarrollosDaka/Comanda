@@ -1,28 +1,37 @@
 
-// const { masterDocumentsSchema, MasterDocuments } = require("./maestroDocumentos.model");
- 
-// const { masterProccessSchema, MasterProccess } = require("./proccess.model")
-// const { mastertypesSchema, MasterTypes } = require("./types.model")
-// const { masterCommentsSchema, MasterComments } = require("./comments.model")
-// const { masterNotificationsSchema, MasterNotifications } = require("./notification.model")
 const { masterUserSchema, MasterUser } = require("./user.model")
 const { masterOrderSchema, MasterOrders } = require("./order.model")
 const { masterOrderdetailsSchema, MasterOrdersdetails } = require("./order_details.model")
 const { masterOrderLogsSchema, MasterOrdersLogs } = require("./order_logs.model")
+const { masterProductsSchema, MasterProducts } = require("./products_replica.model")
+const { masterClientsSchema, Master_clients } = require("./master_clients.model")
+const { masterStoresSchema, MasterStores } = require("./stores.model")
+const { masterStatesSchema, MasterStates } = require("./states.model")
+const { masterCitiesSchema, MasterCities } = require("./cities.model")
+const { masterMunicipalitiesSchema, MasterMunicipalities } = require("./municipalities.model")
+const { masterPaymentSchema, MasterPayment } = require("./payment.model") 
+const { masterStatusSchema, MasterStatus } = require("./master_status.model") 
+const { masterDeliverySchema, MasterDelivery } = require("./delivery_type.model") 
+const { masterRolSchema, MasterRol } = require("./roles.model") 
 
 
 function setupModels(sequelize) {
 
- // MasterDocuments.init(masterDocumentsSchema, MasterDocuments.config(sequelize));
   MasterUser.init(masterUserSchema, MasterUser.config(sequelize));
- // MasterProccess.init(masterProccessSchema, MasterProccess.config(sequelize));
- // MasterTypes.init(mastertypesSchema, MasterTypes.config(sequelize));
- // MasterComments.init(masterCommentsSchema, MasterComments.config(sequelize));
- // MasterNotifications.init(masterNotificationsSchema, MasterNotifications.config(sequelize));
   MasterOrders.init(masterOrderSchema, MasterOrders.config(sequelize));
   MasterOrdersdetails.init(masterOrderdetailsSchema, MasterOrdersdetails.config(sequelize));
   MasterOrdersLogs.init(masterOrderLogsSchema, MasterOrdersLogs.config(sequelize));
-
+  MasterProducts.init(masterProductsSchema, MasterProducts.config(sequelize));
+  Master_clients.init(masterClientsSchema, Master_clients.config(sequelize));
+  MasterStores.init(masterStoresSchema, MasterStores.config(sequelize));
+  MasterStates.init(masterStatesSchema, MasterStates.config(sequelize));
+  MasterCities.init(masterCitiesSchema, MasterCities.config(sequelize));
+  MasterMunicipalities.init(masterMunicipalitiesSchema, MasterMunicipalities.config(sequelize));
+  MasterPayment.init(masterPaymentSchema, MasterPayment.config(sequelize));
+  MasterStatus.init(masterStatusSchema, MasterStatus.config(sequelize));
+  MasterDelivery.init(masterDeliverySchema, MasterDelivery.config(sequelize));
+  MasterRol.init(masterRolSchema, MasterRol.config(sequelize));
+ 
 
 }
 

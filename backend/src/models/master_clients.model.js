@@ -1,10 +1,10 @@
 // USUARIOS
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
-const tableName = "master_clients";
+const tableName = "MASTER_CLIENTS";
 const modelName = "modelMasterClients";
 
-const master_clientsSchema = {
+const masterClientsSchema = {
   ID_cliente: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -43,11 +43,15 @@ const master_clientsSchema = {
     type: DataTypes.INTEGER,
   },
   Tipo_cliente: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.BOOLEAN,
   },
-  Retencion: {
-    type: DataTypes.BOOLEAN,
+  // Retencion: {
+  //   type: DataTypes.BOOLEAN,
+  //   allowNull: true,
+  // },
+  Porc_retencion: {
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
   Delete: {
@@ -66,14 +70,14 @@ class Master_clients extends Model {
       sequelize,
       tableName: tableName,
       modelName: modelName,
-      createdAt: "create_date",
-      updatedAt: "update_date"
+      createdAt: "Create_date",
+      updatedAt: "Update_date"
     };    
   }
 }
 
 module.exports = {
   tableName,
-  master_clientsSchema,
+  masterClientsSchema,
   Master_clients,
 };

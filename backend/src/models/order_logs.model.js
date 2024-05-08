@@ -26,14 +26,7 @@ const masterOrderLogsSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
-  Create_date: {
-    allowNull: false,
-    type: DataTypes.DATE,
-  },
-  Update_date: {
-    allowNull: true,
-    type: DataTypes.DATE,
-  },
+ 
 
 };
 

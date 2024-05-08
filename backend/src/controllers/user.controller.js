@@ -19,7 +19,7 @@ const getMasterUser = async (req, res) => {
 // get filter user
 const filterMasterUser = async (req, res) => {
     try {
-        const id = req.params.ID_user;
+        const id = req.params.ID_user; 
         const rta = await sequelize.models.modelMasterUser.findOne({
             where: {
                 id : id,
