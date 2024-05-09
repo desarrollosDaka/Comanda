@@ -18,7 +18,7 @@ const getUser = async () => {
   loadingInfo.value = true
   try{
       const response = await axios.get(`${baseUrl}/masterUser`);
-      info.value =  response.data 
+      info.value =  response.data[0]
   } catch(error){
       console.log(error)
   }
@@ -35,11 +35,11 @@ const deleteUser = async (id:string) => {
 }
 
 const headers = ref([
-  {title: '#', align: 'start', sortable: false, key: 'id',},
-  {title: 'CORREO', align: 'start', sortable: false, key: 'email_address',},
-  {title: 'NOMBRE', key: 'user_name'},
-  {title: 'DEPARTAMENTO', key: 'id_department'},
-  {title: 'ROL', key:'user_rol'},
+  {title: '#', align: 'start', sortable: false, key: 'ID_user',},
+  {title: 'CORREO', align: 'start', sortable: false, key: 'Email',},
+  {title: 'NOMBRE', key: 'Nombre'},
+  {title: 'SUCURSAL', key: 'Sucursal'},
+  {title: 'ROL', key:'Nombre_rol'},
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);
 

@@ -5,6 +5,7 @@ const tableName = "ORDERS";
 const modelName = "modelOrders";
 
 const masterOrderSchema = {
+
   ID_order: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -18,7 +19,7 @@ const masterOrderSchema = {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
-  ID_pago: {
+  ID_pago: {                           
     allowNull: false,
     type: DataTypes.INTEGER,
   },
@@ -91,10 +92,8 @@ const masterOrderSchema = {
     type: DataTypes.STRING(80),
   },
 
- 
-  
-
 };
+
 
 class MasterOrders extends Model {
   static associate() {

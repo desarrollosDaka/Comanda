@@ -6,9 +6,11 @@ const app = express();
 const routerUsers = require("../router/user.router");
 //const routerDocuments = require("../router/documentos.router");
 const routerAuth = require("../router/auth.router");
-//const routerProccess = require("../router/proccess.router");
-//const routerComments = require("../router/comments.router");
 const routerRoles = require("../router/roles.router");
+const routerStores = require("../router/stores.router");
+const routerStates = require("../router/states.router");
+const routerCities = require("../router/cities.router");
+const routerMunicipality = require("../router/municipalities.router");
 
 // Middlewares
 app.use(express.json());
@@ -16,10 +18,11 @@ app.use(morgan("dev"));
 app.use(cors());
 
 app.use("/api/users", routerUsers);
-//app.use("/api/proccess", routerProccess);
-////app.use("/api/documents", routerDocuments);
-//app.use("/api/comments", routerComments);
 app.use("/api/roles", routerRoles);
 app.use("/api/auth", routerAuth);
+app.use("/api/stores", routerStores);
+app.use("/api/states", routerStates);
+app.use("/api/cities", routerCities);
+app.use("/api/Municipalities", routerMunicipality);
 
 module.exports = app;
