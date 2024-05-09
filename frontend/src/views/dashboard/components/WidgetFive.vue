@@ -54,7 +54,7 @@ const fivecards = shallowRef([
     <!-- CARD -->
     <v-col cols="12" sm="6" md="4" v-if="Rol == 'Admin'">
       <v-card elevation="0">
-        <v-card variant="tonal" color="primary" rounded="lg">
+        <v-card variant="tonal" color="primary" rounded="lg" class="elevation-3">
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
 
@@ -77,7 +77,7 @@ const fivecards = shallowRef([
     <!-- CARD -->
     <v-col cols="12" sm="6" md="4" >
       <v-card elevation="0" disabled>
-        <v-card variant="tonal" color="primary" rounded="lg">
+        <v-card variant="tonal" color="primary" rounded="lg" class="elevation-3">
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
 
@@ -102,7 +102,7 @@ const fivecards = shallowRef([
     <!-- CARD -->
     <v-col cols="12" sm="6" md="4" >
       <v-card elevation="0">
-        <v-card variant="tonal" color="primary" rounded="lg">
+        <v-card variant="tonal" color="primary" rounded="lg" class="elevation-3">
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
               <div>

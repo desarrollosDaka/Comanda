@@ -10,7 +10,7 @@ const breadcrumbs = ref([
   {
     title: 'Historial de Codificación',
     disabled: true,
-    href: '#'
+    to: '#'
   }
 ]);
 </script>

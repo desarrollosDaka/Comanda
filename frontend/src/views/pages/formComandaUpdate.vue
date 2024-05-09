@@ -5,16 +5,14 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import formComandaUpdate from '../formComanda/formComandasUpdate.vue';
 
 // component content
-const page = ref({ title: 'Actualizar Documentos' });
+const page = ref({ title: 'Actualizar Comanda' });
 const breadcrumbs = ref([
   {
     title: 'Documentos',
     disabled: true,
-    href: '#'
+    to: '#'
   }
 ]);
-
-    const colorShadow = ref(['primary', 'secondary', 'info', 'success', 'warning', 'error']);
 </script>
 
 <template>
@@ -22,7 +20,9 @@ const breadcrumbs = ref([
   <v-row>
     <v-col cols="12" md="12">
       <UiParentCard title="Actualiza el Documento">
+
         <formComandaUpdate/>
+
       </UiParentCard>
     </v-col>
   </v-row>

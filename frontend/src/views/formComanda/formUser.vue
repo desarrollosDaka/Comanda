@@ -10,19 +10,22 @@ import { router } from '@/router';
 // variables
 const valid = ref(false);
 const show1 = ref(false);
-const email_address = ref('');
-const password = ref('');
-const user_rol = ref();
-const id_department = ref();
-const user_name = ref();
-const user_crea = ref();
+const Email = ref();
+const Nombre = ref();
+const Password = ref('');
+const Nombre_rol = ref();
+const Id_sucursal = ref();
+const Dpto_ventas = ref(false);
+const Linea_ventas = ref();
+const User_crea = ref();
+const Delete = ref(false);
 const baseUrl = `http://localhost:3002/api/auth`;
 
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
-  user_crea.value = parsedData.data.username;
+  User_crea.value = parsedData.data.Nombre;
 } 
 
 // validaciones
@@ -48,6 +51,10 @@ const fullnameRules = ref([
   (v: string) => !!v || 'El nombre y apellido del es requerido', 
 ]);
 
+const sucursalRules = ref([
+  (v: string) => !!v || 'La sucursal es requerido', 
+]);
+
 async function userCreated(jsonUser: any){
     try{
         const response = await axios.post(`${baseUrl}/signup`, jsonUser)
@@ -62,14 +69,17 @@ async function userCreated(jsonUser: any){
 function validate(values: any, { setErrors }: any) {
 
     const jsonUser = {
-        user_name:user_name.value, 
-        email_address:email_address.value, 
-        password:password.value,
-        id_department:id_department.value,
-        user_rol:user_rol.value ,
-        user_crea:user_crea.value
+        Nombre:Nombre.value, 
+        Email:Email.value, 
+        Password:Password.value,
+        Id_sucursal:Id_sucursal.value,
+        Nombre_rol:Nombre_rol.value ,
+        Dpto_ventas:Dpto_ventas.value.toString() ,
+        Linea_ventas:Linea_ventas.value,
+        Delete:Delete.value.toString(),
+        User_crea:User_crea.value
     }
-
+    
     // return userCreated(jsonUser).catch((error) => setErrors({ apiError: 'No se pudo crear el usuario' }));
     Swal.fire({
         title: "Alerta!",
@@ -120,6 +130,31 @@ const items = ref([
         value: 5
     },
 
+]);
+
+const sucursal = ref([
+    {
+        title: 'Corporativo',
+        value: 1
+    },
+    
+    {
+        title: 'Valencia Centro',
+        value: 2
+    },
+    {
+        title: 'CDD',
+        value: 3
+    },
+    {
+        title: 'Puerto Ordaz',
+        value: 4
+    },  
+    {
+        title: 'Barquisimeto',
+        value: 5
+    },
+
 ])
 
 </script>
@@ -136,7 +171,7 @@ const items = ref([
                 variant="outlined"
                 required
                 aria-label="email address"
-                v-model="email_address"
+                v-model="Email"
                 :rules="emailRules"
                 class="mt-2"
                 hide-details="auto"
@@ -149,7 +184,7 @@ const items = ref([
                 <v-text-field
                     id="password"
                     aria-label="password"
-                    v-model="password"
+                    v-model="Password"
                     :rules="passwordRules"
                     required
                     variant="outlined"
@@ -176,9 +211,9 @@ const items = ref([
                     chips
                     id="roles"
                     placeholder="Roles"
-                    :items="['Admin', 'Usuario', 'SuperAdmin', 'RRHH']"
+                    :items="['Admin']"
                     variant="outlined"
-                    v-model="user_rol"
+                    v-model="Nombre_rol"
                     :rules="RolRules"
                     required
                     color="primary"
@@ -186,17 +221,18 @@ const items = ref([
                 ></v-autocomplete>
             </v-col>
 
+
             <v-col cols="12" md="6">
-                <v-label for="depart">Departamento</v-label>
+                <v-label for="sucursal">Sucursal</v-label>
                 <v-autocomplete
-                    id="depart"
+                    id="sucursal"
                     clearable
                     chips
-                    placeholder="Departamentos"
-                    :items="items"
+                    placeholder="Sucursal"
+                    :items="sucursal"
                     variant="outlined"
-                    v-model="id_department"
-                    :rules="departmentsRules"
+                    v-model="Id_sucursal"
+                    :rules="sucursalRules"
                     required
                     color="primary"
                     class="mt-2"
@@ -208,14 +244,12 @@ const items = ref([
             <v-col cols="12" md="7">
             <v-label for="name">Nombre y Apellido</v-label>
             <v-text-field
-                hint="Debes colocar el Nombre y Apellido del usuario."
-                persistent-hint
                 id="name"
                 placeholder="Nombre y Apellido"
                 variant="outlined"
                 required
                 aria-label="Nombre y Apellido"
-                v-model="user_name"
+                v-model="Nombre"
                 :rules="fullnameRules"
                 class="mt-2"
                 color="primary"
@@ -226,7 +260,7 @@ const items = ref([
             <v-label for="userCrea">Creado Por</v-label>
             <v-text-field
                 id="userCrea"
-                v-model="user_crea"
+                v-model="User_crea"
                 :counter="10"
                 variant="outlined"
                 hide-details
@@ -236,6 +270,34 @@ const items = ref([
             </v-col>
         </v-row>
 
+        
+        <v-row>
+            <v-col cols="12" md="2">
+                <v-label for="roles">Asesor de ventas</v-label>
+                <v-switch 
+                    v-model="Dpto_ventas"
+                    color="warning"
+                ></v-switch>
+            </v-col>
+
+            <v-col cols="12" md="10" v-if="Dpto_ventas == true">
+                <v-label for="depart">Linea del asesor</v-label>
+                <v-autocomplete
+                    id="depart"
+                    clearable
+                    chips
+                    placeholder="Linea"
+                    :items="['LINEA DIGITAL', 'LINEA HOGAR', 'LINEA INTEGRAL']"
+                    variant="outlined"
+                    v-model="Linea_ventas"
+                    required
+                    color="primary"
+                    class="mt-2"
+                ></v-autocomplete>
+            </v-col>
+        </v-row>
+
+
         <v-btn 
             color="primary" 
             :loading="isSubmitting" 
@@ -243,7 +305,7 @@ const items = ref([
             class="mt-6" 
             variant="flat" 
             size="large" 
-            :disabled="valid" 
+            :disabled="!Email || !Password  || !Nombre_rol || !Id_sucursal || !Nombre" 
             type="submit"
         >
         Guardar 

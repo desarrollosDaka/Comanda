@@ -19,10 +19,10 @@ const getMasterUser = async (req, res) => {
 // get filter user
 const filterMasterUser = async (req, res) => {
     try {
-        const id = req.params.ID_user;
+        const id = req.params.id;
         const rta = await sequelize.models.modelMasterUser.findOne({
             where: {
-                id : id,
+                ID_user : id,
             }, 
         });
 
@@ -42,10 +42,13 @@ const filterMasterUser = async (req, res) => {
 // update user
 const updateMasterUser = async (req, res) => {
     try {
-        const idUser = req.params.ID_user;
+        const idUser = req.params.id;
         const userUpdate = req.body;
+        console.log(userUpdate)
+        console.log(idUser)
         const rta = await sequelize.models.modelMasterUser.update(userUpdate,{
-            where: {id: idUser},
+            where: {
+                ID_user: idUser},
           });
 
         if(rta){
@@ -64,17 +67,23 @@ const updateMasterUser = async (req, res) => {
 // delete user
 const deleteMasterUser = async (req, res) => {
     try {
-        const idUser = req.params.ID_user;
-        const rta = await sequelize.models.modelMasterUser.destroy({where: { id: idUser }});
-
+        
+        const id = req.params.id
+        const dataUpdate = {
+            Delete: req.body.Delete,
+        };
+        console.log(dataUpdate);
+    
+    
+        const rta = await sequelize.models.modelMasterUser.update(dataUpdate,{where: { ID_user: id }});
+        
         if(rta){
-            return res.status(200).rta
+            res.status(200).json(rta);
         }else{
-            return res.status(404).rta.json({msj: 'Error en la consulta'})
-        } 
-
+            res.status(404).json({msj: 'Error en la consulta'});
+        }
     } catch (e) {
-        console.log('Error', e); 
+        console.log('Error', e);
     }
 };
 
