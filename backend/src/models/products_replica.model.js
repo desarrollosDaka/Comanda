@@ -1,7 +1,7 @@
 // USUARIOS
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
-const tableName = "products_replica";
+const tableName = "PRODUCTS_REPLICA";
 const modelName = "modelProducts_replica";
 
 const masterProductsSchema = {
@@ -25,14 +25,6 @@ const masterProductsSchema = {
   Precio: {
     allowNull: false,
     type: DataTypes.STRING(100),
-  },
-  Create_date: {
-    allowNull: false,
-    type: DataTypes.DATE,
-  },
-  Update_date: {
-    allowNull: true,
-    type: DataTypes.DATE,
   },
 
 };
