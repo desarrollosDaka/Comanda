@@ -12,13 +12,15 @@ const route = useRoute()
 // variables
 const valid = ref(false);
 const show1 = ref(false);
-const email_address = ref('');
-const password = ref('1234567891011');
-const user_rol = ref();
-const id_department = ref();
-const user_name = ref();
-const user_crea = ref();
-const user_mod = ref();
+const Email = ref();
+const Nombre = ref();
+const Password = ref('123456');
+const Nombre_rol = ref();
+const Id_sucursal = ref();
+const Dpto_ventas = ref(false);
+const Linea_ventas = ref();
+const User_crea = ref();
+const User_mod = ref();
 const baseUrl = `http://localhost:3002/api/users`;
 const infoFilter = ref();
 
@@ -26,14 +28,22 @@ const infoFilter = ref();
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
-  user_crea.value = parsedData.data.username;
+  User_mod.value = parsedData.data.Nombre;
 } 
 
 // URL
 const id: any = ref('')
 id.value = route.params.id
 
+console.log(id.value);
+
+
 // validaciones
+const passwordRules = ref([
+  (v: string) => !!v || 'La contraseña es requerida',
+  (v: string) => (v && v.length <= 10) || 'La contraseña debe tener menos de 10 caracteres.'
+]);
+
 const emailRules = ref([
   (v: string) => !!v || 'El email es requerido', 
   (v: string) => /.+@.+\..+/.test(v) || 'El email debe ser válido'
@@ -51,6 +61,10 @@ const fullnameRules = ref([
   (v: string) => !!v || 'El nombre y apellido del es requerido', 
 ]);
 
+const sucursalRules = ref([
+  (v: string) => !!v || 'La sucursal es requerido', 
+]);
+
 async function userUpdate(jsonUser: any ){
     try{
         const response = await axios.put(`${baseUrl}/updateUser/${id.value}`, jsonUser)
@@ -61,8 +75,9 @@ async function userUpdate(jsonUser: any ){
 
 async function userFilter(){
     try{
-        const response = await axios.get(`${baseUrl}/filterUser/${id.value}`)
-        infoFilter.value = response.data
+        const url = `${baseUrl}/filterUser/${id.value}`;
+        const {data} = await axios.get(url);
+        infoFilter.value = data
     } catch(error){
         console.log(error)
     }
@@ -73,12 +88,13 @@ async function userFilter(){
 function validate(values: any, { setErrors }: any) {
 
     const jsonUser = {
-        user_name:user_name.value, 
-        email_address:email_address.value, 
-        id_department:id_department.value,
-        user_rol:user_rol.value ,
-        user_crea:user_crea.value,
-        user_mod:user_crea.value
+        Nombre:Nombre.value, 
+        Email:Email.value, 
+        Id_sucursal:Id_sucursal.value,
+        Nombre_rol:Nombre_rol.value ,
+        Dpto_ventas:Dpto_ventas.value.toString() ,
+        User_mod:User_mod.value,
+        Linea_ventas: Dpto_ventas.value === false ? null : Linea_ventas.value ,
     }
 
     // return userCreated(jsonUser).catch((error) => setErrors({ apiError: 'No se pudo crear el usuario' }));
@@ -130,6 +146,31 @@ const items = ref([
         title: 'RRHH',
         value: 5
     },
+
+]);
+
+const sucursal = ref([
+    {
+        title: 'Corporativo',
+        value: 1
+    },
+    {
+        title: 'Valencia Centro',
+        value: 2
+    },
+    {
+        title: 'CDD',
+        value: 3
+    },
+    {
+        title: 'Puerto Ordaz',
+        value: 4
+    },  
+    {
+        title: 'Barquisimeto',
+        value: 5
+    },
+
 ])
 
     
@@ -137,11 +178,13 @@ onMounted( async () => {
          
     await userFilter();  
 
-    user_name.value = infoFilter.value.user_name
-    email_address.value = infoFilter.value.email_address
-    id_department.value = infoFilter.value.id_department
-    user_rol.value = infoFilter.value.user_rol
-    user_crea.value = user_crea.value
+    Nombre.value = infoFilter.value.Nombre
+    Email.value = infoFilter.value.Email
+    Id_sucursal.value = infoFilter.value.Id_sucursal
+    Nombre_rol.value = infoFilter.value.Nombre_rol
+    Dpto_ventas.value = infoFilter.value.Dpto_ventas
+    Linea_ventas.value = infoFilter.value.Linea_ventas
+    User_crea.value = User_crea.value
 
 })
 </script>
@@ -158,9 +201,9 @@ onMounted( async () => {
                 variant="outlined"
                 required
                 aria-label="email address"
-                v-model="email_address"
+                v-model="Email"
                 :rules="emailRules"
-                class="mt-2" 
+                class="mt-2"
                 hide-details="auto"
                 color="primary"
                 ></v-text-field>
@@ -171,8 +214,10 @@ onMounted( async () => {
                 <v-text-field
                     id="password"
                     aria-label="password"
-                    v-model="password"
                     disabled
+                    v-model="Password"
+                    :rules="passwordRules"
+                    required
                     variant="outlined"
                     color="primary"
                     hide-details="auto"
@@ -197,9 +242,9 @@ onMounted( async () => {
                     chips
                     id="roles"
                     placeholder="Roles"
-                    :items="['Admin', 'Usuario', 'SuperAdmin', 'RRHH']"
+                    :items="['Admin']"
                     variant="outlined"
-                    v-model="user_rol"
+                    v-model="Nombre_rol"
                     :rules="RolRules"
                     required
                     color="primary"
@@ -207,17 +252,18 @@ onMounted( async () => {
                 ></v-autocomplete>
             </v-col>
 
+
             <v-col cols="12" md="6">
-                <v-label for="depart">Departamento</v-label>
+                <v-label for="sucursal">Sucursal</v-label>
                 <v-autocomplete
-                    id="depart"
+                    id="sucursal"
                     clearable
                     chips
-                    placeholder="Departamentos"
-                    :items="items"
+                    placeholder="Sucursal"
+                    :items="sucursal"
                     variant="outlined"
-                    v-model="id_department"
-                    :rules="departmentsRules"
+                    v-model="Id_sucursal"
+                    :rules="sucursalRules"
                     required
                     color="primary"
                     class="mt-2"
@@ -229,14 +275,12 @@ onMounted( async () => {
             <v-col cols="12" md="7">
             <v-label for="name">Nombre y Apellido</v-label>
             <v-text-field
-                hint="Debes colocar el Nombre y Apellido del usuario."
-                persistent-hint
                 id="name"
                 placeholder="Nombre y Apellido"
                 variant="outlined"
                 required
                 aria-label="Nombre y Apellido"
-                v-model="user_name"
+                v-model="Nombre"
                 :rules="fullnameRules"
                 class="mt-2"
                 color="primary"
@@ -244,10 +288,10 @@ onMounted( async () => {
             </v-col>
 
             <v-col cols="12" md="5">
-            <v-label for="userCrea">Creado Por</v-label>
+            <v-label for="userCrea">Modificado Por</v-label>
             <v-text-field
                 id="userCrea"
-                v-model="user_crea"
+                v-model="User_mod"
                 :counter="10"
                 variant="outlined"
                 hide-details
@@ -257,14 +301,43 @@ onMounted( async () => {
             </v-col>
         </v-row>
 
+        
+        <v-row>
+            <v-col cols="12" md="2">
+                <v-label for="roles">Asesor de ventas</v-label>
+                <v-switch
+                    class="mt-3" 
+                    v-model="Dpto_ventas"
+                    color="warning"
+                ></v-switch>
+            </v-col>
+
+            <v-col cols="12" md="10" v-if="Dpto_ventas == true">
+                <v-label for="depart">Linea del asesor</v-label>
+                <v-autocomplete
+                    id="depart"
+                    clearable
+                    chips
+                    placeholder="Linea"
+                    :items="['LINEA DIGITAL', 'LINEA HOGAR', 'LINEA INTEGRAL']"
+                    variant="outlined"
+                    v-model="Linea_ventas"
+                    required
+                    color="primary"
+                    class="mt-2"
+                ></v-autocomplete>
+            </v-col>
+        </v-row>
+
+
         <v-btn 
             color="primary" 
             :loading="isSubmitting" 
-            
+            append-icon="mdi-arrow-right"
             class="mt-6" 
             variant="flat" 
             size="large" 
-            :disabled="valid" 
+            :disabled="!Email || !Password  || !Nombre_rol || !Id_sucursal || !Nombre" 
             type="submit"
         >
         Guardar 

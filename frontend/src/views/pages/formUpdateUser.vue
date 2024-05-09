@@ -2,15 +2,20 @@
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import FormUSer from '../authentication/authForms/formUserUpdate.vue';
+import formUser from '../formComanda/formUserUpdate.vue';
 
 // component content
 const page = ref({ title: 'Editar Usuario' });
 const breadcrumbs = ref([
   {
     title: 'Usuarios',
+    disabled: false,
+    to: '/masterUser'
+  },
+  {
+    title: 'Editar Usuarios',
     disabled: true,
-    href: '#'
+    to: '#'
   }
 ]);
 
@@ -22,7 +27,7 @@ const colorShadow = ref(['primary', 'secondary', 'info', 'success', 'warning', '
   <v-row>
     <v-col cols="12" md="12">
       <UiParentCard title="Editar Usuario">
-        <FormUSer/>
+        <formUser/>
       </UiParentCard>
     </v-col>
   </v-row>

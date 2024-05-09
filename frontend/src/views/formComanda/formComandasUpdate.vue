@@ -271,6 +271,7 @@ id.value = route.params.id
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
 
+
     // valores de la base de datos
     // let formData = new FormData();
     // formData.append('doc_title', doc_title.value);
@@ -285,6 +286,7 @@ async function validate(values: any) {
     // formData.append('doc_fileTwo', doc_fileTwo.value);
     // formData.append('doc_status', doc_status.value);
     // formData.append('user_mod', user_mod.value);
+    
 
     // Alerta
     Swal.fire({

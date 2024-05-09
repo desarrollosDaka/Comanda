@@ -10,7 +10,7 @@ const breadcrumbs = ref([
   {
     title: 'SGI',
     disabled: true,
-    href: '#'
+    to: '#'
   }
 ]);
 </script>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios'
 import { router } from '@/router';
-import { fetchWrapper } from '@/utils/helpers/fetch-wrapper';
+
 
 const baseUrl = `http://localhost:3002/api/auth`;
 
