@@ -14,9 +14,9 @@ const {
 // const {checkRoleAuth} = require("../middleware/roleAuth");
 
 // Select user
-router.get("/masterUser", getMasterRoles);
+router.get("/masterRol", getMasterRoles);
 // Filter user
-router.get("/filterUser/:id", filterMasterRoles);
+router.get("/filterRol/:id", filterMasterRoles);
 // Update user
 //router.put("/updateUser/:id", updateMasterUser);
 // Delete user

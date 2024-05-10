@@ -48,7 +48,7 @@ const sidebarItem: menu[] = [
   {
     title: 'Reportes',
     icon: SnippetsOutlined, 
-    to: '/documentacionDaka'
+    to: '/comanda'
   },
   {
     title: 'Pedidos Online',
