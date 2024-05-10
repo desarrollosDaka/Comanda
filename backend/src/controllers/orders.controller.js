@@ -45,13 +45,15 @@ const createMasterOrderAndDetails = async (req, res) => {
     try {
         const newOrder = req.body.order;
         const orderDetailData = req.body.orderDetail;
+        const newClients = req.body.clients;
 
         const rtaOrder = await sequelize.models.modelOrders.create(newOrder);
         const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
+        const rtaclients = await sequelize.models.modelMasterClients.create(newClients);
 
-        if(rtaOrder && rtaorderDetail){
+        if(rtaOrder && rtaorderDetail && rtaclients){
             res.status(201)
-            res.json({order: rtaOrder, orderDetail: rtaorderDetail})
+            res.json({order: rtaOrder, orderDetail: rtaorderDetail, clients: newClients})
         }else{
             res.status(404)
             res.json({msj: 'Error en la creación'})
@@ -70,6 +72,27 @@ const updateMasterOrder = async (req, res) => {
         const idUser = req.params.ID_order;
         const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(userUpdate,{
+            where: {id: idUser},
+          });
+
+        if(rta){
+            res.status(200)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        } 
+
+    } catch (e) {
+        console.log('Error', e);
+    }
+}
+// update Order
+const updateMasterOrderDetails = async (req, res) => {
+    try {
+        const idUser = req.params.ID_detalle;
+        const userUpdate = req.body;
+        const rta = await sequelize.models.modelOrdersdetails.update(userUpdate,{
             where: {id: idUser},
           });
 
@@ -108,6 +131,7 @@ module.exports = {
     getMasterOrder,
     filterMasterOrder,
     createMasterOrderAndDetails,
+    updateMasterOrderDetails,
     updateMasterOrder,
     deleteMasterOrder
 };

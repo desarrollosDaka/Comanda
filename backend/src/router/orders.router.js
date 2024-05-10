@@ -6,6 +6,7 @@ const {
     getMasterOrder,
     filterMasterOrder,
     createMasterOrderAndDetails,
+    updateMasterOrderDetails,
     updateMasterOrder,
     deleteMasterOrder} 
 = require("../controllers/orders.controller");
@@ -22,6 +23,8 @@ router.get("/filterOrder/:id", filterMasterOrder);
 router.post("/createOrder", createMasterOrderAndDetails);
 // Update Order
 router.put("/updateOrder/:id", updateMasterOrder);
+// Update OrderDetails
+router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
 // Delete Order
 router.delete("/deleteOrder/:id", deleteMasterOrder);
 
