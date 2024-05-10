@@ -22,12 +22,18 @@ const referencia = ref('');
 const autorizado = ref('');
 const cedulaDos = ref('');
 const telefonoUno = ref('');
-const medioPago = ref();
+const ID_pago = ref();
 const user_crea = ref();
 const doc_file = ref();
-const doc_status = ref('0');
+const info_estado = ref();
+const info_muni = ref();
+const info_ciudad = ref();
+const ID_status = ref('1');
 const idComandaRandom = ref();
 const baseUrl = `http://localhost:3002/api/documents`;
+const baseUrlEstado = `http://localhost:3002/api/states`;
+const baseUrlCiudad = `http://localhost:3002/api/cities`;
+const baseUrlMunicipio = `http://localhost:3002/api/municipalities`;
 
 // let ProccesAndType = computed(() => `${doc_process.value}-${doc_type.value}`);
 
@@ -43,7 +49,6 @@ interface Types {
 
 interface DocItem {
   doc_cod: string;
-  // Aquí puedes agregar el resto de las propiedades si las necesitas
 }
 
 const tiendas = ref([
@@ -73,22 +78,18 @@ const tiendas = ref([
     }
 ]);
 
-const estados = ref([
+const pagos = ref([
     {
-        title: 'CARABOBO',
-        value: '1',
+        title: 'PAGO MOVIL',
+        value: '2',
     },
     {
-        title: 'CARACAS',
-        value: '2',
-    }
-    ,{
-        title: 'ZULIA',
+        title: 'ZELLE',
         value: '3',
     }
     ,{
-        title: 'APURE',
-        value: '4',
+        title: 'TRANSFERENCIA BANCARIA',
+        value: '1',
     }
 ]);
 
@@ -215,31 +216,60 @@ async function Created(json: any){
     }
 }
 
-// api get
-// async function getProccess(){
-//     try{
-//         const response = await axios.get(`${baseUrlProccess}/masterProccess`)
-//         info.value = response.data[0].map((proccess: Proccess) => ({
-//             title: proccess.proccessAll,
-//             value: proccess.letters
-//         }));
-//     } catch(error){
-//         console.log(error)
-//     }
-// }
+interface Estado {
+    Nombre: string;
+    ID_states: string;
+}
+
+interface Muni {
+    Nombre: string;
+    ID_municipio: number;
+}
+
+interface Ciudad {
+  Nombre: string;
+  ID_city: number;
+
+}
+
 
 // api get
-// async function getTypes(){
-//     try{
-//         const response = await axios.get(`${baseUrlProccess}/masterTypes`)
-//         infoType.value = response.data[0].map((types: Types) => ({
-//             title: types.typesAll,
-//             value: types.letters
-//         }));
-//     } catch(error){
-//         console.log(error)
-//     }
-// }
+async function getEstados(){
+    try{
+        const {data} = await axios.get(`${baseUrlEstado}/masterStores`)
+        info_estado.value = data.map((estados: Estado) => ({
+            title: estados.Nombre,
+            value: estados.ID_states
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+
+// api get
+async function getMunicipio(){
+    try{
+        const {data} = await axios.get(`${baseUrlMunicipio}/masterMunicipality`)
+        info_muni.value = data.map((muni: Muni) => ({
+            title: muni.Nombre,
+            value: muni.ID_municipio
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+
+async function getCiudad(){
+    try{
+        const {data} = await axios.get(`${baseUrlCiudad}/masterCities`)
+        info_ciudad.value = data.map((ciudad: Ciudad) => ({
+            title: ciudad.Nombre,
+            value: ciudad.ID_city
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
 
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -260,7 +290,8 @@ async function validate(values: any) {
         autorizado:autorizado.value,
         cedulaDos:cedulaDos.value,
         telefonoUno:telefonoUno.value,
-        medioPago:medioPago.value,
+        ID_pago:ID_pago.value,
+        ID_status:ID_status.value,
         user_crea:user_crea.value
     }
 
@@ -303,8 +334,9 @@ function generarCadenaAleatoria(longitud: number) {
 }
 
 onMounted( async () => {
-    // await getProccess();
-    // await getTypes();
+    await getEstados();
+    await getMunicipio();
+    await getCiudad();
     let cadenaAleatoria = generarCadenaAleatoria(20);
 
     idComandaRandom.value = cadenaAleatoria
@@ -431,7 +463,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="estados"
+                    :items="info_estado"
                     variant="outlined"
                     :rules="estadosRules"
                     aria-label="Name Documents"
@@ -448,7 +480,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="ciudades"
+                    :items="info_ciudad"
                     variant="outlined"
                     :rules="ciudadRules"
                     aria-label="Name Documents"
@@ -465,7 +497,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="municipios"
+                    :items="info_muni"
                     variant="outlined"
                     :rules="municipioRules"
                     aria-label="Name Documents"
