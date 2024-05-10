@@ -343,6 +343,39 @@ onMounted( async () => {
             </v-col>
         </v-row>
 
+        <v-row v-if="tipo === 'JURIDICO'">
+            <v-col cols="12" md="4">
+                <v-label for="email">Retencion</v-label>
+                <v-text-field
+                    id="email"
+                    type="email"
+                    placeholder="ejmeplo@tiendasdaka.com"
+                    variant="outlined"
+                    aria-label="Name Documents"
+                    class="mt-2"
+                    :rules="emailRules"
+                    v-model="email"
+                    color="primary"
+                ></v-text-field>
+            </v-col>
+        
+            <v-col cols="12" md="3">
+                <v-label for="name">Porcentaje</v-label>
+                <v-text-field
+                    id="name"
+                    type="text"
+                    placeholder="Nombre Completo"
+                    variant="outlined"
+                    aria-label="Name Documents"
+                    class="mt-2"
+                    :rules="nombreCompletoRules"
+                    v-model="nombreCompleto"
+                    color="primary"
+                ></v-text-field>
+            </v-col>
+        </v-row>
+
+
         <v-row>
             <v-col cols="12" md="6">
                 <v-label for="email">Email</v-label>

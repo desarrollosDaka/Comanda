@@ -9,6 +9,7 @@ import { shallowRef, ref, onMounted } from 'vue';
 
 const search = ref('') 
 const loadingInfo = ref(false);
+const Delete = ref(true);
 const baseUrl = `http://localhost:3002/api/users`;
 
 const info = ref([]) ;
@@ -17,8 +18,10 @@ const info = ref([]) ;
 const getUser = async () => {
   loadingInfo.value = true
   try{
+
       const response = await axios.get(`${baseUrl}/masterUser`);
       info.value =  response.data[0]
+
   } catch(error){
       console.log(error)
   }
@@ -27,8 +30,10 @@ const getUser = async () => {
 
 const deleteUser = async (id:string) => {
   try{
-      await axios.delete(`${baseUrl}/deleteUser/${id}`);
-      
+      await axios.put(`${baseUrl}/deleteUser/${id}`,{
+      Delete: Delete.value.toString()
+    });
+    
   } catch(error){
       console.log(error)
   }
@@ -38,7 +43,9 @@ const headers = ref([
   {title: '#', align: 'start', sortable: false, key: 'ID_user',},
   {title: 'CORREO', align: 'start', sortable: false, key: 'Email',},
   {title: 'NOMBRE', key: 'Nombre'},
+
   {title: 'SUCURSAL', key: 'Sucursal'},
+
   {title: 'ROL', key:'Nombre_rol'},
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);
@@ -118,22 +125,32 @@ function eliminardata(id:string){
         <!-- update y delete -->
         <template v-slot:item.action="{item}">
           <!-- Editar -->
-          <router-link :to="{path:`/formUpdateUser/${item['id']}`}"> 
+          <router-link :to="{path:`/formUpdateUser/${item['ID_user']}`}"> 
             <v-icon size="23" class="me-4" color="warning">
-              mdi-pencil-outline
+              mdi-pencil
           </v-icon>
           </router-link>
 
           <!-- Eliminar -->
-          <v-icon size="23"  color="error" @click="eliminardata(item['id'])">
-              mdi-delete-outline
+          <v-icon size="23"  color="error" @click="eliminardata(item['ID_user'])">
+              mdi-delete
           </v-icon>
         </template>
 
+        <!-- asesor -->
+        <template v-slot:item.Dpto_ventas="{item}">
+          <v-chip variant="tonal" color="success" size="x-small" prepend-icon="mdi-check" v-if="(item as any).Dpto_ventas == true">
+              <p class="mb-0">Si</p>
+            </v-chip>
+            <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-alert-decagram-outline" v-else>
+              <p class="mb-0">No</p>
+            </v-chip>
+        </template>
+
         <!-- roles -->
-        <template v-slot:item.user_rol="{item}">
+        <template v-slot:item.Nombre_rol="{item}">
           <v-chip color="primary" size="x-small" prepend-icon="mdi-account-outline">
-            {{ item['user_rol'] }}
+            {{ item['Nombre_rol'] }}
           </v-chip>
         </template>
 

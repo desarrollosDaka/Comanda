@@ -19,9 +19,10 @@ router.get("/masterUser", getMasterUser);
 router.get("/filterUser/:id", filterMasterUser);
 // Update user
 router.put("/updateUser/:id", updateMasterUser);
+router.put("/deleteUser/:id", deleteMasterUser);
 // Delete user
 // router.delete("/deleteUser/:id", checkAuth, deleteMasterUser);
-router.delete("/deleteUser/:id", deleteMasterUser);
+// router.delete("/deleteUser/:id", deleteMasterUser);
 
 module.exports = router;
 

@@ -49,13 +49,17 @@ const singIn = async (req, res) =>{
 // SIGNUP
 const signUp = async (req, res) => {
     try {
+
         const {
             Nombre, 
             Email,
             Password, 
             Id_sucursal, 
             Nombre_rol, 
-            User_crea
+            Dpto_ventas,
+            Linea_ventas,
+            User_crea,
+            Delete
         } = req.body
 
         // Verifica si el correo existe
@@ -77,7 +81,10 @@ const signUp = async (req, res) => {
             Password: PasswordHash, 
             Id_sucursal, 
             Nombre_rol, 
-            User_crea
+            Dpto_ventas,
+            Linea_ventas,
+            User_crea, 
+            Delete
         }
 
         // Crear el usuario
