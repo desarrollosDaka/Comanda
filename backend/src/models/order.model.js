@@ -11,6 +11,10 @@ const masterOrderSchema = {
     primaryKey: true,
     autoIncrement: true,
   },
+  ID_detalle: {
+    type: DataTypes.STRING(30),
+
+  },
   ID_sucursal: {
     allowNull: false,
     type: DataTypes.INTEGER,

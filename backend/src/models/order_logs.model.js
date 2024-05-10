@@ -40,8 +40,8 @@ class MasterOrdersLogs extends Model {
       sequelize,
       tableName: tableName,
       modelName: modelName,
-      //createdAt: "create_date",
-      //updatedAt: "update_date"
+      createdAt: "create_date",
+      updatedAt: "update_date"
     };    
   }
 }

@@ -11,7 +11,7 @@ const masterOrderdetailsSchema = {
     autoIncrement: true,
   },
   ID_detalle: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(30),
    // autoIncrement: true,
   },
   ID_producto: {
