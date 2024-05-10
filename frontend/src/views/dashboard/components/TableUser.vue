@@ -19,8 +19,9 @@ const getUser = async () => {
   loadingInfo.value = true
   try{
 
-      const response = await axios.get(`${baseUrl}/masterUser`);
-      info.value =  response.data[0]
+    const url = `${baseUrl}/masterUser`
+    const {data} = await axios.get(url);
+      info.value =  data[0]
 
   } catch(error){
       console.log(error)
@@ -45,7 +46,7 @@ const headers = ref([
   {title: 'NOMBRE', key: 'Nombre'},
 
   {title: 'SUCURSAL', key: 'Sucursal'},
-
+  {title: 'ASESOR', key: 'Dpto_ventas'},
   {title: 'ROL', key:'Nombre_rol'},
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);

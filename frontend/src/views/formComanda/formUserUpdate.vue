@@ -23,6 +23,8 @@ const User_crea = ref();
 const User_mod = ref();
 const baseUrl = `http://localhost:3002/api/users`;
 const infoFilter = ref();
+const baseUrlRol = `http://localhost:3002/api/roles`;
+const rolInfo = ref();
 
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem('user');
@@ -81,6 +83,25 @@ async function userFilter(){
     } catch(error){
         console.log(error)
     }
+}
+
+interface Roles {
+    Nombre_rol: string;
+    ID_rol: number;
+}
+
+const getRol = async () => {
+  try{
+    const url = `${baseUrlRol}/masterRol`
+    const {data} = await axios.get(url);
+
+    rolInfo.value =  data.map((rol: Roles) => ({
+            title: rol.Nombre_rol,
+            value: rol.Nombre_rol
+        }));
+  } catch(error){
+      console.log(error)
+  }
 }
 
 // Function para enviar form
@@ -177,6 +198,7 @@ const sucursal = ref([
 onMounted( async () => {
          
     await userFilter();  
+    await getRol(); 
 
     Nombre.value = infoFilter.value.Nombre
     Email.value = infoFilter.value.Email
@@ -184,8 +206,7 @@ onMounted( async () => {
     Nombre_rol.value = infoFilter.value.Nombre_rol
     Dpto_ventas.value = infoFilter.value.Dpto_ventas
     Linea_ventas.value = infoFilter.value.Linea_ventas
-    User_crea.value = User_crea.value
-
+    User_crea.value = User_crea.value 
 })
 </script>
 
@@ -242,7 +263,7 @@ onMounted( async () => {
                     chips
                     id="roles"
                     placeholder="Roles"
-                    :items="['Admin']"
+                    :items="rolInfo"
                     variant="outlined"
                     v-model="Nombre_rol"
                     :rules="RolRules"

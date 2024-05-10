@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import axios from 'axios'
 import { router } from '@/router';
 
+
 // variables
 const valid = ref(false);
 const origen = ref();
@@ -25,6 +26,7 @@ const medioPago = ref();
 const user_crea = ref();
 const doc_file = ref();
 const doc_status = ref('0');
+const idComandaRandom = ref();
 const baseUrl = `http://localhost:3002/api/documents`;
 
 // let ProccesAndType = computed(() => `${doc_process.value}-${doc_type.value}`);
@@ -70,6 +72,7 @@ const tiendas = ref([
         value: '6',
     }
 ]);
+
 const estados = ref([
     {
         title: 'CARABOBO',
@@ -88,6 +91,7 @@ const estados = ref([
         value: '4',
     }
 ]);
+
 const ciudades = ref([
     {
         title: 'TRIJILLO',
@@ -98,6 +102,7 @@ const ciudades = ref([
         value: '2',
     }
 ]);
+
 const municipios = ref([
     {
         title: 'NAGUANAGUA',
@@ -129,7 +134,7 @@ const municipios = ref([
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
-  user_crea.value = parsedData.data.username;
+  user_crea.value = parsedData.data.Nombre;
 } 
 
 // validaciones
@@ -202,13 +207,13 @@ const onFileSelected = (event: any) => {
 };
 
 // api post
-// async function documentsCreated(json: any){
-//     try{
-//         await axios.post(`${baseUrl}/registerDocuments`, json)
-//     } catch(error){
-//         console.log(error)
-//     }
-// }
+async function Created(json: any){
+    try{
+        await axios.post(`${baseUrl}/registerDocuments`, json)
+    } catch(error){
+        console.log(error)
+    }
+}
 
 // api get
 // async function getProccess(){
@@ -240,19 +245,24 @@ const onFileSelected = (event: any) => {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
 
-    // valores de la base de datos
-    // let formData = new FormData();
-    // formData.append('doc_title', doc_title.value);
-    // formData.append('doc_cod', newCode);
-    // formData.append('doc_process', doc_process.value);
-    // formData.append('doc_type', doc_type.value);
-    // formData.append('doc_version', doc_version.value);
-    // formData.append('review_date', futureDate.value);
-    // formData.append('approv_date', approv_date.value);
-    // formData.append('doc_description', doc_description.value);
-    // formData.append('doc_file', doc_file.value);
-    // formData.append('doc_status', doc_status.value);
-    // formData.append('user_crea', user_crea.value);
+    const jsonComanda = {
+        Id_Comanda:idComandaRandom.value, 
+        origen:origen.value, 
+        tipo:tipo.value,
+        cedulaUno:cedulaUno.value,
+        email:email.value ,
+        nombreCompleto:nombreCompleto.value ,
+        estado:estado.value,
+        ciudad:ciudad.value,
+        municipio:municipio.value,
+        direccion:direccion.value,
+        referencia:referencia.value,
+        autorizado:autorizado.value,
+        cedulaDos:cedulaDos.value,
+        telefonoUno:telefonoUno.value,
+        medioPago:medioPago.value,
+        user_crea:user_crea.value
+    }
 
     // Alerta
     Swal.fire({
@@ -267,7 +277,7 @@ async function validate(values: any) {
 
     }).then((result) => {
         if (result.isConfirmed){
-            // const respuesta = documentsCreated(formData);
+            const respuesta = Created(jsonComanda);
             Swal.fire({
             title: "Guardado!",
             text: "Datos guardados con exito!",
@@ -282,9 +292,22 @@ async function validate(values: any) {
     });
 }
 
+function generarCadenaAleatoria(longitud: number) {
+  let caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let resultado = '';
+  for (let i = 0; i < longitud; i++) {
+    let indiceAleatorio = Math.floor(Math.random() * caracteres.length);
+    resultado += caracteres[indiceAleatorio];
+  }
+  return resultado;
+}
+
 onMounted( async () => {
     // await getProccess();
     // await getTypes();
+    let cadenaAleatoria = generarCadenaAleatoria(20);
+
+    idComandaRandom.value = cadenaAleatoria
 });
 
 </script>
@@ -292,25 +315,32 @@ onMounted( async () => {
 <template>
     <Form @submit="validate" enctype="multipart/form-data" class="mt-3" v-slot="{ isSubmitting }">
 
+<!-- /////////////////////////////////////// CLIENTE ///////////////////////////////////////////////////// -->
         <v-row>
-            <v-col cols="12" md="4">
-                <v-label for="origen">Origen</v-label>
-                <v-autocomplete
-                    id="origen"
-                    placeholder="Origen de la comanda"
-                    class="mt-2"
-                    clearable
-                    chips
-                    :items="tiendas"
-                    variant="outlined"
-                    :rules="origenRules"
-                    aria-label="Name Documents"
-                    color="primary"
-                    v-model="origen"
-                ></v-autocomplete>
+            <v-col cols="12" md="11">
+                <h4>id comanda: {{ idComandaRandom }} </h4>
             </v-col>
+            <v-col cols="12" md="1">
+                <v-btn color="primary">Buscar</v-btn>
+            </v-col>
+        </v-row>
 
-            <v-col cols="12" md="3">
+        <v-row>
+            <v-col cols="12" md="6">
+                <v-label for="cedulaUno">Cedula/Rif</v-label>
+                <v-text-field
+                    id="cedulaUno"
+                    type="number"
+                    placeholder="Cedula/Rif"
+                    variant="outlined"
+                    aria-label="Name Documents"
+                    class="mt-2"
+                    v-model="cedulaUno"
+                    :rules="CedulaUnoRules"
+                    color="primary"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
                 <v-label for="tipo">Tipo</v-label>
                 <v-autocomplete
                     id="tipo"
@@ -325,21 +355,6 @@ onMounted( async () => {
                     color="primary"
                     v-model="tipo"
                 ></v-autocomplete>
-            </v-col>
-
-            <v-col cols="12" md="5">
-                <v-label for="cedulaUno">Cedula/Rif</v-label>
-                <v-text-field
-                    id="cedulaUno"
-                    type="number"
-                    placeholder="Cedula/Rif"
-                    variant="outlined"
-                    aria-label="Name Documents"
-                    class="mt-2"
-                    v-model="cedulaUno"
-                    :rules="CedulaUnoRules"
-                    color="primary"
-                ></v-text-field>
             </v-col>
         </v-row>
 
@@ -374,7 +389,6 @@ onMounted( async () => {
                 ></v-text-field>
             </v-col>
         </v-row>
-
 
         <v-row>
             <v-col cols="12" md="6">
@@ -460,8 +474,30 @@ onMounted( async () => {
                 ></v-autocomplete>
             </v-col>
         </v-row>
+        <br>
+<!-- /////////////////////////////////////// COMANDA ///////////////////////////////////////////////////// -->
 
+        <v-divider></v-divider>
+        <br>
+        <h4>Paso 2</h4>
         <v-row>
+            <v-col cols="12" md="6">
+                <v-label for="origen">Origen</v-label>
+                <v-autocomplete
+                    id="origen"
+                    placeholder="Origen de la comanda"
+                    class="mt-2"
+                    clearable
+                    chips
+                    :items="tiendas"
+                    variant="outlined"
+                    :rules="origenRules"
+                    aria-label="Name Documents"
+                    color="primary"
+                    v-model="origen"
+                ></v-autocomplete>
+            </v-col>
+
             <v-col cols="12" md="6">
                 <v-label for="direccion">Direccion completa</v-label>
                 <v-text-field
@@ -477,7 +513,7 @@ onMounted( async () => {
                 ></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="12">
                 <v-label for="referencia">Referencia</v-label>
                 <v-text-field
                     id="referencia"
@@ -491,8 +527,11 @@ onMounted( async () => {
                     color="primary"
                 ></v-text-field>
             </v-col>
+
+            
         </v-row>
         <v-row>
+    
             <v-col cols="12" md="6">
                 <v-label for="autorizado">Autorizado para recibir el envio</v-label>
                 <v-text-field
@@ -522,6 +561,7 @@ onMounted( async () => {
                     color="primary"
                 ></v-text-field>
             </v-col>
+    
         </v-row>
         <v-row>
             <v-col cols="12" md="5">

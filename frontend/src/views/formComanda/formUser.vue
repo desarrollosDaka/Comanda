@@ -2,7 +2,7 @@
 // icons
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons-vue';
 import { Form } from 'vee-validate';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import { router } from '@/router';
@@ -20,6 +20,8 @@ const Linea_ventas = ref();
 const User_crea = ref();
 const Delete = ref(false);
 const baseUrl = `http://localhost:3002/api/auth`;
+const baseUrlRol = `http://localhost:3002/api/roles`;
+const rolInfo = ref();
 
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem('user');
@@ -43,13 +45,9 @@ const RolRules = ref([
   (v: string) => !!v || 'El rol del usuario es requerido', 
 ]);
 
-const departmentsRules = ref([
-  (v: string) => !!v || 'El departamento es requerido', 
-]);
-
 const fullnameRules = ref([
   (v: string) => !!v || 'El nombre y apellido del es requerido', 
-]);
+]); 
 
 const sucursalRules = ref([
   (v: string) => !!v || 'La sucursal es requerido', 
@@ -61,6 +59,25 @@ async function userCreated(jsonUser: any){
     } catch(error){
         console.log(error)
     }
+}
+
+interface Roles {
+    Nombre_rol: string;
+    ID_rol: number;
+}
+
+const getRol = async () => {
+  try{
+    const url = `${baseUrlRol}/masterRol`
+    const {data} = await axios.get(url);
+
+    rolInfo.value =  data.map((rol: Roles) => ({
+            title: rol.Nombre_rol,
+            value: rol.Nombre_rol
+        }));
+  } catch(error){
+      console.log(error)
+  }
 }
 
 
@@ -107,30 +124,6 @@ function validate(values: any, { setErrors }: any) {
     });
 }
 
-const items = ref([
-    {
-        title: 'Ventas',
-        value: 1
-    },
-    
-    {
-        title: 'Tecnologia',
-        value: 2
-    },
-    {
-        title: 'Control y Gestion',
-        value: 3
-    },
-    {
-        title: 'Operaciones',
-        value: 4
-    },
-    {
-        title: 'RRHH',
-        value: 5
-    },
-
-]);
 
 const sucursal = ref([
     {
@@ -156,6 +149,12 @@ const sucursal = ref([
     },
 
 ])
+
+    
+onMounted( async () => {
+         
+         await getRol();  
+     })
 
 </script>
 
@@ -211,7 +210,7 @@ const sucursal = ref([
                     chips
                     id="roles"
                     placeholder="Roles"
-                    :items="['Admin']"
+                    :items="rolInfo"
                     variant="outlined"
                     v-model="Nombre_rol"
                     :rules="RolRules"
