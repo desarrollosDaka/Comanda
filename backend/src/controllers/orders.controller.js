@@ -43,17 +43,54 @@ const filterMasterOrder = async (req, res) => {
 
 const createMasterOrderAndDetails = async (req, res) => {
     try {
-        const newOrder = req.body.order;
-        const orderDetailData = req.body.orderDetail;
-        const newClients = req.body.clients;
+        const data = req.body
+        console.log(data);
+        
+        const newClients = {
+            Nombre: data.nombreCompleto,
+            Email: data.email,
+            Cedula: data.cedulaUno,
+            Direccion: data.direccion,
+            Telefono: data.telefonoUno,
+            ID_state: data.estado,
+            ID_city: data.ciudad,
+            ID_municipio: data.municipio,
+            Tipo_cliente: data.tipo,
+           // Retencion:
+        };
+
+        const newOrder = {
+            ID_detalle: data.Id_Comanda,
+            ID_sucursal: data.origen,
+            ID_cliente: data.cedulaUno,
+            ID_pago: data.ID_pago,
+            User_crea: data.user_crea,
+            User_rol: 'Admin',
+            ID_status: data.ID_status,
+            Tipo_delivery: data.ID_delivery,
+            Autoriza: data.autorizado,
+            Cedula: data.cedulaDos,
+
+        };
+        // const orderDetailData ={
+            
+        //     ID_detalle: data.Id_Comanda,
+        //     cedulaUno: data.cedulaUno,
+        //     email: data.email,
+        //     nombreCompleto: data.nombreCompleto,
+        //     // ... otros campos relacionados con el cliente
+        // };
+
 
         const rtaOrder = await sequelize.models.modelOrders.create(newOrder);
-        const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
+        //const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
         const rtaclients = await sequelize.models.modelMasterClients.create(newClients);
 
-        if(rtaOrder && rtaorderDetail && rtaclients){
+        if(rtaOrder  && rtaclients){ //&& rtaorderDetail
             res.status(201)
-            res.json({order: rtaOrder, orderDetail: rtaorderDetail, clients: newClients})
+            res.json({order: rtaOrder, 
+                //orderDetail: rtaorderDetail, 
+                clients: newClients})
         }else{
             res.status(404)
             res.json({msj: 'Error en la creación'})

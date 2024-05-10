@@ -43,13 +43,13 @@ const masterClientsSchema = {
     type: DataTypes.INTEGER,
   },
   Tipo_cliente: {
-    allowNull: true,
-    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    type: DataTypes.STRING(20),
   },
-  // Retencion: {
-  //   type: DataTypes.BOOLEAN,
-  //   allowNull: true,
-  // },
+  Retencion: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+  },
   Porc_retencion: {
     type: DataTypes.INTEGER,
     allowNull: true,

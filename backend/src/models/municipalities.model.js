@@ -5,7 +5,7 @@ const tableName = "MASTER_MUNICIPALITY";
 const modelName = "modelMunicipalities";
 
 const masterMunicipalitiesSchema = {
-  ID_municio: {
+  ID_municipio: {
     allowNull: false,
     primaryKey: true,
     type: DataTypes.INTEGER,
