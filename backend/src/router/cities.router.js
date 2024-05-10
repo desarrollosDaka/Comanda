@@ -3,22 +3,20 @@ const sequelize = require("../config/conexion");
 
 // Controllers
 const {
-    getMasterRoles, 
-    filterMasterRoles}
+    getMasterCities, 
+    filterMasterCities}
     //updateMasterUser, 
    // deleteMasterUser} 
-= require("../controllers/roles.controller");
+= require("../controllers/cities.controller");
 
 // Middleware
 // const {checkAuth} = require("../middleware/auth");
 // const {checkRoleAuth} = require("../middleware/roleAuth");
 
 // Select user
-
-router.get("/masterRoles", getMasterRoles);
+router.get("/masterCities", getMasterCities);
 // Filter user
-router.get("/filterRoles/:id", filterMasterRoles);
-
+router.get("/filterCities/:id", filterMasterCities);
 // Update user
 //router.put("/updateUser/:id", updateMasterUser);
 // Delete user
