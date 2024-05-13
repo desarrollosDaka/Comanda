@@ -1,3 +1,4 @@
+
 const router = require("express").Router();
 const sequelize = require("../config/conexion");
 
@@ -29,9 +30,3 @@ router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
 router.delete("/deleteOrder/:id", deleteMasterOrder);
 
 module.exports = router;
-
-
-
-
-
-
