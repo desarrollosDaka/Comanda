@@ -3,8 +3,17 @@ const sequelize = require("../config/conexion");
 // get Order
 const getMasterOrder = async (req, res) => {
     try {
-        const rta = await sequelize.models.modelOrders.findAll();
-        
+       // const rta = await sequelize.models.modelOrders.findAll();
+       const rta = await sequelize.query(
+        `SELECT T0.[ID_order]
+            ,T0.[ID_cliente] Cedula
+            ,T1.Sucursal
+            ,T0.[User_crea]
+            ,T0.[User_asing] Asesor 
+            ,T2.Status
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status`);
         if(rta){
             res.status(201)
             res.json(rta)
@@ -43,17 +52,55 @@ const filterMasterOrder = async (req, res) => {
 
 const createMasterOrderAndDetails = async (req, res) => {
     try {
-        const newOrder = req.body.order;
-        const orderDetailData = req.body.orderDetail;
-        const newClients = req.body.clients;
+        const data = req.body
+        console.log(data);
+        
+        const newClients = {
+            Nombre: data.nombreCompleto,
+            Email: data.email,
+            Cedula: data.cedulaUno,
+            Direccion: data.direccion,
+            Telefono: data.telefonoUno,
+            ID_state: data.estado,
+            ID_city: data.ciudad,
+            ID_municipio: data.municipio,
+            Tipo_cliente: data.tipo,
+            Retencion: data.retencion,
+            Porc_retencion: data.porcentaje,
+        };
+
+        const newOrder = {
+            ID_detalle: data.Id_Comanda,
+            ID_sucursal: data.origen,
+            ID_cliente: data.cedulaUno,
+            ID_pago: data.ID_pago,
+            User_crea: data.user_crea,
+            User_rol: 'Admin',
+            ID_status: data.ID_status,
+            Tipo_delivery: data.ID_delivery,
+            Autoriza: data.autorizado,
+            Cedula: data.cedulaDos,
+
+        };
+        // const orderDetailData ={
+            
+        //     ID_detalle: data.Id_Comanda,
+        //     cedulaUno: data.cedulaUno,
+        //     email: data.email,
+        //     nombreCompleto: data.nombreCompleto,
+        //     // ... otros campos relacionados con el cliente
+        // };
+
 
         const rtaOrder = await sequelize.models.modelOrders.create(newOrder);
-        const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
+        //const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
         const rtaclients = await sequelize.models.modelMasterClients.create(newClients);
 
-        if(rtaOrder && rtaorderDetail && rtaclients){
+        if(rtaOrder  && rtaclients){ //&& rtaorderDetail
             res.status(201)
-            res.json({order: rtaOrder, orderDetail: rtaorderDetail, clients: newClients})
+            res.json({order: rtaOrder, 
+                //orderDetail: rtaorderDetail, 
+                clients: newClients})
         }else{
             res.status(404)
             res.json({msj: 'Error en la creación'})

@@ -22,29 +22,23 @@ const referencia = ref('');
 const autorizado = ref('');
 const cedulaDos = ref('');
 const telefonoUno = ref('');
-const medioPago = ref();
+const ID_pago = ref();
 const user_crea = ref();
 const doc_file = ref();
-const doc_status = ref('0');
+const info_estado = ref();
+const info_muni = ref();
+const info_ciudad = ref();
+const ID_status = ref('1');
 const idComandaRandom = ref();
-const baseUrl = `http://localhost:3002/api/documents`;
+const porcentaje = ref();
+const retencion = ref(false);
+const ID_delivery = ref();
+const baseUrl = `http://localhost:3002/api/orders`;
+const baseUrlEstado = `http://localhost:3002/api/states`;
+const baseUrlCiudad = `http://localhost:3002/api/cities`;
+const baseUrlMunicipio = `http://localhost:3002/api/municipalities`;
 
 // let ProccesAndType = computed(() => `${doc_process.value}-${doc_type.value}`);
-
-interface Proccess {
-    proccessAll: string;
-    letters: string;
-}
-
-interface Types {
-    typesAll: string;
-    letters: string;
-}
-
-interface DocItem {
-  doc_cod: string;
-  // Aquí puedes agregar el resto de las propiedades si las necesitas
-}
 
 const tiendas = ref([
     {
@@ -53,7 +47,7 @@ const tiendas = ref([
     },
     {
         title: 'AGENCIA VALENCIA',
-        value: '2',
+        value: '4',
     }
     ,{
         title: 'SUCURSAL SAN DIEGO',
@@ -61,7 +55,7 @@ const tiendas = ref([
     }
     ,{
         title: 'SUCURSAL BOLEITA',
-        value: '4',
+        value: '6',
     }
     ,{
         title: 'SUCURSAL BELLO MONTE',
@@ -69,64 +63,37 @@ const tiendas = ref([
     }
     ,{
         title: 'SUCURSAL SAN DIEGO',
-        value: '6',
+        value: '12',
     }
 ]);
 
-const estados = ref([
+const pagos = ref([
     {
-        title: 'CARABOBO',
-        value: '1',
+        title: 'PAGO MOVIL',
+        value: '2',
     },
     {
-        title: 'CARACAS',
-        value: '2',
-    }
-    ,{
-        title: 'ZULIA',
+        title: 'ZELLE',
         value: '3',
     }
     ,{
-        title: 'APURE',
-        value: '4',
+        title: 'TRANSFERENCIA BANCARIA',
+        value: '1',
     }
 ]);
 
-const ciudades = ref([
+const delivery = ref([
     {
-        title: 'TRIJILLO',
-        value: '1',
+        title: 'ZOOM',
+        value: '2',
     },
     {
-        title: 'VALENCIA',
-        value: '2',
-    }
-]);
-
-const municipios = ref([
-    {
-        title: 'NAGUANAGUA',
-        value: '1',
-    },
-    {
-        title: 'GUACARA',
-        value: '2',
-    }
-    ,{
-        title: 'SAN DIEGO',
+        title: 'MRW',
         value: '3',
     }
     ,{
-        title: 'LOS GUAYOS',
-        value: '4',
-    }
-    ,{
-        title: 'MORRON',
-        value: '5',
-    }
-    ,{
-        title: 'MARIARA',
-        value: '6',
+        title: 'PICK-UP',
+        value: '1',
     }
 ]);
 
@@ -209,37 +176,66 @@ const onFileSelected = (event: any) => {
 // api post
 async function Created(json: any){
     try{
-        await axios.post(`${baseUrl}/registerDocuments`, json)
+        await axios.post(`${baseUrl}/createOrder`, json)
+    } catch(error){
+        console.log(error)
+    }
+}
+
+interface Estado {
+    Nombre: string;
+    ID_states: string;
+}
+
+interface Muni {
+    Nombre: string;
+    ID_municipio: number;
+}
+
+interface Ciudad {
+  Nombre: string;
+  ID_city: number;
+
+}
+
+
+// api get
+async function getEstados(){
+    try{
+        const {data} = await axios.get(`${baseUrlEstado}/masterStores`)
+        info_estado.value = data.map((estados: Estado) => ({
+            title: estados.Nombre,
+            value: estados.ID_states
+        }));
     } catch(error){
         console.log(error)
     }
 }
 
 // api get
-// async function getProccess(){
-//     try{
-//         const response = await axios.get(`${baseUrlProccess}/masterProccess`)
-//         info.value = response.data[0].map((proccess: Proccess) => ({
-//             title: proccess.proccessAll,
-//             value: proccess.letters
-//         }));
-//     } catch(error){
-//         console.log(error)
-//     }
-// }
+async function getMunicipio(){
+    try{
+        const {data} = await axios.get(`${baseUrlMunicipio}/masterMunicipality`)
+        info_muni.value = data.map((muni: Muni) => ({
+            title: muni.Nombre,
+            value: muni.ID_municipio
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
 
-// api get
-// async function getTypes(){
-//     try{
-//         const response = await axios.get(`${baseUrlProccess}/masterTypes`)
-//         infoType.value = response.data[0].map((types: Types) => ({
-//             title: types.typesAll,
-//             value: types.letters
-//         }));
-//     } catch(error){
-//         console.log(error)
-//     }
-// }
+async function getCiudad(){
+    try{
+        const {data} = await axios.get(`${baseUrlCiudad}/masterCities`)
+        info_ciudad.value = data.map((ciudad: Ciudad) => ({
+            title: ciudad.Nombre,
+            value: ciudad.ID_city
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
 
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -251,7 +247,7 @@ async function validate(values: any) {
         tipo:tipo.value,
         cedulaUno:cedulaUno.value,
         email:email.value ,
-        nombreCompleto:nombreCompleto.value ,
+        nombreCompleto:nombreCompleto.value,
         estado:estado.value,
         ciudad:ciudad.value,
         municipio:municipio.value,
@@ -260,7 +256,11 @@ async function validate(values: any) {
         autorizado:autorizado.value,
         cedulaDos:cedulaDos.value,
         telefonoUno:telefonoUno.value,
-        medioPago:medioPago.value,
+        ID_pago:ID_pago.value,
+        ID_status:ID_status.value,
+        retencion:retencion.value.toString(),
+        porcentaje:porcentaje.value,
+        ID_delivery:ID_delivery.value,
         user_crea:user_crea.value
     }
 
@@ -284,7 +284,7 @@ async function validate(values: any) {
             icon: "success"
             }).then((result) => {
             if (result.isConfirmed) {
-                    router.push('/maestroCodificacion'); 
+                    router.push('/maestroComanda'); 
                 }
             }); 
     
@@ -303,8 +303,9 @@ function generarCadenaAleatoria(longitud: number) {
 }
 
 onMounted( async () => {
-    // await getProccess();
-    // await getTypes();
+    await getEstados();
+    await getMunicipio();
+    await getCiudad();
     let cadenaAleatoria = generarCadenaAleatoria(20);
 
     idComandaRandom.value = cadenaAleatoria
@@ -359,34 +360,30 @@ onMounted( async () => {
         </v-row>
 
         <v-row v-if="tipo === 'JURIDICO'">
-            <v-col cols="12" md="4">
-                <v-label for="email">Retencion</v-label>
-                <v-text-field
-                    id="email"
-                    type="email"
-                    placeholder="ejmeplo@tiendasdaka.com"
-                    variant="outlined"
-                    aria-label="Name Documents"
-                    class="mt-2"
-                    :rules="emailRules"
-                    v-model="email"
-                    color="primary"
-                ></v-text-field>
+            <v-col cols="12" md="1">
+                <v-label for="roles">Retención</v-label>
+                <v-switch
+                    class="mt-3" 
+                    v-model="retencion"
+                    color="warning"
+                ></v-switch>
             </v-col>
         
-            <v-col cols="12" md="3">
-                <v-label for="name">Porcentaje</v-label>
-                <v-text-field
-                    id="name"
-                    type="text"
-                    placeholder="Nombre Completo"
+            <v-col cols="12" md="2">
+                <v-label for="porcentaje"></v-label>
+                <v-autocomplete
+                    clearable
+                    chips
+                    prepend-icon="mdi-percent-outline"
+                    id="porcentaje"
+                    placeholder="Porcentaje"
+                    :items="['75', '100']"
                     variant="outlined"
-                    aria-label="Name Documents"
-                    class="mt-2"
-                    :rules="nombreCompletoRules"
-                    v-model="nombreCompleto"
+                    v-model="porcentaje"
+                    required
                     color="primary"
-                ></v-text-field>
+                    class="mt-2"
+                ></v-autocomplete>
             </v-col>
         </v-row>
 
@@ -431,7 +428,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="estados"
+                    :items="info_estado"
                     variant="outlined"
                     :rules="estadosRules"
                     aria-label="Name Documents"
@@ -448,7 +445,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="ciudades"
+                    :items="info_ciudad"
                     variant="outlined"
                     :rules="ciudadRules"
                     aria-label="Name Documents"
@@ -465,7 +462,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="municipios"
+                    :items="info_muni"
                     variant="outlined"
                     :rules="municipioRules"
                     aria-label="Name Documents"
@@ -513,7 +510,9 @@ onMounted( async () => {
                 ></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="12">
+        </v-row>
+        <v-row>
+            <v-col cols="12" md="8">
                 <v-label for="referencia">Referencia</v-label>
                 <v-text-field
                     id="referencia"
@@ -528,7 +527,22 @@ onMounted( async () => {
                 ></v-text-field>
             </v-col>
 
-            
+            <v-col cols="12" md="4">
+                <v-label for="delivery">Delivery</v-label>
+                <v-autocomplete
+                    id="delivery"
+                    placeholder="Seleccione el tipo de delivery"
+                    class="mt-2"
+                    clearable
+                    chips
+                    :items="delivery"
+                    variant="outlined"
+                    :rules="metodoRules"
+                    aria-label="delivery"
+                    color="primary"
+                    v-model="ID_delivery"
+                ></v-autocomplete>
+            </v-col>
         </v-row>
         <v-row>
     
@@ -583,16 +597,16 @@ onMounted( async () => {
                 <v-label for="medioPago">Medio de Pago</v-label>
                 <v-autocomplete
                     id="medioPago"
-                    placeholder="Seleccione el municipio"
+                    placeholder="Seleccione el tipo de pago"
                     class="mt-2"
                     clearable
                     chips
-                    :items="['PAGO MOVIL', 'TRANSFERENCIA', 'PUNTO']"
+                    :items="pagos"
                     variant="outlined"
                     :rules="metodoRules"
-                    aria-label="Name Documents"
+                    aria-label="pago"
                     color="primary"
-                    v-model="medioPago"
+                    v-model="ID_pago"
                 ></v-autocomplete>
             </v-col>
 
@@ -635,7 +649,7 @@ onMounted( async () => {
             variant="flat"
             size="large" 
             :disabled="!origen || !tipo  || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia 
-            || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !medioPago"
+            || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago"
             type="submit">
             Guardar
     </v-btn>
