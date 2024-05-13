@@ -47,7 +47,7 @@ const tiendas = ref([
     },
     {
         title: 'AGENCIA VALENCIA',
-        value: '7',
+        value: '4',
     }
     ,{
         title: 'SUCURSAL SAN DIEGO',
@@ -55,7 +55,7 @@ const tiendas = ref([
     }
     ,{
         title: 'SUCURSAL BOLEITA',
-        value: '4',
+        value: '6',
     }
     ,{
         title: 'SUCURSAL BELLO MONTE',
@@ -63,7 +63,7 @@ const tiendas = ref([
     }
     ,{
         title: 'SUCURSAL SAN DIEGO',
-        value: '6',
+        value: '12',
     }
 ]);
 
