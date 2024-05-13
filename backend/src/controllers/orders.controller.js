@@ -3,8 +3,17 @@ const sequelize = require("../config/conexion");
 // get Order
 const getMasterOrder = async (req, res) => {
     try {
-        const rta = await sequelize.models.modelOrders.findAll();
-        
+       // const rta = await sequelize.models.modelOrders.findAll();
+       const rta = await sequelize.query(
+        `SELECT T0.[ID_order]
+            ,T0.[ID_cliente] Cedula
+            ,T1.Sucursal
+            ,T0.[User_crea]
+            ,T0.[User_asing] Asesor 
+            ,T2.Status
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status`);
         if(rta){
             res.status(201)
             res.json(rta)
@@ -56,7 +65,8 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
             Tipo_cliente: data.tipo,
-           // Retencion:
+            Retencion: data.retencion,
+            Porc_retencion: data.porcentaje,
         };
 
         const newOrder = {
