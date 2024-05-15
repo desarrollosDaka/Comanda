@@ -33,6 +33,7 @@ const idComandaRandom = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
+
 const baseUrl = `http://localhost:3002/api/orders`;
 const baseUrlEstado = `http://localhost:3002/api/states`;
 const baseUrlCiudad = `http://localhost:3002/api/cities`;
@@ -103,6 +104,7 @@ if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
 } 
+
 
 // validaciones
 const origenRules = ref([
@@ -237,32 +239,62 @@ async function getCiudad(){
     }
 }
 
+// Capturar la imagen
+const File = (event: any) => {
+  doc_file.value = event.target.files[0];
+};
+
+
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
 
-    const jsonComanda = {
-        Id_Comanda:idComandaRandom.value, 
-        origen:origen.value, 
-        tipo:tipo.value,
-        cedulaUno:cedulaUno.value,
-        email:email.value ,
-        nombreCompleto:nombreCompleto.value,
-        estado:estado.value,
-        ciudad:ciudad.value,
-        municipio:municipio.value,
-        direccion:direccion.value,
-        referencia:referencia.value,
-        autorizado:autorizado.value,
-        cedulaDos:cedulaDos.value,
-        telefonoUno:telefonoUno.value,
-        ID_pago:ID_pago.value,
-        ID_status:ID_status.value,
-        retencion:retencion.value.toString(),
-        porcentaje:porcentaje.value,
-        ID_delivery:ID_delivery.value,
-        user_crea:user_crea.value
-    }
+    // const jsonComanda = {
+    //     Id_Comanda:idComandaRandom.value, 
+    //     origen:origen.value, 
+    //     tipo:tipo.value,
+    //     cedulaUno:cedulaUno.value,
+    //     email:email.value ,
+    //     nombreCompleto:nombreCompleto.value,
+    //     estado:estado.value,
+    //     ciudad:ciudad.value,
+    //     municipio:municipio.value,
+    //     direccion:direccion.value,
+    //     referencia:referencia.value,
+    //     autorizado:autorizado.value,
+    //     cedulaDos:cedulaDos.value,
+    //     telefonoUno:telefonoUno.value,
+    //     ID_pago:ID_pago.value,
+    //     ID_status:ID_status.value,
+    //     retencion:retencion.value.toString(),
+    //     porcentaje:porcentaje.value,
+    //     ID_delivery:ID_delivery.value,
+    //     user_crea:user_crea.value,
+    //     doc_file:doc_file.value
+    // }
+
+    let formData = new FormData();
+    let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
+    formData.append('Id_Comanda', idComandaRandom.value);
+    formData.append('origen', origen.value);
+    formData.append('tipo', tipo.value);
+    formData.append('cedulaUno', cedulaUno.value);
+    formData.append('email', email.value);
+    formData.append('nombreCompleto', nombreCompleto.value);
+    formData.append('estado', estado.value);
+    formData.append('ciudad', ciudad.value);
+    formData.append('doc_file', doc_file.value );
+    formData.append('municipio', municipio.value);
+    formData.append('direccion', direccion.value);
+    formData.append('autorizado', autorizado.value);
+    formData.append('cedulaDos', cedulaDos.value);
+    formData.append('telefonoUno', telefonoUno.value);
+    formData.append('ID_pago', ID_pago.value);
+    formData.append('ID_status', ID_status.value);
+    formData.append('retencion', retencion.value.toString());
+    formData.append('ID_delivery', ID_delivery.value);
+    formData.append('porcentaje', porcentajeValue);
+    formData.append('user_crea', user_crea.value);
 
     // Alerta
     Swal.fire({
@@ -277,7 +309,7 @@ async function validate(values: any) {
 
     }).then((result) => {
         if (result.isConfirmed){
-            const respuesta = Created(jsonComanda);
+            const respuesta = Created(formData);
             Swal.fire({
             title: "Guardado!",
             text: "Datos guardados con exito!",
@@ -310,6 +342,7 @@ onMounted( async () => {
 
     idComandaRandom.value = cadenaAleatoria
 });
+
 
 </script>
 
@@ -636,7 +669,7 @@ onMounted( async () => {
                 variant="outlined"
                 color="primary"
                 required
-                @change="onFileSelected"
+                @change="File"
                 ></v-file-input>
             </v-col>
         </v-row>
