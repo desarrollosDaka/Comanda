@@ -12,7 +12,7 @@ const singIn = async (req, res) =>{
                 Email : Email,
             }, 
         });
-    
+        
         if(!user) {
             res.status(404)
             res.send({error: 'El usuario no existe.'})
@@ -29,6 +29,7 @@ const singIn = async (req, res) =>{
                 Nombre: user.Nombre,
                 Email: user.Email,
                 Nombre_rol: user.Nombre_rol,
+                id: tokenSession,
                 token: tokenSession
             })
         }

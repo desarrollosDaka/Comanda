@@ -6,11 +6,13 @@ const getMasterOrder = async (req, res) => {
        // const rta = await sequelize.models.modelOrders.findAll();
        const rta = await sequelize.query(
         `SELECT T0.[ID_order]
-            ,T0.[ID_cliente] Cedula
-            ,T1.Sucursal
-            ,T0.[User_crea]
-            ,T0.[User_asing] Asesor 
-            ,T2.Status
+        ,T0.ID_detalle
+        ,T0.[ID_cliente] Cedula
+        ,T1.Sucursal
+        ,T0.[User_crea]
+        ,T0.[User_asing] Asesor 
+        ,T2.Status
+        ,CAST(T0.Create_date AS DATE  ) Create_date
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status`);
@@ -53,6 +55,8 @@ const filterMasterOrder = async (req, res) => {
 const createMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body
+        const fileNombre = req.file.filename
+        console.log(fileNombre);
         console.log(data);
         
         const newClients = {
@@ -65,8 +69,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
             Tipo_cliente: data.tipo,
-            Retencion: data.retencion,
-            Porc_retencion: data.porcentaje,
+       
         };
 
         const newOrder = {
@@ -80,26 +83,29 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             Autoriza: data.autorizado,
             Cedula: data.cedulaDos,
+            File_cedula: req.file.filename,
+            Retencion: data.retencion,
+            Porc_retencion: data.porcentaje,
 
         };
-        // const orderDetailData ={
+        const orderDetailData ={
             
-        //     ID_detalle: data.Id_Comanda,
-        //     cedulaUno: data.cedulaUno,
-        //     email: data.email,
-        //     nombreCompleto: data.nombreCompleto,
-        //     // ... otros campos relacionados con el cliente
-        // };
+            ID_detalle: data.Id_Comanda,
+            cedulaUno: data.cedulaUno,
+            email: data.email,
+            nombreCompleto: data.nombreCompleto,
+            // ... otros campos relacionados con el cliente
+        };
 
 
         const rtaOrder = await sequelize.models.modelOrders.create(newOrder);
-        //const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
+        const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
         const rtaclients = await sequelize.models.modelMasterClients.create(newClients);
 
         if(rtaOrder  && rtaclients){ //&& rtaorderDetail
             res.status(201)
             res.json({order: rtaOrder, 
-                //orderDetail: rtaorderDetail, 
+                orderDetail: rtaorderDetail, 
                 clients: newClients})
         }else{
             res.status(404)

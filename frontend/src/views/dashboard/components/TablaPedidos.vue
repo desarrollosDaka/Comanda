@@ -11,17 +11,15 @@ const loadingInfo = ref(false);
 const baseUrl = `http://localhost:3002/api/orders`;
 const dialog = ref(false);
 
-const selectedStatus = ref()
+const selectedStatus = ref('')
 const idDocuments = ref('')
 const estatus = ref('')
 
 let editedItem = ref({
-  ID_order: '',
-  Cedula: '',
-  Sucursal: '',
-  User_crea: '',
-  Asesor: '',
-  Status: '',
+  doc_title: '',
+  doc_cod: '',
+  approv_date: '',
+  doc_status: ''
 })
 
 const editItem = (item: any) => {
@@ -87,13 +85,11 @@ const headers = ref([
   {title: 'COMANDA', align: 'start', key: 'ID_order'},
   {title: 'CEDULA', key: 'Cedula'}, 
   {title: 'SUCURSAL', key: 'Sucursal'}, 
-  {title: 'CLIENTE', key: 'Nombre'}, 
+  {title: 'CLIENTE', key: 'User_crea'}, 
   {title: 'FECHA', key: 'Create_date'},
-  {title: 'ASESOR', key: 'Asesor'},
   {title: 'STATUS', key: 'Status'},
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);
-
 
 </script>
  
@@ -123,7 +119,7 @@ const headers = ref([
 
         <router-link to="/formComanda" >
             <v-btn prepend-icon="mdi-book-plus-multiple" color="primary" class="mx-3">
-                Crear Comanda
+                Crear Pedidos
             </v-btn>
         </router-link>
       </v-card-title>
@@ -142,17 +138,16 @@ const headers = ref([
         <!-- view, update y delete -->
         <template v-slot:item.action="{item}">
           <!-- ver -->
-          <v-icon size="23" class="me-4"  color="primary" @click="editItem(item)">
+          <!-- <v-icon size="23" class="me-4"  color="primary" @click="editItem(item)">
             mdi-eye-check
           </v-icon>
-
           <v-dialog
             v-model="dialog"
             max-width="600px"
           >
             <v-card>
                 <v-card-title>
-                  <span class="text-h5">NUMERO COMANDA: {{ editedItem.ID_order }}</span>
+                  <span class="text-h5">NUMERO COMANDA: {{ editedItem.doc_cod }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -170,16 +165,16 @@ const headers = ref([
                           text="CED/RIF"
                         ></v-label>
                         <br>
-                        <span class="caption">{{ editedItem.Cedula }}</span>
+                        <span class="caption">{{ editedItem.doc_title }}</span>
                       </v-col>
 
                       <v-col cols="12" md="6" sm="6">
                         <v-label
                           class="mb-3"
-                          text="Sucursal"
+                          text="CORREO"
                         ></v-label>
                         <br>
-                        <span class="caption">{{ editedItem.Sucursal }}</span>
+                        <span class="caption">{{ editedItem.approv_date }}</span>
                       </v-col>
 
                       <v-col cols="12" md="6" sm="6">
@@ -190,11 +185,11 @@ const headers = ref([
                         <br>
                         <v-chip 
                           variant="tonal"
-                          color="warning"
+                          color="error"
                           size="small"
-                          prepend-icon="mdi-timer-sand"
-                          v-if="editedItem.Status === 'Creada'">
-                            <p class="mb-0">Creada</p>
+                          prepend-icon="mdi-alert-circle-outline"
+                          v-if="editedItem.doc_status === 'Error'">
+                            <p class="mb-0">Reprobado</p>
                         </v-chip>
 
                         <v-chip
@@ -202,31 +197,31 @@ const headers = ref([
                           color="success"
                           size="small"
                           prepend-icon="mdi-check"
-                          v-else-if="editedItem.Status === 'Asignada'">
-                            <p class=" mb-0">Asignada</p>
+                          v-else-if="editedItem.doc_status === 'Aprobado'">
+                            <p class=" mb-0">Aprobado</p>
                         </v-chip>
 
                         <v-chip 
                           variant="tonal"
                           color="warning"
                           size="small"
-                          prepend-icon="mdi-timer-sand"
+                          prepend-icon="mdi-timer-sand" 
                           v-else>
-                            <p class="mb-0">Creada</p>
+                            <p class="mb-0">Pendiente</p>
                         </v-chip>
                       </v-col>
 
                       <v-col cols="12" md="6" sm="6">
                         <v-label
-                          text="Asignar Asesor"
+                          text="Actualizar Estatus"
                         ></v-label>
                         <br>
                         <v-autocomplete
                           id="tipo"
-                          placeholder="Asesores de ventas"
+                          placeholder="Estatus"
                           clearable
                           chips
-                          :items="['Dilan Marcano', 'Zuljany Pereira', 'Daniel Gonzalez']"
+                          :items="['Aprobado', 'Reprobado', 'Pendiente']"
                           variant="outlined"
                           class="mt-2"
                           color="primary"
@@ -253,12 +248,24 @@ const headers = ref([
                     color="primary"
                     variant="elevated"
                   >
-                    Guardar Cambios
+                    Guardar
                   </v-btn>
                 </v-card-actions>
             </v-card>
-          </v-dialog>
-        
+          </v-dialog>-->
+
+          <!-- Editar -->
+          <router-link :to="{path:`/formMasterCodeUpdate/1`}"> 
+            <v-icon size="23" class="me-4" color="warning">  
+              mdi-pencil
+          </v-icon>
+          </router-link>
+
+          <!-- Eliminar -->
+
+          <v-icon size="23"  color="error" @click="eliminardata(item['id'])">
+            mdi-delete
+          </v-icon>
         </template>
 
         <!-- estado -->
@@ -292,26 +299,7 @@ const headers = ref([
 
         </template>
 
-        <!-- asesor -->
-        <template v-slot:item.Asesor="{item}">
-          <v-chip 
-              variant="tonal"
-              color="success"
-              size="x-small"
-              prepend-icon="mdi-check"
-              v-if="(item as any).Asesor">
-              <p class="mb-0">{{(item as any).Asesor}}</p>
-          </v-chip>
-
-          <v-chip
-              variant="tonal"
-              color="error"
-              size="x-small"
-              prepend-icon="mdi-timer-sand"
-              v-else>
-              <p class="mb-0">No asignado</p>
-          </v-chip>
-      </template>
+        
       </v-data-table>
   </v-card>
   </UiTitleCard>

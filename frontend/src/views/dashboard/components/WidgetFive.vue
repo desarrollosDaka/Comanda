@@ -12,40 +12,7 @@ if (jsonFromLocalStorage !== null) {
 // icons
 import { RiseOutlined, FallOutlined } from '@ant-design/icons-vue';
 
-const fivecards = shallowRef([
-  {
-    name: 'Platilla',
-    earn: 'Maestro de codificacion',
-    percent: '',
-    color: 'primary',
-    icon: RiseOutlined,
-    text: '35,000'
-  },
-  {
-    name: '#reportes',
-    earn: 'Reporteria y Tableros',
-    percent: '',
-    color: 'success',
-    icon: RiseOutlined,
-    text: '8,900'
-  },
-  {
-    name: '#configuraciones',
-    earn: 'Gestionar Notificaciones',
-    percent: '',
-    color: 'warning',
-    icon: FallOutlined,
-    text: '1,943'
-  },
-  {
-    name: '#Documentos',
-    earn: 'Documentos de Tiendas Daka',
-    percent: '',
-    color: 'error',
-    icon: FallOutlined,
-    text: '$20,395'
-  }
-]);
+
 </script>
 <template>
   <!-- BALDOSAS PRINCIPAl -->
@@ -54,7 +21,7 @@ const fivecards = shallowRef([
     <!-- CARD -->
     <v-col cols="12" sm="6" md="4" v-if="Rol == 'Admin'">
       <v-card elevation="0">
-        <v-card variant="tonal" color="primary" rounded="lg" class="elevation-3">
+        <v-card variant="tonal" color="primary" rounded="lg" >
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
 
@@ -77,7 +44,7 @@ const fivecards = shallowRef([
     <!-- CARD -->
     <v-col cols="12" sm="6" md="4" >
       <v-card elevation="0" disabled>
-        <v-card variant="tonal" color="primary" rounded="lg" class="elevation-3">
+        <v-card variant="tonal" color="primary" rounded="lg" >
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
 
@@ -102,7 +69,7 @@ const fivecards = shallowRef([
     <!-- CARD -->
     <v-col cols="12" sm="6" md="4" >
       <v-card elevation="0">
-        <v-card variant="tonal" color="primary" rounded="lg" class="elevation-3">
+        <v-card variant="tonal" color="primary" rounded="lg" >
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
               <div>
