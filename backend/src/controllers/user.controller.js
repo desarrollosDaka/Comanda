@@ -57,6 +57,7 @@ const filterMasterUser = async (req, res) => {
     }
 }
 
+
 // update user
 const updateMasterUser = async (req, res) => {
     try {
@@ -109,6 +110,7 @@ const deleteMasterUser = async (req, res) => {
 module.exports = {
     getMasterUser,
     filterMasterUser,
+   
     updateMasterUser,
     deleteMasterUser
 };

@@ -1,5 +1,18 @@
 const router = require("express").Router();
 const sequelize = require("../config/conexion");
+const multer = require('multer')
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads')
+    },
+    filename: function (req, file, cb){
+        cb(null, `${Date.now()}-${file.originalname}`)
+    }
+})
+
+
+const upload = multer({ storage: storage })
 
 // Controllers
 const {
@@ -7,6 +20,8 @@ const {
     filterMasterOrder,
     createMasterOrderAndDetails,
     updateMasterOrderDetails,
+    filterMasterAsesor, 
+    updateMasterAsesor,
     updateMasterOrder,
     deleteMasterOrder} 
 = require("../controllers/orders.controller");
@@ -19,10 +34,14 @@ const {
 router.get("/masterOrder", getMasterOrder);
 // Filter Order
 router.get("/filterOrder/:id", filterMasterOrder);
+//filtro de asesor
+router.get("/filterMasterAsesor", filterMasterAsesor);
 //create Order
-router.post("/createOrder", createMasterOrderAndDetails);
+router.post("/createOrder", upload.single('doc_file'), createMasterOrderAndDetails);
 // Update Order
 router.put("/updateOrder/:id", updateMasterOrder);
+
+router.put("/updateOrderAsesor/:id", updateMasterAsesor);
 // Update OrderDetails
 router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
 // Delete Order

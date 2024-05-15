@@ -68,7 +68,7 @@ interface Roles {
 
 const getRol = async () => {
   try{
-    const url = `${baseUrlRol}/masterRol`
+    const url = `${baseUrlRol}/masterRoles`
     const {data} = await axios.get(url);
 
     rolInfo.value =  data.map((rol: Roles) => ({
