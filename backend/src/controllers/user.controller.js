@@ -28,7 +28,7 @@ const getMasterUser = async (req, res) => {
         }else{
             res.status(404)
             res.json({msj: 'Error en la consulta'})
-        }   
+        }  
     } catch (e) {
         console.log('Error', e);
     }
@@ -86,7 +86,6 @@ const updateMasterUser = async (req, res) => {
 // delete user
 const deleteMasterUser = async (req, res) => {
     try {
-        
         const id = req.params.id
         const dataUpdate = {
             Delete: req.body.Delete,
@@ -113,4 +112,4 @@ module.exports = {
    
     updateMasterUser,
     deleteMasterUser
-};
+}; 

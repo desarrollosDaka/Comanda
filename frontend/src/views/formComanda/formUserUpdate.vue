@@ -24,6 +24,8 @@ const User_mod = ref();
 const baseUrl = `http://localhost:3002/api/users`;
 const infoFilter = ref();
 const baseUrlRol = `http://localhost:3002/api/roles`;
+const baseUrlStore = `http://localhost:3002/api/stores`;
+const infoSucursal = ref();
 const rolInfo = ref();
 
 // Localstorage
@@ -98,6 +100,25 @@ const getRol = async () => {
     rolInfo.value =  data.map((rol: Roles) => ({
             title: rol.Nombre_rol,
             value: rol.Nombre_rol
+        }));
+  } catch(error){
+      console.log(error)
+  }
+}
+
+interface Sucursales {
+    Sucursal: string;
+    ID_sucursal: number;
+}
+
+const getSucursal = async () => {
+  try{
+    const url = `${baseUrlStore}/masterStores`
+    const {data} = await axios.get(url);
+
+    infoSucursal.value =  data.map((sucursales: Sucursales) => ({
+            title: sucursales.Sucursal,
+            value: sucursales.ID_sucursal
         }));
   } catch(error){
       console.log(error)
@@ -199,6 +220,7 @@ onMounted( async () => {
          
     await userFilter();  
     await getRol(); 
+    await getSucursal(); 
 
     Nombre.value = infoFilter.value.Nombre
     Email.value = infoFilter.value.Email
@@ -281,7 +303,7 @@ onMounted( async () => {
                     clearable
                     chips
                     placeholder="Sucursal"
-                    :items="sucursal"
+                    :items="infoSucursal"
                     variant="outlined"
                     v-model="Id_sucursal"
                     :rules="sucursalRules"

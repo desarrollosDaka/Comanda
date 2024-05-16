@@ -6,7 +6,7 @@ const getMasterOrder = async (req, res) => {
        // const rta = await sequelize.models.modelOrders.findAll();
        const rta = await sequelize.query(
         `SELECT T0.[ID_order]
-               ,T0.ID_detalle
+   ,T0.ID_detalle
                ,T0.[ID_cliente] Cedula
                ,T3.Nombre Cliente
                ,T1.Sucursal
@@ -57,6 +57,8 @@ const filterMasterOrder = async (req, res) => {
 const createMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body
+        const fileNombre = req.file.filename
+        console.log(fileNombre);
         console.log(data);
         
         const newClients = {
@@ -69,7 +71,8 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
             Tipo_cliente: data.tipo,
-            
+                    
+                                             
         };
 
         const newOrder = {
@@ -86,26 +89,16 @@ const createMasterOrderAndDetails = async (req, res) => {
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
             File_cedula: req.file.filename //req.file.filename ,
-      
         };
-        // const orderDetailData ={
+        const orderDetailData ={
             
-        //     ID_detalle: data.Id_Comanda,
-        //     cedulaUno: data.cedulaUno,
-        //     email: data.email,
-        //     nombreCompleto: data.nombreCompleto,
-        //     // ... otros campos relacionados con el cliente
-        // };
-        // Comprueba si la cédula ya existe en la base de datos
-        // const existingClient = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
-        // if (existingClient) {
-        //     return res.status(400).json({ msj: 'La cédula ya existe en la base de datos' });
-        // }
+            ID_detalle: data.Id_Comanda,
+            cedulaUno: data.cedulaUno,
+            email: data.email,
+            nombreCompleto: data.nombreCompleto,
+            // ... otros campos relacionados con el cliente
+        };
 
-        // const rtaOrder = await sequelize.models.modelOrders.create(newOrder);
-        // //const rtaorderDetail = await sequelize.models.modelorderDetail.create(orderDetailData);
-        // const rtaclients = await sequelize.models.modelMasterClients.create(newClients);
-        
         // Comprueba si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
         if (client) {
@@ -116,11 +109,14 @@ const createMasterOrderAndDetails = async (req, res) => {
             client = await sequelize.models.modelMasterClients.create(newClients);
         }
 
+
         const order = await sequelize.models.modelOrders.create(newOrder);
 
-
+  
+   
         if(order && client){
             res.status(201)
+
             res.json({order: order, clients: client})
         }else{
             res.status(404)
