@@ -21,6 +21,8 @@ const User_crea = ref();
 const Delete = ref(false);
 const baseUrl = `http://localhost:3002/api/auth`;
 const baseUrlRol = `http://localhost:3002/api/roles`;
+const baseUrlStore = `http://localhost:3002/api/stores`;
+const infoSucursal = ref();
 const rolInfo = ref();
 
 // Localstorage
@@ -80,6 +82,24 @@ const getRol = async () => {
   }
 }
 
+interface Sucursales {
+    Sucursal: string;
+    ID_sucursal: number;
+}
+
+const getSucursal = async () => {
+  try{
+    const url = `${baseUrlStore}/masterStores`
+    const {data} = await axios.get(url);
+
+    infoSucursal.value =  data.map((sucursales: Sucursales) => ({
+            title: sucursales.Sucursal,
+            value: sucursales.ID_sucursal
+        }));
+  } catch(error){
+      console.log(error)
+  }
+}
 
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -124,37 +144,11 @@ function validate(values: any, { setErrors }: any) {
     });
 }
 
-
-const sucursal = ref([
-    {
-        title: 'Corporativo',
-        value: 1
-    },
-    
-    {
-        title: 'Valencia Centro',
-        value: 2
-    },
-    {
-        title: 'CDD',
-        value: 3
-    },
-    {
-        title: 'Puerto Ordaz',
-        value: 4
-    },  
-    {
-        title: 'Barquisimeto',
-        value: 5
-    },
-
-])
-
-    
+ 
 onMounted( async () => {
-         
-         await getRol();  
-     })
+    await getRol();  
+    await getSucursal();  
+})
 
 </script>
 
@@ -228,7 +222,7 @@ onMounted( async () => {
                     clearable
                     chips
                     placeholder="Sucursal"
-                    :items="sucursal"
+                    :items="infoSucursal"
                     variant="outlined"
                     v-model="Id_sucursal"
                     :rules="sucursalRules"

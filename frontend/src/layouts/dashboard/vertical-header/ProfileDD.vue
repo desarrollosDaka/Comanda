@@ -23,7 +23,7 @@ const Rol = ref('');
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
-  User.value = parsedData.data.username;
+  User.value = parsedData.data.Nombre;
   Rol.value = parsedData.data.rol;
 } 
 
