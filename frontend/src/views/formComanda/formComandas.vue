@@ -274,6 +274,8 @@ async function validate(values: any) {
     // }
 
     let formData = new FormData();
+
+    let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
     formData.append('Id_Comanda', idComandaRandom.value);
     formData.append('origen', origen.value);
     formData.append('tipo', tipo.value);
@@ -292,7 +294,8 @@ async function validate(values: any) {
     formData.append('ID_status', ID_status.value);
     formData.append('retencion', retencion.value.toString());
     formData.append('ID_delivery', ID_delivery.value);
-    formData.append('porcentaje', porcentaje.value);
+
+    formData.append('porcentaje', porcentajeValue);
     formData.append('user_crea', user_crea.value);
 
     // Alerta
@@ -341,6 +344,7 @@ onMounted( async () => {
 
     idComandaRandom.value = cadenaAleatoria
 });
+
 
 </script>
 

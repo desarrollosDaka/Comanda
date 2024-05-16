@@ -12,6 +12,7 @@ var storage = multer.diskStorage({
     }
 })
 
+
 const upload = multer({ storage: storage })
 
 // Controllers
@@ -20,6 +21,8 @@ const {
     filterMasterOrder,
     createMasterOrderAndDetails,
     updateMasterOrderDetails,
+    filterMasterAsesor, 
+    updateMasterAsesor,
     updateMasterOrder,
     deleteMasterOrder} 
 = require("../controllers/orders.controller");
@@ -32,10 +35,14 @@ const {
 router.get("/masterOrder", getMasterOrder);
 // Filter Order
 router.get("/filterOrder/:id", filterMasterOrder);
+//filtro de asesor
+router.get("/filterMasterAsesor", filterMasterAsesor);
 //create Order
 router.post("/createOrder", upload.single('doc_file'), createMasterOrderAndDetails);
 // Update Order
 router.put("/updateOrder/:id", updateMasterOrder);
+
+router.put("/updateOrderAsesor/:id", updateMasterAsesor);
 // Update OrderDetails
 router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
 // Delete Order
