@@ -34,6 +34,10 @@ const masterOrderdetailsSchema = {
     allowNull: false,
     type: DataTypes.FLOAT,
   },
+  Subtotal: {
+    allowNull: false,
+    type: DataTypes.FLOAT,
+  },
   Delete: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
