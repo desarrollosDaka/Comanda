@@ -131,6 +131,7 @@ const createOrderDetails = async (req, res) => {
             Producto: data.producto,
             Unidades: data.unidades,
             Precio: data.precio,
+            Subtotal:data.subtotal,
 
         };
     const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
