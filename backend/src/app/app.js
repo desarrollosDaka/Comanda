@@ -12,7 +12,9 @@ const routerCities = require("../router/cities.router");
 const routerMunicipality = require("../router/municipalities.router");
 const routerOrders = require("../router/orders.router");
 const routerClients = require("../router/clients.router");
-const routerProduct = require("../router/product.router");
+
+const routerProducts = require("../router/products.router");
+
 
 // Middlewares
 app.use(express.json());
@@ -28,6 +30,8 @@ app.use("/api/cities", routerCities);
 app.use("/api/municipalities", routerMunicipality);
 app.use("/api/orders", routerOrders);
 app.use("/api/clients", routerClients);
-app.use("/api/product", routerProduct);
+
+app.use("/api/products", routerProducts);
+
 
 module.exports = app;
