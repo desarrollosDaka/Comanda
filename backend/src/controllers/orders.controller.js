@@ -6,7 +6,7 @@ const getMasterOrder = async (req, res) => {
        // const rta = await sequelize.models.modelOrders.findAll();
        const rta = await sequelize.query(
         `SELECT T0.[ID_order]
-   ,T0.ID_detalle
+                ,T0.ID_detalle
                ,T0.[ID_cliente] Cedula
                ,T3.Nombre Cliente
                ,T1.Sucursal
@@ -90,14 +90,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Porc_retencion: data.porcentaje,
             File_cedula: req.file.filename //req.file.filename ,
         };
-        const orderDetailData ={
-            
-            ID_detalle: data.Id_Comanda,
-            cedulaUno: data.cedulaUno,
-            email: data.email,
-            nombreCompleto: data.nombreCompleto,
-            // ... otros campos relacionados con el cliente
-        };
+       
 
         // Comprueba si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
@@ -111,13 +104,14 @@ const createMasterOrderAndDetails = async (req, res) => {
 
 
         const order = await sequelize.models.modelOrders.create(newOrder);
+       
 
   
    
-        if(order && client){
+        if(order && client && orderDetailData){
             res.status(201)
 
-            res.json({order: order, clients: client})
+            res.json({order: order, clients: client, orderDetails: orderDetails})
         }else{
             res.status(404)
             res.json({msj: 'Error en la creación'})
@@ -128,6 +122,30 @@ const createMasterOrderAndDetails = async (req, res) => {
         console.log('Error', e);
     }
 };
+
+const createOrderDetails = async (req, res) => {
+    try {
+    const orderDetailData ={         
+            ID_detalle: data.Id_Comanda,
+            ID_producto: data.id_producto,
+            Producto: data.producto,
+            Unidades: data.unidades,
+            Precio: data.precio,
+
+        };
+    const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+    
+    if( orderDetailData){
+        res.status(201)
+
+        res.json({orderDetails: orderDetails})
+    }else{
+        res.status(404)
+        res.json({msj: 'Error en la creación'})} 
+    }  catch (e) {
+        console.log('Error', e);
+    }
+}
 
 const filterMasterAsesor = async (req, res) => {
     try {
@@ -151,7 +169,8 @@ const filterMasterAsesor = async (req, res) => {
 
 const updateMasterAsesor = async (req, res) => {
     try {
-        const idUser = req.params.User_asing;
+        const User_asing = req.params.User_asing;
+        const idUser = req.params.ID_order;
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(User_asing,{
             where: {id: idUser},
@@ -234,6 +253,7 @@ module.exports = {
     getMasterOrder,
     filterMasterOrder,
     filterMasterAsesor,
+    createOrderDetails,
     createMasterOrderAndDetails,
     updateMasterOrderDetails,
     updateMasterAsesor,
