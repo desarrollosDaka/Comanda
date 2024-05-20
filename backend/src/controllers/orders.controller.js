@@ -169,11 +169,13 @@ const filterMasterAsesor = async (req, res) => {
 
 const updateMasterAsesor = async (req, res) => {
     try {
+
         const User_asing = req.params.User_asing;
         const idUser = req.params.ID_order;
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(User_asing,{
             where: {id: idUser},
+
           });
 
         if(rta){

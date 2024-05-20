@@ -318,7 +318,7 @@ async function validate(values: any) {
             icon: "success"
             }).then((result) => {
             if (result.isConfirmed) {
-                    router.push('/maestroComanda'); 
+                    router.push(`/addArticulos/${idComandaRandom.value}`); 
                 }
             }); 
     
