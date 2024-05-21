@@ -19,9 +19,9 @@ const Dpto_ventas = ref(false);
 const Linea_ventas = ref();
 const User_crea = ref();
 const Delete = ref(false);
-const baseUrl = `http://localhost:3002/api/auth`;
-const baseUrlRol = `http://localhost:3002/api/roles`;
-const baseUrlStore = `http://localhost:3002/api/stores`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/auth`;
+const baseUrlRol = `${import.meta.env.VITE_URL}/api/roles`;
+const baseUrlStore = `${import.meta.env.VITE_URL}/api/stores`;
 const infoSucursal = ref();
 const rolInfo = ref();
 

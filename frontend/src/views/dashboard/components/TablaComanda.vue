@@ -5,12 +5,11 @@ import { shallowRef, ref, onMounted } from 'vue';
 import { router } from '@/router';
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
-
 const search = ref('') 
 const info = ref([]);
 const loadingInfo = ref(false);
-const baseUrl = `http://localhost:3002/api/orders`;
-const baseUrlAsesor = `http://localhost:3002/api/orders`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
+const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const dialog = ref(false);
 const infoAsesores = ref();
 

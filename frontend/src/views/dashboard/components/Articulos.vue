@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const infoProduct = ref();
 const loadingInfo = ref(false);
-const baseUrl = `http://localhost:3002/api/product`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/product`;
 
 
 const increment = (item: any) => {
@@ -53,6 +53,7 @@ const getProduct = async () => {
 onMounted( async () => {
     await getProduct();
 });
+
 const projects = reactive ([
   {
     number: 'MICROONDA 1.4 PIE ACERO INOX. C/NEGRO MS402MADXBB SAMSUNG',
@@ -129,7 +130,7 @@ const projects = reactive ([
     <!-- ANALITICA -->
         <v-col cols="12" md="3" class="py-12">
                 <v-card title="RESUMEN" text="Total a pagar:1800$" variant="flat">
-                <v-card-actions>
+                <v-card-actions> 
                     <v-btn
                         color="warning"
                         variant="tonal">
