@@ -39,6 +39,31 @@ const filterMasterClients = async (req, res) => {
         console.log('Error', e);
     }
 }
+
+// get filter Clients for CI
+const filterMasterClientsForCI = async (req, res) => {
+    try {
+        const CI = req.params.cedula; 
+        console.log(CI);
+        
+        const rta = await sequelize.models.modelMasterClients.findOne({
+            where: {
+                Cedula : CI,
+            },
+        });
+
+        if(rta){
+            res.status(200)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        } 
+
+    } catch (e) {
+        console.log('Error', e);
+    }
+}
 //Create Clients
 
 const createMasterClients = async (req, res) => {
@@ -109,5 +134,6 @@ module.exports = {
     filterMasterClients,
     createMasterClients,
     updateMasterClients,
-    deleteMasterClients
+    deleteMasterClients, 
+    filterMasterClientsForCI
 };

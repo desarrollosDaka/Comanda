@@ -8,7 +8,7 @@ import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 const search = ref('') 
 const info = ref([]);
 const loadingInfo = ref(false);
-const baseUrl = `http://localhost:3002/api/documents`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/documents`;
 const dialog = ref(false);
 
 const selectedStatus = ref('')

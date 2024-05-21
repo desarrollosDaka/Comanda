@@ -13,7 +13,11 @@ const id = ref() // id de la COMANDA
 id.value = route.params.id
 
 
-const baseUrl = `http://localhost:3002/api/product`;
+
+const infoProduct = ref();
+const loadingInfo = ref(false);
+const baseUrl = `${import.meta.env.VITE_URL}/api/product`;
+
 
 const getProduct = async () => {
     try {
@@ -157,6 +161,20 @@ const totalSubtotal = computed(() => {
     return listProduct.value.reduce((total, producto) => total + producto.subtotal, 0)
 })
 
+
+onMounted( async () => {
+    await getProduct();
+});
+
+const projects = reactive ([
+  {
+    number: 'MICROONDA 1.4 PIE ACERO INOX. C/NEGRO MS402MADXBB SAMSUNG',
+    name: 'LB-00000001',
+    order: 1,
+    amount: '160',
+    priority: '160'
+  }
+]);
 
 </script>
 
