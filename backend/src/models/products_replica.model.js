@@ -8,7 +8,7 @@ const masterProductsSchema = {
   ID_producto: {
     allowNull: false,
     primaryKey: true,
-    type: DataTypes.STRING(60),
+    type: DataTypes.STRING(40),
   },
   Producto: {
     allowNull: false,
@@ -20,11 +20,11 @@ const masterProductsSchema = {
   },
   Unidades: {
     allowNull: false,
-    type: DataTypes.STRING(100),
+    type: DataTypes.INTEGER,
   },
   Precio: {
     allowNull: false,
-    type: DataTypes.STRING(100),
+    type: DataTypes.FLOAT,
   },
 
 };

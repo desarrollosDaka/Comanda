@@ -21,6 +21,7 @@ const {
     filterMasterOrder,
     createMasterOrderAndDetails,
     updateMasterOrderDetails,
+    createOrderDetails,
     filterMasterAsesor, 
     updateMasterAsesor,
     updateMasterOrder,
@@ -39,6 +40,8 @@ router.get("/filterOrder/:id", filterMasterOrder);
 router.get("/filterMasterAsesor", filterMasterAsesor);
 //create Order
 router.post("/createOrder", upload.single('doc_file'), createMasterOrderAndDetails);
+
+router.post("/createOrderDetails", createOrderDetails);
 // Update Order
 router.put("/updateOrder/:id", updateMasterOrder);
 

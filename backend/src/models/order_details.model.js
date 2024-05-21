@@ -28,11 +28,15 @@ const masterOrderdetailsSchema = {
   },
   Unidades: {
     allowNull: false,
-    type: DataTypes.STRING(100),
+    type: DataTypes.INTEGER,
   },
   Precio: {
     allowNull: false,
-    type: DataTypes.STRING(100),
+    type: DataTypes.FLOAT,
+  },
+  Subtotal: {
+    allowNull: false,
+    type: DataTypes.FLOAT,
   },
   Delete: {
     allowNull: true,
