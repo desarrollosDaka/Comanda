@@ -183,7 +183,6 @@ const createMasterOrderAndDetails = async (req, res) => {
 
 
 //CREAR DETALLES DE ORDENES 
-
 const createOrderDetails = async (req, res) => {
     const data = req.body
 

@@ -121,11 +121,11 @@ const headers = ref([
       
         <v-spacer></v-spacer>
 
-        <router-link to="/formComanda" >
+        <!-- <router-link to="/formComanda" >
             <v-btn prepend-icon="mdi-book-plus-multiple" color="primary" class="mx-3">
                 Crear Comanda
             </v-btn>
-        </router-link>
+        </router-link> -->
       </v-card-title>
 
       <!-- datatable -->
