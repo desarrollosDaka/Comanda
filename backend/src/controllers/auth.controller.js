@@ -12,7 +12,7 @@ const singIn = async (req, res) =>{
                 Email : Email,
             }, 
         });
-    
+        
         if(!user) {
             res.status(404)
             res.send({error: 'El usuario no existe.'})
@@ -29,6 +29,7 @@ const singIn = async (req, res) =>{
                 Nombre: user.Nombre,
                 Email: user.Email,
                 Nombre_rol: user.Nombre_rol,
+                id: tokenSession,
                 token: tokenSession
             })
         }
@@ -49,13 +50,17 @@ const singIn = async (req, res) =>{
 // SIGNUP
 const signUp = async (req, res) => {
     try {
+
         const {
             Nombre, 
             Email,
             Password, 
             Id_sucursal, 
             Nombre_rol, 
-            User_crea
+            Dpto_ventas,
+            Linea_ventas,
+            User_crea,
+            Delete
         } = req.body
 
         // Verifica si el correo existe
@@ -77,7 +82,10 @@ const signUp = async (req, res) => {
             Password: PasswordHash, 
             Id_sucursal, 
             Nombre_rol, 
-            User_crea
+            Dpto_ventas,
+            Linea_ventas,
+            User_crea, 
+            Delete
         }
 
         // Crear el usuario

@@ -11,7 +11,7 @@ const masterOrderdetailsSchema = {
     autoIncrement: true,
   },
   ID_detalle: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(30),
    // autoIncrement: true,
   },
   ID_producto: {
@@ -28,11 +28,15 @@ const masterOrderdetailsSchema = {
   },
   Unidades: {
     allowNull: false,
-    type: DataTypes.STRING(100),
+    type: DataTypes.INTEGER,
   },
   Precio: {
     allowNull: false,
-    type: DataTypes.STRING(100),
+    type: DataTypes.FLOAT,
+  },
+  Subtotal: {
+    allowNull: false,
+    type: DataTypes.FLOAT,
   },
   Delete: {
     allowNull: true,

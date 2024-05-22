@@ -7,13 +7,15 @@ import {
   ProfileOutlined,
   FontSizeOutlined,
   BgColorsOutlined,
-  BarcodeOutlined,
   CrownOutlined,
   ClusterOutlined,
   SnippetsOutlined,
   TeamOutlined,
   UsergroupAddOutlined,
-  UserOutlined
+  BarcodeOutlined,
+  ContainerOutlined,
+  UserOutlined,
+  ToolOutlined
 } from '@ant-design/icons-vue';
 
 export interface menu {
@@ -40,20 +42,19 @@ const sidebarItem: menu[] = [
     to: '/dashboard'
   },
   {
+    title: 'Pedidos Online',
+    icon: BarcodeOutlined, 
+    to: '/maestroPedidos'
+  },
+  {
     title: 'Comandas',
     icon: ClusterOutlined, 
     to: '/maestroComanda'
   },
-
   {
     title: 'Reportes',
-    icon: SnippetsOutlined, 
-    to: '/documentacionDaka'
-  },
-  {
-    title: 'Pedidos Online',
-    icon: BgColorsOutlined, 
-    to: '/documentacionDaka'
+    icon: ContainerOutlined, 
+    to: '/comanda'
   },
   {
     title: 'Factura Online',
@@ -62,7 +63,7 @@ const sidebarItem: menu[] = [
   },
   {
     title: 'Despacho',
-    icon: TeamOutlined, 
+    icon: ToolOutlined, 
     to: '/documentacionDaka'
   },
   { header: 'Configuración' },

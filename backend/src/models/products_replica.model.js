@@ -1,14 +1,14 @@
 // USUARIOS
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
-const tableName = "products_replica";
+const tableName = "PRODUCTS_REPLICA";
 const modelName = "modelProducts_replica";
 
 const masterProductsSchema = {
   ID_producto: {
     allowNull: false,
     primaryKey: true,
-    type: DataTypes.STRING(60),
+    type: DataTypes.STRING(40),
   },
   Producto: {
     allowNull: false,
@@ -20,19 +20,11 @@ const masterProductsSchema = {
   },
   Unidades: {
     allowNull: false,
-    type: DataTypes.STRING(100),
+    type: DataTypes.INTEGER,
   },
   Precio: {
     allowNull: false,
-    type: DataTypes.STRING(100),
-  },
-  Create_date: {
-    allowNull: false,
-    type: DataTypes.DATE,
-  },
-  Update_date: {
-    allowNull: true,
-    type: DataTypes.DATE,
+    type: DataTypes.FLOAT,
   },
 
 };

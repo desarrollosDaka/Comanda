@@ -2,24 +2,28 @@
 import Swal from 'sweetalert2'
 import axios from 'axios';
 import { shallowRef, ref, onMounted } from 'vue';
+import { router } from '@/router';
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
-
 const search = ref('') 
 const info = ref([]);
 const loadingInfo = ref(false);
-const baseUrl = `http://localhost:3002/api/documents`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
+const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const dialog = ref(false);
+const infoAsesores = ref();
 
-const selectedStatus = ref('')
+const selectedAsesor = ref()
 const idDocuments = ref('')
 const estatus = ref('')
 
 let editedItem = ref({
-  doc_title: '',
-  doc_cod: '',
-  approv_date: '',
-  doc_status: ''
+  ID_order: '',
+  Cedula: '',
+  Sucursal: '',
+  User_crea: '',
+  Asesor: '',
+  Status: '',
 })
 
 const editItem = (item: any) => {
@@ -27,16 +31,36 @@ const editItem = (item: any) => {
   dialog.value = true
 }
 
-// const getDocuments = async () => {
-//     loadingInfo.value = true
-//     try{
-//         const response = await axios.get(`${baseUrl}/masterDocumentsFilter`);
-//         info.value =  response.data[0]
-//     } catch(error){
-//         console.log(error)
-//     }
-//     loadingInfo.value = false
-// }
+const getOrders = async () => {
+    loadingInfo.value = true
+    try{
+        const url = `${baseUrl}/masterOrder`
+        const {data} = await axios.get(url);
+        info.value =  data[0]
+    } catch(error){
+        console.log(error)
+    }
+    loadingInfo.value = false
+}
+
+interface Asesores {
+  Nombre: string;
+  ID_user: number;
+}
+
+const getAsesores = async () => {
+  try{
+    const url = `${baseUrlAsesor}/filterMasterAsesor`
+    const {data} = await axios.get(url);
+
+    infoAsesores.value =  data[0].map((asesor: Asesores) => ({
+            title: asesor.Nombre,
+            value: asesor.Nombre
+        }));
+  } catch(error){
+      console.log(error)
+  }
+}
 
 const deleteDocuments = async (id:string) => {
   estatus.value = '1'
@@ -49,9 +73,31 @@ const deleteDocuments = async (id:string) => {
         console.log(error)       
     }
 }
+const asignAsesor = async (id:string) => {
+    const status = 2
+    try{
+      const response = await axios.put(`${baseUrl}/updateOrderAsesor/${id}`, {User_asing: selectedAsesor.value, ID_status: status})
+        if(response){
+          dialog.value = false
+          Swal.fire({
+            title: "Asesor Asignado",
+            text: "Se asigno un asesor a la comanda seleccionada!",
+            icon: "success"
+          }).then((result) => {
+              if(result.isConfirmed) {
+                location.reload();
+              }
+          });;
+        }
+    } catch(error){
+        console.log(error)       
+    }
+}
+
 
 onMounted( async () => {
-    // await getDocuments();
+    await getOrders();
+    await getAsesores();
 });
 
 function eliminardata(id:string){
@@ -81,41 +127,16 @@ function eliminardata(id:string){
 }
 
 const headers = ref([
-  {title: '#', align: 'start', key: 'id'},
-  {title: 'COMANDA', align: 'start', key: 'number'},
-  {title: 'CEDULA', key: 'order'}, 
-  {title: 'CLIENTE', key: 'name'}, 
-  {title: 'FECHA', key: 'amount'},
-  {title: 'ASESOR', key: 'priority'},
+  {title: 'COMANDA', align: 'start', key: 'ID_order'},
+  {title: 'CEDULA', key: 'Cedula'}, 
+  {title: 'SUCURSAL', key: 'Sucursal'}, 
+  {title: 'CLIENTE', key: 'Cliente'}, 
+  {title: 'FECHA', key: 'Create_date'},
+  {title: 'ASESOR', key: 'Asesor'},
+  {title: 'STATUS', key: 'Status'},
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);
 
-const projects = shallowRef([
-{
-    id: '1',
-    number: '1123123123',
-    order: '28082907',
-    name: 'Daniel Gonzalez',
-    amount: '20/02/2024',
-    priority: 'Aprobado'
-  },
-  {
-    id: '2',
-    number: '112312sdf23',
-    order: '29763533',
-    name: 'Johanna Perez',
-    amount: '20/02/2024',
-    priority: 'Pendiente'
-  },
-  {
-    id: '3',
-    number: '11231231234',
-    order: '225367377',
-    name: 'Christian Romero',
-    amount: '20/02/2024',
-    priority: 'Error'
-  }
-]);
 
 </script>
  
@@ -143,11 +164,11 @@ const projects = shallowRef([
       
         <v-spacer></v-spacer>
 
-        <router-link to="/formComanda" >
+        <!-- <router-link to="/formComanda" >
             <v-btn prepend-icon="mdi-book-plus-multiple" color="primary" class="mx-3">
                 Crear Comanda
             </v-btn>
-        </router-link>
+        </router-link> -->
       </v-card-title>
 
       <!-- datatable -->
@@ -156,7 +177,7 @@ const projects = shallowRef([
         density="comfortable"
         v-model:search="search"
         :loading="loadingInfo"
-        :items="projects"
+        :items="info"
         :headers="headers"
         :no-data-text="'No hay datos disponibles'"
       >
@@ -174,7 +195,7 @@ const projects = shallowRef([
           >
             <v-card>
                 <v-card-title>
-                  <span class="text-h5">NUMERO COMANDA: {{ editedItem.doc_cod }}</span>
+                  <span class="text-h5">NUMERO COMANDA: {{ editedItem.ID_order }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -192,16 +213,16 @@ const projects = shallowRef([
                           text="CED/RIF"
                         ></v-label>
                         <br>
-                        <span class="caption">{{ editedItem.doc_title }}</span>
+                        <span class="caption">{{ editedItem.Cedula }}</span>
                       </v-col>
 
                       <v-col cols="12" md="6" sm="6">
                         <v-label
                           class="mb-3"
-                          text="CORREO"
+                          text="Sucursal"
                         ></v-label>
                         <br>
-                        <span class="caption">{{ editedItem.approv_date }}</span>
+                        <span class="caption">{{ editedItem.Sucursal }}</span>
                       </v-col>
 
                       <v-col cols="12" md="6" sm="6">
@@ -212,11 +233,11 @@ const projects = shallowRef([
                         <br>
                         <v-chip 
                           variant="tonal"
-                          color="error"
+                          color="warning"
                           size="small"
-                          prepend-icon="mdi-alert-circle-outline"
-                          v-if="editedItem.doc_status === 'Error'">
-                            <p class="mb-0">Reprobado</p>
+                          prepend-icon="mdi-timer-sand"
+                          v-if="editedItem.Status === 'Creada'">
+                            <p class="mb-0">Creada</p>
                         </v-chip>
 
                         <v-chip
@@ -224,35 +245,35 @@ const projects = shallowRef([
                           color="success"
                           size="small"
                           prepend-icon="mdi-check"
-                          v-else-if="editedItem.doc_status === 'Aprobado'">
-                            <p class=" mb-0">Aprobado</p>
+                          v-else-if="editedItem.Status === 'Asignada'">
+                            <p class=" mb-0">Asignada</p>
                         </v-chip>
 
                         <v-chip 
                           variant="tonal"
                           color="warning"
                           size="small"
-                          prepend-icon="mdi-timer-sand" 
+                          prepend-icon="mdi-timer-sand"
                           v-else>
-                            <p class="mb-0">Pendiente</p>
+                            <p class="mb-0">Creada</p>
                         </v-chip>
                       </v-col>
 
                       <v-col cols="12" md="6" sm="6">
                         <v-label
-                          text="Actualizar Estatus"
+                          text="Asignar Asesor"
                         ></v-label>
                         <br>
                         <v-autocomplete
                           id="tipo"
-                          placeholder="Estatus"
+                          placeholder="Asesores de ventas"
                           clearable
                           chips
-                          :items="['Aprobado', 'Reprobado', 'Pendiente']"
+                          :items="infoAsesores"
                           variant="outlined"
                           class="mt-2"
                           color="primary"
-                          v-model="selectedStatus"
+                          v-model="selectedAsesor"
                         ></v-autocomplete>
                       </v-col>
               
@@ -274,37 +295,25 @@ const projects = shallowRef([
                     type="submit"
                     color="primary"
                     variant="elevated"
+                    @click="asignAsesor(editedItem.ID_order)"                    
                   >
-                    Guardar
+                    Guardar Cambios
                   </v-btn>
                 </v-card-actions>
             </v-card>
           </v-dialog>
         
-          <!-- Editar -->
-          <!-- <router-link :to="{path:`/formMasterCodeUpdate/${item['id']}`}">  -->
-          <router-link :to="{path:`/formMasterCodeUpdate/1`}"> 
-            <v-icon size="23" class="me-4" color="warning">  
-              mdi-pencil
-          </v-icon>
-          </router-link>
-
-          <!-- Eliminar -->
-
-          <v-icon size="23"  color="error" @click="eliminardata(item['id'])">
-            mdi-delete
-          </v-icon>
         </template>
 
         <!-- estado -->
-        <template v-slot:item.priority="{item}">
+        <template v-slot:item.Status="{item}">
             <v-chip 
               variant="tonal"
-              color="error"
+              color="warning"
               size="x-small"
-              prepend-icon="mdi-alert-circle-outline"
-              v-if="(item as any).priority === 'Error'">
-                <p class="mb-0">Error</p>
+              prepend-icon="mdi-timer-sand"
+              v-if="(item as any).Status === 'Creada'">
+                <p class="mb-0">Creada</p>
             </v-chip>
 
             <v-chip
@@ -312,20 +321,41 @@ const projects = shallowRef([
               color="success"
               size="x-small"
               prepend-icon="mdi-check"
-              v-else-if="(item as any).priority === 'Aprobado'">
-                <p class=" mb-0">Asignado</p>
+              v-else-if="(item as any).Status === 'Asignada'">
+                <p class=" mb-0">Asignada</p>
             </v-chip>
 
             <v-chip 
               variant="tonal"
               color="warning"
               size="x-small"
-              prepend-icon="mdi-timer-sand" 
+              prepend-icon="mdi-timer-sand"
               v-else>
                 <p class="mb-0">Pendiente</p>
             </v-chip>
 
         </template>
+
+        <!-- asesor -->
+        <template v-slot:item.Asesor="{item}">
+          <v-chip 
+              variant="tonal"
+              color="success"
+              size="x-small"
+              prepend-icon="mdi-check"
+              v-if="(item as any).Asesor">
+              <p class="mb-0">{{(item as any).Asesor}}</p>
+          </v-chip>
+
+          <v-chip
+              variant="tonal"
+              color="error"
+              size="x-small"
+              prepend-icon="mdi-timer-sand"
+              v-else>
+              <p class="mb-0">No asignado</p>
+          </v-chip>
+      </template>
       </v-data-table>
   </v-card>
   </UiTitleCard>

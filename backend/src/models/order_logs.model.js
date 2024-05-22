@@ -26,14 +26,7 @@ const masterOrderLogsSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
-  Create_date: {
-    allowNull: false,
-    type: DataTypes.DATE,
-  },
-  Update_date: {
-    allowNull: true,
-    type: DataTypes.DATE,
-  },
+ 
 
 };
 
@@ -47,8 +40,8 @@ class MasterOrdersLogs extends Model {
       sequelize,
       tableName: tableName,
       modelName: modelName,
-      //createdAt: "create_date",
-      //updatedAt: "update_date"
+      createdAt: "create_date",
+      updatedAt: "update_date"
     };    
   }
 }

@@ -71,6 +71,16 @@ const MainRoutes = {
       path: '/PageInfo',
       component: () => import('@/views/pages/pageInfo.vue')
     }
+    ,{
+      name: 'maestroPedidos',
+      path: '/maestroPedidos',
+      component: () => import('@/views/pages/maestroPedidos.vue')
+    }
+    ,{
+      name: 'addArticulos',
+      path: '/addArticulos/:id',
+      component: () => import('@/views/pages/addArticulos.vue')
+    }
   ]
 };
 

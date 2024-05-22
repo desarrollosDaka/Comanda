@@ -10,7 +10,7 @@ const breadcrumbs = ref([
   {
     title: 'Comandas',
     disabled: true,
-    href: '#'
+    to: '#'
   }
 ]);
 </script>

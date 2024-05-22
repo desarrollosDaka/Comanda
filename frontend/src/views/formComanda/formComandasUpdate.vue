@@ -28,8 +28,8 @@ const user_crea = ref();
 const user_mod = ref();
 const doc_file = ref();
 const doc_status = ref('0');
-const baseUrl = `http://localhost:3002/api/documents`;
-const baseUrlProccess = `http://localhost:3002/api/proccess`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/documents`;
+const baseUrlProccess = `${import.meta.env.VITE_URL}/api/proccess`;
 const doc_process = ref();
 const doc_type = ref();
 let ProccesAndType = computed(() => `${doc_process.value}-${doc_type.value}`);
@@ -271,6 +271,7 @@ id.value = route.params.id
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
 
+
     // valores de la base de datos
     // let formData = new FormData();
     // formData.append('doc_title', doc_title.value);
@@ -285,6 +286,7 @@ async function validate(values: any) {
     // formData.append('doc_fileTwo', doc_fileTwo.value);
     // formData.append('doc_status', doc_status.value);
     // formData.append('user_mod', user_mod.value);
+    
 
     // Alerta
     Swal.fire({

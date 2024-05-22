@@ -9,19 +9,23 @@ const page = ref({ title: 'Nueva Comanda' });
 const breadcrumbs = ref([
   {
     title: 'Comandas',
+    disabled: false,
+    to: '/maestroComanda'
+  },
+  {
+    title: 'Crear Comandas',
     disabled: true,
-    href: '#'
+    to: '#'
   }
 ]);
 
-// const colorShadow = ref(['primary', 'secondary', 'info', 'success', 'warning', 'error']);
 </script>
 
 <template>
   <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
   <v-row>
     <v-col cols="12" md="12">
-      <UiParentCard title="Agregar Nuevo Cliente">
+      <UiParentCard title="Agregar Nueva comanda">
 
         <formComanda/>
         
