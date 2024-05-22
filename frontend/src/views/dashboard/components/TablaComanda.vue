@@ -2,16 +2,18 @@
 import Swal from 'sweetalert2'
 import axios from 'axios';
 import { shallowRef, ref, onMounted } from 'vue';
+import { router } from '@/router';
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
-
 const search = ref('') 
 const info = ref([]);
 const loadingInfo = ref(false);
-const baseUrl = `http://localhost:3002/api/orders`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
+const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const dialog = ref(false);
+const infoAsesores = ref();
 
-const selectedStatus = ref()
+const selectedAsesor = ref()
 const idDocuments = ref('')
 const estatus = ref('')
 
@@ -41,6 +43,25 @@ const getOrders = async () => {
     loadingInfo.value = false
 }
 
+interface Asesores {
+  Nombre: string;
+  ID_user: number;
+}
+
+const getAsesores = async () => {
+  try{
+    const url = `${baseUrlAsesor}/filterMasterAsesor`
+    const {data} = await axios.get(url);
+
+    infoAsesores.value =  data[0].map((asesor: Asesores) => ({
+            title: asesor.Nombre,
+            value: asesor.Nombre
+        }));
+  } catch(error){
+      console.log(error)
+  }
+}
+
 const deleteDocuments = async (id:string) => {
   estatus.value = '1'
     try{
@@ -52,9 +73,31 @@ const deleteDocuments = async (id:string) => {
         console.log(error)       
     }
 }
+const asignAsesor = async (id:string) => {
+    const status = 2
+    try{
+      const response = await axios.put(`${baseUrl}/updateOrderAsesor/${id}`, {User_asing: selectedAsesor.value, ID_status: status})
+        if(response){
+          dialog.value = false
+          Swal.fire({
+            title: "Asesor Asignado",
+            text: "Se asigno un asesor a la comanda seleccionada!",
+            icon: "success"
+          }).then((result) => {
+              if(result.isConfirmed) {
+                location.reload();
+              }
+          });;
+        }
+    } catch(error){
+        console.log(error)       
+    }
+}
+
 
 onMounted( async () => {
     await getOrders();
+    await getAsesores();
 });
 
 function eliminardata(id:string){
@@ -87,7 +130,7 @@ const headers = ref([
   {title: 'COMANDA', align: 'start', key: 'ID_order'},
   {title: 'CEDULA', key: 'Cedula'}, 
   {title: 'SUCURSAL', key: 'Sucursal'}, 
-  {title: 'CLIENTE', key: 'Nombre'}, 
+  {title: 'CLIENTE', key: 'Cliente'}, 
   {title: 'FECHA', key: 'Create_date'},
   {title: 'ASESOR', key: 'Asesor'},
   {title: 'STATUS', key: 'Status'},
@@ -121,11 +164,11 @@ const headers = ref([
       
         <v-spacer></v-spacer>
 
-        <router-link to="/formComanda" >
+        <!-- <router-link to="/formComanda" >
             <v-btn prepend-icon="mdi-book-plus-multiple" color="primary" class="mx-3">
                 Crear Comanda
             </v-btn>
-        </router-link>
+        </router-link> -->
       </v-card-title>
 
       <!-- datatable -->
@@ -226,11 +269,11 @@ const headers = ref([
                           placeholder="Asesores de ventas"
                           clearable
                           chips
-                          :items="['Dilan Marcano', 'Zuljany Pereira', 'Daniel Gonzalez']"
+                          :items="infoAsesores"
                           variant="outlined"
                           class="mt-2"
                           color="primary"
-                          v-model="selectedStatus"
+                          v-model="selectedAsesor"
                         ></v-autocomplete>
                       </v-col>
               
@@ -252,6 +295,7 @@ const headers = ref([
                     type="submit"
                     color="primary"
                     variant="elevated"
+                    @click="asignAsesor(editedItem.ID_order)"                    
                   >
                     Guardar Cambios
                   </v-btn>
