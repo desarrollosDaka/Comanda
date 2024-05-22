@@ -34,10 +34,11 @@ const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
 
-const baseUrl = `http://localhost:3002/api/orders`;
-const baseUrlEstado = `http://localhost:3002/api/states`;
-const baseUrlCiudad = `http://localhost:3002/api/cities`;
-const baseUrlMunicipio = `http://localhost:3002/api/municipalities`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
+const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
+const baseUrlCiudad = `${import.meta.env.VITE_URL}/api/cities`;
+const baseUrlMunicipio = `${import.meta.env.VITE_URL}/api/municipalities`;
+const baseUrlClients = `${import.meta.env.VITE_URL}/api/clients`;
 
 // let ProccesAndType = computed(() => `${doc_process.value}-${doc_type.value}`);
 
@@ -105,30 +106,23 @@ if (jsonFromLocalStorage !== null) {
   user_crea.value = parsedData.data.Nombre;
 } 
 
-
 // validaciones
 const origenRules = ref([
   (v: string) => !!v || 'El origen del cliente es requerido'
 ]);
-
 const tipoRules = ref([
   (v: string) => !!v || 'El tipo de cliente es requerido',
 ]);
-
 const emailRules = ref([
   (v: string) => !!v || 'El email es requerido', 
   (v: string) => /.+@.+\..+/.test(v) || 'El email debe ser válido'
 ]);
-
 const CedulaUnoRules = ref([
     (v: string) => !!v || 'La cedula/rif del cliente es requerido', 
 ]);
-
 const nombreCompletoRules = ref([
-    (v: string) => !!v || 'El nombre del cliente es requerido',
-    (v: string) => /^[A-Z0-9\s]+$/.test(v) || 'El nombre del cliente debe ser en mayúsculas'
+    (v: string) => !!v || 'El nombre del cliente es requerido'
 ]);
-
 const estadosRules = ref([
     (v: any) => !!v || 'El estado es requerido', 
 ]);
@@ -138,42 +132,27 @@ const municipioRules = ref([
 const ciudadRules = ref([
     (v: any) => !!v || 'El ciudad es requerido', 
 ]);
-
 const direccionRules = ref([
-    (v: string) => !!v || 'La direccion completa es requerido',
-    (v: string) => /^[A-Z0-9\s]+$/.test(v) || 'La direccion debe ser en mayúsculas'
+    (v: string) => !!v || 'La direccion completa es requerido'
 ]);
-
 const referenciaRules = ref([
-    (v: string) => !!v || 'La referencia del delivery es requerido',
-    (v: string) => /^[A-Z0-9\s]+$/.test(v) || 'La referencia debe ser en mayúsculas'
+    (v: string) => !!v || 'La referencia del delivery es requerido'
 ]);
-
 const autorizadoRules = ref([
-    (v: string) => !!v || 'La persona autorizada es requerida',
-    (v: string) => /^[A-Z0-9\s]+$/.test(v) || 'La persona autorizada debe ser en mayúsculas'
+    (v: string) => !!v || 'La persona autorizada es requerida'
 ]);
-
 const cedulaDosRules = ref([
     (v: string) => !!v || 'La cedula de la persona autorizada es requerida',
 ]);
-
 const telefonoRules = ref([
     (v: string) => !!v || 'El telefono de la persona autorizada es requerida',
 ]);
-
 const metodoRules = ref([
     (v: string) => !!v || 'El metodo de pago es requerida',
 ]);
-
 const fileRules = ref([
     (v: any) => !!v || 'El archivo es requerido', 
 ]);
-
-// Capturar la imagen
-const onFileSelected = (event: any) => {
-  doc_file.value = event.target.files[0];
-};
 
 // api post
 async function Created(json: any){
@@ -181,6 +160,29 @@ async function Created(json: any){
         await axios.post(`${baseUrl}/createOrder`, json)
     } catch(error){
         console.log(error)
+    }
+}
+
+// BUSCADOR DE CLIENTES
+async function searchModel() {
+    try {
+        const {data} = await axios.get(`${baseUrlClients}/searchClient/${cedulaUno.value}`)
+        
+        if(data){
+            tipo.value =  data.Tipo_cliente
+            email.value =  data.Email
+            nombreCompleto.value =  data.Nombre
+            estado.value =  data.ID_state
+            ciudad.value =  data.ID_city
+            municipio.value =  data.ID_municipio
+        }
+
+    } catch (error) {
+        Swal.fire({
+            title: "El cliente no existe!",
+            text: "Crea el cliente para continuar",
+            icon: "error"
+        }); 
     }
 }
 
@@ -200,7 +202,6 @@ interface Ciudad {
 
 }
 
-
 // api get
 async function getEstados(){
     try{
@@ -209,10 +210,11 @@ async function getEstados(){
             title: estados.Nombre,
             value: estados.ID_states
         }));
+
     } catch(error){
         console.log(error)
     }
-}
+}                                                           
 
 // api get
 async function getMunicipio(){
@@ -249,32 +251,7 @@ const File = (event: any) => {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
 
-    // const jsonComanda = {
-    //     Id_Comanda:idComandaRandom.value, 
-    //     origen:origen.value, 
-    //     tipo:tipo.value,
-    //     cedulaUno:cedulaUno.value,
-    //     email:email.value ,
-    //     nombreCompleto:nombreCompleto.value,
-    //     estado:estado.value,
-    //     ciudad:ciudad.value,
-    //     municipio:municipio.value,
-    //     direccion:direccion.value,
-    //     referencia:referencia.value,
-    //     autorizado:autorizado.value,
-    //     cedulaDos:cedulaDos.value,
-    //     telefonoUno:telefonoUno.value,
-    //     ID_pago:ID_pago.value,
-    //     ID_status:ID_status.value,
-    //     retencion:retencion.value.toString(),
-    //     porcentaje:porcentaje.value,
-    //     ID_delivery:ID_delivery.value,
-    //     user_crea:user_crea.value,
-    //     doc_file:doc_file.value
-    // }
-
     let formData = new FormData();
-
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
     formData.append('Id_Comanda', idComandaRandom.value);
     formData.append('origen', origen.value);
@@ -294,7 +271,6 @@ async function validate(values: any) {
     formData.append('ID_status', ID_status.value);
     formData.append('retencion', retencion.value.toString());
     formData.append('ID_delivery', ID_delivery.value);
-
     formData.append('porcentaje', porcentajeValue);
     formData.append('user_crea', user_crea.value);
 
@@ -318,7 +294,7 @@ async function validate(values: any) {
             icon: "success"
             }).then((result) => {
             if (result.isConfirmed) {
-                    router.push('/maestroComanda'); 
+                    router.push(`/addArticulos/${idComandaRandom.value}`); 
                 }
             }); 
     
@@ -357,7 +333,7 @@ onMounted( async () => {
                 <h4>id comanda: {{ idComandaRandom }} </h4>
             </v-col>
             <v-col cols="12" md="1">
-                <v-btn color="primary">Buscar</v-btn>
+                <v-btn :disabled="!cedulaUno" color="primary" @click="searchModel">Buscar</v-btn>
             </v-col>
         </v-row>
 
@@ -411,7 +387,7 @@ onMounted( async () => {
                     chips
                     prepend-icon="mdi-percent-outline"
                     id="porcentaje"
-                    placeholder="Porcentaje"
+                    placeholder="%"
                     :items="['75', '100']"
                     variant="outlined"
                     v-model="porcentaje"
@@ -446,7 +422,7 @@ onMounted( async () => {
                     placeholder="Nombre Completo"
                     variant="outlined"
                     aria-label="Name Documents"
-                    class="mt-2"
+                    class="mt-2 my-input"
                     :rules="nombreCompletoRules"
                     v-model="nombreCompleto"
                     color="primary"
@@ -538,7 +514,7 @@ onMounted( async () => {
                     placeholder="Direccion Completa"
                     variant="outlined"
                     aria-label="Name Documents"
-                    class="mt-2"
+                    class="mt-2 my-input"
                     v-model="direccion"
                     :rules="direccionRules"
                     color="primary"
@@ -555,7 +531,7 @@ onMounted( async () => {
                     placeholder="Referencia del delivery"
                     variant="outlined"
                     aria-label="Name Documents"
-                    class="mt-2"
+                    class="mt-2 my-input"
                     :rules="referenciaRules"
                     v-model="referencia"
                     color="primary"
@@ -589,7 +565,7 @@ onMounted( async () => {
                     placeholder="Direccion Completa"
                     variant="outlined"
                     aria-label="Name Documents"
-                    class="mt-2"
+                    class="mt-2 my-input"
                     :rules="autorizadoRules"
                     v-model="autorizado"
                     color="primary"
@@ -701,6 +677,10 @@ onMounted( async () => {
 
 .logoDakaLogin{
   margin-left: 95px;
+}
+
+.my-input input {
+  text-transform: uppercase;
 }
 
 </style>
