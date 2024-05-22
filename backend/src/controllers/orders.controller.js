@@ -124,6 +124,10 @@ const createMasterOrderAndDetails = async (req, res) => {
 };
 
 const createOrderDetails = async (req, res) => {
+
+    const data = req.body
+
+    console.log(data)
     try {
     const orderDetailData ={         
             ID_detalle: data.Id_Comanda,
