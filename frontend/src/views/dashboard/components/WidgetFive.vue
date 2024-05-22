@@ -31,7 +31,7 @@ import { RiseOutlined, FallOutlined } from '@ant-design/icons-vue';
                   Comandas
                 </h4>
                 <br>
-                <router-link to="maestroCodificacion">
+                <router-link to="maestroComanda">
                   <v-btn variant="tonal" append-icon="mdi-arrow-right" size="small">Ver mas</v-btn>
                 </router-link>
               </div>
