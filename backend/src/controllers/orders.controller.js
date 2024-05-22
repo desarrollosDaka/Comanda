@@ -30,28 +30,7 @@ const getMasterOrder = async (req, res) => {
     }
 };
 
- 
-// const filterMasterOrder = async (req, res) => {
-//     try {
-//         const id = req.params.ID_Order; 
-//         const rta = await sequelize.models.modelOrders.findOne({
-//             where: {
-//                 id : id,
-//             }, 
-//         });
 
-//         if(rta){
-//             res.status(200)
-//             res.json(rta)
-//         }else{
-//             res.status(404)
-//             res.json({msj: 'Error en la consulta'})
-//         } 
-
-//     } catch (e) {
-//         console.log('Error', e);
-//     }
-// }
 //FILTRAR ORDENES POR ID
 const filterMasterOrder = async (req, res) => {
     try {
@@ -96,7 +75,7 @@ const filterMasterOrder = async (req, res) => {
                     ,CAST(T0.Create_date AS DATE) Create_date
                     ,CAST(T0.[update_date] AS DATE) [Update_date]
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
-            INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+            INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal 
             INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
             INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
             INNER JOIN [dbo].[MASTER_STATES] T4 ON T1.ID_state = T4.ID_states

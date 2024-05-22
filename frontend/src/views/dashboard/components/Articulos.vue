@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from 'vue';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
@@ -13,19 +14,22 @@ const id = ref() // id de la COMANDA
 id.value = route.params.id
 
 
-const baseUrl = `http://localhost:3002/api/products`;
-const baseUrlProducts = `http://localhost:3002/api/orders`;
+
+const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
+const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 
 const getProduct = async () => {
     try {
+
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
-        console.log(data)
+
         infoProduct.value = data.map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
             precio: product.Precio
         }));
+        
     } catch (error) {
         console.log(error)
     }
