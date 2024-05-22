@@ -21,10 +21,10 @@ const Dpto_ventas = ref(false);
 const Linea_ventas = ref();
 const User_crea = ref();
 const User_mod = ref();
-const baseUrl = `http://localhost:3002/api/users`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
 const infoFilter = ref();
-const baseUrlRol = `http://localhost:3002/api/roles`;
-const baseUrlStore = `http://localhost:3002/api/stores`;
+const baseUrlRol = `${import.meta.env.VITE_URL}/api/roles`;
+const baseUrlStore = `${import.meta.env.VITE_URL}/api/stores`;
 const infoSucursal = ref();
 const rolInfo = ref();
 

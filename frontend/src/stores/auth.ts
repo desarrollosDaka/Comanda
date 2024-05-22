@@ -3,7 +3,7 @@ import axios from 'axios'
 import { router } from '@/router';
 
 
-const baseUrl = `http://localhost:3002/api/auth`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/auth`;
 
 export const useAuthStore = defineStore({ id: 'auth',
   state: () => ({

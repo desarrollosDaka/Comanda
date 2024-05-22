@@ -2,7 +2,6 @@
 import { useAuthStore } from '@/stores/auth';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 
-
 import Swal from 'sweetalert2'
 import axios from 'axios';
 import { shallowRef, ref, onMounted } from 'vue';
@@ -10,10 +9,9 @@ import { shallowRef, ref, onMounted } from 'vue';
 const search = ref('') 
 const loadingInfo = ref(false);
 const Delete = ref(true);
-const baseUrl = `http://localhost:3002/api/users`;
+const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
 
 const info = ref([]) ;
-
 
 const getUser = async () => {
   loadingInfo.value = true

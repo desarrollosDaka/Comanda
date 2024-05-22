@@ -12,16 +12,16 @@ const masterOrderSchema = {
     autoIncrement: true,
   },
   ID_detalle: {
+    allowNull: true,
     type: DataTypes.STRING(30),
-
   },
   ID_sucursal: {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
-  ID_cliente: {
+  Cedula: {
     allowNull: false,
-    type: DataTypes.INTEGER,
+    type: DataTypes.BIGINT,
   },
   ID_pago: {                           
     allowNull: false,
@@ -52,8 +52,16 @@ const masterOrderSchema = {
     type: DataTypes.STRING(100),
   },
   Autoriza: {
-    allowNull: false,
+    allowNull: true,
+    type: DataTypes.BOOLEAN,
+  },
+  Personal_autoriza: {
+    allowNull: true,
     type: DataTypes.STRING(80),
+  },
+  Cedula_autoriza: {
+    allowNull: true,
+    type: DataTypes.BIGINT,
   },
   Retencion: {
     allowNull: true,
