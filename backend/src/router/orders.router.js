@@ -21,10 +21,11 @@ const {
     filterMasterOrder,
     createMasterOrderAndDetails,
     updateMasterOrderDetails,
+    updateMasterOrderAndDetails,
     createOrderDetails,
     filterMasterAsesor, 
     updateMasterAsesor,
-    updateMasterOrder,
+    //updateMasterOrder,
     deleteMasterOrder} 
 = require("../controllers/orders.controller");
 
@@ -34,21 +35,32 @@ const {
 
 // Select Order
 router.get("/masterOrder", getMasterOrder);
-// Filter Order
+// Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
+
 //filtro de asesor
 router.get("/filterMasterAsesor", filterMasterAsesor);
-//create Order
+
+//CREAR ORDER + CLIENTE
 router.post("/createOrder", upload.single('doc_file'), createMasterOrderAndDetails);
 
+//CREATE DETALLE DE ORDEN
 router.post("/createOrderDetails", createOrderDetails);
-// Update Order
-router.put("/updateOrder/:id", updateMasterOrder);
 
+// Update Order(SOLO CABECERA) (DESACTIVADO)
+//router.put("/updateOrder/:id", updateMasterOrder);
+
+//UPDATE ORDERS + CLIENTS
+router.put("/updateOrder/:id", updateMasterOrderAndDetails);
+
+//UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
+
 // Update OrderDetails
 router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
-// Delete Order
-router.delete("/deleteOrder/:id", deleteMasterOrder);
+
+// DELETE ORDER
+//router.delete("/deleteOrder/:id", deleteMasterOrder);
+router.put("/deleteOrder/:id", deleteMasterOrder);
 
 module.exports = router;
