@@ -1,3 +1,4 @@
+
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from 'vue';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
@@ -13,22 +14,20 @@ const id = ref() // id de la COMANDA
 id.value = route.params.id
 
 
-
-const infoProduct = ref();
-const loadingInfo = ref(false);
-const baseUrl = `${import.meta.env.VITE_URL}/api/product`;
-
+const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
+const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 
 const getProduct = async () => {
     try {
-        const url = `${baseUrl}/replicaProduct`
-        const { data } = await axios.get(url);
 
+        const url = `${baseUrl}/masterProducts`
+        const { data } = await axios.get(url);
         infoProduct.value = data.map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
             precio: product.Precio
         }));
+        
     } catch (error) {
         console.log(error)
     }
@@ -124,15 +123,17 @@ async function Created() {
 
         const json = {
 
-            ID_detalle:id.value,
-            Id_producto:element.code,
-            Producto:element.name,
-            Unidades: element.amount,
-            Precio: element.price
+            Id_Comanda:id.value,
+            id_producto:element.code,
+            producto:element.name,
+            unidades: element.amount,
+            precio: element.price,
+            subtotal: element.subtotal
         }
 
+        console.log(json)
         try {
-             axios.post(`${baseUrl}/createOrderDetails`, json)
+             axios.post(`${baseUrlProducts}/createOrderDetails`, json)
         } catch (error) {
             console.log(error)
         }
@@ -161,20 +162,6 @@ const totalSubtotal = computed(() => {
     return listProduct.value.reduce((total, producto) => total + producto.subtotal, 0)
 })
 
-
-onMounted( async () => {
-    await getProduct();
-});
-
-const projects = reactive ([
-  {
-    number: 'MICROONDA 1.4 PIE ACERO INOX. C/NEGRO MS402MADXBB SAMSUNG',
-    name: 'LB-00000001',
-    order: 1,
-    amount: '160',
-    priority: '160'
-  }
-]);
 
 </script>
 
