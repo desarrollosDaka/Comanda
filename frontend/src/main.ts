@@ -9,6 +9,8 @@ import VueTablerIcons from 'vue-tabler-icons';
 import VueApexCharts from 'vue3-apexcharts';
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
+import Vue3Toasity, { type ToastContainerOptions } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 // google-fonts
 import '@fontsource/public-sans/400.css';
@@ -33,4 +35,9 @@ app.use(VueTablerIcons);
 app.use(Antd);
 app.use(i18n);
 app.use(VueApexCharts);
+app.use(Vue3Toasity, {
+  autoClose: false,
+  //multiple: false,
+  // ...
+});
 app.use(vuetify).mount('#app');

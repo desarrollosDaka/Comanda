@@ -24,7 +24,7 @@ setupModels(sequelize);
 
 module.exports = sequelize;
 
-//   PRUEBA DE CONEXIOn
+  // PRUEBA DE CONEXIOn
   // async function testConnection() {
   //   try {
   //       await sequelize.authenticate();

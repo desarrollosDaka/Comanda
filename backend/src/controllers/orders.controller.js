@@ -1,5 +1,33 @@
 const sequelize = require("../config/conexion");
 
+
+
+//CONSULTA DE ORDERS DETAILS
+
+// get Clients
+const getMasterOrderDetails = async (req, res) => {
+    try {
+        const id = req.params.id; 
+        const rta = await sequelize.models.modelOrdersdetails.findAll({
+                where: {
+                    ID_detalle : id,
+                }, 
+            });
+        
+        if(rta){
+            res.status(201)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        }   
+    } catch (e) {
+        console.log('Error', e);
+    }
+};
+
+
+
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
     try {
@@ -104,8 +132,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         const data = req.body
        // const fileNombre = req.file.filename
         //console.log(fileNombre);
-        console.log(data);
-        
+
         const newClients = {
             Nombre: data.nombreCompleto,
             Email: data.email,
@@ -119,9 +146,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         };
 
         const newOrder = {
-            ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
-           // ID_cliente: data.cedulaUno,
             Cedula: data.cedulaUno,      
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
@@ -226,15 +251,13 @@ const createOrderDetails = async (req, res) => {
 
 //EDITAR CABECERA ORDENES Y CLIENTES
 const updateMasterOrderAndDetails = async (req, res) => {
+    
     try {
        
         const data = req.body  
-        const idOrder = req.params.ID_order;
+        const idOrder = req.params.id;
        // const fileNombre = req.file.filename
-      
-       // console.log(fileNombre);
-        console.log(data);
-        
+
         const newClients = {
             Nombre: data.nombreCompleto,
             Email: data.email,
@@ -248,6 +271,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
         };
 
         const UpdateOrder = {
+
             ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
             Cedula: data.cedulaUno,      
@@ -262,6 +286,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje ,
             File_cedula: req.file.filename 
+
         };
        
         // Comprueba si la cédula ya existe en la base de datos
@@ -446,5 +471,6 @@ module.exports = {
     updateMasterOrderDetails,
     updateMasterAsesor,
     //updateMasterOrder,
-    deleteMasterOrder
+    deleteMasterOrder,
+    getMasterOrderDetails
 };
