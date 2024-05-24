@@ -78,7 +78,7 @@ const MainRoutes = {
     }
     ,{
       name: 'addArticulos',
-      path: '/addArticulos/:id',
+      path: '/addArticulos/:id/:update?',
       component: () => import('@/views/pages/addArticulos.vue')
     }
     ,{
