@@ -32,10 +32,11 @@ const {
 
 // // Middleware
 // const {checkAuth} = require("../middleware/auth");
-// const {checkRoleAuth} = require("../middleware/roleAuth");
+// const {checkRoleAuth} = require("../middleware/roleAuth");r
 
 // Select Order
 router.get("/masterOrder", getMasterOrder);
+
 // Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
 
