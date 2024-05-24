@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed } from 'vue';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
@@ -6,6 +5,8 @@ import Swal from 'sweetalert2'
 import axios from 'axios';
 import { useRoute } from 'vue-router'
 import { router } from '@/router';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 const route = useRoute()
 
@@ -13,30 +14,70 @@ const route = useRoute()
 const id = ref() // id de la COMANDA
 id.value = route.params.id
 
+const update = ref() // modo Update
+update.value = route.params.update
 
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
 const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
+const isOrder = ref<boolean>(true)
 
 const getProduct = async () => {
     try {
 
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
-        console.log(data)
         infoProduct.value = data.map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
             precio: product.Precio
         }));
-        
+
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
+const getOrders = async () => {
+    try {
+        const url = `${baseUrlProducts}/filterOrder/${id.value}`
+        const { data } = await axios.get(url);
+
+        if (data[0].length <= 0) {
+
+            toast.error("Error: La orden no a sido creada", {
+                position: toast.POSITION.TOP_CENTER,
+                transition: toast.TRANSITIONS.ZOOM,
+                autoClose: 6000,
+            });
+            isOrder.value = false
+            return
+        }
+
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+
 onMounted(async () => {
+
+    getOrders();
+
+    if (update.value) handleProductUpdate();
+
+    const toastLoading = toast.loading("Cargando Productos...", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        theme: 'dark',
+        toastStyle: {
+            fontSize: '16px',
+            opacity: '1',
+        },
+    });
+
+
     await getProduct();
+    toast.remove(toastLoading)
 });
 
 
@@ -71,11 +112,12 @@ function addProduct(cod_product: any): void {
         amount: 1,
         price: product[0].precio,
         subtotal: product[0].precio
-
-
     }
 
-    listProduct.value.push(newProduct)
+    // VERIFICO QUE NO SE DUPLIQUE EL PRODUCTO
+    const found = listProduct.value.find((product) => product.code === cod_product)
+
+    if (!found) listProduct.value.push(newProduct)
 }
 
 
@@ -87,7 +129,7 @@ function removeProduct(index: number): void {
 
 async function addProducts(json: any) {
 
-    if(listProduct.value.length <= 0) return
+    if (listProduct.value.length <= 0) return
     // Alerta
     Swal.fire({
         title: `Registro de Productos`,
@@ -120,30 +162,28 @@ async function addProducts(json: any) {
 
 async function Created() {
 
-
-    listProduct.value.forEach(element => {
+    for (const element of listProduct.value) {
 
         const json = {
 
-            Id_Comanda:id.value,
-            id_producto:element.code,
-            producto:element.name,
+            Id_Comanda: id.value,
+            id_producto: element.code,
+            producto: element.name,
             unidades: element.amount,
             precio: element.price,
             subtotal: element.subtotal
         }
 
-        console.log(json)
         try {
-             axios.post(`${baseUrlProducts}/createOrderDetails`, json)
+            await axios.post(`${baseUrlProducts}/createOrderDetails`, json)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
 
-    });
+    };
 
 
-    router.push(`/maestroPedidos/`); 
+    back()
 }
 
 
@@ -164,6 +204,44 @@ const totalSubtotal = computed(() => {
     return listProduct.value.reduce((total, producto) => total + producto.subtotal, 0)
 })
 
+const back = () => {
+
+    router.push(`/maestroPedidos/`);
+}
+
+
+async function handleProductUpdate(){
+
+    let articles
+
+    // RECORRO LA DATA DE ARTICULOS PARA AGREGARLO AL OBJECTO DE ARTICULOS
+    try {
+        //const url = `${baseUrlProducts}/getOrderDetail/${id.value}`
+        const url = `${baseUrlProducts}/filterOrderDetails /${id.value}`
+        const { data } = await axios.get(url);
+        articles = data
+
+    } catch (error) {
+        console.error(error)
+    }
+
+    for (const element of articles) {
+
+        const newProduct: ListProduct = {
+            name: element.Producto,
+            code: element.ID_producto,
+            amount: element.Unidades,
+            price: element.Precio,
+            subtotal: element.Subtotal
+        }
+
+
+        listProduct.value.push(newProduct)
+
+
+    };
+
+}
 
 </script>
 
@@ -181,7 +259,7 @@ const totalSubtotal = computed(() => {
         </v-col>
     </v-row>
     <!-- TABLA -->
-    <v-row class="mb-0">
+    <v-row v-if="isOrder" class="mb-0">
         <!-- TABLA -->
         <v-col cols="12" md="9">
             <UiTitleCard title="Articulos" class-name="px-0 pb-0">
@@ -223,23 +301,90 @@ const totalSubtotal = computed(() => {
         </v-col>
 
         <!-- ANALITICA -->
-        <v-col cols="12" md="3" class="py-12">
-            <v-card title="RESUMEN" :text="`Total a pagar: ${totalSubtotal}`" variant="flat">
+        <v-col cols="12" md="3" class="py-12 ">
+            <v-card title="RESUMEN" variant="flat">
+                <div class="text-h4 pa-2">{{ `Total a pagar:` }}</div>
+                <div class="text-h1 pa-2 text-center">{{ ` ${totalSubtotal}` }}</div>
                 <v-card-actions>
-                    <v-btn color="warning" variant="tonal" @click="addProducts">
-                        AGREGAR ARTICULOS
+                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined">
+                        {{ update ? 'ACTUALIZAR ARTICULOS' : 'AGREGAR ARTICULOS' }}
                     </v-btn>
+
                 </v-card-actions>
             </v-card>
         </v-col>
+
+    </v-row>
+
+    <v-row v-if="!isOrder">
+
+        <v-card class="justify-center">
+            <v-card-item>
+                <div class="image"><svg aria-hidden="true" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                        fill="none">
+                        <path
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                            stroke-linejoin="round" stroke-linecap="round"></path>
+                    </svg></div>
+                <v-card-title>No hay orden creada</v-card-title>
+                <v-card-subtitle>Ocurrió un error</v-card-subtitle>
+            </v-card-item>
+
+            <v-card-text>
+                Ocurrio un error, no hay orden registrada, por lo tanto no se pueden agregar
+                pedidos
+            </v-card-text>
+
+            <v-btn class="cancel" variant="tonal" @click="back">
+                CREAR PEDIDO
+            </v-btn>
+
+        </v-card>
+
     </v-row>
 </template>
 
 <style scoped>
 .botonCantidad {
-    padding: 6px;
+    padding: 10px;
     font-size: 19px;
     font-weight: 900;
     color: #003f88;
+}
+
+
+.image {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #FEE2E2;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+}
+
+.image svg {
+    color: #DC2626;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.cancel {
+    display: inline-flex;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    color: #374151;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    justify-content: center;
+    width: 100%;
+    border-radius: 0.375rem;
+    border: 1px solid #D1D5DB;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 </style>
