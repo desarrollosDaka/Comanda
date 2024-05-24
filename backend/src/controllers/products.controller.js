@@ -3,7 +3,17 @@ const sequelize = require("../config/conexion");
 // get user
 const getMasterProducts = async (req, res) => {
     try {
-        const rta = await sequelize.models.modelProducts_replica.findAll();
+        //const rta = await sequelize.models.modelProducts_replica.findAll();
+        const rta = await sequelize.query(
+            `SELECT TOP (1000) [ID_producto]
+            ,[Producto]
+            ,[Serial]
+            ,[Unidades]
+            ,[Precio]
+            ,[create_date]
+            ,[update_date]
+        FROM [COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]
+        where [Precio] != 0`);
         if(rta){
             res.status(201)
             res.json(rta)
