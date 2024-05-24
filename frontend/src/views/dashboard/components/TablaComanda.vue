@@ -201,10 +201,13 @@ const headers = ref([
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" md="12">
-                        <P>
+                      <v-col cols="12" md="8">
+                        <P  class="py-5">
                           INFORMACION DE LA COMANDA
                         </P>
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <img src="../../../assets/images/compromiso.gif" alt="Descripción del GIF" width="60">
                       </v-col>
 
                       <v-col cols="12" md="6" sm="6">
