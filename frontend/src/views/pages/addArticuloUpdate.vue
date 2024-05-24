@@ -25,7 +25,9 @@ const breadcrumbs = ref([
   <v-row>
     <!-- TABLA -->
     <v-col cols="12" md="12">
+        
         <Articulo />
+
     </v-col>
   </v-row>
 </template>

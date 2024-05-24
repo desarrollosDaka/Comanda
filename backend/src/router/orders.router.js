@@ -27,7 +27,9 @@ const {
     filterMasterAsesor, 
     updateMasterAsesor,
     //updateMasterOrder,
-    deleteMasterOrder} 
+    deleteMasterOrder,
+    getMasterOrderDetails
+} 
 = require("../controllers/orders.controller");
 
 // // Middleware
@@ -36,6 +38,7 @@ const {
 
 // Select Order
 router.get("/masterOrder", getMasterOrder);
+
 
 // Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
