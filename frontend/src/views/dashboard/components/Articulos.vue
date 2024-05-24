@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 import Swal from 'sweetalert2'
 import axios from 'axios';
@@ -8,21 +8,21 @@ import { useRoute } from 'vue-router'
 import { router } from '@/router';
 
 const route = useRoute()
+const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
+const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
+const listProduct = ref<ListProduct[]>([])
+const infoProduct = ref()
+const product = ref([])
 
 // CAPTURAMOS EL ID DE COMANDA
 const id = ref() // id de la COMANDA
 id.value = route.params.id
 
-
-const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
-const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
-
 const getProduct = async () => {
     try {
-
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
-        infoProduct.value = data.map((product: Product) => ({
+        infoProduct.value = data[0].map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
             precio: product.Precio
@@ -36,7 +36,6 @@ const getProduct = async () => {
 onMounted(async () => {
     await getProduct();
 });
-
 
 interface Product {
     Producto: string;
@@ -52,36 +51,22 @@ interface ListProduct {
     subtotal: number;
 }
 
-const listProduct = ref<ListProduct[]>([])
-
-
-const infoProduct = ref()
-const product = ref([])
-
-
 function addProduct(cod_product: any): void {
 
     const product = infoProduct.value.filter((data: { value: any; }) => data.value === cod_product);
-
     const newProduct: ListProduct = {
         name: product[0].title,
         code: product[0].value,
         amount: 1,
         price: product[0].precio,
         subtotal: product[0].precio
-
-
     }
-
     listProduct.value.push(newProduct)
 }
 
-
 function removeProduct(index: number): void {
-
     listProduct.value.splice(index, 1)
 }
-
 
 async function addProducts(json: any) {
 
@@ -115,14 +100,9 @@ async function addProducts(json: any) {
 
 }
 
-
 async function Created() {
-
-
     listProduct.value.forEach(element => {
-
         const json = {
-
             Id_Comanda:id.value,
             id_producto:element.code,
             producto:element.name,
@@ -137,13 +117,9 @@ async function Created() {
         } catch (error) {
             console.log(error)
         }
-
     });
-
-
     router.push(`/maestroPedidos/`); 
 }
-
 
 const increment = (item: any) => {
     item.amount++;
@@ -157,12 +133,9 @@ const decrement = (item: any) => {
     }
 };
 
-
 const totalSubtotal = computed(() => {
     return listProduct.value.reduce((total, producto) => total + producto.subtotal, 0)
 })
-
-
 </script>
 
 <template>

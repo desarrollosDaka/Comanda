@@ -17,7 +17,8 @@ const getMasterOrder = async (req, res) => {
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
-        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula`);
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL`);
         if(rta){
             res.status(201)
             res.json(rta)
@@ -122,7 +123,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Cedula: data.cedulaUno,      
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
-            User_rol: data.user_rol,
+            User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             Autoriza: data.P_autorizado,
@@ -286,12 +287,15 @@ const filterMasterAsesor = async (req, res) => {
 //UPDATE ASESOR ASIGNADO A COMANDA 
 const updateMasterAsesor = async (req, res) => {
     try {
-
-        const User_asing = req.params.User_asing;
-        const idUser = req.params.ID_order;
-       // const userUpdate = req.body;
-        const rta = await sequelize.models.modelOrders.update(User_asing,{
-            where: {id: idUser},
+        const data = {
+            User_asing: req.body.User_asing
+        }
+        // const User_asing = req.body.User_asing;
+        const idUser = req.params.id;
+       
+       console.log(data);
+        const rta = await sequelize.models.modelOrders.update(data,{
+            where: {ID_order: idUser},
 
           });
 
@@ -354,13 +358,17 @@ const updateMasterOrderDetails = async (req, res) => {
 // // DELETE ORDER
 const deleteMasterOrder = async (req, res) => {
     try {
-        const Delete = 1;
-        const Motivo = req.params.motivo
-        const idOrder = req.params.ID_order;
+        const data = {
+            Delete: req.body.status,
+            Motivo_delete:req.body.motivo
+        }
+        const idOrder = req.params.id;
+
+        console.log(data);
         
        // const userUpdate = req.body;
-        const rta = await sequelize.models.modelOrders.update(Delete, Motivo ,{
-            where: {id: idOrder},
+        const rta = await sequelize.models.modelOrders.update(data,{
+            where: {ID_order: idOrder}
           });
 
         if(rta){
