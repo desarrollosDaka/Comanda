@@ -163,6 +163,28 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+//OBTENER DETALLES DE COMANDA
+const filterOrderDetails = async (req, res) => {
+    try {
+        const id = req.params.id; 
+
+        const rta = await sequelize.query(
+            `SELECT *
+            FROM [COMANDA_TEST].[dbo].[ORDERS_DETAILS]
+            WHERE [ID_detalle] = '${id}'`);
+        if(rta){
+            res.status(200)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        } 
+
+    } catch (e) {
+        console.log('Error', e);
+    }
+}
+
 
 //CREAR DETALLES DE ORDENES 
 const createOrderDetails = async (req, res) => {
@@ -178,7 +200,7 @@ const createOrderDetails = async (req, res) => {
             Subtotal:data.subtotal,
         };
 
-    let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_producto: data.id_producto } });
+    let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto } });
     if (product) {
         // Actualiza el cliente existente
         product = await product.update(orderDetailData);
@@ -418,6 +440,7 @@ module.exports = {
     getMasterOrder,
     filterMasterOrder,
     filterMasterAsesor,
+    filterOrderDetails,
     createOrderDetails,
     createMasterOrderAndDetails,
     updateMasterOrderAndDetails,
