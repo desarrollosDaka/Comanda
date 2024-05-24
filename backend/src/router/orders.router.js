@@ -19,6 +19,7 @@ const upload = multer({ storage: storage })
 const {
     getMasterOrder,
     filterMasterOrder,
+    filterOrderDetails,
     createMasterOrderAndDetails,
     updateMasterOrderDetails,
     updateMasterOrderAndDetails,
@@ -33,16 +34,17 @@ const {
 
 // // Middleware
 // const {checkAuth} = require("../middleware/auth");
-// const {checkRoleAuth} = require("../middleware/roleAuth");
+// const {checkRoleAuth} = require("../middleware/roleAuth");r
 
 // Select Order
 router.get("/masterOrder", getMasterOrder);
 
-// Filter ORDER DETAILS
-router.get("/getOrderDetail/:id", getMasterOrderDetails);
 
 // Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
+
+//FILTRO DETALLE ORDER
+router.get("/filterOrderDetails/:id", filterOrderDetails);
 
 //filtro de asesor
 router.get("/filterMasterAsesor", filterMasterAsesor);

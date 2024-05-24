@@ -342,8 +342,10 @@ async function validate(values: any) {
                 text: "Datos actualizados con exito!",
                 icon: "success"
             }).then((result) => {
+
                 if (result.isConfirmed) {
                     router.push(`/maestroPedidos`);
+
                 }
             });
 
@@ -351,11 +353,19 @@ async function validate(values: any) {
     });
 }
 
+
 const handleProductUpdate = () => {
 
     router.push(`/addArticulos/${id.value}/${true}`); 
 
 }
+
+
+onMounted( async () => {
+    await getEstados();
+    await getMunicipio();
+    await getCiudad();
+});
 
 </script>
 
