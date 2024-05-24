@@ -1,5 +1,33 @@
 const sequelize = require("../config/conexion");
 
+
+
+//CONSULTA DE ORDERS DETAILS
+
+// get Clients
+const getMasterOrderDetails = async (req, res) => {
+    try {
+        const id = req.params.id; 
+        const rta = await sequelize.models.modelOrdersdetails.findAll({
+                where: {
+                    ID_detalle : id,
+                }, 
+            });
+        
+        if(rta){
+            res.status(201)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        }   
+    } catch (e) {
+        console.log('Error', e);
+    }
+};
+
+
+
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
     try {
@@ -34,7 +62,7 @@ const getMasterOrder = async (req, res) => {
 //FILTRAR ORDENES POR ID
 const filterMasterOrder = async (req, res) => {
     try {
-        const id = req.params.ID_detalle; 
+        const id = req.params.id; 
         // const rta = await sequelize.models.modelOrders.findOne({
         //     where: {
         //         id : id,
@@ -49,10 +77,10 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.Email
                     ,T3.Nombre AS Cliente
                     ,T3.Direccion
-                    ,T1.Sucursal
-                    ,T4.Nombre AS Estado
-                    ,T5.Nombre AS Ciudad
-                    ,T6.Nombre AS Municipio
+                    ,T1.ID_sucursal AS Sucursal
+                    ,T4.ID_states AS Estado
+                    ,T5.ID_city AS Ciudad
+                    ,T6.ID_municipio AS Municipio
                     ,t0.[ID_pago]
                     ,t0.[User_crea]
                     ,t0.[User_mod]
@@ -60,7 +88,9 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[User_rol]
                     ,t0.[ID_status]
                     ,t0.[Tipo_delivery]
-                    ,t0.[Autoriza]
+                    ,t0.[Personal_autoriza]
+                    ,t0.[Cedula_autoriza]
+                    ,T3.[Telefono]
                     ,t0.[Retencion]
                     ,t0.[Porc_retencion]
                     ,t0.[File_cedula]
@@ -101,8 +131,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         const data = req.body
        // const fileNombre = req.file.filename
         //console.log(fileNombre);
-        console.log(data);
-        
+
         const newClients = {
             Nombre: data.nombreCompleto,
             Email: data.email,
@@ -116,13 +145,11 @@ const createMasterOrderAndDetails = async (req, res) => {
         };
 
         const newOrder = {
-            ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
-           // ID_cliente: data.cedulaUno,
             Cedula: data.cedulaUno,      
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
-            User_rol: data.user_rol,
+            User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             Autoriza: data.P_autorizado,
@@ -191,15 +218,13 @@ const createOrderDetails = async (req, res) => {
 
 //EDITAR CABECERA ORDENES Y CLIENTES
 const updateMasterOrderAndDetails = async (req, res) => {
+    
     try {
        
         const data = req.body  
-        const idOrder = req.params.ID_order;
+        const idOrder = req.params.id;
        // const fileNombre = req.file.filename
-      
-       // console.log(fileNombre);
-        console.log(data);
-        
+
         const newClients = {
             Nombre: data.nombreCompleto,
             Email: data.email,
@@ -212,22 +237,19 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,                                                               
         };
 
-        const newOrder = {
-            ID_detalle: data.Id_Comanda,
+        const UpdateOrder = {
             ID_sucursal: data.origen,
-           // ID_cliente: data.cedulaUno,
             Cedula: data.cedulaUno,      
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
-            User_rol: data.user_rol,
+            User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,      
             Retencion: data.retencion,
-            Porc_retencion: data.porcentaje,
-            File_cedula: req.file.filename 
+            Porc_retencion: data.porcentaje 
         };
        
         // Comprueba si la cédula ya existe en la base de datos
@@ -241,8 +263,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
         }
 
 
-        const order = await sequelize.models.modelOrders.update(newOrder,{
-            where: {id: idOrder},
+        const order = await sequelize.models.modelOrders.update(UpdateOrder,{
+            where: {ID_detalle: idOrder},
           });
 
         if(order && client ){
@@ -402,5 +424,6 @@ module.exports = {
     updateMasterOrderDetails,
     updateMasterAsesor,
     //updateMasterOrder,
-    deleteMasterOrder
+    deleteMasterOrder,
+    getMasterOrderDetails
 };
