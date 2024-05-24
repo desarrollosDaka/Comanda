@@ -18,11 +18,15 @@ const product = ref([])
 const id = ref() // id de la COMANDA
 id.value = route.params.id
 
+const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
+const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
+
 const getProduct = async () => {
     try {
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
-        infoProduct.value = data[0].map((product: Product) => ({
+
+        infoProduct.value = data.map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
             precio: product.Precio

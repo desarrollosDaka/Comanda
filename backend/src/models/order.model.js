@@ -21,7 +21,7 @@ const masterOrderSchema = {
   },
   Cedula: {
     allowNull: false,
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(100),
   },
   ID_pago: {                           
     allowNull: false,
@@ -61,7 +61,7 @@ const masterOrderSchema = {
   },
   Cedula_autoriza: {
     allowNull: true,
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(100),
   },
   Retencion: {
     allowNull: true,
