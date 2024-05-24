@@ -293,7 +293,7 @@ async function validate(values: any) {
             icon: "success"
             }).then((result) => {
             if (result.isConfirmed) {
-                    router.push(`/addArticulos/${idComandaRandom.value}`); 
+                    router.push(`/addArticulosUpdate/${idComandaRandom.value}`); 
                 }
             }); 
     
@@ -305,9 +305,6 @@ onMounted( async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
-    let cadenaAleatoria = generarCadenaAleatoria(20);
-
-    idComandaRandom.value = cadenaAleatoria
 });
 </script>
 

@@ -125,7 +125,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Cedula: data.cedulaUno,      
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
-            User_rol: 'Admin',//data.user_rol,
+            User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             Autoriza: data.P_autorizado,
@@ -319,15 +319,13 @@ const filterMasterAsesor = async (req, res) => {
 const updateMasterAsesor = async (req, res) => {
     try {
         const data = {
-            User_asing:req.body.User_asing,
-            //ID_status:req.params.status
+            User_asing: req.body.User_asing
         }
 
-        const idUser = req.params.ID_order;
-
-       // const userUpdate = req.body;
+        const idUser = req.params.id;
+      
         const rta = await sequelize.models.modelOrders.update(data,{
-            where: {id: idUser},
+            where: {ID_order: idUser},
           });
 
         if(rta){
@@ -394,6 +392,7 @@ const updateMasterOrderDetails = async (req, res) => {
 // // DELETE ORDER
 const deleteMasterOrder = async (req, res) => {
     try {
+
         const data ={
             Delete: req.body.status,
             Motivo_delete: req.body.motivo
