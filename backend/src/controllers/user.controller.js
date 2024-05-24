@@ -21,7 +21,7 @@ const getMasterUser = async (req, res) => {
               ,T0.[Update_date]
           FROM [COMANDA_TEST].[dbo].[MASTER_USER] T0
           INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.Id_sucursal = T1.ID_sucursal
-          WHERE [Delete] = 0`);
+          WHERE [Delete] = 0 OR  [Delete] IS NULL`);
         if(rta){
             res.status(201)
             res.json(rta)

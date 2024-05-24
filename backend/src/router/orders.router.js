@@ -19,6 +19,7 @@ const upload = multer({ storage: storage })
 const {
     getMasterOrder,
     filterMasterOrder,
+    filterOrderDetails,
     createMasterOrderAndDetails,
     updateMasterOrderDetails,
     updateMasterOrderAndDetails,
@@ -43,6 +44,9 @@ router.get("/getOrderDetail/:id", getMasterOrderDetails);
 
 // Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
+
+//FILTRO DETALLE ORDER
+router.get("/filterOrderDetails/:id", filterOrderDetails);
 
 //filtro de asesor
 router.get("/filterMasterAsesor", filterMasterAsesor);

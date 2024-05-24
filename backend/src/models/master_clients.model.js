@@ -16,7 +16,7 @@ const masterClientsSchema = {
   },  
   Cedula: {
     allowNull: false,
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(100),
   },
   Email: {
     allowNull: false,

@@ -1,9 +1,9 @@
 const sequelize = require("../config/conexion");
 
-// get user
-const getMasterProduct = async (req, res) => {
+// get userotivo
+const getMasterMotivo = async (req, res) => {
     try {
-        const rta = await sequelize.models.modelProducts_replica.findAll();
+        const rta = await sequelize.models.modelMotivo.findAll();
         if(rta){
             res.status(201)
             res.json(rta)
@@ -18,10 +18,10 @@ const getMasterProduct = async (req, res) => {
 
 
 // get filter user
-const filterMasterRoles = async (req, res) => {
+const filterMasterMotivo = async (req, res) => {
     try {
-        const id = req.params.ID_rol; 
-        const rta = await sequelize.models.modelRol.findOne({
+        const id = req.params.ID_Motivo; 
+        const rta = await sequelize.models.modelMotivo.findOne({
             where: {
                 id : id,
             }, 
@@ -40,9 +40,9 @@ const filterMasterRoles = async (req, res) => {
     }
 }
 
+
+// Export controllers
 module.exports = {
-    getMasterProduct,
-    filterMasterRoles,
-    // updateMasterUser,
-    // deleteMasterUser
+    getMasterMotivo,
+    filterMasterMotivo,
 };

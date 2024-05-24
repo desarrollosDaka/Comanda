@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 import Swal from 'sweetalert2'
 import axios from 'axios';
@@ -9,6 +9,11 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
 const route = useRoute()
+const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
+const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
+const listProduct = ref<ListProduct[]>([])
+const infoProduct = ref()
+const product = ref([])
 
 // CAPTURAMOS EL ID DE COMANDA
 const id = ref() // id de la COMANDA
@@ -17,14 +22,12 @@ id.value = route.params.id
 const update = ref() // modo Update
 update.value = route.params.update
 
-
 const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
 const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const isOrder = ref<boolean>(true)
 
 const getProduct = async () => {
     try {
-
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
         infoProduct.value = data.map((product: Product) => ({
@@ -80,7 +83,6 @@ onMounted(async () => {
     toast.remove(toastLoading)
 });
 
-
 interface Product {
     Producto: string;
     ID_producto: string;
@@ -95,17 +97,9 @@ interface ListProduct {
     subtotal: number;
 }
 
-const listProduct = ref<ListProduct[]>([])
-
-
-const infoProduct = ref()
-const product = ref([])
-
-
 function addProduct(cod_product: any): void {
 
     const product = infoProduct.value.filter((data: { value: any; }) => data.value === cod_product);
-
     const newProduct: ListProduct = {
         name: product[0].title,
         code: product[0].value,
@@ -113,19 +107,17 @@ function addProduct(cod_product: any): void {
         price: product[0].precio,
         subtotal: product[0].precio
     }
-
+    
     // VERIFICO QUE NO SE DUPLIQUE EL PRODUCTO
     const found = listProduct.value.find((product) => product.code === cod_product)
 
     if (!found) listProduct.value.push(newProduct)
-}
 
+}
 
 function removeProduct(index: number): void {
-
     listProduct.value.splice(index, 1)
 }
-
 
 async function addProducts(json: any) {
 
@@ -159,9 +151,7 @@ async function addProducts(json: any) {
 
 }
 
-
 async function Created() {
-
     for (const element of listProduct.value) {
 
         const json = {
@@ -169,6 +159,7 @@ async function Created() {
             Id_Comanda: id.value,
             id_producto: element.code,
             producto: element.name,
+
             unidades: element.amount,
             precio: element.price,
             subtotal: element.subtotal
@@ -184,8 +175,8 @@ async function Created() {
 
 
     back()
-}
 
+}
 
 const increment = (item: any) => {
     item.amount++;
@@ -199,10 +190,10 @@ const decrement = (item: any) => {
     }
 };
 
-
 const totalSubtotal = computed(() => {
     return listProduct.value.reduce((total, producto) => total + producto.subtotal, 0)
 })
+
 
 const back = () => {
 
@@ -242,6 +233,7 @@ async function handleProductUpdate(){
     };
 
 }
+
 
 </script>
 
