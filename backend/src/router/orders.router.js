@@ -34,13 +34,11 @@ const {
 
 // // Middleware
 // const {checkAuth} = require("../middleware/auth");
-// const {checkRoleAuth} = require("../middleware/roleAuth");
+// const {checkRoleAuth} = require("../middleware/roleAuth");r
 
 // Select Order
 router.get("/masterOrder", getMasterOrder);
 
-// Filter ORDER DETAILS
-router.get("/getOrderDetail/:id", getMasterOrderDetails);
 
 // Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
@@ -61,7 +59,7 @@ router.post("/createOrderDetails", createOrderDetails);
 //router.put("/updateOrder/:id", updateMasterOrder);
 
 //UPDATE ORDERS + CLIENTS
-router.put("/updateOrder/:id", updateMasterOrderAndDetails);
+router.put("/updateOrder/:id", upload.single('doc_file'), updateMasterOrderAndDetails);
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);

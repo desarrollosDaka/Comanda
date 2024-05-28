@@ -1,6 +1,6 @@
 const sequelize = require("../config/conexion");
 
-// get userotivo
+ // get userotivo
 const getMasterMotivo = async (req, res) => {
     try {
         const rta = await sequelize.models.modelMotivo.findAll();
@@ -20,7 +20,7 @@ const getMasterMotivo = async (req, res) => {
 // get filter user
 const filterMasterMotivo = async (req, res) => {
     try {
-        const id = req.params.ID_Motivo; 
+        const id = req.params.ID_motivo; 
         const rta = await sequelize.models.modelMotivo.findOne({
             where: {
                 id : id,
