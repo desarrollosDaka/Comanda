@@ -40,7 +40,8 @@ const getMasterOrder = async (req, res) => {
                 ,T1.Sucursal
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
-                ,T2.Status
+                ,T2.Status 
+                ,T0.File_cedula as doc_file
                 ,CAST(T0.Create_date AS DATE) Create_date
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -129,10 +130,9 @@ const filterMasterOrder = async (req, res) => {
 //CREAR CABECERA ORDENES Y CLIENTES
 const createMasterOrderAndDetails = async (req, res) => {
     try {
-        const data = req.body
-       // const fileNombre = req.file.filename
-        //console.log(fileNombre);
+        const data = req.body;
 
+        // Crear un objeto con los datos del cliente
         const newClients = {
             Nombre: data.nombreCompleto,
             Email: data.email,
@@ -142,12 +142,14 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
-            Tipo_cliente: data.tipo,                                                               
+            Tipo_cliente: data.tipo,
         };
 
+        // Crear un objeto con los datos del pedido
         const newOrder = {
             ID_sucursal: data.origen,
-            Cedula: data.cedulaUno,      
+            ID_detalle: data.Id_Comanda,
+            Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
             User_rol: 'Admin',
@@ -155,34 +157,34 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
-            Cedula_autoriza: data.cedulaDos,      
+            Cedula_autoriza: data.cedulaDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
             File_cedula: req.file.filename 
         };
-       
-        // Comprueba si la cédula ya existe en la base de datos
+
+
+
+        // Comprobar si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
         if (client) {
-            // Actualiza el cliente existente
+            // Actualizar el cliente existente
             client = await client.update(newClients);
         } else {
-            // Crea un nuevo cliente
+            // Crear un nuevo cliente
             client = await sequelize.models.modelMasterClients.create(newClients);
         }
 
+        // Crear el pedido
         const order = await sequelize.models.modelOrders.create(newOrder);
 
-        if(order && client){
-            res.status(201)
-
-            res.json({order: order, clients: client, orderDetails: orderDetails})
-        }else{
-            res.status(404)
-            res.json({msj: 'Error en la creación'})
-        } 
-
-
+        if (order && client) {
+            res.status(201);
+            res.json({ order: order, clients: client, orderDetails: orderDetails });
+        } else {
+            res.status(404);
+            res.json({ msj: 'Error en la creación' });
+        }
     } catch (e) {
         console.log('Error', e);
     }
@@ -251,12 +253,13 @@ const createOrderDetails = async (req, res) => {
 
 //EDITAR CABECERA ORDENES Y CLIENTES
 const updateMasterOrderAndDetails = async (req, res) => {
-    
     try {
-       
-        const data = req.body  
+        const data = req.body;
         const idOrder = req.params.id;
-       // const fileNombre = req.file.filename
+        const fileNombre = req.body.doc_file;
+
+        console.log(fileNombre);
+        console.log(data);
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -267,14 +270,13 @@ const updateMasterOrderAndDetails = async (req, res) => {
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
-            Tipo_cliente: data.tipo,                                                               
+            Tipo_cliente: data.tipo,
         };
 
         const UpdateOrder = {
-
             ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
-            Cedula: data.cedulaUno,      
+            Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
             User_rol: 'Admin',
@@ -282,13 +284,22 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
-            Cedula_autoriza: data.cedulaDos,      
+            Cedula_autoriza: data.cedulaDos,
             Retencion: data.retencion,
-            Porc_retencion: data.porcentaje ,
-            File_cedula: req.file.filename 
-
+            Porc_retencion: data.porcentaje,
+           // File_cedula: req.file.filename 
+           File_cedula:req.file ? req.file.filename : '',
         };
+
        
+        // if (req.file && req.file.doc_file) {
+        //     UpdateOrder.File_cedula = req.file.doc_file;
+        // }
+        // Validación para el campo filename
+        if(UpdateOrder.File_cedula === ''){
+            delete UpdateOrder.File_cedula
+        }
+
         // Comprueba si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
         if (client) {
@@ -299,20 +310,17 @@ const updateMasterOrderAndDetails = async (req, res) => {
             client = await sequelize.models.modelMasterClients.create(newClients);
         }
 
+        const order = await sequelize.models.modelOrders.update(UpdateOrder, {
+            where: { ID_detalle: idOrder },
+        });
 
-        const order = await sequelize.models.modelOrders.update(UpdateOrder,{
-            where: {ID_detalle: idOrder},
-          });
-
-        if(order && client ){
-            res.status(201)
-
-            res.json({order: order, clients: client})
-        }else{
-            res.status(404)
-            res.json({msj: 'Error en la creación'})
-        } 
-
+        if (order && client) {
+            res.status(201);
+            res.json({ order: order, clients: client });
+        } else {
+            res.status(404);
+            res.json({ msj: 'Error en la creación' });
+        }
     } catch (e) {
         console.log('Error', e);
     }
@@ -423,7 +431,9 @@ const deleteMasterOrder = async (req, res) => {
             Motivo_delete: req.body.motivo
         }
       
-        const idOrder = req.params.ID_order;
+        const idOrder = req.params.id;
+
+        console.log(idOrder);
         
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(data ,{
