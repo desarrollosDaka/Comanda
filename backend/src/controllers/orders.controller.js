@@ -146,6 +146,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         };
 
         const newOrder = {
+            ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
             Cedula: data.cedulaUno,      
             ID_pago: data.ID_pago,
@@ -423,7 +424,7 @@ const deleteMasterOrder = async (req, res) => {
             Motivo_delete: req.body.motivo
         }
       
-        const idOrder = req.params.ID_order;
+        const idOrder = req.params.id;
         
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(data ,{

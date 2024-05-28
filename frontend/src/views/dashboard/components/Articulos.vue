@@ -15,22 +15,20 @@ const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])
 
-// CAPTURAMOS EL ID DE COMANDA
+// CAPTURAMOS EL ID DE COMANDA /filterOrderDetails/:id
 const id = ref() // id de la COMANDA
 id.value = route.params.id
 
 const update = ref() // modo Update
 update.value = route.params.update
 
-const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
-const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const isOrder = ref<boolean>(true)
 
 const getProduct = async () => {
     try {
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
-        infoProduct.value = data.map((product: Product) => ({
+        infoProduct.value = data[0].map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
             precio: product.Precio
@@ -208,9 +206,9 @@ async function handleProductUpdate(){
     // RECORRO LA DATA DE ARTICULOS PARA AGREGARLO AL OBJECTO DE ARTICULOS
     try {
         //const url = `${baseUrlProducts}/getOrderDetail/${id.value}`
-        const url = `${baseUrlProducts}/filterOrderDetails /${id.value}`
+        const url = `${baseUrlProducts}/filterOrderDetails/${id.value}`
         const { data } = await axios.get(url);
-        articles = data
+        articles = data[0]
 
     } catch (error) {
         console.error(error)
