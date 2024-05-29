@@ -5,7 +5,7 @@ const tableName = "MASTER_MOTIVOS";
 const modelName = "modelMotivo";
 
 const masterMotivoSchema = {
-  ID_Motivo: {
+  ID_motivo: {
     allowNull: false,
     primaryKey: true,
     type: DataTypes.INTEGER,

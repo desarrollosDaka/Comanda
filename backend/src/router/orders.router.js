@@ -59,7 +59,7 @@ router.post("/createOrderDetails", createOrderDetails);
 //router.put("/updateOrder/:id", updateMasterOrder);
 
 //UPDATE ORDERS + CLIENTS
-router.post("/updateOrder/:id", updateMasterOrderAndDetails);
+router.put("/updateOrder/:id", upload.single('doc_file'), updateMasterOrderAndDetails);
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);

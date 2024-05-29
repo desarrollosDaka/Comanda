@@ -12,6 +12,7 @@ const routerCities = require("../router/cities.router");
 const routerMunicipality = require("../router/municipalities.router");
 const routerOrders = require("../router/orders.router");
 const routerClients = require("../router/clients.router");
+const routerMotivo = require("../router/motivo.router");
 
 const routerProducts = require("../router/products.router");
 
@@ -30,7 +31,7 @@ app.use("/api/cities", routerCities);
 app.use("/api/municipalities", routerMunicipality);
 app.use("/api/orders", routerOrders);
 app.use("/api/clients", routerClients);
-
+app.use("/api/motivo", routerMotivo);
 app.use("/api/products", routerProducts);
 
 
