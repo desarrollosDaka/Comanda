@@ -256,65 +256,66 @@ const updateMasterOrderAndDetails = async (req, res) => {
        
         const data = req.body  
         const idOrder = req.params.id;
-       // const fileNombre = req.file.filename
+        const fileNombre = req.file
 
-        const newClients = {
-            Nombre: data.nombreCompleto,
-            Email: data.email,
-            Cedula: data.cedulaUno,
-            Direccion: data.direccion,
-            Telefono: data.telefonoUno,
-            ID_state: data.estado,
-            ID_city: data.ciudad,
-            ID_municipio: data.municipio,
-            Tipo_cliente: data.tipo,                                                               
-        };
+        console.log('nombre ddel archivo es ', req.file)
+        // const newClients = {
+        //     Nombre: data.nombreCompleto,
+        //     Email: data.email,
+        //     Cedula: data.cedulaUno,
+        //     Direccion: data.direccion,
+        //     Telefono: data.telefonoUno,
+        //     ID_state: data.estado,
+        //     ID_city: data.ciudad,
+        //     ID_municipio: data.municipio,
+        //     Tipo_cliente: data.tipo,                                                               
+        // };
 
-        const UpdateOrder = {
+        // const UpdateOrder = {
 
-            ID_detalle: data.Id_Comanda,
-            ID_sucursal: data.origen,
-            Cedula: data.cedulaUno,      
-            ID_pago: data.ID_pago,
-            User_crea: data.user_crea,
-            User_rol: 'Admin',
-            ID_status: data.ID_status,
-            Tipo_delivery: data.ID_delivery,
-            Autoriza: data.P_autorizado,
-            Personal_autoriza: data.autorizado,
-            Cedula_autoriza: data.cedulaDos,      
-            Retencion: data.retencion,
-            Porc_retencion: data.porcentaje ,
-            File_cedula: req.file.filename 
+        //     ID_detalle: data.Id_Comanda,
+        //     ID_sucursal: data.origen,
+        //     Cedula: data.cedulaUno,      
+        //     ID_pago: data.ID_pago,
+        //     User_crea: data.user_crea,
+        //     User_rol: 'Admin',
+        //     ID_status: data.ID_status,
+        //     Tipo_delivery: data.ID_delivery,
+        //     Autoriza: data.P_autorizado,
+        //     Personal_autoriza: data.autorizado,
+        //     Cedula_autoriza: data.cedulaDos,      
+        //     Retencion: data.retencion,
+        //     Porc_retencion: data.porcentaje ,
+        //     File_cedula: req.file.filename 
 
-        };
+        // };
        
-        // Comprueba si la cédula ya existe en la base de datos
-        let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
-        if (client) {
-            // Actualiza el cliente existente
-            client = await client.update(newClients);
-        } else {
-            // Crea un nuevo cliente
-            client = await sequelize.models.modelMasterClients.create(newClients);
-        }
+        // // Comprueba si la cédula ya existe en la base de datos
+        // let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
+        // if (client) {
+        //     // Actualiza el cliente existente
+        //     client = await client.update(newClients);
+        // } else {
+        //     // Crea un nuevo cliente
+        //     client = await sequelize.models.modelMasterClients.create(newClients);
+        // }
 
 
-        const order = await sequelize.models.modelOrders.update(UpdateOrder,{
-            where: {ID_detalle: idOrder},
-          });
+        // const order = await sequelize.models.modelOrders.update(UpdateOrder,{
+        //     where: {ID_detalle: idOrder},
+        //   });
 
-        if(order && client ){
-            res.status(201)
+        // if(order && client ){
+        //     res.status(201)
 
-            res.json({order: order, clients: client})
-        }else{
-            res.status(404)
-            res.json({msj: 'Error en la creación'})
-        } 
+        //     res.json({order: order, clients: client})
+        // }else{
+        //     res.status(404)
+        //     res.json({msj: 'Error en la creación'})
+        // } 
 
-    } catch (e) {
-        console.log('Error', e);
+     } catch (e) {
+         console.log('Error', e);
     }
 };
 

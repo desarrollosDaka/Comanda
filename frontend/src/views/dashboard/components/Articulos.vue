@@ -9,8 +9,6 @@ import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
 const route = useRoute()
-const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
-const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])
@@ -208,9 +206,9 @@ async function handleProductUpdate(){
     // RECORRO LA DATA DE ARTICULOS PARA AGREGARLO AL OBJECTO DE ARTICULOS
     try {
         //const url = `${baseUrlProducts}/getOrderDetail/${id.value}`
-        const url = `${baseUrlProducts}/filterOrderDetails /${id.value}`
+        const url = `${baseUrlProducts}/filterOrderDetails/${id.value}`
         const { data } = await axios.get(url);
-        articles = data
+        articles = data[0]
 
     } catch (error) {
         console.error(error)
