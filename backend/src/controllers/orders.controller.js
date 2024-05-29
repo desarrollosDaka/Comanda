@@ -2,29 +2,6 @@ const sequelize = require("../config/conexion");
 
 
 
-//CONSULTA DE ORDERS DETAILS
-
-// get Clients
-const getMasterOrderDetails = async (req, res) => {
-    try {
-        const id = req.params.id; 
-        const rta = await sequelize.models.modelOrdersdetails.findAll({
-                where: {
-                    ID_detalle : id,
-                }, 
-            });
-        
-        if(rta){
-            res.status(201)
-            res.json(rta)
-        }else{
-            res.status(404)
-            res.json({msj: 'Error en la consulta'})
-        }   
-    } catch (e) {
-        console.log('Error', e);
-    }
-};
 
 
 
@@ -60,16 +37,35 @@ const getMasterOrder = async (req, res) => {
     }
 };
 
+//CONSULTA DE ORDERS DETAILS
+const getMasterOrderDetails = async (req, res) => {
+    try {
+        const id = req.params.id; 
+        const rta = await sequelize.models.modelOrdersdetails.findAll({
+                where: {
+                    ID_detalle : id,
+                }, 
+            });
+        
+        if(rta){
+            res.status(201)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        }   
+    } catch (e) {
+        console.log('Error', e);
+    }
+};
+
+
 
 //FILTRAR ORDENES POR ID
 const filterMasterOrder = async (req, res) => {
     try {
         const id = req.params.id; 
-        // const rta = await sequelize.models.modelOrders.findOne({
-        //     where: {
-        //         id : id,
-        //     }, 
-        // });
+  
         const rta = await sequelize.query(
             `SELECT DISTINCT	 
                     T0.[ID_order]
@@ -79,10 +75,14 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.Email
                     ,T3.Nombre AS Cliente
                     ,T3.Direccion
-                    ,T1.ID_sucursal AS Sucursal
-                    ,T4.ID_states AS Estado
-                    ,T5.ID_city AS Ciudad
-                    ,T6.ID_municipio AS Municipio
+                    ,T1.ID_sucursal 
+                    ,T1.Sucursal 
+                    ,T4.ID_states 
+                    ,T4.Nombre AS Estado
+                    ,T5.ID_city
+                    ,T5.Nombre AS Ciudad
+                    ,T6.ID_municipio 
+                    ,T6.NOMBRE AS Municipio
                     ,t0.[ID_pago]
                     ,t0.[User_crea]
                     ,t0.[User_mod]
@@ -237,8 +237,6 @@ const createOrderDetails = async (req, res) => {
     }
 
     //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-    
-
 
     if( orderDetailData){
         res.status(201)
@@ -250,6 +248,31 @@ const createOrderDetails = async (req, res) => {
         console.log('Error', e);
     }
 }
+
+
+const deleteOrderDetails = async (req, res) => {
+    const data = req.body;
+
+    try {
+        const { ID_detalle, ID_producto } = data;
+
+        // Busca el registro existente
+        const existingProduct = await sequelize.models.modelOrdersdetails.findOne({
+            where: { ID_detalle, ID_producto },
+        });
+
+        if (existingProduct) {
+            // Elimina el registro existente
+            await existingProduct.destroy();
+            res.status(200).json({ message: 'Registro eliminado correctamente' });
+        } else {
+            res.status(404).json({ message: 'Registro no encontrado' });
+        }
+    } catch (error) {
+        console.log('Error al eliminar el registro:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
 
 //EDITAR CABECERA ORDENES Y CLIENTES
 const updateMasterOrderAndDetails = async (req, res) => {
@@ -386,7 +409,7 @@ const updateMasterAsesor = async (req, res) => {
 //             res.status(200)
 //             res.json(rta)
 //         }else{
-//             res.status(404)
+//             res.status(404) 
 //             res.json({msj: 'Error en la consulta'})
 //         } 
 
@@ -395,18 +418,23 @@ const updateMasterAsesor = async (req, res) => {
 //     }
 // }
 
-// UPDATE DEL DETALLE DE LA ORDER
+// UPDATE DEL DETALLE DE LA ORDER (NO SE ESTA USANDO AHORITA)
 const updateMasterOrderDetails = async (req, res) => {
     try {
 
         const data ={
-            idDetalle: req.body.ID_detalle,
-            userUpdate: req.body
+            ID_detalle: data.Id_Comanda,
+            ID_producto: data.id_producto,
+            Producto: data.producto,
+            Unidades: data.unidades,
+            Precio: data.precio,
+            Subtotal:data.subtotal,
         }
-
+        
+        const idOrder = req.params.id;
      //   const userUpdate = req.body;
         const rta = await sequelize.models.modelOrdersdetails.update(data,{
-            where: {ID_detalle: idDetalle},
+            where: {ID_detalle: idOrder},
           });
 
         if(rta){
@@ -427,18 +455,28 @@ const deleteMasterOrder = async (req, res) => {
     try {
 
         const data ={
-            Delete: req.body.status,
-            Motivo_delete: req.body.motivo
+           // body: req.body,
+            Delete: req.body.status,  
+            Motivo_delete: req.body.motivo,
         }
+        // const dataDetalle ={
+        //     Delete: '1',
+        // }
       
         const idOrder = req.params.id;
+        //const idDetalle = req.body.Id_Comanda;
 
         console.log(idOrder);
+       // console.log(data);
         
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(data ,{
             where: {ID_order: idOrder},
           });
+
+        // const rtaDetalle = await sequelize.models.modelOrdersdetails.update(dataDetalle,{
+        //     where: {ID_detalle: idOrder},
+        //   });
 
         if(rta){
             res.status(200)
@@ -476,6 +514,7 @@ module.exports = {
     filterMasterAsesor,
     filterOrderDetails,
     createOrderDetails,
+    deleteOrderDetails,
     createMasterOrderAndDetails,
     updateMasterOrderAndDetails,
     updateMasterOrderDetails,
