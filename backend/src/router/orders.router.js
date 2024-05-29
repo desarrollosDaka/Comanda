@@ -28,6 +28,7 @@ const {
     updateMasterAsesor,
     //updateMasterOrder,
     deleteMasterOrder,
+    deleteOrderDetails,
     getMasterOrderDetails
 } 
 = require("../controllers/orders.controller");
@@ -70,5 +71,8 @@ router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
 // DELETE ORDER
 //router.delete("/deleteOrder/:id", deleteMasterOrder);
 router.put("/deleteOrder/:id", deleteMasterOrder);
+
+//DELETE ORDER DETAILS
+router.delete("/deleteOrderDetail/:id", deleteOrderDetails);
 
 module.exports = router;
