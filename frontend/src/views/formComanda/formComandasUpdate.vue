@@ -204,7 +204,7 @@ const getOrder = async () => {
 // api post
 async function editarComanda(json: any) {
     try {
-        await axios.post(`${baseUrl}/updateOrder/${id.value}`, json)
+        await axios.put(`${baseUrl}/updateOrder/${id.value}`, json)
     } catch (error) {
         console.log(error)
     }
@@ -365,7 +365,8 @@ async function validate(values: any) {
             }).then((result) => {
 
                 if (result.isConfirmed) {
-                    router.push(`/maestroPedidos`);
+                    //router.push(`/maestroPedidos`);
+                    handleProductUpdate()
 
                 }
             });
@@ -558,7 +559,7 @@ onMounted( async () => {
             Actualizar
         </v-btn>
 
-        <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning" @click="handleProductUpdate">Detalle de Articulos</v-btn>
+        <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning" @click="handleProductUpdate">Detalle Articulos</v-btn>
 
     </Form>
 </template>

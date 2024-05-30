@@ -8,6 +8,29 @@ import { router } from '@/router';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
+
+//##################################EJEMPLOS DE LOS TIPOS DE TOAST QUE PUEDES USAR##################################
+//##########################LLAMA A LA FUNCION NOTIFY PARA VER LOS EJEMPLOS QUE PUEDES USAR#########################
+const notify = () => {
+    toast.info('Hello1!!'); // same as toast('Hello!!', { type: 'info' });
+    toast.error('Hello2!!');
+    toast.success('Hello3!!');
+    toast.success('Hello4!!', {
+        theme: 'colored',
+        position: toast.POSITION.TOP_LEFT,
+    });
+    toast.warn('Hello5!!', {
+        position: toast.POSITION.TOP_LEFT,
+    });
+    toast.warn('Hello6!!', {
+        theme: 'dark',
+        position: toast.POSITION.TOP_LEFT,
+    });
+};
+
+//##############################################FIN#################################################################
+//##################################################################################################################
+
 const route = useRoute()
 const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
@@ -28,7 +51,7 @@ const getProduct = async () => {
     try {
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
-        infoProduct.value = data.map((product: Product) => ({
+        infoProduct.value = data[0].map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
             precio: product.Precio
@@ -50,7 +73,13 @@ const getOrders = async () => {
                 position: toast.POSITION.TOP_CENTER,
                 transition: toast.TRANSITIONS.ZOOM,
                 autoClose: 6000,
+                theme: 'colored',
+                toastStyle: {
+                    fontSize: '16px',
+                    opacity: '1',
+                },
             });
+
             isOrder.value = false
             return
         }
@@ -69,7 +98,9 @@ onMounted(async () => {
 
     const toastLoading = toast.loading("Cargando Productos...", {
         position: toast.POSITION.BOTTOM_CENTER,
-        theme: 'dark',
+        theme: 'colored',
+        type: 'success',
+        icon: 'info',
         toastStyle: {
             fontSize: '16px',
             opacity: '1',
@@ -86,6 +117,7 @@ interface Product {
     ID_producto: string;
     Precio: number;
 }
+
 
 interface ListProduct {
     name: string;
@@ -105,7 +137,7 @@ function addProduct(cod_product: any): void {
         price: product[0].precio,
         subtotal: product[0].precio
     }
-    
+
     // VERIFICO QUE NO SE DUPLIQUE EL PRODUCTO
     const found = listProduct.value.find((product) => product.code === cod_product)
 
@@ -113,8 +145,27 @@ function addProduct(cod_product: any): void {
 
 }
 
-function removeProduct(index: number): void {
+
+
+
+async function removeProduct(code: string, index: number) {
+
     listProduct.value.splice(index, 1)
+
+    const data = {
+        "ID_detalle": id.value,
+        "ID_producto": code
+    }
+
+    if (update.value) {
+
+        try {
+            await axios.put(`${baseUrlProducts}/deleteOrderDetail/`, data)
+        } catch (error) {
+            console.error(error)
+        }
+
+    }
 }
 
 async function addProducts(json: any) {
@@ -122,25 +173,35 @@ async function addProducts(json: any) {
     if (listProduct.value.length <= 0) return
     // Alerta
     Swal.fire({
-        title: `Registro de Productos`,
-        text: "¿Estas seguro de agregar los articulos?",
+        title: update.value ? 'Actualización de articulos' : 'Registro de articulos',
+        text: update.value ? "¿Estas seguro de actualizar los articulos?" : "¿Estas seguro de agregar los articulos?",
         icon: "question",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Guardar!",
+        confirmButtonText: update.value ? "Si, Actualizar!" : "Si, Guardar! ",
 
     }).then((result) => {
         if (result.isConfirmed) {
             Created()
             Swal.fire({
                 title: "Guardado!",
-                text: "Datos guardados con exito!",
+                text: update.value ? "Datos actualizados con exito!" : "Datos guardados con exito!",
                 icon: "success"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log('agregado y guardado')
+
+                    toast.info(update.value ? "Comanda actualizada" : "Comanda agregada", {
+                        position: toast.POSITION.BOTTOM_CENTER,
+                        transition: toast.TRANSITIONS.ZOOM,
+                        autoClose: 2000,
+                        theme: 'colored',
+                        toastStyle: {
+                            fontSize: '16px',
+                            opacity: '1',
+                        },
+                    });
                 }
             });
 
@@ -176,6 +237,11 @@ async function Created() {
 
 }
 
+const amountInput = (item: any) => {
+
+    item.subtotal = item.amount * item.price
+}
+
 const increment = (item: any) => {
     item.amount++;
     item.subtotal = item.amount * item.price
@@ -199,7 +265,7 @@ const back = () => {
 }
 
 
-async function handleProductUpdate(){
+async function handleProductUpdate() {
 
     let articles
 
@@ -211,7 +277,16 @@ async function handleProductUpdate(){
         articles = data[0]
 
     } catch (error) {
-        console.error(error)
+        toast.error("Error: no se agregaron los articulos", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 6000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 
     for (const element of articles) {
@@ -231,16 +306,20 @@ async function handleProductUpdate(){
     };
 
 }
-
-
 </script>
 
 <template>
     <v-row class="mb-0">
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
-                variant="outlined" color="primary" v-model="product" :items="infoProduct" flat hide-details
-                single-line></v-autocomplete>
+                variant="outlined" color="blue-grey-lighten-2"  item-title="value"  v-model="product"
+                :items="infoProduct">
+
+                <template v-slot:item="{ props, item }">
+                    <v-list-item v-bind="props" :subtitle="item.raw.title"></v-list-item>
+                </template>
+            </v-autocomplete>
+
         </v-col>
         <v-col cols="12" md="3" class="py-3">
             <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal">
@@ -259,7 +338,8 @@ async function handleProductUpdate(){
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
                             <th class="text-right text-caption font-weight-bold text-uppercase"
-                                style="min-width: 100px">Cantidad</th>
+                                style="min-width: 100px">
+                                Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                             <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
                             <th class="text-right text-caption font-weight-bold text-uppercase"></th>
@@ -273,17 +353,28 @@ async function handleProductUpdate(){
                                     }}</router-link>
                             </td>
                             <td class="py-3">{{ item.code }} </td>
-                            <td class="py-3 text-right" style="min-width: 100px">
+                            <!-- <td class="py-3  m-3 text-right" style="min-width: 100px">
                                 <button class="botonCantidad" @click="decrement(item)">-</button>
                                 <span>{{ item.amount }}</span>
                                 <button class="botonCantidad" @click="increment(item)"> +</button>
+                            </td> -->
+                            <td>
+                                <div class="number-control">
+                                    <div class="number-left" @click="decrement(item)"></div>
+                                    <input type="number" v-model="item.amount" @change="amountInput(item)" name="number"
+                                        class="number-quantity text-right">
+                                    <div class="number-right" @click="increment(item)"></div>
+                                </div>
                             </td>
                             <td class="py-3">
-                                {{ item.price }}$
+                                ${{ item.price }}
                             </td>
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item.subtotal }}$</td>
-                            <td class="py-3 text-right" style="min-width: 100px" @click="removeProduct(index)"><v-icon
-                                    color="inputBorder" style="cursor: pointer" icon="mdi-trash-can"></v-icon></td>
+                            <td class="py-3 text-right" style="min-width: 100px"
+                                @click="removeProduct(item.code, index)">
+                                <v-icon color="#D11919" style="cursor: pointer" icon="mdi-trash-can"
+                                    title="Eliminar"></v-icon>
+                            </td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -294,12 +385,11 @@ async function handleProductUpdate(){
         <v-col cols="12" md="3" class="py-12 ">
             <v-card title="RESUMEN" variant="flat">
                 <div class="text-h4 pa-2">{{ `Total a pagar:` }}</div>
-                <div class="text-h1 pa-2 text-center">{{ ` ${totalSubtotal}` }}</div>
-                <v-card-actions>
+                <div class="text-h1 pa-2 text-center ">${{ ` ${totalSubtotal}` }}</div>
+                <v-card-actions class="text-certer">
                     <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined">
-                        {{ update ? 'ACTUALIZAR ARTICULOS' : 'AGREGAR ARTICULOS' }}
+                        {{ update ? 'ACTUALIZAR COMANDA' : 'CREAR COMANDA' }}
                     </v-btn>
-
                 </v-card-actions>
             </v-card>
         </v-col>
@@ -316,13 +406,13 @@ async function handleProductUpdate(){
                             d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
                             stroke-linejoin="round" stroke-linecap="round"></path>
                     </svg></div>
-                <v-card-title>No hay orden creada</v-card-title>
+                <v-card-title>No hay Id_Comanda creada</v-card-title>
                 <v-card-subtitle>Ocurrió un error</v-card-subtitle>
             </v-card-item>
 
             <v-card-text>
-                Ocurrio un error, no hay orden registrada, por lo tanto no se pueden agregar
-                pedidos
+                Ocurrio un error, no hay pedido registrado, por lo tanto no se pueden agregar
+                articulos
             </v-card-text>
 
             <v-btn class="cancel" variant="tonal" @click="back">
@@ -335,6 +425,51 @@ async function handleProductUpdate(){
 </template>
 
 <style scoped>
+.number-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+}
+
+.number-left::before,
+.number-right::after {
+    content: attr(data-content);
+    background-color: #55A41B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    width: 20px;
+    color: white;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.number-left::before {
+    content: "-";
+}
+
+.number-right::after {
+    content: "+";
+}
+
+.number-quantity {
+    padding: 0.25rem;
+    border: 0;
+    width: 50px;
+    -moz-appearance: textfield;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.number-left:hover::before,
+.number-right:hover::after {
+    background-color: #666666;
+}
+
+
 .botonCantidad {
     padding: 10px;
     font-size: 19px;
