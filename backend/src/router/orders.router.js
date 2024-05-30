@@ -73,6 +73,6 @@ router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
 router.put("/deleteOrder/:id", deleteMasterOrder);
 
 //DELETE ORDER DETAILS
-router.delete("/deleteOrderDetail/:id", deleteOrderDetails);
+router.put("/deleteOrderDetail/", deleteOrderDetails);
 
 module.exports = router;
