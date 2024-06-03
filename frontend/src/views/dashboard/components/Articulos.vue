@@ -337,12 +337,12 @@ async function handleProductUpdate() {
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-                            <th class="text-right text-caption font-weight-bold text-uppercase"
+                            <th class="text-left text-caption font-weight-bold text-uppercase"
                                 style="min-width: 100px">
                                 Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
-                            <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
-                            <th class="text-right text-caption font-weight-bold text-uppercase"></th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Sub Total</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase"></th>
                         </tr>
                     </thead>
                     <tbody>

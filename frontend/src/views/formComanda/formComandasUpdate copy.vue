@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { Form } from 'vee-validate';
 import { ref, reactive, computed, onMounted } from 'vue';
 import Swal from 'sweetalert2'
@@ -6,9 +7,7 @@ import axios from 'axios'
 // import { router } from '../../../router';
 import { useRoute } from 'vue-router'
 import { router } from '@/router';
-import UploadImages from './uploadImages.vue'
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
+
 
 const route = useRoute()
 
@@ -41,7 +40,6 @@ const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
 const user_mod = ref();
-const itemDocument = ref([]);
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -184,10 +182,10 @@ const getOrder = async () => {
             porcentaje.value = data[0][0]["Porc_retencion"]
             email.value = data[0][0]["Email"]
             nombreCompleto.value = data[0][0]["Cliente"]
-            estado.value = data[0][0]["ID_states"]
-            ciudad.value = data[0][0]["ID_city"]
-            municipio.value = data[0][0]["ID_municipio"]
-            origen.value = data[0][0]["ID_sucursal"]
+            estado.value = data[0][0]["Estado"]
+            ciudad.value = data[0][0]["Ciudad"]
+            municipio.value = data[0][0]["Municipio"]
+            origen.value = data[0][0]["Sucursal"]
             direccion.value = data[0][0]["Direccion"]
             referencia.value = '*******NO SE QUE CAMPO ES********'//NO SE CUAL CAMPO ES 
             ID_delivery.value = data[0][0]["Tipo_delivery"]
@@ -203,7 +201,14 @@ const getOrder = async () => {
 }
 
 
-
+// api post
+async function editarComanda(json: any) {
+    try {
+        await axios.put(`${baseUrl}/updateOrder/${id.value}`, json)
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 // BUSCADOR DE CLIENTES
 async function searchModel() {
@@ -284,115 +289,90 @@ async function getCiudad() {
     }
 }
 
+// Capturar la imagen
+const File = (event: any) => {
+    doc_file.value = event.target.files[0];
+};
 
-// api post
-async function handleFormComanda() {
-
-
-    let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
-    const jsonData = {
-        "Id_Comanda": id.value,
-        "origen": origen.value,
-        "tipo": tipo.value,
-        "cedulaUno": cedulaUno.value,
-        "email": email.value,
-        "nombreCompleto": nombreCompleto.value,
-        "estado": estado.value,
-        "ciudad": ciudad.value,
-        "municipio": municipio.value,
-        "direccion": direccion.value,
-        "autorizado": autorizado.value,
-        "P_autorizado": 0,
-        "cedulaDos": cedulaDos.value,
-        "telefonoUno": telefonoUno.value,
-        "ID_pago": ID_pago.value,
-        "ID_status": ID_status.value,
-        "retencion": retencion.value.toString(),
-        "ID_delivery": ID_delivery.value,
-        "porcentaje": porcentajeValue,
-        "user_crea": user_crea.value
-    }
-
-    // formData.append('origen', origen.value);
-    // formData.append('tipo', tipo.value);
-    // formData.append('cedulaUno', cedulaUno.value);
-    // formData.append('email', email.value);
-    // formData.append('nombreCompleto', nombreCompleto.value);
-    // formData.append('estado', estado.value);
-    // formData.append('ciudad', ciudad.value);
-    // formData.append('municipio', municipio.value);
-    // formData.append('direccion', direccion.value);
-    // formData.append('autorizado', autorizado.value);
-    // formData.append('cedulaDos', cedulaDos.value);
-    // formData.append('telefonoUno', telefonoUno.value);
-    // formData.append('ID_pago', ID_pago.value);
-    // formData.append('ID_status', ID_status.value);
-    // formData.append('retencion', retencion.value.toString());
-    // formData.append('ID_delivery', ID_delivery.value);
-    // formData.append('porcentaje', porcentajeValue);
-    // formData.append('user_crea', user_crea.value);
-
-
-    // ACTUALIZAMOS PRIMERO LA DATA DEL FORMULARIO
-    try {
-        await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
-    } catch (error) {
-        console.log(error)
-    }
-
-
-
-    const formDataDocuments = new FormData();
-
-    for (let i = 0; i < itemDocument.value.length; i++) {
-
-        const file = itemDocument.value[i].file;
-        const type = itemDocument.value[i].type;
-
-        formDataDocuments.append('doc_file', file)
-        formDataDocuments.append(`typeDoc_${i}`, type);
-    }
-
-    await axios.put(`${baseUrl}/updateOrderDocument/${id.value}`, formDataDocuments)
-
-}
 
 // Function para enviar form
-async function validate() {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+async function validate(values: any) {
 
-    // VALIDAMOS PRIMERO QUE EXISTAN LOS DOCUMENTOS CON SUS RESPECTIVOS TIPO DE DOCUMENTOS
-    const isvalidateDocuments = validateDocuments()
+    let formData = new FormData();
+    let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
 
-    if (isvalidateDocuments)
-        // Alerta
-        Swal.fire({
-            title: `Actualizar Comanda`,
-            text: "¿Desea guardar estos datos?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Si, Guardar!",
+    formData.append('origen', origen.value);
+    formData.append('tipo', tipo.value);
+    formData.append('cedulaUno', cedulaUno.value);
+    formData.append('email', email.value);
+    formData.append('nombreCompleto', nombreCompleto.value);
+    formData.append('estado', estado.value);
+    formData.append('ciudad', ciudad.value);
+    formData.append('doc_file', doc_file.value);
+    formData.append('municipio', municipio.value);
+    formData.append('direccion', direccion.value);
+    formData.append('autorizado', autorizado.value);
+    formData.append('cedulaDos', cedulaDos.value);
+    formData.append('telefonoUno', telefonoUno.value);
+    formData.append('ID_pago', ID_pago.value);
+    formData.append('ID_status', ID_status.value);
+    formData.append('retencion', retencion.value.toString());
+    formData.append('ID_delivery', ID_delivery.value);
+    formData.append('porcentaje', porcentajeValue);
+    formData.append('user_crea', user_crea.value);
 
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const respuesta = handleFormComanda();
-                Swal.fire({
-                    title: "Guardado!",
-                    text: "Datos actualizados con exito!",
-                    icon: "success"
-                }).then((result) => {
+    // const data = {
+    //     "origen": origen.value,
+    //     "tipo": tipo.value,
+    //     "cedulaUno": cedulaUno.value,
+    //     "email": email.value,
+    //     "nombreCompleto": nombreCompleto.value,
+    //     "estado": estado.value,
+    //     "ciudad": ciudad.value,
+    //     "municipio": municipio.value,
+    //     "direccion": direccion.value,
+    //     "autorizado": autorizado.value,
+    //     "cedulaDos": cedulaDos.value,
+    //     "telefonoUno": telefonoUno.value,
+    //     "ID_pago": ID_pago.value,
+    //     "ID_status": ID_status.value,
+    //     "retencion": retencion.value.toString(),
+    //     "ID_delivery": ID_delivery.value,
+    //     "porcentaje": porcentajeValue,
+    //     "user_crea": user_crea.value,
+    //     "doc_file": formData,
+    // }
 
-                    if (result.isConfirmed) {
+    // Alerta
+    Swal.fire({
+        title: `Actualizar Comanda`,
+        text: "¿Desea guardar estos datos?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Si, Guardar!",
 
-                          handleProductUpdate()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const respuesta = editarComanda(formData);
+            Swal.fire({
+                title: "Guardado!",
+                text: "Datos actualizados con exito!",
+                icon: "success"
+            }).then((result) => {
 
-                    }
-                });
+                if (result.isConfirmed) {
+                    //router.push(`/maestroPedidos`);
+                    handleProductUpdate()
 
-            }
-        });
+                }
+            });
+
+        }
+    });
 }
 
 
@@ -402,54 +382,6 @@ const handleProductUpdate = () => {
 
 }
 
-function handleSelectImages(items) {
-
-    itemDocument.value = items
-
-}
-
-function validateDocuments(): boolean {
-
-    let isvalidate = true
-
-    if (itemDocument.value.length <= 0) {
-
-        toast.error("Error: Debes seleccionar al menos un archivo", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000,
-            theme: 'colored',
-            toastStyle: {
-                fontSize: '16px',
-                opacity: '1',
-            },
-        });
-
-        isvalidate = false
-
-    } else {
-
-        itemDocument.value.forEach(element => {
-
-            if (element.type === null) {
-
-                isvalidate = false
-            }
-
-        });
-
-        if (!isvalidate)
-            toast.warn(`Error: Seleccione el tipo de documento`, {
-                delay: 1000,
-                position: toast.POSITION.BOTTOM_CENTER,
-                transition: toast.TRANSITIONS.ZOOM,
-                theme: 'dark',
-                autoClose: 3000
-            });
-    }
-
-    return isvalidate
-}
 
 onMounted(async () => {
     await getEstados();
@@ -476,13 +408,15 @@ onMounted(async () => {
                 <v-text-field id="cedulaUno" type="number" placeholder="Cedula/Rif" variant="outlined"
                     aria-label="Name Documents" class="mt-2" v-model="cedulaUno" @change="searchModel"
                     :rules="CedulaUnoRules" color="primary"></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
+                </v-col>
+                
                 <v-label for="tipo">Tipo</v-label>
+
                 <v-autocomplete id="tipo" placeholder="Tipo de Proceso" class="mt-2" clearable chips
                     :items="['NATURAL', 'JURIDICO']" variant="outlined" :rules="tipoRules" aria-label="Name Documents"
-                    color="primary" v-model="tipo"></v-autocomplete>
-            </v-col>
+                    color="primary" v-model="tipo">
+                </v-autocomplete>
+      
         </v-row>
 
         <v-row v-if="tipo === 'JURIDICO'">
@@ -613,8 +547,13 @@ onMounted(async () => {
             </v-col>
         </v-row>
 
-        <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-        <UploadImages @isSelectImages=handleSelectImages />
+        <v-row>
+            <v-col cols="12">
+                <br>
+                <v-file-input multiple clearable label="Coloque el archivo aqui" variant="outlined" color="primary"
+                    required @change="File"></v-file-input>
+            </v-col>
+        </v-row>
 
         <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
             size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
