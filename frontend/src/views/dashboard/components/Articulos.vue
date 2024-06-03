@@ -36,15 +36,13 @@ const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])
 
-// CAPTURAMOS EL ID DE COMANDA
+// CAPTURAMOS EL ID DE COMANDA /filterOrderDetails/:id
 const id = ref() // id de la COMANDA
 id.value = route.params.id
 
 const update = ref() // modo Update
 update.value = route.params.update
 
-const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
-const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const isOrder = ref<boolean>(true)
 
 const getProduct = async () => {
@@ -298,13 +296,8 @@ async function handleProductUpdate() {
             price: element.Precio,
             subtotal: element.Subtotal
         }
-
-
         listProduct.value.push(newProduct)
-
-
     };
-
 }
 </script>
 

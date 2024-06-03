@@ -52,6 +52,11 @@ const sidebarItem: menu[] = [
     to: '/maestroComanda'
   },
   {
+    title: 'Comandas Asignadas',
+    icon: ClusterOutlined, 
+    to: '/maestroComandaAsignada'
+  },
+  {
     title: 'Reportes',
     icon: ContainerOutlined, 
     to: '/comanda'

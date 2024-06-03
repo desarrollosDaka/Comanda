@@ -377,13 +377,11 @@ async function validate(values: any) {
     });
 }
 
-
 const handleProductUpdate = () => {
 
     router.push(`/addArticulos/${id.value}/${true}`); 
 
 }
-
 
 onMounted( async () => {
     await getEstados();

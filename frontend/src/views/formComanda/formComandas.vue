@@ -1,11 +1,9 @@
 <script setup lang="ts">
-
 import { Form } from 'vee-validate';
 import { ref, computed, onMounted, shallowRef } from 'vue';
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import { router } from '@/router';
-
 
 // variables
 const valid = ref(false);
@@ -39,8 +37,6 @@ const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
 const baseUrlCiudad = `${import.meta.env.VITE_URL}/api/cities`;
 const baseUrlMunicipio = `${import.meta.env.VITE_URL}/api/municipalities`;
 const baseUrlClients = `${import.meta.env.VITE_URL}/api/clients`;
-
-// let ProccesAndType = computed(() => `${doc_process.value}-${doc_type.value}`);
 
 const tiendas = ref([
     {
@@ -160,7 +156,7 @@ async function Created(json: any){
         await axios.post(`${baseUrl}/createOrder`, json)
     } catch(error){
         console.log(error)
-    }
+    } 
 }
 
 // BUSCADOR DE CLIENTES
@@ -232,7 +228,7 @@ async function getMunicipio(){
 async function getCiudad(){
     try{
         const {data} = await axios.get(`${baseUrlCiudad}/masterCities`)
-        info_ciudad.value = data.map((ciudad: Ciudad) => ({
+        info_ciudad.value = data.map((ciudad: Ciudad) =>({
             title: ciudad.Nombre,
             value: ciudad.ID_city
         }));
@@ -250,7 +246,6 @@ const File = (event: any) => {
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
-
     let formData = new FormData();
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
     formData.append('Id_Comanda', idComandaRandom.value);
