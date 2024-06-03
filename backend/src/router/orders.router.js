@@ -5,10 +5,13 @@ const multer = require('multer')
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
+
         cb(null, 'uploads')
     },
     filename: function (req, file, cb){
-        cb(null, `${Date.now()}-${file.originalname}`)
+        
+        const nameDocument = `${Date.now()}-${file.originalname}`
+        cb(null, nameDocument)
     }
 })
 
@@ -29,7 +32,8 @@ const {
     //updateMasterOrder,
     deleteMasterOrder,
     deleteOrderDetails,
-    getMasterOrderDetails
+    getMasterOrderDetails,
+    updateOrderDocument
 } 
 = require("../controllers/orders.controller");
 
@@ -60,7 +64,9 @@ router.post("/createOrderDetails", createOrderDetails);
 //router.put("/updateOrder/:id", updateMasterOrder);
 
 //UPDATE ORDERS + CLIENTS
-router.put("/updateOrder/:id", upload.single('doc_file'), updateMasterOrderAndDetails);
+router.put("/updateOrder/:id", updateMasterOrderAndDetails);
+
+router.put("/updateOrderDocument/:id", upload.array('doc_file'), updateOrderDocument);
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
