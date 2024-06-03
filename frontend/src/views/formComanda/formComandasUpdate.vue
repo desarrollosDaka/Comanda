@@ -59,9 +59,8 @@ onMounted(async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
-
-
 });
+
 
 
 const tiendas = ref([
@@ -299,29 +298,29 @@ const File = (event: any) => {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
 
+    let formData = new FormData();
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
 
-    const data = {
-        "origen": origen.value,
-        "tipo": tipo.value,
-        "cedulaUno": cedulaUno.value,
-        "email": email.value,
-        "nombreCompleto": nombreCompleto.value,
-        "estado": estado.value,
-        "ciudad": ciudad.value,
-        "municipio": municipio.value,
-        "direccion": direccion.value,
-        "autorizado": autorizado.value,
-        "cedulaDos": cedulaDos.value,
-        "telefonoUno": telefonoUno.value,
-        "ID_pago": ID_pago.value,
-        "ID_status": ID_status.value,
-        "retencion": retencion.value.toString(),
-        "ID_delivery": ID_delivery.value,
-        "porcentaje": porcentajeValue,
-        "user_crea": user_crea.value,
-        "doc_file": doc_file.value
-    }
+    formData.append('origen', origen.value);
+    formData.append('tipo', tipo.value);
+    formData.append('cedulaUno', cedulaUno.value);
+    formData.append('email', email.value);
+    formData.append('nombreCompleto', nombreCompleto.value);
+    formData.append('estado', estado.value);
+    formData.append('ciudad', ciudad.value);
+    formData.append('doc_file', doc_file.value);
+    formData.append('municipio', municipio.value);
+    formData.append('direccion', direccion.value);
+    formData.append('autorizado', autorizado.value);
+    formData.append('cedulaDos', cedulaDos.value);
+    formData.append('telefonoUno', telefonoUno.value);
+    formData.append('ID_pago', ID_pago.value);
+    formData.append('ID_status', ID_status.value);
+    formData.append('retencion', retencion.value.toString());
+    formData.append('ID_delivery', ID_delivery.value);
+    formData.append('porcentaje', porcentajeValue);
+    formData.append('user_crea', user_crea.value);
+    
 
     // Alerta
     Swal.fire({
@@ -336,7 +335,7 @@ async function validate(values: any) {
 
     }).then((result) => {
         if (result.isConfirmed) {
-            const respuesta = editarComanda(data);
+            const respuesta = editarComanda(formData);
             Swal.fire({
                 title: "Guardado!",
                 text: "Datos actualizados con exito!",
@@ -344,8 +343,8 @@ async function validate(values: any) {
             }).then((result) => {
 
                 if (result.isConfirmed) {
-                    router.push(`/maestroPedidos`);
-
+                    //router.push(`/`);
+                    handleProductUpdate()
                 }
             });
 
@@ -534,10 +533,10 @@ onMounted( async () => {
         <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
             size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
                 || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit">
-            Actualizar
+            Actualizar Pedido
         </v-btn>
 
-        <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning" @click="handleProductUpdate">Detalle de Articulos</v-btn>
+        <!-- <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning" @click="handleProductUpdate">Detalle de Articulos</v-btn> -->
 
     </Form>
 </template>
