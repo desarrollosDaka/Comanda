@@ -59,9 +59,8 @@ onMounted(async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
-
-
 });
+
 
 
 const tiendas = ref([
@@ -322,6 +321,7 @@ async function validate(values: any) {
     formData.append('porcentaje', porcentajeValue);
     formData.append('user_crea', user_crea.value);
     
+
     // const data = {
     //     "origen": origen.value,
     //     "tipo": tipo.value,
@@ -344,6 +344,7 @@ async function validate(values: any) {
     //     "doc_file": formData,
     // }
 
+
     // Alerta
     Swal.fire({
         title: `Actualizar Comanda`,
@@ -365,6 +366,7 @@ async function validate(values: any) {
             }).then((result) => {
 
                 if (result.isConfirmed) {
+
                     //router.push(`/maestroPedidos`);
                     handleProductUpdate()
 
@@ -556,10 +558,12 @@ onMounted( async () => {
         <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
             size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
                 || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit">
-            Actualizar
+            Actualizar Pedido
         </v-btn>
 
+
         <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning" @click="handleProductUpdate">Detalle Articulos</v-btn>
+
 
     </Form>
 </template>
