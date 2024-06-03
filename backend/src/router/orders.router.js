@@ -29,6 +29,7 @@ const {
     createOrderDetails,
     filterMasterAsesor, 
     updateMasterAsesor,
+    updateStatusOrder,
     //updateMasterOrder,
     deleteMasterOrder,
     deleteOrderDetails,
@@ -70,6 +71,9 @@ router.put("/updateOrderDocument/:id", upload.array('doc_file'), updateOrderDocu
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
+
+//UPDATE STATUS DE COMANDA
+router.put("/updateStatusOrder/:id", updateStatusOrder);
 
 // Update OrderDetails
 router.put("/updateOrderDetails/:id", updateMasterOrderDetails);

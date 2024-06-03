@@ -61,9 +61,8 @@ onMounted(async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
-
-
 });
+
 
 
 const tiendas = ref([
@@ -313,6 +312,7 @@ async function handleFormComanda() {
         "user_crea": user_crea.value
     }
 
+
     // formData.append('origen', origen.value);
     // formData.append('tipo', tipo.value);
     // formData.append('cedulaUno', cedulaUno.value);
@@ -395,7 +395,6 @@ async function validate() {
         });
 }
 
-
 const handleProductUpdate = () => {
 
     router.push(`/addArticulos/${id.value}/${true}`);
@@ -407,6 +406,7 @@ function handleSelectImages(items) {
     itemDocument.value = items
 
 }
+
 
 function validateDocuments(): boolean {
 
@@ -452,6 +452,7 @@ function validateDocuments(): boolean {
 }
 
 onMounted(async () => {
+
     await getEstados();
     await getMunicipio();
     await getCiudad();
@@ -619,11 +620,13 @@ onMounted(async () => {
         <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
             size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
                 || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit">
-            Actualizar
+            Actualizar Pedido
         </v-btn>
+
 
         <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning"
             @click="handleProductUpdate">Detalle Articulos</v-btn>
+
 
     </Form>
 </template>

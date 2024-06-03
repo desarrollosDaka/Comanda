@@ -67,6 +67,7 @@ const filterMasterOrder = async (req, res) => {
         const id = req.params.id; 
   
         const rta = await sequelize.query(
+
             `SELECT DISTINCT	 
                     T0.[ID_order]
                     ,T0.ID_detalle
@@ -147,6 +148,7 @@ const createMasterOrderAndDetails = async (req, res) => {
 
         // Crear un objeto con los datos del pedido
         const newOrder = {
+            ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
             ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
@@ -417,6 +419,32 @@ const updateMasterAsesor = async (req, res) => {
         console.log('Error', e);
     }
 }
+
+//UPDATE ASESOR ASIGNADO A COMANDA 
+const updateStatusOrder = async (req, res) => {
+    try {
+        const data = {
+            ID_status: data.ID_status
+        }
+
+        const idUser = req.params.id;
+      
+        const rta = await sequelize.models.modelOrders.update(data,{
+            where: {ID_detalle: idUser},
+          });
+
+        if(rta){
+            res.status(200)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        } 
+
+    } catch (e) {
+        console.log('Error', e);
+    }
+}
 // UPDATE ORDER SOLO CABECERA (DESACTIVADO)
 // const updateMasterOrder = async (req, res) => {
 //     try {
@@ -489,7 +517,7 @@ const deleteMasterOrder = async (req, res) => {
 
         console.log(idOrder);
        // console.log(data);
-        
+       
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(data ,{
             where: {ID_order: idOrder},
@@ -540,6 +568,7 @@ module.exports = {
     updateMasterOrderAndDetails,
     updateMasterOrderDetails,
     updateMasterAsesor,
+    updateStatusOrder,
     //updateMasterOrder,
     deleteMasterOrder,
     getMasterOrderDetails,
