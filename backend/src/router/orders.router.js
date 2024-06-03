@@ -26,8 +26,10 @@ const {
     createOrderDetails,
     filterMasterAsesor, 
     updateMasterAsesor,
+    updateStatusOrder,
     //updateMasterOrder,
     deleteMasterOrder,
+    deleteOrderDetails,
     getMasterOrderDetails
 } 
 = require("../controllers/orders.controller");
@@ -64,11 +66,17 @@ router.put("/updateOrder/:id", upload.single('doc_file'), updateMasterOrderAndDe
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
 
+//UPDATE STATUS DE COMANDA
+router.put("/updateStatusOrder/:id", updateStatusOrder);
+
 // Update OrderDetails
 router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
 
 // DELETE ORDER
 //router.delete("/deleteOrder/:id", deleteMasterOrder);
 router.put("/deleteOrder/:id", deleteMasterOrder);
+
+//DELETE ORDER DETAILS
+router.put("/deleteOrderDetail/", deleteOrderDetails);
 
 module.exports = router;
