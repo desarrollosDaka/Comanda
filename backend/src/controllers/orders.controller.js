@@ -277,15 +277,12 @@ const deleteOrderDetails = async (req, res) => {
     }
 };
 
+
 //EDITAR CABECERA ORDENES Y CLIENTES
 const updateMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
-        const idOrder = req.params.id;
-        const fileNombre = req.body.doc_file;
-
-
-        console.log('idordr ', idOrder)
+        const idOrder = data.Id_Comanda
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -299,8 +296,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,
         };
 
-        console.log(newClients)
-        
         const UpdateOrder = {
             ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
@@ -314,19 +309,9 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
             Retencion: data.retencion,
-            Porc_retencion: data.porcentaje,
-           // File_cedula: req.file.filename 
-           File_cedula:req.file ? req.file.filename : '',
+            Porc_retencion: data.porcentaje
         };
 
-       
-        // if (req.file && req.file.doc_file) {
-        //     UpdateOrder.File_cedula = req.file.doc_file;
-        // }
-        // Validación para el campo filename
-        if(UpdateOrder.File_cedula === ''){
-            delete UpdateOrder.File_cedula
-        }
 
         // Comprueba si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
@@ -342,6 +327,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             where: { ID_detalle: idOrder },
         });
 
+
         if (order && client) {
             res.status(201);
             res.json({ order: order, clients: client });
@@ -354,6 +340,38 @@ const updateMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+
+const updateOrderDocument = async (req, res) => {
+
+    const files = req.files;
+
+    files.map((file, index) => {
+
+    const name = req.files[index].filename
+    const type = req.body[`typeDoc_${index}`]
+  
+    
+  
+
+
+    })
+
+    
+    // try {
+    //     const data = req.body;
+    //     const Id_Comanda = req.params.id; 
+
+    //     const documentOrders = {
+    //         ID_detalle: Id_Comanda,
+    //         typeDocument:data.doc_type,
+    //         User_crea: data.user_crea,
+    //     };
+
+       
+    // } catch (e) {
+    //     console.log('Error', e);
+    // }
+};
 
 //FILTRO DE ASESOR 
 const filterMasterAsesor = async (req, res) => {
@@ -553,5 +571,6 @@ module.exports = {
     updateStatusOrder,
     //updateMasterOrder,
     deleteMasterOrder,
-    getMasterOrderDetails
+    getMasterOrderDetails,
+    updateOrderDocument
 };
