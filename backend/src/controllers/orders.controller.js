@@ -251,8 +251,9 @@ const createOrderDetails = async (req, res) => {
 
 
 const deleteOrderDetails = async (req, res) => {
-    const data = req.body;
 
+    const data = req.body;
+ 
     try {
         const { ID_detalle, ID_producto } = data;
 
@@ -281,8 +282,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
         const idOrder = req.params.id;
         const fileNombre = req.body.doc_file;
 
-        console.log(fileNombre);
-        console.log(data);
+
+        console.log('idordr ', idOrder)
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -296,6 +297,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,
         };
 
+        console.log(newClients)
+        
         const UpdateOrder = {
             ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,

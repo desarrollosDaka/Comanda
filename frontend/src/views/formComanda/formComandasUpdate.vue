@@ -322,6 +322,29 @@ async function validate(values: any) {
     formData.append('user_crea', user_crea.value);
     
 
+    // const data = {
+    //     "origen": origen.value,
+    //     "tipo": tipo.value,
+    //     "cedulaUno": cedulaUno.value,
+    //     "email": email.value,
+    //     "nombreCompleto": nombreCompleto.value,
+    //     "estado": estado.value,
+    //     "ciudad": ciudad.value,
+    //     "municipio": municipio.value,
+    //     "direccion": direccion.value,
+    //     "autorizado": autorizado.value,
+    //     "cedulaDos": cedulaDos.value,
+    //     "telefonoUno": telefonoUno.value,
+    //     "ID_pago": ID_pago.value,
+    //     "ID_status": ID_status.value,
+    //     "retencion": retencion.value.toString(),
+    //     "ID_delivery": ID_delivery.value,
+    //     "porcentaje": porcentajeValue,
+    //     "user_crea": user_crea.value,
+    //     "doc_file": formData,
+    // }
+
+
     // Alerta
     Swal.fire({
         title: `Actualizar Comanda`,
@@ -343,8 +366,10 @@ async function validate(values: any) {
             }).then((result) => {
 
                 if (result.isConfirmed) {
-                    //router.push(`/`);
+
+                    //router.push(`/maestroPedidos`);
                     handleProductUpdate()
+
                 }
             });
 
@@ -536,7 +561,9 @@ onMounted( async () => {
             Actualizar Pedido
         </v-btn>
 
-        <!-- <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning" @click="handleProductUpdate">Detalle de Articulos</v-btn> -->
+
+        <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning" @click="handleProductUpdate">Detalle Articulos</v-btn>
+
 
     </Form>
 </template>
