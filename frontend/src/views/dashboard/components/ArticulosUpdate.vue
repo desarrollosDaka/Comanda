@@ -69,8 +69,6 @@ function addProduct(cod_product: any): void {
         amount: 1,
         price: product[0].precio,
         subtotal: product[0].precio
-
-
     }
 
     listProduct.value.push(newProduct)
@@ -78,7 +76,6 @@ function addProduct(cod_product: any): void {
 
 
 function removeProduct(index: number): void {
-
     listProduct.value.splice(index, 1)
 }
 
@@ -122,7 +119,6 @@ async function Created() {
     listProduct.value.forEach(element => {
 
         const json = {
-
             Id_Comanda:id.value,
             id_producto:element.code,
             producto:element.name,
@@ -133,7 +129,7 @@ async function Created() {
 
         console.log(json)
         try {
-             axios.post(`${baseUrlProducts}/createOrderDetails`, json)
+            axios.post(`${baseUrlProducts}/createOrderDetails`, json)
         } catch (error) {
             console.log(error)
         }

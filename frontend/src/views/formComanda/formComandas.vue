@@ -228,7 +228,7 @@ async function getMunicipio(){
 async function getCiudad(){
     try{
         const {data} = await axios.get(`${baseUrlCiudad}/masterCities`)
-        info_ciudad.value = data.map((ciudad: Ciudad) => ({
+        info_ciudad.value = data.map((ciudad: Ciudad) =>({
             title: ciudad.Nombre,
             value: ciudad.ID_city
         }));
@@ -246,7 +246,6 @@ const File = (event: any) => {
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
-
     let formData = new FormData();
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
     formData.append('Id_Comanda', idComandaRandom.value);

@@ -223,16 +223,9 @@ async function handleProductUpdate(){
             price: element.Precio,
             subtotal: element.Subtotal
         }
-
-
         listProduct.value.push(newProduct)
-
-
     };
-
 }
-
-
 </script>
 
 <template>

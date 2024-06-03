@@ -71,49 +71,53 @@ const filterMasterOrder = async (req, res) => {
         //     }, 
         // });
         const rta = await sequelize.query(
-            `SELECT DISTINCT	 
-                    T0.[ID_order]
-                    ,T0.ID_detalle
-                    ,T0.Cedula
-                    ,T3.Tipo_cliente
-                    ,T3.Email
-                    ,T3.Nombre AS Cliente
-                    ,T3.Direccion
-                    ,T1.ID_sucursal AS Sucursal
-                    ,T4.ID_states AS Estado
-                    ,T5.ID_city AS Ciudad
-                    ,T6.ID_municipio AS Municipio
-                    ,t0.[ID_pago]
-                    ,t0.[User_crea]
-                    ,t0.[User_mod]
-                    ,t0.[User_asing]
-                    ,t0.[User_rol]
-                    ,t0.[ID_status]
-                    ,t0.[Tipo_delivery]
-                    ,t0.[Personal_autoriza]
-                    ,t0.[Cedula_autoriza]
-                    ,T3.[Telefono]
-                    ,t0.[Retencion]
-                    ,t0.[Porc_retencion]
-                    ,t0.[File_cedula]
-                    ,t0.[File_pago]
-                    ,t0.[File_retencion]
-                    ,t0.[File_factrura]
-                    ,t0.[File_despacho]
-                    ,t0.[File_ordeVenta]
-                    ,t0.[Delete]
-                    ,t0.[Motivo_delete]	
-                    ,T2.Status
-                    ,CAST(T0.Create_date AS DATE) Create_date
-                    ,CAST(T0.[update_date] AS DATE) [Update_date]
-            FROM [COMANDA_TEST].[dbo].[ORDERS] T0
-            INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal 
-            INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
-            INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-            INNER JOIN [dbo].[MASTER_STATES] T4 ON T3.ID_state = T4.ID_states
-            INNER JOIN [dbo].[MASTER_CITIES] T5 ON T3.ID_city = T5.ID_city 
-            INNER JOIN [dbo].[MASTER_MUNICIPALITY] T6 ON T3.ID_municipio = T6.ID_municipio
-            WHERE T0.ID_detalle = '${id}'`);
+            `SELECT DISTINCT     
+            T0.[ID_order]
+            ,T0.ID_detalle
+            ,T0.Cedula
+            ,T3.Tipo_cliente
+            ,T3.Email
+            ,T3.Nombre AS Cliente
+            ,T3.Direccion
+            ,T1.ID_sucursal 
+            ,T1.Sucursal 
+            ,T4.ID_states 
+            ,T4.Nombre AS Estado
+            ,T5.ID_city
+            ,T5.Nombre AS Ciudad
+            ,T6.ID_municipio 
+            ,T6.NOMBRE AS Municipio
+            ,t0.[ID_pago]
+            ,t0.[User_crea]
+            ,t0.[User_mod]
+            ,t0.[User_asing]
+            ,t0.[User_rol]
+            ,t0.[ID_status]
+            ,t0.[Tipo_delivery]
+            ,t0.[Personal_autoriza]
+            ,t0.[Cedula_autoriza]
+            ,T3.[Telefono]
+            ,t0.[Retencion]
+            ,t0.[Porc_retencion]
+            ,t0.[File_cedula]
+            ,t0.[File_pago]
+            ,t0.[File_retencion]
+            ,t0.[File_factrura]
+            ,t0.[File_despacho]
+            ,t0.[File_ordeVenta]
+            ,t0.[Delete]
+            ,t0.[Motivo_delete] 
+            ,T2.Status
+            ,CAST(T0.Create_date AS DATE) Create_date
+            ,CAST(T0.[update_date] AS DATE) [Update_date]
+    FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+    INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal 
+    INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+    INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+    INNER JOIN [dbo].[MASTER_STATES] T4 ON T3.ID_state = T4.ID_states
+    INNER JOIN [dbo].[MASTER_CITIES] T5 ON T3.ID_city = T5.ID_city 
+    INNER JOIN [dbo].[MASTER_MUNICIPALITY] T6 ON T3.ID_municipio = T6.ID_municipio
+    WHERE T0.ID_detalle = '${id}'`);
         if(rta){
             res.status(200)
             res.json(rta)
@@ -433,12 +437,7 @@ const deleteMasterOrder = async (req, res) => {
         }
       
         const idOrder = req.params.id;
-<<<<<<< HEAD
-=======
 
-        console.log(idOrder);
->>>>>>> 0a90b40da689c5b258d02b4c5160ba80e99374cf
-        
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(data ,{
             where: {ID_order: idOrder},
