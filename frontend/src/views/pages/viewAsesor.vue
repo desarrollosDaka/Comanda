@@ -1,33 +1,30 @@
 <script setup lang="ts">
+
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import Articulo from '../dashboard/components/Articulos.vue';
+import detallesComandaAsesor from '../dashboard/components/detallesComandaAsesor.vue';
 
 // component content
-const page = ref({ title: 'Actualizar Articulos' });
+const page = ref({ title: 'Comanda Asignadas' });
+
 const breadcrumbs = ref([
   {
-    title: 'Actualizar comanda',
-    disabled: true,
+    title: 'Comandas',
+    disabled: false,
     to: '#'
-  },
-  {
-    title: 'Actualizar pedidos',
-    disabled: true,
-    to: '#'
-  }
-]);
+  }]);
+
 </script>
 
 <template>
   <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
   <v-row>
-    <!-- TABLA -->
     <v-col cols="12" md="12">
-        
-        <Articulo />
-
+      <UiParentCard title="Datos de la comanda">
+        <detallesComandaAsesor/>
+      </UiParentCard>
     </v-col>
   </v-row>
 </template>
+
