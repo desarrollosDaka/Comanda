@@ -162,7 +162,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Cedula_autoriza: data.cedulaDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            File_cedula: req.file.filename 
+            //File_cedula: req.file.filename 
         };
 
 
@@ -192,6 +192,7 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+
 //OBTENER DETALLES DE COMANDA
 const filterOrderDetails = async (req, res) => {
     try {
@@ -220,34 +221,34 @@ const createOrderDetails = async (req, res) => {
     const data = req.body
 
     try {
-    const orderDetailData ={         
-            ID_detalle: data.Id_Comanda,
-            ID_producto: data.id_producto,
-            Producto: data.producto,
-            Unidades: data.unidades,
-            Precio: data.precio,
-            Subtotal:data.subtotal,
-        };
+        const orderDetailData ={         
+                ID_detalle: data.Id_Comanda,
+                ID_producto: data.id_producto,
+                Producto: data.producto,
+                Unidades: data.unidades,
+                Precio: data.precio,
+                Subtotal:data.subtotal,
+            };
 
-    let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto } });
-    if (product) {
-        // Actualiza el cliente existente
-        product = await product.update(orderDetailData);
-    } else {
-        // Crea un nuevo cliente
-        product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-    }
+        let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto } });
+        if (product) {
+            // Actualiza el cliente existente
+            product = await product.update(orderDetailData);
+        } else {
+            // Crea un nuevo cliente
+            product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+        }
 
-    //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+        //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
 
-    if( orderDetailData){
-        res.status(201)
-        res.json({product: product})
-    }else{
-        res.status(404)
-        res.json({msj: 'Error en la creación'})} 
-    }  catch (e) {
-        console.log('Error', e);
+        if( orderDetailData){
+            res.status(201)
+            res.json({product: product})
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la creación'})} 
+        }  catch (e) {
+            console.log('Error', e);
     }
 }
 
@@ -277,15 +278,12 @@ const deleteOrderDetails = async (req, res) => {
     }
 };
 
+
 //EDITAR CABECERA ORDENES Y CLIENTES
 const updateMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
-        const idOrder = req.params.id;
-        const fileNombre = req.body.doc_file;
-
-
-        console.log('idordr ', idOrder)
+        const idOrder = data.Id_Comanda
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -299,8 +297,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,
         };
 
-        console.log(newClients)
-        
         const UpdateOrder = {
             ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
@@ -314,19 +310,9 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
             Retencion: data.retencion,
-            Porc_retencion: data.porcentaje,
-           // File_cedula: req.file.filename 
-           File_cedula:req.file ? req.file.filename : '',
+            Porc_retencion: data.porcentaje
         };
 
-       
-        // if (req.file && req.file.doc_file) {
-        //     UpdateOrder.File_cedula = req.file.doc_file;
-        // }
-        // Validación para el campo filename
-        if(UpdateOrder.File_cedula === ''){
-            delete UpdateOrder.File_cedula
-        }
 
         // Comprueba si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
@@ -342,6 +328,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             where: { ID_detalle: idOrder },
         });
 
+
         if (order && client) {
             res.status(201);
             res.json({ order: order, clients: client });
@@ -354,6 +341,38 @@ const updateMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+
+const updateOrderDocument = async (req, res) => {
+
+    const files = req.files;
+
+    files.map((file, index) => {
+    const name = req.files[index].filename
+    const type = req.body[`typeDoc_${index}`]
+    })
+
+    
+    try {
+        const data = req.body;
+        const Id_Comanda = req.params.id;
+
+        const documentOrder = await ModelOrder.create({
+            ID_detalle: Id_Comanda,
+            typeDocument: data.doc_type,
+            User_crea: data.user_crea,
+        });
+        
+        
+        if (documentOrder) {
+            res.status(200).json({ message: 'Documento guardado correctamente' });
+        } else {
+            res.status(404).json({ msj: 'Error en la creación de Documento' });
+        }
+    } catch (e) {
+        console.log('Error', e);
+        res.status(500).json({ error: 'Error al guardar el documento' });
+    }
+};
 
 //FILTRO DE ASESOR 
 const filterMasterAsesor = async (req, res) => {
@@ -553,5 +572,6 @@ module.exports = {
     updateStatusOrder,
     //updateMasterOrder,
     deleteMasterOrder,
-    getMasterOrderDetails
+    getMasterOrderDetails,
+    updateOrderDocument
 };
