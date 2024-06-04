@@ -11,7 +11,7 @@ const search = ref('')
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
-const id = ref() // id de la COMANDA
+const id = ref() 
 id.value = route.params.id
 
 const info = ref([]);
@@ -29,7 +29,7 @@ const autorizado = ref('');
 const cedulaDos = ref('');
 const telefonoUno = ref('');
 const ID_pago = ref();
-const ID_status = ref('1');
+const ID_status = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
@@ -54,6 +54,7 @@ const getOrder = async () => {
             direccion.value = data[0][0]["Direccion"]
             referencia.value = 'frente athanassio'
             ID_delivery.value = data[0][0]["Tipo_delivery"]
+            ID_status.value = data[0][0]["ID_status"]
             autorizado.value = data[0][0]["Personal_autoriza"] 
             cedulaDos.value = data[0][0]["Cedula_autoriza"]
             telefonoUno.value = data[0][0]["Telefono"]  
@@ -78,16 +79,18 @@ const getArticulos = async () => {
   loadingInfo.value = false
 }
 
-const updateEstatus = async (id:string) => {
-    ID_status.value = '2'
-  try{
-      await axios.put(`${baseUrl}/updateStatusOrder/${id}`,{
-      status_comanda: ID_status.value
-    });
-    
-  } catch(error){
-      console.log(error)
-  }
+const updateEstatus = async () => {
+
+    ID_status.value = 2
+    try{
+        await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`,{
+            status_comanda: ID_status.value
+        });
+        
+    } catch(error){
+        console.log(error)
+    }
+
 }
 
 onMounted( async () => {
@@ -97,24 +100,24 @@ onMounted( async () => {
 
 function updateData(id:string){
     Swal.fire({
-        title: "¿Desea eliminar este dato?",
+        title: "¿Prefactura Creada?",
         text: "No podrás revertir esto!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Eliminar!"
+        confirmButtonText: "Si"
     }).then((result) => {
         if (result.isConfirmed) {
-            updateEstatus(id)
+            updateEstatus()
             Swal.fire({
-            title: "Eliminado!",
-            text: "Data eliminada con exito!",
+            title: "Prefactura Creada!",
+            text: "la comanda ha cambiado de estatus!",
             icon: "success",
             }).then((result) => {
             if (result.isConfirmed) {
-                location.reload();
+                router.push(`/maestroComandaAsignada`);
                 }
             });
     
@@ -149,7 +152,7 @@ function updateData(id:string){
         </v-col>
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Estatus</h2>
-            <p><b>Status de comanda:</b> Aprobada</p>
+            <p><b>Status de comanda:</b> {{ID_status}}</p>
             <p><b>Asesor:</b> Dilan Marcano</p>
         </v-col>
     </v-row>
@@ -187,7 +190,7 @@ function updateData(id:string){
 
     <v-row class="mb-0 mt-5">
         <v-col cols="12" md="12">
-            <v-btn append-icon="mdi-check-all" variant="elevated" color="primary">
+            <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary" @click="updateData">
                 Prefactura Creada
             </v-btn>
         </v-col>

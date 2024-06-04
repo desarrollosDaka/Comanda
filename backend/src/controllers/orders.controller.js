@@ -406,7 +406,7 @@ const updateMasterAsesor = async (req, res) => {
 const updateStatusOrder = async (req, res) => {
     try {
         const data = {
-            ID_status: data.ID_status
+            ID_status: req.body.status_comanda
         }
 
         const idUser = req.params.id;

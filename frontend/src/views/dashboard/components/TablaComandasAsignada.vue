@@ -107,13 +107,13 @@ const headers = ref([
 
     <!-- datatable -->
     <v-data-table 
-    hover 
-    density="comfortable"
-    v-model:search="search"
-    :loading="loadingInfo"
-    :items="info"
-    :headers="headers"
-    :no-data-text="'No hay datos disponibles'"
+        hover 
+        density="comfortable"
+        v-model:search="search"
+        :loading="loadingInfo"
+        :items="info"
+        :headers="headers"
+        :no-data-text="'No hay datos disponibles'"
     >
 
     <!-- view, update y delete -->
@@ -169,7 +169,7 @@ const headers = ref([
         </v-chip>
 
         <v-chip
-            variant="tonal"
+            variant="elevated"
             color="error"
             size="x-small"
             prepend-icon="mdi-timer-sand"
