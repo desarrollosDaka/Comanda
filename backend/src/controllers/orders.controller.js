@@ -162,7 +162,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Cedula_autoriza: data.cedulaDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            File_cedula: req.file.filename 
+            //File_cedula: req.file.filename 
         };
 
 
@@ -192,6 +192,7 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+
 //OBTENER DETALLES DE COMANDA
 const filterOrderDetails = async (req, res) => {
     try {
@@ -220,34 +221,34 @@ const createOrderDetails = async (req, res) => {
     const data = req.body
 
     try {
-    const orderDetailData ={         
-            ID_detalle: data.Id_Comanda,
-            ID_producto: data.id_producto,
-            Producto: data.producto,
-            Unidades: data.unidades,
-            Precio: data.precio,
-            Subtotal:data.subtotal,
-        };
+        const orderDetailData ={         
+                ID_detalle: data.Id_Comanda,
+                ID_producto: data.id_producto,
+                Producto: data.producto,
+                Unidades: data.unidades,
+                Precio: data.precio,
+                Subtotal:data.subtotal,
+            };
 
-    let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto } });
-    if (product) {
-        // Actualiza el cliente existente
-        product = await product.update(orderDetailData);
-    } else {
-        // Crea un nuevo cliente
-        product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-    }
+        let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto } });
+        if (product) {
+            // Actualiza el cliente existente
+            product = await product.update(orderDetailData);
+        } else {
+            // Crea un nuevo cliente
+            product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+        }
 
-    //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+        //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
 
-    if( orderDetailData){
-        res.status(201)
-        res.json({product: product})
-    }else{
-        res.status(404)
-        res.json({msj: 'Error en la creación'})} 
-    }  catch (e) {
-        console.log('Error', e);
+        if( orderDetailData){
+            res.status(201)
+            res.json({product: product})
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la creación'})} 
+        }  catch (e) {
+            console.log('Error', e);
     }
 }
 
@@ -346,31 +347,31 @@ const updateOrderDocument = async (req, res) => {
     const files = req.files;
 
     files.map((file, index) => {
-
     const name = req.files[index].filename
     const type = req.body[`typeDoc_${index}`]
-  
-    
-  
-
-
     })
 
     
-    // try {
-    //     const data = req.body;
-    //     const Id_Comanda = req.params.id; 
+    try {
+        const data = req.body;
+        const Id_Comanda = req.params.id;
 
-    //     const documentOrders = {
-    //         ID_detalle: Id_Comanda,
-    //         typeDocument:data.doc_type,
-    //         User_crea: data.user_crea,
-    //     };
-
-       
-    // } catch (e) {
-    //     console.log('Error', e);
-    // }
+        const documentOrder = await ModelOrder.create({
+            ID_detalle: Id_Comanda,
+            typeDocument: data.doc_type,
+            User_crea: data.user_crea,
+        });
+        
+        
+        if (documentOrder) {
+            res.status(200).json({ message: 'Documento guardado correctamente' });
+        } else {
+            res.status(404).json({ msj: 'Error en la creación de Documento' });
+        }
+    } catch (e) {
+        console.log('Error', e);
+        res.status(500).json({ error: 'Error al guardar el documento' });
+    }
 };
 
 //FILTRO DE ASESOR 
@@ -424,7 +425,7 @@ const updateMasterAsesor = async (req, res) => {
 const updateStatusOrder = async (req, res) => {
     try {
         const data = {
-            ID_status: data.ID_status
+            ID_status: req.body.status_comanda
         }
 
         const idUser = req.params.id;

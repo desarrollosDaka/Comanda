@@ -10,7 +10,8 @@ const masterDeliverySchema = {
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
-  Tipo_delivery: {
+  
+  Delivery_type: {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
