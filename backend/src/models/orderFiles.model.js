@@ -10,10 +10,6 @@ const masterOrderFilesSchema = {
     primaryKey: true,
     autoIncrement: true,
   },
-  ID_order: {
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
   ID_detalle: {
     allowNull: true,
     type: DataTypes.STRING(30),
@@ -22,7 +18,7 @@ const masterOrderFilesSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
-  File_Type: {
+  Type_File: {
     allowNull: true,
     type: DataTypes.STRING(50)
   },
