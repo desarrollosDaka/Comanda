@@ -51,9 +51,9 @@ const masterOrderSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
-  ID_sucursalDestino: {
+  SucursalZoom: {
     allowNull: true,
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(100),
   },
   Autoriza: {
     allowNull: true,
