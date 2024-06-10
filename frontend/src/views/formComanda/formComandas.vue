@@ -17,7 +17,7 @@ const ciudad = ref();
 const municipio = ref();
 const direccion = ref('');
 const referencia = ref('');
-const autorizado = ref('');
+const autorizado = ref(false);
 const cedulaDos = ref('');
 const telefonoUno = ref('');
 const ID_pago = ref();
@@ -31,39 +31,16 @@ const idComandaRandom = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
+const info_tiendas = ref();
+const info_Delivery = ref();
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
 const baseUrlCiudad = `${import.meta.env.VITE_URL}/api/cities`;
 const baseUrlMunicipio = `${import.meta.env.VITE_URL}/api/municipalities`;
+const baseUrlStore = `${import.meta.env.VITE_URL}/api/stores`;
 const baseUrlClients = `${import.meta.env.VITE_URL}/api/clients`;
-
-const tiendas = ref([
-    {
-        title: 'CDD',
-        value: '1',
-    },
-    {
-        title: 'AGENCIA VALENCIA',
-        value: '4',
-    }
-    ,{
-        title: 'SUCURSAL SAN DIEGO',
-        value: '3',
-    }
-    ,{
-        title: 'SUCURSAL BOLEITA',
-        value: '6',
-    }
-    ,{
-        title: 'SUCURSAL BELLO MONTE',
-        value: '5',
-    }
-    ,{
-        title: 'SUCURSAL SAN DIEGO',
-        value: '12',
-    }
-]);
+const baseUrlDelivery = `${import.meta.env.VITE_URL}/api/delivery`;
 
 const pagos = ref([
     {
@@ -186,18 +163,6 @@ interface Estado {
     Nombre: string;
     ID_states: string;
 }
-
-interface Muni {
-    Nombre: string;
-    ID_municipio: number;
-}
-
-interface Ciudad {
-  Nombre: string;
-  ID_city: number;
-
-}
-
 // api get
 async function getEstados(){
     try{
@@ -212,6 +177,10 @@ async function getEstados(){
     }
 }                                                           
 
+interface Muni {
+    Nombre: string;
+    ID_municipio: number;
+}
 // api get
 async function getMunicipio(){
     try{
@@ -225,6 +194,10 @@ async function getMunicipio(){
     }
 }
 
+interface Ciudad {
+    Nombre: string;
+    ID_city: number;
+}
 async function getCiudad(){
     try{
         const {data} = await axios.get(`${baseUrlCiudad}/masterCities`)
@@ -237,11 +210,41 @@ async function getCiudad(){
     }
 }
 
+interface Destino {
+    Sucursal: string;
+    ID_sucursal: number;
+}
+async function getSucursal(){
+    try{
+        const {data} = await axios.get(`${baseUrlStore}/masterStores`)
+        info_tiendas.value = data.map((destino: Destino) =>({
+            title: destino.Sucursal,
+            value: destino.ID_sucursal
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+interface Delivery {
+    Delivery_type: string;
+    ID_delivery: number;
+}
+async function getDelivery(){
+    try{
+        const {data} = await axios.get(`${baseUrlDelivery}/masterDelivery`)
+        info_Delivery.value = data.map((delivery: Delivery) =>({
+            title: delivery.Delivery_type,
+            value: delivery.ID_delivery
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+
 // Capturar la imagen
 const File = (event: any) => {
   doc_file.value = event.target.files[0];
 };
-
 
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -259,7 +262,7 @@ async function validate(values: any) {
     formData.append('doc_file', doc_file.value );
     formData.append('municipio', municipio.value);
     formData.append('direccion', direccion.value);
-    formData.append('autorizado', autorizado.value);
+    formData.append('autorizado', autorizado.value.toString());
     formData.append('cedulaDos', cedulaDos.value);
     formData.append('telefonoUno', telefonoUno.value);
     formData.append('ID_pago', ID_pago.value);
@@ -292,7 +295,6 @@ async function validate(values: any) {
                     router.push(`/addArticulos/${idComandaRandom.value}`); 
                 }
             }); 
-    
         }
     });
 }
@@ -311,6 +313,8 @@ onMounted( async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
+    await getSucursal();
+    await getDelivery();
     let cadenaAleatoria = generarCadenaAleatoria(20);
 
     idComandaRandom.value = cadenaAleatoria
@@ -325,7 +329,7 @@ onMounted( async () => {
 <!-- /////////////////////////////////////// CLIENTE ///////////////////////////////////////////////////// -->
         <v-row>
             <v-col cols="12" md="11">
-                <h4>id comanda: {{ idComandaRandom }} </h4>
+                <h4>Paso 1</h4>
             </v-col>
             <v-col cols="12" md="1">
                 <v-btn :disabled="!cedulaUno" color="primary" @click="searchModel">Buscar</v-btn>
@@ -485,14 +489,14 @@ onMounted( async () => {
         <h4>Paso 2</h4>
         <v-row>
             <v-col cols="12" md="6">
-                <v-label for="origen">Origen</v-label>
+                <v-label for="origen">Destino</v-label>
                 <v-autocomplete
                     id="origen"
                     placeholder="Origen de la comanda"
                     class="mt-2"
                     clearable
                     chips
-                    :items="tiendas"
+                    :items="info_tiendas"
                     variant="outlined"
                     :rules="origenRules"
                     aria-label="Name Documents"
@@ -541,7 +545,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="delivery"
+                    :items="info_Delivery"
                     variant="outlined"
                     :rules="metodoRules"
                     aria-label="delivery"
@@ -551,24 +555,33 @@ onMounted( async () => {
             </v-col>
         </v-row>
         <v-row>
-    
-            <v-col cols="12" md="6">
-                <v-label for="autorizado">Autorizado para recibir el envio</v-label>
+            <v-col cols="12" md="12">
+                <v-label for="direccion">Direccion del Delivery</v-label>
                 <v-text-field
-                    id="autorizado"
+                    id="direccion"
                     type="text"
-                    placeholder="Direccion Completa"
+                    placeholder="Direccion del Delivery"
                     variant="outlined"
                     aria-label="Name Documents"
                     class="mt-2 my-input"
-                    :rules="autorizadoRules"
-                    v-model="autorizado"
+                    v-model="direccion"
+                    :rules="direccionRules"
                     color="primary"
                 ></v-text-field>
             </v-col>
+        </v-row>
+        <v-row>
+    
+            <v-col cols="12" md="3">
+                <v-label for="autorizado">Autorizado para recibir el envio</v-label>
+                <v-switch 
+                    v-model="autorizado"
+                    color="primary"
+                ></v-switch>
+            </v-col>
 
-            <v-col cols="12" md="6">
-                <v-label for="cedulaDos">Cedula/Rif</v-label>
+            <v-col cols="12" md="4" v-if="autorizado == true">
+                <v-label for="cedulaDos">Cedula/Rif del Autorizado</v-label>
                 <v-text-field
                     id="cedulaDos"
                     type="number"
@@ -581,11 +594,9 @@ onMounted( async () => {
                     color="primary"
                 ></v-text-field>
             </v-col>
-    
-        </v-row>
-        <v-row>
-            <v-col cols="12" md="5">
-                <v-label for="telefono">Telefono 1</v-label>
+
+            <v-col cols="12" md="5" v-if="autorizado == true">
+                <v-label for="telefono">Telefono del Autorizado</v-label>
                 <v-text-field
                     id="telefono"
                     type="number"
@@ -598,8 +609,10 @@ onMounted( async () => {
                     color="primary"
                 ></v-text-field>
             </v-col>
-
-            <v-col cols="12" md="4">
+        </v-row>
+        <v-row>
+            
+            <v-col cols="12" md="6">
                 <v-label for="medioPago">Medio de Pago</v-label>
                 <v-autocomplete
                     id="medioPago"
@@ -616,7 +629,7 @@ onMounted( async () => {
                 ></v-autocomplete>
             </v-col>
 
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="6">
                 <v-label for="creado">Creado Por</v-label>
                 <v-text-field
                     disabled
