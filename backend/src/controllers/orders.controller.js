@@ -154,7 +154,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
-            SucursalZoom: data.SucursalZoom,
+            SucursalZoom: data.sucursalZoom,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
@@ -288,6 +288,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
+            Referencia: data.referencia,
             Telefono: data.telefonoUno,
             Telefono2: data.telefonoDos,
             ID_state: data.estado,
@@ -342,57 +343,94 @@ const updateMasterOrderAndDetails = async (req, res) => {
 };
 
 
+// const updateOrderDocument = async (req, res) => {
+
+//     const files = req.files;
+
+//     try {
+        
+//     files.map((file, index) => {
+//         const name = req.files[index].filename
+//         const type = req.body[`typeDoc_${index}`]
+//         })
+
+//         const data = req.body;
+//         const Id_Comanda = req.params.id;
+
+//         const documentOrder = await ModelOrder.create({
+//             ID_detalle: Id_Comanda,
+//             typeDocument: files.type,
+//             User_crea: data.user_crea,
+//         });
+        
+        
+//         if (documentOrder) {
+//             res.status(200).json({ message: 'Documento guardado correctamente' });
+//         } else {
+//             res.status(404).json({ msj: 'Error en la creación de Documento' });
+//         }
+//         } catch (e) {
+//             console.log('Error', e);
+//             res.status(500).json({ error: 'Error al guardar el documento' });
+//         }
+// };
+
 const updateOrderDocument = async (req, res) => {
-
     const files = req.files;
+    let documentOrder;
 
-    files.map((file, index) => {
-    const name = req.files[index].filename
-    const type = req.body[`typeDoc_${index}`]
-    })
-
-    
     try {
+        if (!Array.isArray(files)) {
+            throw new Error('files no es un array');
+        }
+
+        const fileData = files.map((file, index) => {
+            const name = file.filename; // Usar 'file' en lugar de 'req.files[index]'
+            const type = req.body[`typeDoc_${index}`];
+            return { name, type }; 
+        });
+
         const data = req.body;
         const Id_Comanda = req.params.id;
 
-        const documentOrder = await ModelOrder.create({
+        // 'files.type' no es correcto porque 'files' es un array. Se debe especificar qué archivo.
+
+        documentOrder = await ModelOrder.create({
             ID_detalle: Id_Comanda,
-            typeDocument: data.doc_type,
+            typeDocument: fileData[0].type, 
             User_crea: data.user_crea,
         });
-        
-        
+
         if (documentOrder) {
             res.status(200).json({ message: 'Documento guardado correctamente' });
         } else {
-            res.status(404).json({ msj: 'Error en la creación de Documento' });
+            res.status(404).json({ message: 'Error en la creación de Documento' });
         }
-    } catch (e) {
-        console.log('Error', e);
-        res.status(500).json({ error: 'Error al guardar el documento' });
-    }
+        } catch (e) {
+            console.log('Error', e);
+            res.status(500).json({ message: 'Error al guardar el documento' });
+        }
 };
 
 //FILTRO DE ASESOR 
 const filterMasterAsesor = async (req, res) => {
     try {
         const rta = await sequelize.query(
-            `SELECT [ID_user]
-                   ,[Nombre]
+            `SELECT [ID_user]  
+                    ,[Nombre]
             FROM [COMANDA_TEST].[dbo].[MASTER_USER]
             WHERE Nombre_rol = 'Asesor'`);
-        if(rta){
-            res.status(200)
+        if(rta){ 
+            res.status(200) 
             res.json(rta)
         }else{
             res.status(404)
-            res.json({msj: 'Error en la consulta'})
+            res.json({msj: 'Error en la consulta'}) 
         } 
 
-    } catch (e) {
-        console.log('Error', e);
-    }
+        } catch (e) {
+            console.log('Error', e);
+        } 
 }
 
 //UPDATE ASESOR ASIGNADO A COMANDA 
