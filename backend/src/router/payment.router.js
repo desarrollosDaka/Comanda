@@ -14,7 +14,6 @@ const {
 // const {checkRoleAuth} = require("../middleware/roleAuth");
 
 // Select user
-
 router.get("/masterPayment", getMasterPayment);
 // Filter user
 router.get("/filterPayment/:id", filterMasterPayment);

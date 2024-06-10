@@ -3,7 +3,13 @@ const sequelize = require("../config/conexion");
 // get user
 const getMasterStores = async (req, res) => {
     try {
-        const rta = await sequelize.models.modelStores.findAll();
+      //  const rta = await sequelize.models.modelStores.findAll();
+      const rta = await sequelize.query(
+        `SELECT ID_sucursal
+            ,Sucursal
+            ,SucursalZoom 
+        FROM [dbo].[MASTER_STORES]
+        WHERE SucursalZoom != ' '`);
         if(rta){
             res.status(201)
             res.json(rta)
