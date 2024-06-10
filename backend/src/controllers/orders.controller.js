@@ -1,10 +1,5 @@
 const sequelize = require("../config/conexion");
 
-
-
-
-
-
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
     try {
@@ -139,7 +134,9 @@ const createMasterOrderAndDetails = async (req, res) => {
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
+            Referencia: data.referencia,
             Telefono: data.telefonoUno,
+            Telefono2: data.telefonoDos,
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
@@ -157,6 +154,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
+            SucursalZoom: data.SucursalZoom,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
@@ -291,6 +289,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
             Telefono: data.telefonoUno,
+            Telefono2: data.telefonoDos,
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
@@ -306,6 +305,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
+            SucursalZoom: data.SucursalZoom,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,

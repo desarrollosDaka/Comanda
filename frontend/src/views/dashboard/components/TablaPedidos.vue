@@ -46,15 +46,14 @@ const deleteDocuments = async (id:string) => {
     if(response){
       dialog.value = false
       Swal.fire({
-            title: "Comanda eliminada",
-            text: "Se acaba de eliminar una comanda",
-            icon: "success"
-          }).then((result) => {
-              if(result.isConfirmed) {
-                location.reload();
-              }
-          });
-
+        title: "Comanda eliminada",
+        text: "Se acaba de eliminar una comanda",
+        icon: "success"
+      }).then((result) => {
+          if(result.isConfirmed) {
+            location.reload();
+          }
+      });
     }
         
     } catch(error){
