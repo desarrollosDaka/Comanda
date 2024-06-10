@@ -184,7 +184,6 @@ function updateData(id:string){
                     </tbody>
                 </v-table>
                 </v-col>
-            
             </v-row>
     </UiTitleCard>
 
