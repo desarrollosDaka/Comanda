@@ -1,10 +1,5 @@
 const sequelize = require("../config/conexion");
 
-
-
-
-
-
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
     try {
