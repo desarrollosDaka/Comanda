@@ -390,7 +390,7 @@ const updateOrderDocument = async (req, res) => {
         }
 
         const fileData = files.map((file, index) => {
-            const name = file.filename; // Usar 'file' en lugar de 'req.files[index]'
+            const name = file.filename; 
             const type = req.body[`typeDoc_${index}`];
             return { name, type }; 
         });
