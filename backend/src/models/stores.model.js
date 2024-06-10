@@ -22,6 +22,11 @@ const masterStoresSchema = {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
+  SucursalZoom: {
+    allowNull: true,
+    type: DataTypes.STRING(200),
+  },
+  
 
 
 };
