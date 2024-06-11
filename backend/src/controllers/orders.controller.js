@@ -183,6 +183,30 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+<<<<<<< HEAD
+//OBTENER DETALLES DE LOS ARCHIVOS DE LA COMANDA
+const filterOrderDetailsFiles = async (req, res) => {
+    try {
+        const id = req.params.id; 
+
+        const rta = await sequelize.query(
+            `SELECT *
+            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+            WHERE [ID_detalle] = '${id}'`);
+        if(rta){
+            res.status(200)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        } 
+
+    } catch (e) {
+        console.log('Error', e);
+    }
+}
+=======
+>>>>>>> origin/QA_main
 
 //OBTENER DETALLES DE COMANDA
 const filterOrderDetails = async (req, res) => {
@@ -191,7 +215,7 @@ const filterOrderDetails = async (req, res) => {
 
         const rta = await sequelize.query(
             `SELECT *
-            FROM [COMANDA_TEST].[dbo].[ORDERS_DETAILS]
+            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
             WHERE [ID_detalle] = '${id}'`);
         if(rta){
             res.status(200)
@@ -336,10 +360,16 @@ const updateMasterOrderAndDetails = async (req, res) => {
 };
 
 
+<<<<<<< HEAD
+const createOrderDocument = async (req, res) => {
+=======
 /*const createOrderDocument = async (req, res) => {
     
+>>>>>>> origin/QA_main
 
+    const data = req.body;
     const files = req.files;
+    const Id_Comanda = req.params.id;
 
     try {
         
@@ -348,6 +378,24 @@ const updateMasterOrderAndDetails = async (req, res) => {
         const type = req.body[`typeDoc_${index}`]
         })
 
+<<<<<<< HEAD
+    const name = req.files[index].filename
+    const type = req.body[`typeDoc_${index}`]
+    const user = req.body[`user_${index}`]
+  
+        const ordersFiles = {
+            ID_detalle: Id_Comanda,
+            Type_File:type,
+            File:name,
+            User_crea: user
+        };
+
+
+        console.log(ordersFiles)
+    })
+
+  
+=======
         const data = req.body;
         const Id_Comanda = req.params.id;
 
@@ -433,6 +481,7 @@ const deleteOrderDocument = async (req, res) => {
         console.error('Error al eliminar el documento y registro', error);
         res.status(500).json({ message: 'Error al eliminar el documento y registro' });
     }
+>>>>>>> origin/QA_main
 };
 
 //FILTRO DE ASESOR 
@@ -635,5 +684,9 @@ module.exports = {
     deleteMasterOrder,
     getMasterOrderDetails,
     createOrderDocument,
+<<<<<<< HEAD
+    filterOrderDetailsFiles,
+=======
     deleteOrderDocument
+>>>>>>> origin/QA_main
 };

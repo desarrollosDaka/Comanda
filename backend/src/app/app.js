@@ -2,6 +2,8 @@ const cors = require("cors");
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
+const path = require('path');
+
 // rutas
 const routerUsers = require("../router/user.router");
 const routerAuth = require("../router/auth.router");
@@ -17,11 +19,14 @@ const routerDelivery = require("../router/delivery.router");
 const routerPayment = require("../router/payment.router");
 const routerProducts = require("../router/products.router");
 
-
 // Middlewares
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
+///////////////////////////////////////////ANDERSON///////////////////////////////
+app.use(express.urlencoded({ extended: true}));
+app.use('/public', express.static(path.join(__dirname, '../../uploads')));
+///////////////////////////////////////////FIN///////////////////////////////
 
 app.use("/api/users", routerUsers);
 app.use("/api/roles", routerRoles);
