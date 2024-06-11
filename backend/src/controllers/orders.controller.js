@@ -92,11 +92,6 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[Retencion]
                     ,t0.[Porc_retencion]
                     ,t0.[File_cedula]
-                    ,t0.[File_pago]
-                    ,t0.[File_retencion]
-                    ,t0.[File_factrura]
-                    ,t0.[File_despacho]
-                    ,t0.[File_ordeVenta]
                     ,t0.[Delete]
                     ,t0.[Motivo_delete]	
                     ,T2.Status
@@ -162,8 +157,6 @@ const createMasterOrderAndDetails = async (req, res) => {
             Porc_retencion: data.porcentaje,
             //File_cedula: req.file.filename 
         };
-
-
 
         // Comprobar si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
