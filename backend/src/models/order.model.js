@@ -12,7 +12,7 @@ const masterOrderSchema = {
     autoIncrement: true,
   },
   ID_detalle: {
-    allowNull: true,
+    allowNull: true, 
     type: DataTypes.STRING(30),
   },
   ID_sucursal: {
@@ -50,6 +50,10 @@ const masterOrderSchema = {
   Tipo_delivery: {
     allowNull: false,
     type: DataTypes.STRING(100),
+  },
+  SucursalZoom: {
+    allowNull: true,
+    type: DataTypes.STRING(200),
   },
   Autoriza: {
     allowNull: true,

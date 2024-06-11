@@ -1,10 +1,5 @@
 const sequelize = require("../config/conexion");
-
-
-
-
-
-
+const fs = require('fs').promises;
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
     try {
@@ -67,6 +62,7 @@ const filterMasterOrder = async (req, res) => {
         const id = req.params.id; 
   
         const rta = await sequelize.query(
+
             `SELECT DISTINCT	 
                     T0.[ID_order]
                     ,T0.ID_detalle
@@ -133,7 +129,9 @@ const createMasterOrderAndDetails = async (req, res) => {
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
+            Referencia: data.referencia,
             Telefono: data.telefonoUno,
+            Telefono2: data.telefonoDos,
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
@@ -142,6 +140,7 @@ const createMasterOrderAndDetails = async (req, res) => {
 
         // Crear un objeto con los datos del pedido
         const newOrder = {
+            ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
             ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
@@ -150,12 +149,13 @@ const createMasterOrderAndDetails = async (req, res) => {
             User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
+            SucursalZoom: data.sucursalZoom,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            File_cedula: req.file.filename 
+            //File_cedula: req.file.filename 
         };
 
 
@@ -185,6 +185,7 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+<<<<<<< HEAD
 //OBTENER DETALLES DE LOS ARCHIVOS DE LA COMANDA
 const filterOrderDetailsFiles = async (req, res) => {
     try {
@@ -206,6 +207,8 @@ const filterOrderDetailsFiles = async (req, res) => {
         console.log('Error', e);
     }
 }
+=======
+>>>>>>> origin/QA_main
 
 //OBTENER DETALLES DE COMANDA
 const filterOrderDetails = async (req, res) => {
@@ -235,34 +238,34 @@ const createOrderDetails = async (req, res) => {
     const data = req.body
 
     try {
-    const orderDetailData ={         
-            ID_detalle: data.Id_Comanda,
-            ID_producto: data.id_producto,
-            Producto: data.producto,
-            Unidades: data.unidades,
-            Precio: data.precio,
-            Subtotal:data.subtotal,
-        };
+        const orderDetailData ={         
+                ID_detalle: data.Id_Comanda,
+                ID_producto: data.id_producto,
+                Producto: data.producto,
+                Unidades: data.unidades,
+                Precio: data.precio,
+                Subtotal:data.subtotal,
+            };
 
-    let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto } });
-    if (product) {
-        // Actualiza el cliente existente
-        product = await product.update(orderDetailData);
-    } else {
-        // Crea un nuevo cliente
-        product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-    }
+        let product = await sequelize.models.modelOrdersdetails.findOne({ where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto } });
+        if (product) {
+            // Actualiza el cliente existente
+            product = await product.update(orderDetailData);
+        } else {
+            // Crea un nuevo cliente
+            product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+        }
 
-    //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+        //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
 
-    if( orderDetailData){
-        res.status(201)
-        res.json({product: product})
-    }else{
-        res.status(404)
-        res.json({msj: 'Error en la creación'})} 
-    }  catch (e) {
-        console.log('Error', e);
+        if( orderDetailData){
+            res.status(201)
+            res.json({product: product})
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la creación'})} 
+        }  catch (e) {
+            console.log('Error', e);
     }
 }
 
@@ -304,7 +307,9 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
+            Referencia: data.referencia,
             Telefono: data.telefonoUno,
+            Telefono2: data.telefonoDos,
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
@@ -320,6 +325,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
+            SucursalZoom: data.SucursalZoom,
             Autoriza: data.P_autorizado,
             Personal_autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
@@ -356,14 +362,25 @@ const updateMasterOrderAndDetails = async (req, res) => {
 };
 
 
+<<<<<<< HEAD
 const createOrderDocument = async (req, res) => {
+=======
+/*const createOrderDocument = async (req, res) => {
+    
+>>>>>>> origin/QA_main
 
     const data = req.body;
     const files = req.files;
     const Id_Comanda = req.params.id;
 
+    try {
+        
     files.map((file, index) => {
+        const name = req.files[index].filename
+        const type = req.body[`typeDoc_${index}`]
+        })
 
+<<<<<<< HEAD
     const name = req.files[index].filename
     const type = req.body[`typeDoc_${index}`]
     const user = req.body[`user_${index}`]
@@ -380,27 +397,114 @@ const createOrderDocument = async (req, res) => {
     })
 
   
+=======
+        const data = req.body;
+        const Id_Comanda = req.params.id;
+
+        const documentOrder = await ModelOrder.create({
+            ID_detalle: Id_Comanda,
+            typeDocument: files.type,
+            User_crea: data.user_crea,
+        });
+        
+        
+        if (documentOrder) {
+            res.status(200).json({ message: 'Documento guardado correctamente' });
+        } else {
+            res.status(404).json({ msj: 'Error en la creación de Documento' });
+        }
+        } catch (e) {
+            console.log('Error', e);
+            res.status(500).json({ error: 'Error al guardar el documento' });
+        }
+};*/
+
+//INSERTAR ARCHIVOS A LA TABLA ARCHIVOS
+const createOrderDocument = async (req, res) => {
+    const files = req.files;
+    let documentOrder;
+
+    try {
+        if (!Array.isArray(files)) {
+            throw new Error('files no es un array');
+        }
+
+        const fileData = files.map((file, index) => {
+            const name = file.filename; 
+            const type = req.body[`typeDoc_${index}`];
+            return { name, type }; 
+        });
+
+        const data = req.body;
+        const Id_Comanda = req.params.id;
+
+        for (const file of fileData) {
+            documentOrder = await modelOrdersFiles.create({
+                ID_detalle: Id_Comanda,
+                File: file.name, 
+                Type_File: file.type, 
+                User_crea: data.user_crea,
+            });
+        }
+
+        if (documentOrder) {
+            res.status(200).json({ message: 'Documento(s) guardado(s) correctamente' });
+        } else {
+            res.status(404).json({ message: 'Error en la creación de Documento' });
+        }
+    } catch (e) {
+        console.error('Error al guardar el documento', e.message);
+        res.status(500).json({ message: 'Error al guardar el documento' });
+    }
+};
+
+
+//BORRAR ARCHVIOS DE LA TABLA ARCHIVOS
+const deleteOrderDocument = async (req, res) => {
+    //const { id } = req.params; 
+    const Id = req.params.id;
+
+    try {
+        // Encuentra el registro en la base de datos
+        const documentOrder = await modelOrdersfiles.findOne({ where: {ID_detalle: Id }});
+
+        if (!documentOrder) {
+            return res.status(404).json({ message: 'Documento no encontrado' });
+        }
+
+        // Elimina el archivo del sistema de archivos
+        await fs.unlink(`uploads/${documentOrder.name}`);
+
+        // Elimina el registro de la base de datos
+        await documentOrder.destroy();
+
+        res.status(200).json({ message: 'Documento y registro eliminados correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar el documento y registro', error);
+        res.status(500).json({ message: 'Error al eliminar el documento y registro' });
+    }
+>>>>>>> origin/QA_main
 };
 
 //FILTRO DE ASESOR 
 const filterMasterAsesor = async (req, res) => {
     try {
         const rta = await sequelize.query(
-            `SELECT [ID_user]
-                   ,[Nombre]
+            `SELECT [ID_user]  
+                    ,[Nombre]
             FROM [COMANDA_TEST].[dbo].[MASTER_USER]
             WHERE Nombre_rol = 'Asesor'`);
-        if(rta){
-            res.status(200)
+        if(rta){ 
+            res.status(200) 
             res.json(rta)
         }else{
             res.status(404)
-            res.json({msj: 'Error en la consulta'})
+            res.json({msj: 'Error en la consulta'}) 
         } 
 
-    } catch (e) {
-        console.log('Error', e);
-    }
+        } catch (e) {
+            console.log('Error', e);
+        } 
 }
 
 //UPDATE ASESOR ASIGNADO A COMANDA 
@@ -414,6 +518,32 @@ const updateMasterAsesor = async (req, res) => {
       
         const rta = await sequelize.models.modelOrders.update(data,{
             where: {ID_order: idUser},
+          });
+
+        if(rta){
+            res.status(200)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        } 
+
+        } catch (e) {
+            console.log('Error', e);
+        }
+}
+
+//UPDATE ASESOR ASIGNADO A COMANDA 
+const updateStatusOrder = async (req, res) => {
+    try {
+        const data = {
+            ID_status: req.body.status_comanda
+        }
+
+        const idUser = req.params.id;
+      
+        const rta = await sequelize.models.modelOrders.update(data,{
+            where: {ID_detalle: idUser},
           });
 
         if(rta){
@@ -500,7 +630,7 @@ const deleteMasterOrder = async (req, res) => {
 
         console.log(idOrder);
        // console.log(data);
-        
+       
        // const userUpdate = req.body;
         const rta = await sequelize.models.modelOrders.update(data ,{
             where: {ID_order: idOrder},
@@ -551,9 +681,14 @@ module.exports = {
     updateMasterOrderAndDetails,
     updateMasterOrderDetails,
     updateMasterAsesor,
+    updateStatusOrder,
     //updateMasterOrder,
     deleteMasterOrder,
     getMasterOrderDetails,
     createOrderDocument,
+<<<<<<< HEAD
     filterOrderDetailsFiles,
+=======
+    deleteOrderDocument
+>>>>>>> origin/QA_main
 };

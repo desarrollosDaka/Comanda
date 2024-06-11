@@ -2,18 +2,13 @@
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import Articulo from '../dashboard/components/Articulos.vue';
+import tabla from '../dashboard/components/TablaComandasAsignada.vue';
 
 // component content
-const page = ref({ title: 'Actualizar Articulos' });
+const page = ref({ title: 'Comandas Asignadas' });
 const breadcrumbs = ref([
   {
-    title: 'Actualizar comanda',
-    disabled: true,
-    to: '#'
-  },
-  {
-    title: 'Actualizar pedidos',
+    title: 'Comandas',
     disabled: true,
     to: '#'
   }
@@ -25,9 +20,8 @@ const breadcrumbs = ref([
   <v-row>
     <!-- TABLA -->
     <v-col cols="12" md="12">
-        
-        <Articulo />
-
+        <!-- tabla -->
+        <tabla />
     </v-col>
   </v-row>
 </template>

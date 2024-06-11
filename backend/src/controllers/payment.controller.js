@@ -1,15 +1,9 @@
 const sequelize = require("../config/conexion");
 
 // get user
-const getMasterStores = async (req, res) => {
+const getMasterPayment = async (req, res) => {
     try {
-      //  const rta = await sequelize.models.modelStores.findAll();
-      const rta = await sequelize.query(
-        `SELECT ID_sucursal
-            ,Sucursal
-            ,SucursalZoom 
-        FROM [dbo].[MASTER_STORES]
-        WHERE SucursalZoom != ' '`);
+        const rta = await sequelize.models.modelPayment.findAll();
         if(rta){
             res.status(201)
             res.json(rta)
@@ -24,10 +18,10 @@ const getMasterStores = async (req, res) => {
 
 
 // get filter user
-const filterMasterStores = async (req, res) => {
+const filterMasterPayment = async (req, res) => {
     try {
-        const id = req.params.ID_sucursal; 
-        const rta = await sequelize.models.modelStores.findOne({
+        const id = req.params.ID_Payment; 
+        const rta = await sequelize.models.modelPayment.findOne({
             where: {
                 id : id,
             }, 
@@ -51,7 +45,7 @@ const filterMasterStores = async (req, res) => {
 //     try {
 //         const idUser = req.params.ID_user;
 //         const userUpdate = req.body;
-//         const rta = await sequelize.models.modelStores.update(userUpdate,{
+//         const rta = await sequelize.models.modelPayment.update(userUpdate,{
 //             where: {id: idUser},
 //           });
 
@@ -72,7 +66,7 @@ const filterMasterStores = async (req, res) => {
 // const deleteMasterUser = async (req, res) => {
 //     try {
 //         const idUser = req.params.ID_user;
-//         const rta = await sequelize.models.modelStores.destroy({where: { id: idUser }});
+//         const rta = await sequelize.models.modelPayment.destroy({where: { id: idUser }});
 
 //         if(rta){
 //             return res.status(200).rta
@@ -87,8 +81,8 @@ const filterMasterStores = async (req, res) => {
 
 // Export controllers
 module.exports = {
-    getMasterStores,
-    filterMasterStores,
+    getMasterPayment,
+    filterMasterPayment,
     // updateMasterUser,
     // deleteMasterUser
 };

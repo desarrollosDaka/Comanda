@@ -1,11 +1,9 @@
 <script setup lang="ts">
-
 import { Form } from 'vee-validate';
-import { ref, computed, onMounted, shallowRef } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import { router } from '@/router';
-
 
 // variables
 const valid = ref(false);
@@ -18,10 +16,12 @@ const estado = ref();
 const ciudad = ref();
 const municipio = ref();
 const direccion = ref('');
+const direccionZoom = ref();
 const referencia = ref('');
-const autorizado = ref('');
+const autorizado = ref(false);
 const cedulaDos = ref('');
 const telefonoUno = ref('');
+const telefonoDos = ref('');
 const ID_pago = ref();
 const user_crea = ref();
 const doc_file = ref();
@@ -30,72 +30,43 @@ const info_muni = ref();
 const info_ciudad = ref();
 const ID_status = ref('1');
 const idComandaRandom = ref();
+const deliveryZoom = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
+const info_tiendas = ref();
+const info_Delivery = ref();
+const info_Payment = ref();
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
 const baseUrlCiudad = `${import.meta.env.VITE_URL}/api/cities`;
 const baseUrlMunicipio = `${import.meta.env.VITE_URL}/api/municipalities`;
+const baseUrlStore = `${import.meta.env.VITE_URL}/api/stores`;
 const baseUrlClients = `${import.meta.env.VITE_URL}/api/clients`;
+const baseUrlDelivery = `${import.meta.env.VITE_URL}/api/delivery`;
+const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 
-// let ProccesAndType = computed(() => `${doc_process.value}-${doc_type.value}`);
-
-const tiendas = ref([
+const CodigoZoom = ref([
     {
-        title: 'CDD',
-        value: '1',
+        title: 'Sucursal Valencia - 887654',
+        value: '887654',
     },
     {
-        title: 'AGENCIA VALENCIA',
-        value: '4',
+        title: 'Sucursal Barquisimeto - 465754',
+        value: '465754',
     }
     ,{
-        title: 'SUCURSAL SAN DIEGO',
-        value: '3',
+        title: 'Sucursal Valle la Pascua - 965554',
+        value: '965554',
     }
     ,{
-        title: 'SUCURSAL BOLEITA',
-        value: '6',
+        title: 'Sucursal San Diego - 9364654',
+        value: '9364654',
     }
     ,{
-        title: 'SUCURSAL BELLO MONTE',
-        value: '5',
-    }
-    ,{
-        title: 'SUCURSAL SAN DIEGO',
-        value: '12',
-    }
-]);
-
-const pagos = ref([
-    {
-        title: 'PAGO MOVIL',
-        value: '2',
-    },
-    {
-        title: 'ZELLE',
-        value: '3',
-    }
-    ,{
-        title: 'TRANSFERENCIA BANCARIA',
-        value: '1',
-    }
-]);
-
-const delivery = ref([
-    {
-        title: 'ZOOM',
-        value: '2',
-    },
-    {
-        title: 'MRW',
-        value: '3',
-    }
-    ,{
-        title: 'PICK-UP',
-        value: '1',
+        title: 'Sucursal Maracaibo - 2266754',
+        value: '2266754',
     }
 ]);
 
@@ -106,10 +77,10 @@ if (jsonFromLocalStorage !== null) {
   user_crea.value = parsedData.data.Nombre;
 } 
 
-// validaciones
+/// validaciones
 const origenRules = ref([
   (v: string) => !!v || 'El origen del cliente es requerido'
-]);
+]); 
 const tipoRules = ref([
   (v: string) => !!v || 'El tipo de cliente es requerido',
 ]);
@@ -154,13 +125,14 @@ const fileRules = ref([
     (v: any) => !!v || 'El archivo es requerido', 
 ]);
 
+
 // api post
 async function Created(json: any){
     try{
         await axios.post(`${baseUrl}/createOrder`, json)
     } catch(error){
         console.log(error)
-    }
+    } 
 }
 
 // BUSCADOR DE CLIENTES
@@ -190,18 +162,6 @@ interface Estado {
     Nombre: string;
     ID_states: string;
 }
-
-interface Muni {
-    Nombre: string;
-    ID_municipio: number;
-}
-
-interface Ciudad {
-  Nombre: string;
-  ID_city: number;
-
-}
-
 // api get
 async function getEstados(){
     try{
@@ -216,6 +176,10 @@ async function getEstados(){
     }
 }                                                           
 
+interface Muni {
+    Nombre: string;
+    ID_municipio: number;
+}
 // api get
 async function getMunicipio(){
     try{
@@ -229,12 +193,64 @@ async function getMunicipio(){
     }
 }
 
+interface Ciudad {
+    Nombre: string;
+    ID_city: number;
+}
 async function getCiudad(){
     try{
         const {data} = await axios.get(`${baseUrlCiudad}/masterCities`)
-        info_ciudad.value = data.map((ciudad: Ciudad) => ({
+        info_ciudad.value = data.map((ciudad: Ciudad) =>({
             title: ciudad.Nombre,
             value: ciudad.ID_city
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+
+interface Destino {
+    Sucursal: string;
+    ID_sucursal: number;
+}
+async function getSucursal(){
+    try{
+        const {data} = await axios.get(`${baseUrlStore}/masterStores`)
+        info_tiendas.value = data.map((destino: Destino) =>({
+            title: destino.Sucursal,
+            value: destino.ID_sucursal
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+interface Delivery {
+    Delivery_type: string;
+    ID_delivery: number;
+}
+
+async function getDelivery(){
+    try{
+        const {data} = await axios.get(`${baseUrlDelivery}/masterDelivery`)
+        info_Delivery.value = data.map((delivery: Delivery) =>({
+            title: delivery.Delivery_type,
+            value: delivery.ID_delivery
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+
+interface Payment{
+    Pago: string;
+    ID_Pago: number;
+}
+async function getPayment(){
+    try{
+        const {data} = await axios.get(`${baseUrlPayment}/masterPayment`)
+        info_Payment.value = data.map((payment: Payment) =>({
+            title: payment.Pago,
+            value: payment.ID_Pago
         }));
     } catch(error){
         console.log(error)
@@ -246,11 +262,9 @@ const File = (event: any) => {
   doc_file.value = event.target.files[0];
 };
 
-
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
-
     let formData = new FormData();
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
     formData.append('Id_Comanda', idComandaRandom.value);
@@ -264,9 +278,11 @@ async function validate(values: any) {
     formData.append('doc_file', doc_file.value );
     formData.append('municipio', municipio.value);
     formData.append('direccion', direccion.value);
-    formData.append('autorizado', autorizado.value);
+    formData.append('direccionZoom', direccionZoom.value);
+    formData.append('autorizado', autorizado.value.toString());
     formData.append('cedulaDos', cedulaDos.value);
     formData.append('telefonoUno', telefonoUno.value);
+    formData.append('telefonoDos', telefonoDos.value);
     formData.append('ID_pago', ID_pago.value);
     formData.append('ID_status', ID_status.value);
     formData.append('retencion', retencion.value.toString());
@@ -297,7 +313,6 @@ async function validate(values: any) {
                     router.push(`/addArticulos/${idComandaRandom.value}`); 
                 }
             }); 
-    
         }
     });
 }
@@ -316,8 +331,10 @@ onMounted( async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
+    await getSucursal();
+    await getDelivery();
+    await getPayment();
     let cadenaAleatoria = generarCadenaAleatoria(20);
-
     idComandaRandom.value = cadenaAleatoria
 });
 
@@ -330,7 +347,7 @@ onMounted( async () => {
 <!-- /////////////////////////////////////// CLIENTE ///////////////////////////////////////////////////// -->
         <v-row>
             <v-col cols="12" md="11">
-                <h4>id comanda: {{ idComandaRandom }} </h4>
+                <h4>Paso 1</h4>
             </v-col>
             <v-col cols="12" md="1">
                 <v-btn :disabled="!cedulaUno" color="primary" @click="searchModel">Buscar</v-btn>
@@ -399,7 +416,7 @@ onMounted( async () => {
         </v-row>
 
         <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
                 <v-label for="email">Email</v-label>
                 <v-text-field
                     id="email"
@@ -414,7 +431,7 @@ onMounted( async () => {
                 ></v-text-field>
             </v-col>
         
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
                 <v-label for="name">Nombre Completo</v-label>
                 <v-text-field
                     id="name"
@@ -425,6 +442,20 @@ onMounted( async () => {
                     class="mt-2 my-input"
                     :rules="nombreCompletoRules"
                     v-model="nombreCompleto"
+                    color="primary"
+                ></v-text-field>
+            </v-col>
+
+             <v-col cols="12" md="4">
+                <v-label for="telefonoCliente">Telefono</v-label>
+                <v-text-field
+                    id="telefonoCliente"
+                    type="number"
+                    placeholder="Numero Telefonico del cliente"
+                    variant="outlined"
+                    class="mt-2"
+                    :rules="telefonoRules"
+                    v-model="telefonoUno"
                     color="primary"
                 ></v-text-field>
             </v-col>
@@ -490,14 +521,14 @@ onMounted( async () => {
         <h4>Paso 2</h4>
         <v-row>
             <v-col cols="12" md="6">
-                <v-label for="origen">Origen</v-label>
+                <v-label for="origen">Destino</v-label>
                 <v-autocomplete
                     id="origen"
                     placeholder="Origen de la comanda"
                     class="mt-2"
                     clearable
                     chips
-                    :items="tiendas"
+                    :items="info_tiendas"
                     variant="outlined"
                     :rules="origenRules"
                     aria-label="Name Documents"
@@ -546,7 +577,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="delivery"
+                    :items="info_Delivery"
                     variant="outlined"
                     :rules="metodoRules"
                     aria-label="delivery"
@@ -556,24 +587,34 @@ onMounted( async () => {
             </v-col>
         </v-row>
         <v-row>
-    
-            <v-col cols="12" md="6">
-                <v-label for="autorizado">Autorizado para recibir el envio</v-label>
-                <v-text-field
-                    id="autorizado"
-                    type="text"
-                    placeholder="Direccion Completa"
+            <v-col cols="12" md="12" v-if="ID_delivery == 'ZOOM TIENDA'">
+                <v-label for="direccion">Direccion del Delivery</v-label>
+                <v-autocomplete
+                    id="direccion"
+                    placeholder="Seleccione la Direccion del Delivery"
+                    class="mt-2"
+                    clearable
+                    chips
+                    :items="CodigoZoom"
                     variant="outlined"
-                    aria-label="Name Documents"
-                    class="mt-2 my-input"
-                    :rules="autorizadoRules"
+                    aria-label="delivery"
+                    color="primary"
+                    v-model="direccionZoom"
+                ></v-autocomplete>
+            </v-col>
+        </v-row>
+        <v-row>
+    
+            <v-col cols="12" md="3">
+                <v-label for="autorizado">Autorizado para recibir el envio</v-label>
+                <v-switch 
                     v-model="autorizado"
                     color="primary"
-                ></v-text-field>
+                ></v-switch>
             </v-col>
 
-            <v-col cols="12" md="6">
-                <v-label for="cedulaDos">Cedula/Rif</v-label>
+            <v-col cols="12" md="4" v-if="autorizado == true">
+                <v-label for="cedulaDos">Cedula/Rif del Autorizado</v-label>
                 <v-text-field
                     id="cedulaDos"
                     type="number"
@@ -586,25 +627,24 @@ onMounted( async () => {
                     color="primary"
                 ></v-text-field>
             </v-col>
-    
-        </v-row>
-        <v-row>
-            <v-col cols="12" md="5">
-                <v-label for="telefono">Telefono 1</v-label>
+
+            <v-col cols="12" md="5" v-if="autorizado == true">
+                <v-label for="telefono">Telefono del Autorizado</v-label>
                 <v-text-field
                     id="telefono"
                     type="number"
-                    placeholder="Direccion Completa"
+                    placeholder="Telefono del autorizado"
                     variant="outlined"
-                    aria-label="Name Documents"
                     class="mt-2"
                     :rules="telefonoRules"
-                    v-model="telefonoUno"
+                    v-model="telefonoDos"
                     color="primary"
                 ></v-text-field>
             </v-col>
-
-            <v-col cols="12" md="4">
+        </v-row>
+        <v-row>
+            
+            <v-col cols="12" md="6">
                 <v-label for="medioPago">Medio de Pago</v-label>
                 <v-autocomplete
                     id="medioPago"
@@ -612,7 +652,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="pagos"
+                    :items="info_Payment"
                     variant="outlined"
                     :rules="metodoRules"
                     aria-label="pago"
@@ -621,7 +661,7 @@ onMounted( async () => {
                 ></v-autocomplete>
             </v-col>
 
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="6">
                 <v-label for="creado">Creado Por</v-label>
                 <v-text-field
                     disabled

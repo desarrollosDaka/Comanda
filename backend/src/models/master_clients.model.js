@@ -5,6 +5,7 @@ const tableName = "MASTER_CLIENTS";
 const modelName = "modelMasterClients";
 
 const masterClientsSchema = {
+
   ID_cliente: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -26,9 +27,17 @@ const masterClientsSchema = {
     allowNull: false,
     type: DataTypes.STRING(13),
   },
+  Telefono2: {
+    allowNull: true,
+    type: DataTypes.STRING(13),
+  },
   Direccion: {
     allowNull: false,
     type: DataTypes.STRING(150),
+  },
+  Referencia: {
+    allowNull: false,
+    type: DataTypes.STRING(100),
   },
   ID_state: {    
     allowNull: true,

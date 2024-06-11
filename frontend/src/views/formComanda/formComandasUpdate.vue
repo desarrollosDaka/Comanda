@@ -348,7 +348,6 @@ async function handleFormComanda() {
     }
 
 
-    console.log('archivos a modificar es ', itemDocument.value)
     const formDataDocuments = new FormData();
     
     // filtramos solos los item tipo insert
