@@ -62,14 +62,14 @@ router.post("/createOrder", upload.single('doc_file'), createMasterOrderAndDetai
 //CREATE DETALLE DE ORDEN
 router.post("/createOrderDetails", createOrderDetails);
 
+//CREATE ARCHIVOS DE ORDER DOCUMENT
+router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
+
 // Update Order(SOLO CABECERA) (DESACTIVADO)
 //router.put("/updateOrder/:id", updateMasterOrder);
 
 //UPDATE ORDERS + CLIENTS
 router.put("/updateOrder/:id", updateMasterOrderAndDetails);
-
-//UPDATE ARCHIVOS DE ORDER DOCUMENT
-router.put("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
