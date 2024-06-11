@@ -33,8 +33,9 @@ const {
     //updateMasterOrder,
     deleteMasterOrder,
     deleteOrderDetails,
-    getMasterOrderDetails,
-    updateOrderDocument
+    //getMasterOrderDetails,
+    createOrderDocument,
+    deleteOrderDocument
 } 
 = require("../controllers/orders.controller");
 
@@ -68,7 +69,7 @@ router.post("/createOrderDetails", createOrderDetails);
 router.put("/updateOrder/:id", updateMasterOrderAndDetails);
 
 //UPDATE ARCHIVOS DE ORDER DOCUMENT
-router.put("/updateOrderDocument/:id", upload.array('doc_file'), updateOrderDocument);
+router.put("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
@@ -85,5 +86,8 @@ router.put("/deleteOrder/:id", deleteMasterOrder);
 
 //DELETE ORDER DETAILS
 router.put("/deleteOrderDetail/", deleteOrderDetails);
+
+//DELETE ARCHIVOS
+router.delete('/deleteOrderDocument/:id', deleteOrderDocument);
 
 module.exports = router;
