@@ -41,7 +41,8 @@ const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
 const user_mod = ref();
-const itemDocument = ref([]);
+
+const itemDocument = ref<Document[]>([]);
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -245,6 +246,12 @@ interface Ciudad {
 
 }
 
+interface Document {
+    file: File;
+    type: string;
+    mode: string;
+}
+
 // api get
 async function getEstados() {
     try {
@@ -335,26 +342,34 @@ async function handleFormComanda() {
 
     // ACTUALIZAMOS PRIMERO LA DATA DEL FORMULARIO
     try {
-        await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
+        //       await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
     } catch (error) {
         console.log(error)
     }
 
 
-
+    console.log('archivos a modificar es ', itemDocument.value)
     const formDataDocuments = new FormData();
+    
+    // filtramos solos los item tipo insert
+    itemDocument.value = itemDocument.value.filter(item => item.mode ==='insert')
 
     for (let i = 0; i < itemDocument.value.length; i++) {
 
         const file = itemDocument.value[i].file;
         const type = itemDocument.value[i].type;
+        const mode = itemDocument.value[i].mode
 
         formDataDocuments.append('doc_file', file)
         formDataDocuments.append(`typeDoc_${i}`, type);
+        formDataDocuments.append(`user_${i}`, user_crea.value);
+
     }
-
-    await axios.put(`${baseUrl}/updateOrderDocument/${id.value}`, formDataDocuments)
-
+    try {
+        await axios.put(`${baseUrl}/createOrderDocument/${id.value}`, formDataDocuments)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 // Function para enviar form
@@ -386,7 +401,7 @@ async function validate() {
 
                     if (result.isConfirmed) {
 
-                          handleProductUpdate()
+                        //      handleProductUpdate()
 
                     }
                 });
@@ -402,7 +417,7 @@ const handleProductUpdate = () => {
 
 }
 
-function handleSelectImages(items) {
+function handleSelectImages(items: any) {
 
     itemDocument.value = items
 
@@ -614,7 +629,7 @@ onMounted(async () => {
         </v-row>
 
         <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-        <UploadImages @isSelectImages=handleSelectImages />
+        <UploadImages @isSelectImages=handleSelectImages :ID_detalle=id />
 
         <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
             size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
