@@ -96,11 +96,6 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[Retencion]
                     ,t0.[Porc_retencion]
                     ,t0.[File_cedula]
-                    ,t0.[File_pago]
-                    ,t0.[File_retencion]
-                    ,t0.[File_factrura]
-                    ,t0.[File_despacho]
-                    ,t0.[File_ordeVenta]
                     ,t0.[Delete]
                     ,t0.[Motivo_delete]	
                     ,T2.Status
@@ -190,6 +185,28 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
+//OBTENER DETALLES DE LOS ARCHIVOS DE LA COMANDA
+const filterOrderDetailsFiles = async (req, res) => {
+    try {
+        const id = req.params.id; 
+
+        const rta = await sequelize.query(
+            `SELECT *
+            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+            WHERE [ID_detalle] = '${id}'`);
+        if(rta){
+            res.status(200)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        } 
+
+    } catch (e) {
+        console.log('Error', e);
+    }
+}
+
 //OBTENER DETALLES DE COMANDA
 const filterOrderDetails = async (req, res) => {
     try {
@@ -197,7 +214,7 @@ const filterOrderDetails = async (req, res) => {
 
         const rta = await sequelize.query(
             `SELECT *
-            FROM [COMANDA_TEST].[dbo].[ORDERS_DETAILS]
+            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
             WHERE [ID_detalle] = '${id}'`);
         if(rta){
             res.status(200)
@@ -339,36 +356,30 @@ const updateMasterOrderAndDetails = async (req, res) => {
 };
 
 
-const updateOrderDocument = async (req, res) => {
+const createOrderDocument = async (req, res) => {
 
+    const data = req.body;
     const files = req.files;
+    const Id_Comanda = req.params.id;
 
     files.map((file, index) => {
 
     const name = req.files[index].filename
     const type = req.body[`typeDoc_${index}`]
+    const user = req.body[`user_${index}`]
   
-    
-  
+        const ordersFiles = {
+            ID_detalle: Id_Comanda,
+            Type_File:type,
+            File:name,
+            User_crea: user
+        };
 
 
+        console.log(ordersFiles)
     })
 
-    
-    // try {
-    //     const data = req.body;
-    //     const Id_Comanda = req.params.id; 
-
-    //     const documentOrders = {
-    //         ID_detalle: Id_Comanda,
-    //         typeDocument:data.doc_type,
-    //         User_crea: data.user_crea,
-    //     };
-
-       
-    // } catch (e) {
-    //     console.log('Error', e);
-    // }
+  
 };
 
 //FILTRO DE ASESOR 
@@ -543,5 +554,6 @@ module.exports = {
     //updateMasterOrder,
     deleteMasterOrder,
     getMasterOrderDetails,
-    updateOrderDocument
+    createOrderDocument,
+    filterOrderDetailsFiles,
 };

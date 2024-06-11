@@ -33,7 +33,8 @@ const {
     deleteMasterOrder,
     deleteOrderDetails,
     getMasterOrderDetails,
-    updateOrderDocument
+    createOrderDocument,
+    filterOrderDetailsFiles,
 } 
 = require("../controllers/orders.controller");
 
@@ -63,10 +64,22 @@ router.post("/createOrderDetails", createOrderDetails);
 // Update Order(SOLO CABECERA) (DESACTIVADO)
 //router.put("/updateOrder/:id", updateMasterOrder);
 
+
+
+/////////////////////////////ANDERSON ///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 //UPDATE ORDERS + CLIENTS
 router.put("/updateOrder/:id", updateMasterOrderAndDetails);
 
-router.put("/updateOrderDocument/:id", upload.array('doc_file'), updateOrderDocument);
+//CREATE ARCHIVOS DE ORDER DOCUMENT
+router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
+
+//FILTRO ORDER FILES
+router.get("/filterOrderDetailsfiles/:id", filterOrderDetailsFiles);
+
+/////////////////////////////FIN ///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
@@ -80,5 +93,9 @@ router.put("/deleteOrder/:id", deleteMasterOrder);
 
 //DELETE ORDER DETAILS
 router.put("/deleteOrderDetail/", deleteOrderDetails);
+
+
+//DELETE ARCHIVOS
+router.delete('/deleteOrderDocument/:id', deleteOrderDocument);
 
 module.exports = router;
