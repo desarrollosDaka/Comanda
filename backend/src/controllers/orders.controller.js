@@ -1,5 +1,5 @@
 const sequelize = require("../config/conexion");
-
+const fs = require('fs').promises;
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
     try {
@@ -343,39 +343,41 @@ const updateMasterOrderAndDetails = async (req, res) => {
 };
 
 
-// const updateOrderDocument = async (req, res) => {
+/*const createOrderDocument = async (req, res) => {
+    
 
-//     const files = req.files;
+    const files = req.files;
 
-//     try {
+    try {
         
-//     files.map((file, index) => {
-//         const name = req.files[index].filename
-//         const type = req.body[`typeDoc_${index}`]
-//         })
+    files.map((file, index) => {
+        const name = req.files[index].filename
+        const type = req.body[`typeDoc_${index}`]
+        })
 
-//         const data = req.body;
-//         const Id_Comanda = req.params.id;
+        const data = req.body;
+        const Id_Comanda = req.params.id;
 
-//         const documentOrder = await ModelOrder.create({
-//             ID_detalle: Id_Comanda,
-//             typeDocument: files.type,
-//             User_crea: data.user_crea,
-//         });
+        const documentOrder = await ModelOrder.create({
+            ID_detalle: Id_Comanda,
+            typeDocument: files.type,
+            User_crea: data.user_crea,
+        });
         
         
-//         if (documentOrder) {
-//             res.status(200).json({ message: 'Documento guardado correctamente' });
-//         } else {
-//             res.status(404).json({ msj: 'Error en la creación de Documento' });
-//         }
-//         } catch (e) {
-//             console.log('Error', e);
-//             res.status(500).json({ error: 'Error al guardar el documento' });
-//         }
-// };
+        if (documentOrder) {
+            res.status(200).json({ message: 'Documento guardado correctamente' });
+        } else {
+            res.status(404).json({ msj: 'Error en la creación de Documento' });
+        }
+        } catch (e) {
+            console.log('Error', e);
+            res.status(500).json({ error: 'Error al guardar el documento' });
+        }
+};*/
 
-const updateOrderDocument = async (req, res) => {
+//INSERTAR ARCHIVOS A LA TABLA ARCHIVOS
+const createOrderDocument = async (req, res) => {
     const files = req.files;
     let documentOrder;
 
@@ -385,7 +387,7 @@ const updateOrderDocument = async (req, res) => {
         }
 
         const fileData = files.map((file, index) => {
-            const name = file.filename; // Usar 'file' en lugar de 'req.files[index]'
+            const name = file.filename; 
             const type = req.body[`typeDoc_${index}`];
             return { name, type }; 
         });
@@ -393,23 +395,51 @@ const updateOrderDocument = async (req, res) => {
         const data = req.body;
         const Id_Comanda = req.params.id;
 
-        // 'files.type' no es correcto porque 'files' es un array. Se debe especificar qué archivo.
-
-        documentOrder = await ModelOrder.create({
-            ID_detalle: Id_Comanda,
-            typeDocument: fileData[0].type, 
-            User_crea: data.user_crea,
-        });
+        for (const file of fileData) {
+            documentOrder = await modelOrdersFiles.create({
+                ID_detalle: Id_Comanda,
+                File: file.name, 
+                Type_File: file.type, 
+                User_crea: data.user_crea,
+            });
+        }
 
         if (documentOrder) {
-            res.status(200).json({ message: 'Documento guardado correctamente' });
+            res.status(200).json({ message: 'Documento(s) guardado(s) correctamente' });
         } else {
             res.status(404).json({ message: 'Error en la creación de Documento' });
         }
-        } catch (e) {
-            console.log('Error', e);
-            res.status(500).json({ message: 'Error al guardar el documento' });
+    } catch (e) {
+        console.error('Error al guardar el documento', e.message);
+        res.status(500).json({ message: 'Error al guardar el documento' });
+    }
+};
+
+
+//BORRAR ARCHVIOS DE LA TABLA ARCHIVOS
+const deleteOrderDocument = async (req, res) => {
+    //const { id } = req.params; 
+    const Id = req.params.id;
+
+    try {
+        // Encuentra el registro en la base de datos
+        const documentOrder = await modelOrdersfiles.findOne({ where: {ID_detalle: Id }});
+
+        if (!documentOrder) {
+            return res.status(404).json({ message: 'Documento no encontrado' });
         }
+
+        // Elimina el archivo del sistema de archivos
+        await fs.unlink(`uploads/${documentOrder.name}`);
+
+        // Elimina el registro de la base de datos
+        await documentOrder.destroy();
+
+        res.status(200).json({ message: 'Documento y registro eliminados correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar el documento y registro', error);
+        res.status(500).json({ message: 'Error al eliminar el documento y registro' });
+    }
 };
 
 //FILTRO DE ASESOR 
@@ -454,9 +484,9 @@ const updateMasterAsesor = async (req, res) => {
             res.json({msj: 'Error en la consulta'})
         } 
 
-    } catch (e) {
-        console.log('Error', e);
-    }
+        } catch (e) {
+            console.log('Error', e);
+        }
 }
 
 //UPDATE ASESOR ASIGNADO A COMANDA 
@@ -611,5 +641,6 @@ module.exports = {
     //updateMasterOrder,
     deleteMasterOrder,
     getMasterOrderDetails,
-    updateOrderDocument
+    createOrderDocument,
+    deleteOrderDocument
 };
