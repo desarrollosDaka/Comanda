@@ -121,6 +121,8 @@ const createMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
 
+        console.log(data);
+
         // Crear un objeto con los datos del cliente
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -222,9 +224,9 @@ const filterOrderDetails = async (req, res) => {
             res.json({msj: 'Error en la consulta'})
         } 
 
-        } catch (e) {
-            console.log('Error', e);
-        }
+    } catch (e) {
+        console.log('Error', e);
+    }
 }
 
 
@@ -252,7 +254,7 @@ const createOrderDetails = async (req, res) => {
         }
 
         //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-  
+
         if( orderDetailData){
             res.status(201)
             res.json({product: product})
@@ -261,7 +263,7 @@ const createOrderDetails = async (req, res) => {
             res.json({msj: 'Error en la creación'})} 
         }  catch (e) {
             console.log('Error', e);
-    } 
+    }
 }
 
 

@@ -265,6 +265,7 @@ const File = (event: any) => {
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
+    
     let formData = new FormData();
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
     formData.append('Id_Comanda', idComandaRandom.value);
@@ -278,7 +279,8 @@ async function validate(values: any) {
     formData.append('doc_file', doc_file.value );
     formData.append('municipio', municipio.value);
     formData.append('direccion', direccion.value);
-    formData.append('direccionZoom', direccionZoom.value);
+    formData.append('sucursalZoom', direccionZoom.value);
+    formData.append('referencia', referencia.value);
     formData.append('autorizado', autorizado.value.toString());
     formData.append('cedulaDos', cedulaDos.value);
     formData.append('telefonoUno', telefonoUno.value);
@@ -286,7 +288,7 @@ async function validate(values: any) {
     formData.append('ID_pago', ID_pago.value);
     formData.append('ID_status', ID_status.value);
     formData.append('retencion', retencion.value.toString());
-    formData.append('ID_Delivery', ID_Delivery.value);
+    formData.append('ID_delivery', ID_Delivery.value);
     formData.append('porcentaje', porcentajeValue);
     formData.append('user_crea', user_crea.value);
 
@@ -571,6 +573,7 @@ onMounted( async () => {
 
             <v-col cols="12" md="4">
                 <v-label for="delivery">Delivery</v-label>
+
                 <v-autocomplete
                     id="delivery"
                     placeholder="Seleccione el tipo de delivery"
@@ -584,10 +587,11 @@ onMounted( async () => {
                     color="primary"
                     v-model="ID_Delivery"
                 ></v-autocomplete>
+
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="12" md="12" v-if="ID_Delivery == 'ZOOM TIENDA'">
+            <v-col cols="12" md="12" v-if="ID_Delivery === 3">
                 <v-label for="direccion">Direccion del Delivery</v-label>
                 <v-autocomplete
                     id="direccion"

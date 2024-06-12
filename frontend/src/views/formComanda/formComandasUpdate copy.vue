@@ -557,7 +557,7 @@ onMounted(async () => {
 
         <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
             size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
-                || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit">
+            || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit">
             Actualizar
         </v-btn>
 
