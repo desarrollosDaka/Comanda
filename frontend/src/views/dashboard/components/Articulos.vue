@@ -32,6 +32,8 @@ const notify = () => {
 //##################################################################################################################
 
 const route = useRoute()
+const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
+const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])

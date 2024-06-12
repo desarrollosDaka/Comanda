@@ -78,27 +78,27 @@ const masterOrderSchema = {
   File_cedula: {
     allowNull: true,
     type: DataTypes.STRING(100),
-  },
-  File_pago: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_retencion: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  }, 
-  File_factrura: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_despacho: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_ordeVenta: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },  
+   },
+  // File_pago: {
+  //   allowNull: true,
+  //   type: DataTypes.STRING(100),
+  // },
+  // File_retencion: {
+  //   allowNull: true,
+  //   type: DataTypes.STRING(100),
+  // }, 
+  // File_factrura: {
+  //   allowNull: true,
+  //   type: DataTypes.STRING(100),
+  // },
+  // File_despacho: {
+  //   allowNull: true,
+  //   type: DataTypes.STRING(100),
+  // },
+  // File_ordeVenta: {
+  //   allowNull: true,
+  //   type: DataTypes.STRING(100),
+  // },  
   Delete: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
