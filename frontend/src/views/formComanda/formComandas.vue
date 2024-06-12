@@ -34,7 +34,7 @@ const idComandaRandom = ref();
 const deliveryZoom = ref();
 const porcentaje = ref();
 const retencion = ref(false);
-const ID_delivery = ref();
+const ID_Delivery = ref();
 const info_tiendas = ref();
 const info_Delivery = ref();
 const info_Payment = ref();
@@ -229,7 +229,7 @@ async function getSucursal(){
 }
 interface Delivery {
     Delivery_type: string;
-    ID_delivery: number;
+    ID_Delivery: number;
 }
 
 async function getDelivery(){
@@ -237,7 +237,7 @@ async function getDelivery(){
         const {data} = await axios.get(`${baseUrlDelivery}/masterDelivery`)
         info_Delivery.value = data.map((delivery: Delivery) =>({
             title: delivery.Delivery_type,
-            value: delivery.ID_delivery
+            value: delivery.ID_Delivery
         }));
     } catch(error){
         console.log(error)
@@ -246,14 +246,14 @@ async function getDelivery(){
 
 interface Payment{
     Pago: string;
-    ID_Pago: number;
+    ID_pago: number;
 }
 async function getPayment(){
     try{
         const {data} = await axios.get(`${baseUrlPayment}/masterPayment`)
         info_Payment.value = data.map((payment: Payment) =>({
             title: payment.Pago,
-            value: payment.ID_Pago
+            value: payment.ID_pago
         }));
     } catch(error){
         console.log(error)
@@ -275,6 +275,7 @@ const File = (event: any) => {
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate(values: any) {
+    
     let formData = new FormData();
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
     formData.append('Id_Comanda', idComandaRandom.value);
@@ -288,7 +289,8 @@ async function validate(values: any) {
     formData.append('doc_file', doc_file.value );
     formData.append('municipio', municipio.value);
     formData.append('direccion', direccion.value);
-    formData.append('direccionZoom', direccionZoom.value);
+    formData.append('sucursalZoom', direccionZoom.value);
+    formData.append('referencia', referencia.value);
     formData.append('autorizado', autorizado.value.toString());
     formData.append('cedulaDos', cedulaDos.value);
     formData.append('telefonoUno', telefonoUno.value);
@@ -296,7 +298,7 @@ async function validate(values: any) {
     formData.append('ID_pago', ID_pago.value);
     formData.append('ID_status', ID_status.value);
     formData.append('retencion', retencion.value.toString());
-    formData.append('ID_delivery', ID_delivery.value);
+    formData.append('ID_delivery', ID_Delivery.value);
     formData.append('porcentaje', porcentajeValue);
     formData.append('user_crea', user_crea.value);
 
@@ -585,6 +587,7 @@ itemDocument.value = items
 
             <v-col cols="12" md="4">
                 <v-label for="delivery">Delivery</v-label>
+
                 <v-autocomplete
                     id="delivery"
                     placeholder="Seleccione el tipo de delivery"
@@ -596,12 +599,13 @@ itemDocument.value = items
                     :rules="metodoRules"
                     aria-label="delivery"
                     color="primary"
-                    v-model="ID_delivery"
+                    v-model="ID_Delivery"
                 ></v-autocomplete>
+
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="12" md="12" v-if="ID_delivery == 'ZOOM TIENDA'">
+            <v-col cols="12" md="12" v-if="ID_Delivery === 3">
                 <v-label for="direccion">Direccion del Delivery</v-label>
                 <v-autocomplete
                     id="direccion"
