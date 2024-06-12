@@ -33,15 +33,9 @@ const {
     //updateMasterOrder,
     deleteMasterOrder,
     deleteOrderDetails,
-<<<<<<< HEAD
-    getMasterOrderDetails,
-    createOrderDocument,
-    filterOrderDetailsFiles,
-=======
     //getMasterOrderDetails,
     createOrderDocument,
     deleteOrderDocument
->>>>>>> origin/QA_main
 } 
 = require("../controllers/orders.controller");
 
@@ -81,19 +75,6 @@ router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDoc
 //UPDATE ORDERS + CLIENTS
 router.put("/updateOrder/:id", updateMasterOrderAndDetails);
 
-<<<<<<< HEAD
-//CREATE ARCHIVOS DE ORDER DOCUMENT
-router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
-
-//FILTRO ORDER FILES
-router.get("/filterOrderDetailsfiles/:id", filterOrderDetailsFiles);
-
-/////////////////////////////FIN ///////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
-
-
-=======
->>>>>>> origin/QA_main
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);
 
@@ -110,10 +91,6 @@ router.put("/deleteOrder/:id", deleteMasterOrder);
 //DELETE ORDER DETAILS
 router.put("/deleteOrderDetail/", deleteOrderDetails);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/QA_main
 //DELETE ARCHIVOS
 router.delete('/deleteOrderDocument/:id', deleteOrderDocument);
 

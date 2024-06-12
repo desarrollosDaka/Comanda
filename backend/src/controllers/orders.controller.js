@@ -185,7 +185,6 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
-<<<<<<< HEAD
 //OBTENER DETALLES DE LOS ARCHIVOS DE LA COMANDA
 const filterOrderDetailsFiles = async (req, res) => {
     try {
@@ -207,8 +206,6 @@ const filterOrderDetailsFiles = async (req, res) => {
         console.log('Error', e);
     }
 }
-=======
->>>>>>> origin/QA_main
 
 //OBTENER DETALLES DE COMANDA
 const filterOrderDetails = async (req, res) => {
@@ -362,12 +359,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
 };
 
 
-<<<<<<< HEAD
-const createOrderDocument = async (req, res) => {
-=======
 /*const createOrderDocument = async (req, res) => {
     
->>>>>>> origin/QA_main
 
     const data = req.body;
     const files = req.files;
@@ -380,24 +373,6 @@ const createOrderDocument = async (req, res) => {
         const type = req.body[`typeDoc_${index}`]
         })
 
-<<<<<<< HEAD
-    const name = req.files[index].filename
-    const type = req.body[`typeDoc_${index}`]
-    const user = req.body[`user_${index}`]
-  
-        const ordersFiles = {
-            ID_detalle: Id_Comanda,
-            Type_File:type,
-            File:name,
-            User_crea: user
-        };
-
-
-        console.log(ordersFiles)
-    })
-
-  
-=======
         const data = req.body;
         const Id_Comanda = req.params.id;
 
@@ -483,7 +458,6 @@ const deleteOrderDocument = async (req, res) => {
         console.error('Error al eliminar el documento y registro', error);
         res.status(500).json({ message: 'Error al eliminar el documento y registro' });
     }
->>>>>>> origin/QA_main
 };
 
 //FILTRO DE ASESOR 
@@ -686,9 +660,6 @@ module.exports = {
     deleteMasterOrder,
     getMasterOrderDetails,
     createOrderDocument,
-<<<<<<< HEAD
     filterOrderDetailsFiles,
-=======
     deleteOrderDocument
->>>>>>> origin/QA_main
 };

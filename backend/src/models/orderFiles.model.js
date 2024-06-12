@@ -70,8 +70,4 @@ module.exports = {
   tableName,
   masterOrderFilesSchema,
   MasterOrdersFiles,
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> origin/QA_main
