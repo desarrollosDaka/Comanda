@@ -85,7 +85,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[User_rol]
                     ,t0.[ID_status]
                     ,t0.[Tipo_delivery]
-                    ,t0.[Personal_autoriza]
+    
                     ,t0.[Cedula_autoriza]
                     ,T3.[Telefono]
                     ,t0.[Retencion]
@@ -133,6 +133,8 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
             Tipo_cliente: data.tipo,
+            Retencion: data.retencion,
+            Porc_retencion: data.porcentaje,
         };
 
         // Crear un objeto con los datos del pedido
@@ -148,7 +150,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
-            Personal_autoriza: data.P_autorizado,
+          
             Cedula_autoriza: data.cedulaDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
@@ -171,7 +173,7 @@ const createMasterOrderAndDetails = async (req, res) => {
 
         if (order && client) {
             res.status(201);
-            res.json({ order: order, clients: client, orderDetails: orderDetails });
+            res.json({ order: order, clients: client});
         } else {
             res.status(404);
             res.json({ msj: 'Error en la creación' });
@@ -320,7 +322,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
-            Personal_autoriza: data.P_autorizado,
             Cedula_autoriza: data.cedulaDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
