@@ -41,7 +41,8 @@ const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
 const user_mod = ref();
-const itemDocument = ref([]);
+
+const itemDocument = ref<Document[]>([]);
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -61,8 +62,9 @@ onMounted(async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
-});
 
+
+});
 
 
 const tiendas = ref([
@@ -183,10 +185,10 @@ const getOrder = async () => {
             porcentaje.value = data[0][0]["Porc_retencion"]
             email.value = data[0][0]["Email"]
             nombreCompleto.value = data[0][0]["Cliente"]
-            estado.value = data[0][0]["Estado"]
-            ciudad.value = data[0][0]["Ciudad"]
-            municipio.value = data[0][0]["Municipio"]
-            origen.value = data[0][0]["Sucursal"]
+            estado.value = data[0][0]["ID_states"]
+            ciudad.value = data[0][0]["ID_city"]
+            municipio.value = data[0][0]["ID_municipio"]
+            origen.value = data[0][0]["ID_sucursal"]
             direccion.value = data[0][0]["Direccion"]
             referencia.value = '*******NO SE QUE CAMPO ES********'//NO SE CUAL CAMPO ES 
             ID_delivery.value = data[0][0]["Tipo_delivery"]
@@ -202,14 +204,7 @@ const getOrder = async () => {
 }
 
 
-// api post
-async function editarComanda(json: any) {
-    try {
-        await axios.put(`${baseUrl}/updateOrder/${id.value}`, json)
-    } catch (error) {
-        console.log(error)
-    }
-}
+
 
 // BUSCADOR DE CLIENTES
 async function searchModel() {
@@ -251,6 +246,12 @@ interface Ciudad {
 
 }
 
+interface Document {
+    file: File;
+    type: string;
+    mode: string;
+}
+
 // api get
 async function getEstados() {
     try {
@@ -290,19 +291,14 @@ async function getCiudad() {
     }
 }
 
-// Capturar la imagen
-const File = (event: any) => {
-    doc_file.value = event.target.files[0];
-};
 
+// api post
+async function handleFormComanda() {
 
-// Function para enviar form
-/* eslint-disable @typescript-eslint/no-explicit-any */
-async function validate(values: any) {
 
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
-
-    const data = {
+    const jsonData = {
+        "Id_Comanda": id.value,
         "origen": origen.value,
         "tipo": tipo.value,
         "cedulaUno": cedulaUno.value,
@@ -313,6 +309,7 @@ async function validate(values: any) {
         "municipio": municipio.value,
         "direccion": direccion.value,
         "autorizado": autorizado.value,
+        "P_autorizado": 0,
         "cedulaDos": cedulaDos.value,
         "telefonoUno": telefonoUno.value,
         "ID_pago": ID_pago.value,
@@ -320,47 +317,155 @@ async function validate(values: any) {
         "retencion": retencion.value.toString(),
         "ID_delivery": ID_delivery.value,
         "porcentaje": porcentajeValue,
-        "user_crea": user_crea.value,
-        "doc_file": doc_file.value
+        "user_crea": user_crea.value
     }
 
-    // Alerta
-    Swal.fire({
-        title: `Actualizar Comanda`,
-        text: "¿Desea guardar estos datos?",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Guardar!",
+    // formData.append('origen', origen.value);
+    // formData.append('tipo', tipo.value);
+    // formData.append('cedulaUno', cedulaUno.value);
+    // formData.append('email', email.value);
+    // formData.append('nombreCompleto', nombreCompleto.value);
+    // formData.append('estado', estado.value);
+    // formData.append('ciudad', ciudad.value);
+    // formData.append('municipio', municipio.value);
+    // formData.append('direccion', direccion.value);
+    // formData.append('autorizado', autorizado.value);
+    // formData.append('cedulaDos', cedulaDos.value);
+    // formData.append('telefonoUno', telefonoUno.value);
+    // formData.append('ID_pago', ID_pago.value);
+    // formData.append('ID_status', ID_status.value);
+    // formData.append('retencion', retencion.value.toString());
+    // formData.append('ID_delivery', ID_delivery.value);
+    // formData.append('porcentaje', porcentajeValue);
+    // formData.append('user_crea', user_crea.value);
 
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const respuesta = editarComanda(data);
-            Swal.fire({
-                title: "Guardado!",
-                text: "Datos actualizados con exito!",
-                icon: "success"
-            }).then((result) => {
 
-                if (result.isConfirmed) {
-                    router.push(`/maestroPedidos`);
+    // ACTUALIZAMOS PRIMERO LA DATA DEL FORMULARIO
+    try {
+        //       await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
+    } catch (error) {
+        console.log(error)
+    }
 
-                }
-            });
 
-        }
-    });
+    const formDataDocuments = new FormData();
+    
+    // filtramos solos los item tipo insert
+    itemDocument.value = itemDocument.value.filter(item => item.mode ==='insert')
+
+    for (let i = 0; i < itemDocument.value.length; i++) {
+
+        const file = itemDocument.value[i].file;
+        const type = itemDocument.value[i].type;
+        const mode = itemDocument.value[i].mode
+
+        formDataDocuments.append('doc_file', file)
+        formDataDocuments.append(`typeDoc_${i}`, type);
+        formDataDocuments.append(`user_${i}`, user_crea.value);
+
+    }
+    try {
+        await axios.post(`${baseUrl}/createOrderDocument/${id.value}`, formDataDocuments)
+    } catch (error) {
+        console.log(error)
+    }
 }
+
+// Function para enviar form
+async function validate() {
+
+    // VALIDAMOS PRIMERO QUE EXISTAN LOS DOCUMENTOS CON SUS RESPECTIVOS TIPO DE DOCUMENTOS
+    const isvalidateDocuments = validateDocuments()
+
+    if (isvalidateDocuments)
+        // Alerta
+        Swal.fire({
+            title: `Actualizar Comanda`,
+            text: "¿Desea guardar estos datos?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Si, Guardar!",
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const respuesta = handleFormComanda();
+                Swal.fire({
+                    title: "Guardado!",
+                    text: "Datos actualizados con exito!",
+                    icon: "success"
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        //      handleProductUpdate()
+
+                    }
+                });
+
+            }
+        });
+}
+
 
 const handleProductUpdate = () => {
 
-    router.push(`/addArticulos/${id.value}/${true}`); 
+    router.push(`/addArticulos/${id.value}/${true}`);
 
 }
 
-onMounted( async () => {
+function handleSelectImages(items: any) {
+
+    itemDocument.value = items
+
+}
+
+function validateDocuments(): boolean {
+
+    let isvalidate = true
+
+    if (itemDocument.value.length <= 0) {
+
+        toast.error("Error: Debes seleccionar al menos un archivo", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
+
+        isvalidate = false
+
+    } else {
+
+        itemDocument.value.forEach(element => {
+
+            if (element.type === null) {
+
+                isvalidate = false
+            }
+
+        });
+
+        if (!isvalidate)
+            toast.warn(`Error: Seleccione el tipo de documento`, {
+                delay: 1000,
+                position: toast.POSITION.BOTTOM_CENTER,
+                transition: toast.TRANSITIONS.ZOOM,
+                theme: 'dark',
+                autoClose: 3000
+            });
+    }
+
+    return isvalidate
+}
+
+onMounted(async () => {
     await getEstados();
     await getMunicipio();
     await getCiudad();
@@ -523,31 +628,18 @@ onMounted( async () => {
             </v-col>
         </v-row>
 
-        <v-row>
-            <v-col cols="12">
-                <br>
-                <v-file-input multiple clearable label="Coloque el archivo aqui" variant="outlined" color="primary"
-                    required @change="File"></v-file-input>
-            </v-col>
-        </v-row>
+        <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
+        <UploadImages @isSelectImages=handleSelectImages :ID_detalle=id />
 
-
-        <v-btn  color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
-                size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
-                || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit"
-        >
+        <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
+            size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
+                || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit">
             Actualizar
         </v-btn>
 
-        <v-btn 
-            class="mt-6 mx-1"  
-            variant="flat"
-            append-icon="mdi-arrow-right" 
-            size="large"
-            color="warning"
-            @click="handleProductUpdate">
-            Detalle de Articulos
-        </v-btn>
+        <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning"
+            @click="handleProductUpdate">Detalle Articulos</v-btn>
+
     </Form>
 </template>
 
