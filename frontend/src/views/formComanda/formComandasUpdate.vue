@@ -365,7 +365,7 @@ async function handleFormComanda() {
 
     }
     try {
-        await axios.put(`${baseUrl}/createOrderDocument/${id.value}`, formDataDocuments)
+        await axios.post(`${baseUrl}/createOrderDocument/${id.value}`, formDataDocuments)
     } catch (error) {
         console.log(error)
     }

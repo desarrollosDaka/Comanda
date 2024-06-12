@@ -100,10 +100,10 @@ function typeValue(index: number, valor: string): void {
 async function deldata(data: any, index: number) {
 
   document.value.splice(index, 1);
-
+console.log(data)
   try {
   
-    data.Id > 0 ? await axios.delete(`${baseUrl}/deleteOrderDocument/${data.Id}`) : null
+    data.Id > 0 ? await axios.put(`${baseUrl}/deleteOrderDocument/${data.Id}`, data) : null
 
   } catch (error) {
     console.log(error)

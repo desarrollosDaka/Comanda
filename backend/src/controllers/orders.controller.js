@@ -183,7 +183,6 @@ const createMasterOrderAndDetails = async (req, res) => {
     }
 };
 
-<<<<<<< HEAD
 //OBTENER DETALLES DE LOS ARCHIVOS DE LA COMANDA
 const filterOrderDetailsFiles = async (req, res) => {
     try {
@@ -205,8 +204,6 @@ const filterOrderDetailsFiles = async (req, res) => {
         console.log('Error', e);
     }
 }
-=======
->>>>>>> origin/QA_main
 
 //OBTENER DETALLES DE COMANDA
 const filterOrderDetails = async (req, res) => {
@@ -360,12 +357,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
 };
 
 
-<<<<<<< HEAD
-const createOrderDocument = async (req, res) => {
-=======
 /*const createOrderDocument = async (req, res) => {
     
->>>>>>> origin/QA_main
 
     const data = req.body;
     const files = req.files;
@@ -378,24 +371,6 @@ const createOrderDocument = async (req, res) => {
         const type = req.body[`typeDoc_${index}`]
         })
 
-<<<<<<< HEAD
-    const name = req.files[index].filename
-    const type = req.body[`typeDoc_${index}`]
-    const user = req.body[`user_${index}`]
-  
-        const ordersFiles = {
-            ID_detalle: Id_Comanda,
-            Type_File:type,
-            File:name,
-            User_crea: user
-        };
-
-
-        console.log(ordersFiles)
-    })
-
-  
-=======
         const data = req.body;
         const Id_Comanda = req.params.id;
 
@@ -418,60 +393,96 @@ const createOrderDocument = async (req, res) => {
 };*/
 
 //INSERTAR ARCHIVOS A LA TABLA ARCHIVOS
+// const createOrderDocument = async (req, res) => {
+//     const files = req.files;
+//     let documentOrder;
+
+//     try {
+//         if (!Array.isArray(files)) {
+//             throw new Error('files no es un array');
+//         }
+
+//         const fileData = files.map((file, index) => {
+//             const name = file.filename; 
+//             const type = req.body[`typeDoc_${index}`];
+//             return { name, type }; 
+//         });
+
+//         const data = req.body;
+//         const Id_Comanda = req.params.id;
+
+//         for (const file of fileData) {
+//             documentOrder = await modelOrdersFiles.create({
+//                 ID_detalle: Id_Comanda,
+//                 File: file.name, 
+//                 Type_File: file.type, 
+//                 User_crea: data.user_crea,
+//             });
+//         }
+
+//         if (documentOrder) {
+//             res.status(200).json({ message: 'Documento(s) guardado(s) correctamente' });
+//         } else {
+//             res.status(404).json({ message: 'Error en la creación de Documento' });
+//         }
+//     } catch (e) {
+//         console.error('Error al guardar el documento', e.message);
+//         res.status(500).json({ message: 'Error al guardar el documento' });
+//     }
+// };
+
+
 const createOrderDocument = async (req, res) => {
+    const data = req.body;
     const files = req.files;
-    let documentOrder;
-
+    const Id_Comanda = req.params.id;
+    
     try {
-        if (!Array.isArray(files)) {
-            throw new Error('files no es un array');
-        }
-
-        const fileData = files.map((file, index) => {
-            const name = file.filename; 
-            const type = req.body[`typeDoc_${index}`];
-            return { name, type }; 
-        });
-
-        const data = req.body;
-        const Id_Comanda = req.params.id;
-
-        for (const file of fileData) {
-            documentOrder = await modelOrdersFiles.create({
+        const results = await Promise.all(files.map(async (file, index) => {
+            const name = req.files[index].filename
+            const type = req.body[`typeDoc_${index}`]
+            const user = req.body[`user_${index}`]
+  
+            const ordersFiles = {
                 ID_detalle: Id_Comanda,
-                File: file.name, 
-                Type_File: file.type, 
-                User_crea: data.user_crea,
-            });
-        }
+                Type_File: type,
+                File: name,
+                User_crea: user
+            };
+            console.log(ordersFiles);
+            return await sequelize.models.modelOrdersFiles.create(ordersFiles);
+        }));
 
-        if (documentOrder) {
-            res.status(200).json({ message: 'Documento(s) guardado(s) correctamente' });
+        // Verificar si todos los documentos se crearon correctamente
+        if (results.every(documentOrder => documentOrder)) {
+            res.status(201).json({ documentOrders: results });
         } else {
-            res.status(404).json({ message: 'Error en la creación de Documento' });
+            res.status(404).json({ msj: 'Error en la creación de algunos documentos' });
         }
     } catch (e) {
-        console.error('Error al guardar el documento', e.message);
-        res.status(500).json({ message: 'Error al guardar el documento' });
+        console.error('Error al guardar los documentos', e.message);
+        res.status(500).json({ message: 'Error al guardar los documentos' });
     }
-};
+}
 
 
 //BORRAR ARCHVIOS DE LA TABLA ARCHIVOS
 const deleteOrderDocument = async (req, res) => {
     //const { id } = req.params; 
     const Id = req.params.id;
+    const imagen = req.body.imagen;
 
+    console.log(imagen);
     try {
         // Encuentra el registro en la base de datos
-        const documentOrder = await modelOrdersfiles.findOne({ where: {ID_detalle: Id }});
+        const documentOrder = await sequelize.models.modelOrdersFiles.findOne({ where: {ID_File: Id }});
 
         if (!documentOrder) {
-            return res.status(404).json({ message: 'Documento no encontrado' });
+            return res.status(404).json({ message: 'Archivo no encontrado' });
         }
 
         // Elimina el archivo del sistema de archivos
-        await fs.unlink(`uploads/${documentOrder.name}`);
+        await fs.unlink(`uploads/${imagen}`);
 
         // Elimina el registro de la base de datos
         await documentOrder.destroy();
@@ -481,7 +492,6 @@ const deleteOrderDocument = async (req, res) => {
         console.error('Error al eliminar el documento y registro', error);
         res.status(500).json({ message: 'Error al eliminar el documento y registro' });
     }
->>>>>>> origin/QA_main
 };
 
 //FILTRO DE ASESOR 
@@ -684,9 +694,6 @@ module.exports = {
     deleteMasterOrder,
     getMasterOrderDetails,
     createOrderDocument,
-<<<<<<< HEAD
     filterOrderDetailsFiles,
-=======
     deleteOrderDocument
->>>>>>> origin/QA_main
 };
