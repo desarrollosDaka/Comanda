@@ -8,10 +8,11 @@ let route_upload = ref()
 const props = defineProps({
   ID_detalle: {
     type: String as () => string,
-    required: true,
+    required: false,
   }, //Id de la Comanda
 })
 
+console.log('ID_detalle ', props.ID_detalle)
 
 const document = ref<Documento[]>([]);
 
@@ -20,6 +21,7 @@ onMounted(async () => {
 
   if (props.ID_detalle) {
 
+    console.log('esta entrando')
     route_upload.value = 'http://localhost:3002/public/'
 
     try {

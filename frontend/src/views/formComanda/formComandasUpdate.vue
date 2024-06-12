@@ -400,7 +400,7 @@ async function validate() {
 
                     if (result.isConfirmed) {
 
-                        //      handleProductUpdate()
+                        handleProductUpdate()
 
                     }
                 });

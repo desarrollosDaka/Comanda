@@ -4,6 +4,7 @@ import { ref, computed, onMounted } from 'vue';
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import { router } from '@/router';
+import UploadImages from './uploadImages.vue'
 
 // variables
 const valid = ref(false);
@@ -37,6 +38,8 @@ const ID_delivery = ref();
 const info_tiendas = ref();
 const info_Delivery = ref();
 const info_Payment = ref();
+
+const itemDocument = ref<Document[]>([]);
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -216,7 +219,7 @@ interface Destino {
 async function getSucursal(){
     try{
         const {data} = await axios.get(`${baseUrlStore}/masterStores`)
-        info_tiendas.value = data.map((destino: Destino) =>({
+        info_tiendas.value = data[0].map((destino: Destino) =>({
             title: destino.Sucursal,
             value: destino.ID_sucursal
         }));
@@ -255,6 +258,13 @@ async function getPayment(){
     } catch(error){
         console.log(error)
     }
+}
+
+
+interface Document {
+    file: File;
+    type: string;
+    mode: string;
 }
 
 // Capturar la imagen
@@ -338,7 +348,11 @@ onMounted( async () => {
     idComandaRandom.value = cadenaAleatoria
 });
 
+function handleSelectImages(items: any) {
 
+itemDocument.value = items
+
+}
 </script>
 
 <template>
@@ -677,7 +691,9 @@ onMounted( async () => {
             </v-col>
         </v-row>
 
-        <v-row>
+         <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
+         <UploadImages @isSelectImages=handleSelectImages :ID_detalle=idComandaRandom />
+        <!-- <v-row>
             <v-col cols="12">
                 <br>
                 <v-file-input
@@ -690,7 +706,7 @@ onMounted( async () => {
                 @change="File"
                 ></v-file-input>
             </v-col>
-        </v-row>
+        </v-row> -->
 
         <v-btn 
             color="primary" 
