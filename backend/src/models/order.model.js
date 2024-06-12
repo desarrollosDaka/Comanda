@@ -67,6 +67,10 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
+  Telefono_autoriza: {
+    allowNull: true,
+    type: DataTypes.STRING(13),
+  },
   Retencion: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
@@ -75,10 +79,10 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
-  File_cedula: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-   },
+  // File_cedula: {
+  //   allowNull: true,
+  //   type: DataTypes.STRING(100),
+  //  },
   // File_pago: {
   //   allowNull: true,
   //   type: DataTypes.STRING(100),
