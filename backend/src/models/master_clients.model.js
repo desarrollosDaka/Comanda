@@ -14,7 +14,7 @@ const masterClientsSchema = {
   Nombre: {
     allowNull: false,
     type: DataTypes.STRING(70),
-  },  
+  },
   Cedula: {
     allowNull: false,
     type: DataTypes.STRING(100),
@@ -27,10 +27,6 @@ const masterClientsSchema = {
     allowNull: false,
     type: DataTypes.STRING(13),
   },
-  Telefono2: {
-    allowNull: true,
-    type: DataTypes.STRING(13),
-  },
   Direccion: {
     allowNull: false,
     type: DataTypes.STRING(150),
@@ -39,15 +35,15 @@ const masterClientsSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
-  ID_state: {    
+  ID_state: {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
-  ID_city: {    
+  ID_city: {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
-  ID_municipio: {    
+  ID_municipio: {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
@@ -72,7 +68,7 @@ const masterClientsSchema = {
 class Master_clients extends Model {
   static associate() {
     // associate
-  }  
+  }
 
   static config(sequelize) {
     return {
@@ -81,7 +77,7 @@ class Master_clients extends Model {
       modelName: modelName,
       createdAt: "Create_date",
       updatedAt: "Update_date"
-    };    
+    };
   }
 }
 
