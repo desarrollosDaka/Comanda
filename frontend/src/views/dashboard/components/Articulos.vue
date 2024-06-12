@@ -8,11 +8,12 @@ import { router } from '@/router';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
+const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
+const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 
-//##################################EJEMPLOS DE LOS TIPOS DE TOAST QUE PUEDES USAR##################################
-//##########################LLAMA A LA FUNCION NOTIFY PARA VER LOS EJEMPLOS QUE PUEDES USAR#########################
+
 const notify = () => {
-    toast.info('Hello1!!'); // same as toast('Hello!!', { type: 'info' });
+    toast.info('Hello1!!'); 
     toast.error('Hello2!!');
     toast.success('Hello3!!');
     toast.success('Hello4!!', {
@@ -309,7 +310,8 @@ async function handleProductUpdate() {
                 :items="infoProduct">
 
                 <template v-slot:item="{ props, item }">
-                    <v-list-item v-bind="props" :subtitle="item.raw.title"></v-list-item>
+                    <!-- <v-list-item v-bind="props" :subtitle="item.raw.title"></v-list-item> -->
+                    <v-list-item v-bind="props" ></v-list-item>
                 </template>
             </v-autocomplete>
 

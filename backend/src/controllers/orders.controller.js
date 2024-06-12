@@ -85,7 +85,6 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[User_rol]
                     ,t0.[ID_status]
                     ,t0.[Tipo_delivery]
-                    ,t0.[Personal_autoriza]
                     ,t0.[Cedula_autoriza]
                     ,T3.[Telefono]
                     ,t0.[Retencion]
@@ -135,6 +134,8 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
             Tipo_cliente: data.tipo,
+            Retencion: data.retencion,
+            Porc_retencion: data.porcentaje,
         };
 
         // Crear un objeto con los datos del pedido
@@ -150,7 +151,6 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
-            Personal_autoriza: data.P_autorizado,
             Cedula_autoriza: data.cedulaDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
@@ -222,9 +222,9 @@ const filterOrderDetails = async (req, res) => {
             res.json({msj: 'Error en la consulta'})
         } 
 
-        } catch (e) {
-            console.log('Error', e);
-        }
+    } catch (e) {
+        console.log('Error', e);
+    }
 }
 
 
@@ -252,7 +252,7 @@ const createOrderDetails = async (req, res) => {
         }
 
         //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-  
+
         if( orderDetailData){
             res.status(201)
             res.json({product: product})
@@ -261,7 +261,7 @@ const createOrderDetails = async (req, res) => {
             res.json({msj: 'Error en la creación'})} 
         }  catch (e) {
             console.log('Error', e);
-    } 
+    }
 }
 
 
@@ -322,7 +322,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
-            Personal_autoriza: data.P_autorizado,
             Cedula_autoriza: data.cedulaDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
