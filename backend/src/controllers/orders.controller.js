@@ -13,7 +13,6 @@ const getMasterOrder = async (req, res) => {
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status 
-                ,T0.File_cedula as doc_file
                 ,CAST(T0.Create_date AS DATE) Create_date
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -91,7 +90,6 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.[Telefono]
                     ,t0.[Retencion]
                     ,t0.[Porc_retencion]
-                    ,t0.[File_cedula]
                     ,t0.[Delete]
                     ,t0.[Motivo_delete]	
                     ,T2.Status
@@ -131,7 +129,6 @@ const createMasterOrderAndDetails = async (req, res) => {
             Direccion: data.direccion,
             Referencia: data.referencia,
             Telefono: data.telefonoUno,
-            Telefono2: data.telefonoDos,
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
@@ -150,9 +147,10 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
-            Autoriza: data.P_autorizado,
-            Personal_autoriza: data.autorizado,
+            Autoriza: data.autorizado,
+            Personal_autoriza: data.P_autorizado,
             Cedula_autoriza: data.cedulaDos,
+            Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
             //File_cedula: req.file.filename 
@@ -222,9 +220,9 @@ const filterOrderDetails = async (req, res) => {
             res.json({msj: 'Error en la consulta'})
         } 
 
-    } catch (e) {
-        console.log('Error', e);
-    }
+        } catch (e) {
+            console.log('Error', e);
+        }
 }
 
 
@@ -252,7 +250,7 @@ const createOrderDetails = async (req, res) => {
         }
 
         //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-
+  
         if( orderDetailData){
             res.status(201)
             res.json({product: product})
@@ -261,7 +259,7 @@ const createOrderDetails = async (req, res) => {
             res.json({msj: 'Error en la creación'})} 
         }  catch (e) {
             console.log('Error', e);
-    }
+    } 
 }
 
 
@@ -304,7 +302,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Direccion: data.direccion,
             Referencia: data.referencia,
             Telefono: data.telefonoUno,
-            Telefono2: data.telefonoDos,
             ID_state: data.estado,
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
@@ -314,18 +311,20 @@ const updateMasterOrderAndDetails = async (req, res) => {
         const UpdateOrder = {
             ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
+            ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
             User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
-            SucursalZoom: data.SucursalZoom,
-            Autoriza: data.P_autorizado,
-            Personal_autoriza: data.autorizado,
+            SucursalZoom: data.sucursalZoom,
+            Autoriza: data.autorizado,
+            Personal_autoriza: data.P_autorizado,
             Cedula_autoriza: data.cedulaDos,
+            Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
-            Porc_retencion: data.porcentaje
+            Porc_retencion: data.porcentaje,
         };
 
 
