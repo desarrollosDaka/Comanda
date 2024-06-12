@@ -480,7 +480,8 @@ onMounted( async () => {
                 <v-label for="delivery">Delivery</v-label>
                 <v-autocomplete id="delivery" placeholder="Seleccione el tipo de delivery" class="mt-2" clearable chips
                     :items="delivery" variant="outlined" :rules="metodoRules" aria-label="delivery" color="primary"
-                    v-model="ID_delivery"></v-autocomplete>
+                    v-model="ID_delivery">
+                </v-autocomplete>
             </v-col>
         </v-row>
         <v-row>

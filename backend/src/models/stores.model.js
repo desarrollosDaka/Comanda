@@ -3,7 +3,7 @@ const { Sequelize, Model, DataTypes } = require("sequelize");
 
 const tableName = "MASTER_STORES";
 const modelName = "modelStores";
-
+// hola
 const masterStoresSchema = {
   ID_sucursal: {
     allowNull: false,
