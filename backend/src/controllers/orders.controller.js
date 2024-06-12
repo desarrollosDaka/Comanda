@@ -123,6 +123,8 @@ const createMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
 
+        console.log(data);
+
         // Crear un objeto con los datos del cliente
         const newClients = {
             Nombre: data.nombreCompleto,

@@ -26,9 +26,6 @@ const masterStoresSchema = {
     allowNull: true,
     type: DataTypes.STRING(200),
   },
-  
-
-
 };
 
 class MasterStores extends Model {
