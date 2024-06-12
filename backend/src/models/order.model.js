@@ -59,10 +59,6 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.BOOLEAN,
   },
-  Personal_autoriza: {
-    allowNull: true,
-    type: DataTypes.STRING(80),
-  },
   Cedula_autoriza: {
     allowNull: true,
     type: DataTypes.STRING(100),
