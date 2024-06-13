@@ -13,7 +13,7 @@ const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 
 
 const notify = () => {
-    toast.info('Hello1!!'); 
+    toast.info('Hello1!!');
     toast.error('Hello2!!');
     toast.success('Hello3!!');
     toast.success('Hello4!!', {
@@ -33,8 +33,6 @@ const notify = () => {
 //##################################################################################################################
 
 const route = useRoute()
-const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
-const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])
@@ -52,6 +50,7 @@ const getProduct = async () => {
     try {
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
+
         infoProduct.value = data[0].map((product: Product) => ({
             title: product.Producto,
             value: product.ID_producto,
@@ -59,7 +58,16 @@ const getProduct = async () => {
         }));
 
     } catch (error) {
-        console.error(error)
+        toast.error("Ocurrio un error al consultar los datos de los productos", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 }
 
@@ -272,7 +280,6 @@ async function handleProductUpdate() {
 
     // RECORRO LA DATA DE ARTICULOS PARA AGREGARLO AL OBJECTO DE ARTICULOS
     try {
-        //const url = `${baseUrlProducts}/getOrderDetail/${id.value}`
         const url = `${baseUrlProducts}/filterOrderDetails/${id.value}`
         const { data } = await axios.get(url);
         articles = data[0]
@@ -308,13 +315,15 @@ async function handleProductUpdate() {
     <v-row class="mb-0">
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
-                variant="outlined" color="blue-grey-lighten-2"  item-title="value"  v-model="product"
+                variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
                 :items="infoProduct">
 
                 <template v-slot:item="{ props, item }">
-                    <!-- <v-list-item v-bind="props" :subtitle="item.raw.title"></v-list-item> -->
+                    <!-- GENERA ERROR EN LA TERMINAR, PERO NO EN CONSOLA -->
+                    <v-list-item v-bind="props" :subtitle="item.raw.title"></v-list-item>
                     <v-list-item v-bind="props" ></v-list-item>
                 </template>
+
             </v-autocomplete>
 
         </v-col>
@@ -334,8 +343,7 @@ async function handleProductUpdate() {
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase"
-                                style="min-width: 100px">
+                            <th class="text-left text-caption font-weight-bold text-uppercase" style="min-width: 100px">
                                 Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Sub Total</th>
