@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, defineEmits, defineProps } from 'vue';
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 
@@ -8,7 +9,7 @@ let route_upload = ref()
 const props = defineProps({
   ID_detalle: {
     type: String as () => string,
-    required: true,
+    required: false,
   }, //Id de la Comanda
 })
 
@@ -18,7 +19,7 @@ const document = ref<Documento[]>([]);
 onMounted(async () => {
 
 
-  if (props.ID_detalle) {
+  if (props.ID_detalle != undefined) {
 
     route_upload.value = 'http://localhost:3002/public/'
 
@@ -99,16 +100,35 @@ function typeValue(index: number, valor: string): void {
 
 async function deldata(data: any, index: number) {
 
-  document.value.splice(index, 1);
-console.log(data)
-  try {
-  
-    data.Id > 0 ? await axios.put(`${baseUrl}/deleteOrderDocument/${data.Id}`, data) : null
 
-  } catch (error) {
-    console.log(error)
+
+  if (data.Id > 0) { // SI LA DATA VIENE DEL FORMULARIO DE ACTUALIZAR
+
+    Swal.fire({
+      title: `Eliminar Archivo`,
+      text: "¿Estas seguro de eliminar el archivo?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Si, Eliminar!",
+
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        document.value.splice(index, 1);
+        try {
+          await axios.put(`${baseUrl}/deleteOrderDocument/${data.Id}`, data)
+
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    });
+  }else{
+
+    document.value.splice(index, 1);
   }
-
 
 }
 
@@ -174,7 +194,8 @@ console.log(data)
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2 " cover>
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" color="error"></v-btn>
+          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline"
+            color="error"></v-btn>
 
           <template v-slot:placeholder>
             <v-row align="center" class="fill-height ma-0" justify="center">
