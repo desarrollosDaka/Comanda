@@ -33,6 +33,7 @@ const info_ciudad = ref();
 const ID_status = ref('1');
 const idComandaRandom = ref();
 const deliveryZoom = ref();
+const info_Zoom = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_Delivery = ref();
@@ -142,15 +143,17 @@ async function Created(json: any) {
 // BUSCADOR DE CLIENTES
 async function searchModel() {
     try {
-        const { data } = await axios.get(`${baseUrlClients}/searchClient/${cedulaUno.value}`)
 
-        if (data) {
-            tipo.value = data.Tipo_cliente
-            email.value = data.Email
-            nombreCompleto.value = data.Nombre
-            estado.value = data.ID_state
-            ciudad.value = data.ID_city
-            municipio.value = data.ID_municipio
+        const {data} = await axios.get(`${baseUrlClients}/searchClient/${cedulaUno.value}`)
+        
+        if(data){
+            tipo.value =  data.Tipo_cliente
+            email.value =  data.Email
+            telefonoUno.value =  data.Telefono
+            nombreCompleto.value =  data.Nombre
+            estado.value =  data.ID_state
+            ciudad.value =  data.ID_city
+            municipio.value =  data.ID_municipio
         }
 
     } catch (error) {
@@ -261,6 +264,23 @@ async function getPayment() {
     }
 }
 
+
+interface Zoom{
+    SucursalZoom: string
+    Sucursal: string;
+}
+async function getZoom(){
+    try{
+        const {data} = await axios.get(`${baseUrlStore}/masterStores`)
+        info_Zoom.value = data[0].map((zoom: Zoom) =>({
+            title: zoom.Sucursal,
+            value: zoom.SucursalZoom
+        }));
+    } catch(error){
+        console.log(error)
+    }
+
+}
 
 interface Document {
     file: File;
@@ -419,6 +439,7 @@ onMounted(async () => {
     await getSucursal();
     await getDelivery();
     await getPayment();
+    await getZoom();
     let cadenaAleatoria = generarCadenaAleatoria(20);
     idComandaRandom.value = cadenaAleatoria
 });
@@ -531,7 +552,9 @@ function validateDocuments(): boolean {
                     v-model="nombreCompleto" color="primary"></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="4">
+
+             <v-col cols="12" md="4">        
+
                 <v-label for="telefonoCliente">Telefono</v-label>
                 <v-text-field id="telefonoCliente" type="number" placeholder="Numero Telefonico del cliente"
                     variant="outlined" class="mt-2" :rules="telefonoRules" v-model="telefonoUno"
@@ -603,9 +626,18 @@ function validateDocuments(): boolean {
         <v-row>
             <v-col cols="12" md="12" v-if="ID_Delivery === 3">
                 <v-label for="direccion">Direccion del Delivery</v-label>
-                <v-autocomplete id="direccion" placeholder="Seleccione la Direccion del Delivery" class="mt-2" clearable
-                    chips :items="CodigoZoom" variant="outlined" aria-label="delivery" color="primary"
-                    v-model="direccionZoom"></v-autocomplete>
+                <v-autocomplete
+                    id="direccion"
+                    placeholder="Seleccione la Direccion del Delivery"
+                    class="mt-2"
+                    clearable
+                    chips
+                    :items="info_Zoom"
+                    variant="outlined"
+                    aria-label="delivery"
+                    color="primary"
+                    v-model="direccionZoom"
+                ></v-autocomplete>
             </v-col>
         </v-row>
         <v-row>
