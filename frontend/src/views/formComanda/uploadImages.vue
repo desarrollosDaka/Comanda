@@ -2,8 +2,16 @@
 import { ref, onMounted, defineEmits, defineProps } from 'vue';
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import imgUrl from '@/assets/images/archivoPdf.png'
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
+
+const INSERT_METHOD = 'insert'
+const UPDATE_METHOD = 'update'
+const DOCUMENT_PDF = 'application/pdf'
+const URLIMAGEPDF = imgUrl
 
 let route_upload = ref()
 const props = defineProps({
@@ -29,7 +37,7 @@ onMounted(async () => {
 
       data[0].forEach((data: DocumentData) => {
 
-        document.value.push({ imagen: data.File, file: null, type: data.Type_File, mode: 'update', disabled: true, Id: data.ID_File });
+        document.value.push({ imagen: data.File, file: null, type: data.Type_File, mode: UPDATE_METHOD, disabled: true, Id: data.ID_File, typefile:'png' });
 
       });
 
@@ -52,14 +60,14 @@ interface Documento {
   mode: string;
   disabled: boolean;
   Id: number;
+  typefile:string;
 }
 
 interface DocumentData {
   File: string,
   Type_File: string,
   ID_File: number,
-
-
+  Type_File_Document:string
 }
 
 
@@ -71,12 +79,19 @@ const tipoRules = ref([
 ]);
 
 async function viewImages(event: Event) {
+  
   const target = event.target as HTMLInputElement;
   if (!target.files) return;
 
   for (const file of target.files) {
+
+    if (!validadPropertyImage(file)) {
+  
+      break;
+    }
+
     const base64URL = await encodeFileAsBase64URL(file);
-    document.value.push({ imagen: base64URL, file, type: null, mode: 'insert', disabled: false, Id: 0 });
+    document.value.push({ imagen: base64URL, file, type: null, mode: INSERT_METHOD, disabled: false, Id: 0 , typefile:file.type});
   }
 
 
@@ -133,37 +148,44 @@ async function deldata(data: any, index: number) {
 }
 
 
-// function validadPropertyImage(file) {
+function validadPropertyImage(file:File) {
 
-//     const allowedTypes = ["image/jpg", "image/jpeg", "image/png", "image/JPG", "image/JPEG", "image/PNG"]
-//     const allowedSize = 52428800;
+    const allowedTypes=["application/pdf","application/docx","application/txt","image/jpg","image/jpeg","image/png"];
+    const allowedSize = 52428800; //MAX 5MB
 
-//     if (file?.size > allowedSize) {
-//         messageError.value = 'El peso del archivo no puede superar mas de 5Mb'
-//         return false
-//     }
+    if (file?.size > allowedSize) {
+      
+      toast.error("Error. El peso del archivo no puede superar mas de 5Mb", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
 
-//     if (!allowedTypes.includes(file?.type)) {
-//         messageError.value = 'Solo se aceptan archivos con extensiones jpg - jpeg - png - pdf'
-//         return false
-//     }
+        return false
+    }
 
-//     return true
-// }
+    if (!allowedTypes.includes(file?.type)) {
 
-// function typeValue(index:number, valor:any):void {
+      toast.error("Error. Solo se aceptan archivos con extensiones jpg - jpeg - png - pdf ", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
+        return false
+    }
 
-//     document.value[index].type = valor
-//     emits("isSelectImages", document.value)
-// }
-
-// function deldata(index: number): void{
-
-//     document.value.splice(index, 1)
-
-// }
-
-
+    return true
+}
 
 </script>
 
@@ -173,7 +195,7 @@ async function deldata(data: any, index: number) {
     <v-col cols="12">
       <br>
       <v-file-input multiple clearable label="Haga click para seleccionar todos los archivos necesarios"
-        variant="outlined" color="primary" required @change="viewImages" accept="image/png, image/jpeg, image/bmp"
+        variant="outlined" color="primary" required @change="viewImages" accept="image/* application/pdf"
         prepend-icon="mdi-camera"></v-file-input>
     </v-col>
   </v-row>
@@ -188,11 +210,12 @@ async function deldata(data: any, index: number) {
     <v-col v-for="(data, index) in document" :key="index" class="d-flex child-flex" cols="4">
 
       <v-sheet class="mx-auto" width="300">
-        <v-img
-          :lazy-src="data.mode === 'update' ? `${route_upload}${document[index].imagen}${index * 5 + 10}` : `${document[index].imagen}${index * 5 + 10}`"
-          :src="data.mode === 'update' ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}`"
+        
+        <v-img 
+          :lazy-src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}${index * 5 + 10}` : `${document[index].imagen}${index * 5 + 10}` : `${URLIMAGEPDF}${index * 5 + 10}`"
+          :src=" data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : URLIMAGEPDF "
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2 " cover>
-
+       
           <!-- ICONO DE ELIMINAR -->
           <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline"
             color="error"></v-btn>
@@ -216,7 +239,6 @@ async function deldata(data: any, index: number) {
 
         </v-col>
       </v-sheet>
-
     </v-col>
     <div>
     </div>
