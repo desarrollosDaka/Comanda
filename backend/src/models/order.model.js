@@ -5,7 +5,6 @@ const tableName = "ORDERS";
 const modelName = "modelOrders";
 
 const masterOrderSchema = {
-
   ID_order: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -58,10 +57,6 @@ const masterOrderSchema = {
   Autoriza: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
-  },
-  Personal_autoriza: {
-    allowNull: true,
-    type: DataTypes.STRING(80),
   },
   Cedula_autoriza: {
     allowNull: true,

@@ -31,6 +31,7 @@ const info_ciudad = ref();
 const ID_status = ref('1');
 const idComandaRandom = ref();
 const deliveryZoom = ref();
+const info_Zoom = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_Delivery = ref();
@@ -143,6 +144,7 @@ async function searchModel() {
         if(data){
             tipo.value =  data.Tipo_cliente
             email.value =  data.Email
+            telefonoUno.value =  data.Telefono
             nombreCompleto.value =  data.Nombre
             estado.value =  data.ID_state
             ciudad.value =  data.ID_city
@@ -257,6 +259,22 @@ async function getPayment(){
     }
 }
 
+interface Zoom{
+    SucursalZoom: string
+    Sucursal: string;
+}
+async function getZoom(){
+    try{
+        const {data} = await axios.get(`${baseUrlStore}/masterStores`)
+        info_Zoom.value = data[0].map((zoom: Zoom) =>({
+            title: zoom.Sucursal,
+            value: zoom.SucursalZoom
+        }));
+    } catch(error){
+        console.log(error)
+    }
+}
+
 // Capturar la imagen
 const File = (event: any) => {
   doc_file.value = event.target.files[0];
@@ -336,6 +354,7 @@ onMounted( async () => {
     await getSucursal();
     await getDelivery();
     await getPayment();
+    await getZoom();
     let cadenaAleatoria = generarCadenaAleatoria(20);
     idComandaRandom.value = cadenaAleatoria
 });
@@ -448,7 +467,7 @@ onMounted( async () => {
                 ></v-text-field>
             </v-col>
 
-             <v-col cols="12" md="4">
+             <v-col cols="12" md="4">        
                 <v-label for="telefonoCliente">Telefono</v-label>
                 <v-text-field
                     id="telefonoCliente"
@@ -599,7 +618,7 @@ onMounted( async () => {
                     class="mt-2"
                     clearable
                     chips
-                    :items="CodigoZoom"
+                    :items="info_Zoom"
                     variant="outlined"
                     aria-label="delivery"
                     color="primary"
@@ -608,7 +627,6 @@ onMounted( async () => {
             </v-col>
         </v-row>
         <v-row>
-    
             <v-col cols="12" md="3">
                 <v-label for="autorizado">Autorizado para recibir el envio</v-label>
                 <v-switch 
