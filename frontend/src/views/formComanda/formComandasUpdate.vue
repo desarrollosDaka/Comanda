@@ -168,7 +168,17 @@ const getOrder = async () => {
             user_crea.value = data[0][0]["User_crea"]
         }
     } catch (error) {
-        console.log(error)
+        
+        toast.error("Ocurrio un error al consultar los datos de la comanda", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 }
 
@@ -208,7 +218,16 @@ async function getEstados() {
         }));
 
     } catch (error) {
-        console.log(error)
+        toast.error("Ocurrio un error al consultar los datos del maestro (getEstados)", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 }
 
@@ -225,7 +244,16 @@ async function getMunicipio() {
             value: muni.ID_municipio
         }));
     } catch (error) {
-        console.log(error)
+        toast.error("Ocurrio un error al consultar los datos del maestro (getMunicipio)", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 }
 
@@ -241,7 +269,16 @@ async function getCiudad() {
             value: ciudad.ID_city
         }));
     } catch (error) {
-        console.log(error)
+        toast.error("Ocurrio un error al consultar los datos del maestro (getCiudad)", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 }
 
@@ -370,9 +407,19 @@ async function handleFormComanda() {
 
     // ACTUALIZAMOS PRIMERO LA DATA DEL FORMULARIO
     try {
-        //       await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
+               await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
     } catch (error) {
-        console.log(error)
+
+        toast.error("Ocurrio un error al momento de actualizar los datos de la comanda", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 
 
@@ -395,7 +442,17 @@ async function handleFormComanda() {
     try {
         await axios.post(`${baseUrl}/createOrderDocument/${id.value}`, formDataDocuments)
     } catch (error) {
-        console.log(error)
+
+        toast.error("Ocurrio un error al momento de registrar los datos de los archivos", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
     }
 }
 
@@ -428,7 +485,8 @@ async function validate() {
 
                     if (result.isConfirmed) {
 
-                        // handleProductUpdate()
+
+                        handleProductUpdate()
 
                     }
                 });

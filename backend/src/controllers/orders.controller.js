@@ -154,6 +154,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
+          
             Cedula_autoriza: data.cedulaDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
@@ -161,7 +162,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             //File_cedula: req.file.filename 
         };
 
-        // Comprobar si la cédula ya existe en la base de datos
+        //Comprobar si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
         if (client) {
             // Actualizar el cliente existente
@@ -176,7 +177,7 @@ const createMasterOrderAndDetails = async (req, res) => {
 
         if (order && client) {
             res.status(201);
-            res.json({ order: order, clients: client, orderDetails: orderDetails });
+            res.json({ order: order, clients: client});
         } else {
             res.status(404);
             res.json({ msj: 'Error en la creación' });

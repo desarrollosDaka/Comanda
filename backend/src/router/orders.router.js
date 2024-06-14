@@ -58,7 +58,7 @@ router.get("/filterOrderDetails/:id", filterOrderDetails);
 router.get("/filterMasterAsesor", filterMasterAsesor);
 
 //CREAR ORDER + CLIENTE
-router.post("/createOrder", upload.single('doc_file'), createMasterOrderAndDetails);
+router.post("/createOrder", createMasterOrderAndDetails);
 
 //CREATE DETALLE DE ORDEN
 router.post("/createOrderDetails", createOrderDetails);
