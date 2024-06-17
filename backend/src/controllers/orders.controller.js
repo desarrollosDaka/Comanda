@@ -84,6 +84,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[User_rol]
                     ,t0.[ID_status]
                     ,t0.[Tipo_delivery]
+                    ,t1.[SucursalZoom]
                     ,t0.[Autoriza]
                     ,t0.[Cedula_autoriza]
                     ,t0.[Telefono_autoriza]
