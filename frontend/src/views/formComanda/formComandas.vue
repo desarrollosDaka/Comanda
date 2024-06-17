@@ -276,6 +276,9 @@ async function getZoom(){
             title: zoom.Sucursal,
             value: zoom.SucursalZoom
         }));
+
+        console.log(info_Zoom)
+        
     } catch(error){
         console.log(error)
     }
@@ -392,7 +395,6 @@ async function validate() {
     const isvalidateDocuments = validateDocuments()
 
     if (isvalidateDocuments)
-
         // Alerta
         Swal.fire({
             title: `Comanda Generada`,

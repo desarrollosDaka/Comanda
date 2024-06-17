@@ -25,7 +25,7 @@ const ciudad = ref();
 const municipio = ref();
 const direccion = ref('');
 const referencia = ref('');
-const autorizado = ref('');
+const autorizado = ref(false);
 const cedulaDos = ref('');
 const telefonoUno = ref('');
 const ID_pago = ref();
@@ -33,6 +33,7 @@ const ID_status = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
+const User_asing = ref();
 
 const getOrder = async () => {
     try {
@@ -52,13 +53,14 @@ const getOrder = async () => {
             municipio.value = data[0][0]["Municipio"]
             origen.value = data[0][0]["Sucursal"]
             direccion.value = data[0][0]["Direccion"]
-            referencia.value = 'frente athanassio'
-            ID_delivery.value = data[0][0]["Tipo_delivery"]
-            ID_status.value = data[0][0]["ID_status"]
-            autorizado.value = data[0][0]["Personal_autoriza"] 
+            referencia.value = data[0][0]["Referencia"]
+            ID_delivery.value = data[0][0]["Delivery_type"]
+            ID_status.value = data[0][0]["Status"]
+            autorizado.value = data[0][0]["Autoriza"] 
             cedulaDos.value = data[0][0]["Cedula_autoriza"]
-            telefonoUno.value = data[0][0]["Telefono"]  
-            ID_pago.value = data[0][0]["ID_pago"]
+            telefonoUno.value = data[0][0]["Telefono_autoriza"]  
+            ID_pago.value = data[0][0]["Pago"]
+            User_asing.value = data[0][0]["User_asing"]
         }
 
     } catch (error) {
@@ -72,6 +74,9 @@ const getArticulos = async () => {
     const url = `${baseUrl}/filterOrderDetails/${id.value}`
     const {data} = await axios.get(url);
     info.value =  data[0]
+
+    console.log(info);
+    
 
   } catch(error){
       console.log(error)
@@ -146,14 +151,32 @@ function updateData(id:string){
             <p><b>Direccion Completa:</b> {{ direccion }}</p>
             <p><b>Referencia:</b> {{ referencia }}</p>
             <p><b>Delivery:</b> {{ID_delivery}}</p>
-            <p><b>Autorizado para recibir:</b> {{autorizado}}</p>
+            <p><b>Autorizado para recibir:</b>
+                <v-chip 
+                    variant="tonal"
+                    color="warning"
+                    size="x-small"
+                    prepend-icon="mdi-timer-sand"
+                    v-if="autorizado === true">
+                    <p class="mb-0">Si</p>
+                </v-chip>
+
+                <v-chip 
+                    variant="tonal"
+                    color="error"
+                    size="x-small"
+                    prepend-icon="mdi-timer-sand"
+                    v-else>
+                    <p class="mb-0">No</p>
+                </v-chip>
+            </p>
             <p><b>Cedula/Rif:</b> {{cedulaDos}}</p>
             <p><b>medio de pago:</b> {{ID_pago}}</p>
         </v-col>
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Estatus</h2>
             <p><b>Status de comanda:</b> {{ID_status}}</p>
-            <p><b>Asesor:</b> Dilan Marcano</p>
+            <p><b>Asesor:</b> {{ User_asing }}</p>
         </v-col>
     </v-row>
 

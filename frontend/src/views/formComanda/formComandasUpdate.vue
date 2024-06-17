@@ -380,7 +380,8 @@ async function handleFormComanda() {
         "retencion": retencion.value.toString(),
         "ID_delivery": ID_Delivery.value,
         "porcentaje": porcentajeValue,
-        "user_crea": user_crea.value
+        "user_crea": user_crea.value,
+        "referencia": referencia.value
     }
 
     // formData.append('Id_Comanda', idComandaRandom.value);
