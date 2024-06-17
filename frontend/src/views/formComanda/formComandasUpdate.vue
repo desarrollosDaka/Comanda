@@ -60,6 +60,8 @@ const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 
 const itemDocument = ref<Document[]>([]);
 
+const INSERT_METHOD = 'insert'
+
 const CodigoZoom = ref([
     {
         title: 'Sucursal Valencia - 887654',
@@ -145,6 +147,7 @@ const getOrder = async () => {
         const url = `${baseUrl}/filterOrder/${id.value}`
         const { data } = await axios.get(url);
 
+        console.log(data)
         if (data){
             cedulaUno.value = data[0][0]["Cedula"]
             tipo.value = data[0][0]["Tipo_cliente"]
@@ -158,7 +161,7 @@ const getOrder = async () => {
             origen.value = data[0][0]["ID_sucursal"]
             direccion.value = data[0][0]["Direccion"]
             referencia.value = data[0][0]["Referencia"]
-            ID_Delivery.value = data[0][0]["Tipo_delivery"]
+            ID_Delivery.value = +data[0][0]["Tipo_delivery"]
             direccionZoom.value = data[0][0]["SucursalZoom"]
             autorizado.value = data[0][0]["Autoriza"] 
             cedulaDos.value = data[0][0]["Cedula_autoriza"]
@@ -308,8 +311,10 @@ async function getDelivery(){
         info_Delivery.value = data.map((delivery: Delivery) =>({
             title: delivery.Delivery_type,
             value: delivery.ID_Delivery
+   
         }));
         
+        console.log(info_Delivery.value)
     } catch(error){
         console.log(error)
     }
@@ -426,7 +431,7 @@ async function handleFormComanda() {
     const formDataDocuments = new FormData();
     
     // filtramos solos los item tipo insert
-    itemDocument.value = itemDocument.value.filter(item => item.mode ==='insert')
+    itemDocument.value = itemDocument.value.filter(item => item.mode === INSERT_METHOD)
 
     for (let i = 0; i < itemDocument.value.length; i++) {
 
