@@ -5,7 +5,6 @@ const tableName = "ORDERS";
 const modelName = "modelOrders";
 
 const masterOrderSchema = {
-
   ID_order: {
     type: DataTypes.INTEGER,
     primaryKey: true,

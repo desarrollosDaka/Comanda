@@ -62,8 +62,9 @@ const filterMasterOrder = async (req, res) => {
   
         const rta = await sequelize.query(
 
-            `SELECT DISTINCT	     
-                     T0.[ID_order]
+
+            `SELECT DISTINCT     
+                    T0.[ID_order]
                     ,T0.ID_detalle
                     ,T0.Cedula
                     ,T3.Tipo_cliente
@@ -85,7 +86,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[User_rol]
                     ,t0.[ID_status]
                     ,t0.[Tipo_delivery]
-					,t0.[SucursalZoom]
+					          ,t0.[SucursalZoom]
                     ,t0.[Autoriza]
                     ,t0.[Cedula_autoriza]
                     ,t0.[Telefono_autoriza]
@@ -94,7 +95,7 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.Referencia
                     ,t0.[Porc_retencion]
                     ,t0.[Delete]
-                    ,t0.[Motivo_delete]	
+                    ,t0.[Motivo_delete]    
                     ,T2.Status
                     ,CAST(T0.Create_date AS DATE) Create_date
                     ,CAST(T0.[update_date] AS DATE) [Update_date]
@@ -162,7 +163,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             //File_cedula: req.file.filename 
         };
 
-        // Comprobar si la cédula ya existe en la base de datos
+        //Comprobar si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
         if (client) {
             // Actualizar el cliente existente
@@ -217,7 +218,7 @@ const filterOrderDetails = async (req, res) => {
 
         const rta = await sequelize.query(
             `SELECT *
-            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+            FROM [COMANDA_TEST].[dbo].[ORDERS_DETAILS]
             WHERE [ID_detalle] = '${id}'`);
         if(rta){
             res.status(200)
