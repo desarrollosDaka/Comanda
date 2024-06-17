@@ -59,7 +59,7 @@ const getMasterOrderDetails = async (req, res) => {
 const filterMasterOrder = async (req, res) => {
     try {
         const id = req.params.id; 
-  
+  //cambios 170624
         const rta = await sequelize.query(
             `SELECT DISTINCT     
                     T0.[ID_order]
@@ -84,7 +84,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[User_rol]
                     ,t0.[ID_status]
                     ,t0.[Tipo_delivery]
-                    ,t1.[SucursalZoom]
+					,t0.[SucursalZoom]
                     ,t0.[Autoriza]
                     ,t0.[Cedula_autoriza]
                     ,t0.[Telefono_autoriza]
@@ -154,7 +154,6 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
-          
             Cedula_autoriza: data.cedulaDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
@@ -178,6 +177,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         if (order && client) {
             res.status(201);
             res.json({ order: order, clients: client});
+            
         } else {
             res.status(404);
             res.json({ msj: 'Error en la creación' });
