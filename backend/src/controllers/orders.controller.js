@@ -61,8 +61,6 @@ const filterMasterOrder = async (req, res) => {
         const id = req.params.id; 
   
         const rta = await sequelize.query(
-
-
             `SELECT DISTINCT     
                     T0.[ID_order]
                     ,T0.ID_detalle
@@ -86,7 +84,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[User_rol]
                     ,t0.[ID_status]
                     ,t0.[Tipo_delivery]
-					          ,t0.[SucursalZoom]
+					,t0.[SucursalZoom]
                     ,t0.[Autoriza]
                     ,t0.[Cedula_autoriza]
                     ,t0.[Telefono_autoriza]
