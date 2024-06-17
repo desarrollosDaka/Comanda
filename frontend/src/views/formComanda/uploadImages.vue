@@ -10,7 +10,7 @@ const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 
 const INSERT_METHOD = 'insert'
 const UPDATE_METHOD = 'update'
-const DOCUMENT_PDF = 'application/pdf'
+const DOCUMENT_PDF = 'pdf'
 const URLIMAGEPDF = imgUrl
 
 let route_upload = ref()
@@ -36,8 +36,8 @@ onMounted(async () => {
       const { data } = await axios.get(url);
 
       data[0].forEach((data: DocumentData) => {
-
-        document.value.push({ imagen: data.File, file: null, type: data.Type_File, mode: UPDATE_METHOD, disabled: true, Id: data.ID_File, typefile:'png' });
+        const extension = data.File.split('.').pop();
+        document.value.push({ imagen: data.File, file: null, type: data.Type_File, mode: UPDATE_METHOD, disabled: true, Id: data.ID_File, typefile: extension });
 
       });
 
@@ -60,7 +60,7 @@ interface Documento {
   mode: string;
   disabled: boolean;
   Id: number;
-  typefile:string;
+  typefile:string | undefined;
 }
 
 interface DocumentData {
@@ -81,6 +81,7 @@ const tipoRules = ref([
 async function viewImages(event: Event) {
   
   const target = event.target as HTMLInputElement;
+  
   if (!target.files) return;
 
   for (const file of target.files) {
@@ -91,7 +92,8 @@ async function viewImages(event: Event) {
     }
 
     const base64URL = await encodeFileAsBase64URL(file);
-    document.value.push({ imagen: base64URL, file, type: null, mode: INSERT_METHOD, disabled: false, Id: 0 , typefile:file.type});
+    const extension =file.name.split('.').pop();
+    document.value.push({ imagen: base64URL, file, type: null, mode: INSERT_METHOD, disabled: false, Id: 0 , typefile:extension});
   }
 
 
@@ -210,7 +212,7 @@ function validadPropertyImage(file:File) {
     <v-col v-for="(data, index) in document" :key="index" class="d-flex child-flex" cols="4">
 
       <v-sheet class="mx-auto" width="300">
-        
+
         <v-img 
           :lazy-src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}${index * 5 + 10}` : `${document[index].imagen}${index * 5 + 10}` : `${URLIMAGEPDF}${index * 5 + 10}`"
           :src=" data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : URLIMAGEPDF "
