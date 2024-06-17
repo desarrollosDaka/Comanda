@@ -59,7 +59,7 @@ const getMasterOrderDetails = async (req, res) => {
 const filterMasterOrder = async (req, res) => {
     try {
         const id = req.params.id; 
-  
+  //cambios 170624
         const rta = await sequelize.query(
             `SELECT DISTINCT     
                     T0.[ID_order]
