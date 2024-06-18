@@ -147,7 +147,6 @@ const getOrder = async () => {
         const url = `${baseUrl}/filterOrder/${id.value}`
         const { data } = await axios.get(url);
 
-        console.log(data)
         if (data){
             cedulaUno.value = data[0][0]["Cedula"]
             tipo.value = data[0][0]["Tipo_cliente"]
@@ -314,7 +313,6 @@ async function getDelivery(){
    
         }));
         
-        console.log(info_Delivery.value)
     } catch(error){
         console.log(error)
     }
