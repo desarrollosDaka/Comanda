@@ -318,7 +318,7 @@ const headers = ref([
           </v-chip>
 
           <v-chip
-              variant="tonal"
+              variant="elevated"
               color="error"
               size="x-small"
               prepend-icon="mdi-timer-sand"

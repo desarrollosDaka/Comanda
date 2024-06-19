@@ -108,7 +108,7 @@ const getRol = async () => {
 
 interface Sucursales {
     Sucursal: string;
-    ID_sucursal: number;
+    ID_sucursal: string;
 }
 
 const getSucursal = async () => {
@@ -116,7 +116,7 @@ const getSucursal = async () => {
     const url = `${baseUrlStore}/masterStores`
     const {data} = await axios.get(url);
 
-    infoSucursal.value =  data.map((sucursales: Sucursales) => ({
+    infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
             title: sucursales.Sucursal,
             value: sucursales.ID_sucursal
         }));

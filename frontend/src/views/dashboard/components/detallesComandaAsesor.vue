@@ -125,7 +125,6 @@ function updateData(id:string){
                 router.push(`/maestroComandaAsignada`);
                 }
             });
-    
         }
     });
 }
@@ -212,7 +211,7 @@ function updateData(id:string){
 
     <v-row class="mb-0 mt-5">
         <v-col cols="12" md="12">
-            <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary" @click="updateData">
+            <v-btn :disabled="ID_status === 'Asignada'" append-icon="mdi-check-all" variant="elevated" color="primary" @click="updateData">
                 Prefactura Creada
             </v-btn>
         </v-col>
