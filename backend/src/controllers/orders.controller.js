@@ -1,5 +1,6 @@
 const sequelize = require("../config/conexion");
 const fs = require('fs').promises;
+
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
     try {
@@ -7,6 +8,7 @@ const getMasterOrder = async (req, res) => {
        const rta = await sequelize.query(
         `SELECT T0.[ID_order]
                 ,T0.ID_detalle
+				,T3.Tipo_cedula
                 ,T0.Cedula
                 ,T3.Nombre Cliente
                 ,T1.Sucursal
@@ -18,7 +20,8 @@ const getMasterOrder = async (req, res) => {
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL`);
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL
+        ORDER BY T0.[ID_order] DESC`);
         if(rta){
             res.status(201)
             res.json(rta)
@@ -61,42 +64,49 @@ const filterMasterOrder = async (req, res) => {
         const id = req.params.id; 
   //cambios 170624
         const rta = await sequelize.query(
-            `SELECT DISTINCT     
-                    T0.[ID_order]
-                    ,T0.ID_detalle
-                    ,T0.Cedula
-                    ,T3.Tipo_cliente
-                    ,T3.Email
-                    ,T3.Nombre AS Cliente
-                    ,T3.Direccion
-                    ,T1.ID_sucursal 
-                    ,T1.Sucursal 
-                    ,T4.ID_states 
-                    ,T4.Nombre AS Estado
-                    ,T5.ID_city
-                    ,T5.Nombre AS Ciudad
-                    ,T6.ID_municipio 
-                    ,T6.NOMBRE AS Municipio
-                    ,t0.[ID_pago]
-                    ,t0.[User_crea]
-                    ,t0.[User_mod]
-                    ,t0.[User_asing]
-                    ,t0.[User_rol]
-                    ,t0.[ID_status]
-                    ,t0.[Tipo_delivery]
-					,t0.[SucursalZoom]
-                    ,t0.[Autoriza]
-                    ,t0.[Cedula_autoriza]
-                    ,t0.[Telefono_autoriza]
-                    ,T3.[Telefono]
-                    ,t0.[Retencion]
-                    ,T3.Referencia
-                    ,t0.[Porc_retencion]
-                    ,t0.[Delete]
-                    ,t0.[Motivo_delete]    
-                    ,T2.Status
-                    ,CAST(T0.Create_date AS DATE) Create_date
-                    ,CAST(T0.[update_date] AS DATE) [Update_date]
+            `SELECT DISTINCT    
+                T0.[ID_order]
+                ,T0.ID_detalle
+                ,T0.Cedula
+                ,T3.Tipo_cliente
+                ,T3.Email
+                ,T3.Nombre AS Cliente
+                ,T3.Direccion
+                ,T1.ID_sucursal 
+                ,T1.Sucursal 
+                ,T4.ID_states 
+                ,T4.Nombre AS Estado
+                ,T5.ID_city
+                ,T5.Nombre AS Ciudad
+                ,T6.ID_municipio 
+                ,T6.NOMBRE AS Municipio
+                ,t0.[ID_pago]
+                ,t0.[User_crea]
+                ,t0.[User_mod]
+                ,t0.[User_asing]
+                ,t0.[User_rol]
+                ,t0.[ID_status]
+                ,t0.[Tipo_delivery]
+                ,t0.[SucursalZoom]
+                ,t0.[Autoriza]
+                ,t0.[Cedula_autoriza]
+                ,t0.[Telefono_autoriza]
+                ,T3.Tipo_cedula_rep
+                ,T3.Cedula_rep	
+                ,T3.Nombre_rep	
+                ,T3.Email_rep	
+                ,T3.Telefono_rep	
+                ,T3.Direccion_rep	
+                ,T3.Referencia_rep
+                ,T3.[Telefono]
+                ,t0.[Retencion]
+                ,T3.Referencia
+                ,t0.[Porc_retencion]
+                ,t0.[Delete]
+                ,t0.[Motivo_delete]    
+                ,T2.Status
+                ,CAST(T0.Create_date AS DATE) Create_date
+                ,CAST(T0.[update_date] AS DATE) [Update_date]
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
             INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal 
             INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -139,6 +149,12 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
+            Nombre_rep: data.nombreCompleto_rep,
+            Email_rep: data.email_rep,
+            Cedula_rep: data.cedulaUno_rep,
+            Direccion_rep: data.direccion_rep,
+            Referencia_rep: data.referencia_rep,
+            Telefono_rep: data.telefonoUno_rep,            
         };
 
         // Crear un objeto con los datos del pedido
@@ -149,6 +165,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
+            ID_rol: '0',
             User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
@@ -312,17 +329,26 @@ const updateMasterOrderAndDetails = async (req, res) => {
             ID_city: data.ciudad,
             ID_municipio: data.municipio,
             Tipo_cliente: data.tipo,
+            Retencion: data.retencion,
+            Porc_retencion: data.porcentaje,
+            Nombre_rep: data.nombreCompleto_rep,
+            Email_rep: data.email_rep,
+            Cedula_rep: data.cedulaUno_rep,
+            Direccion_rep: data.direccion_rep,
+            Referencia_rep: data.referencia_rep,
+            Telefono_rep: data.telefonoUno_rep,         
         };
 
         const UpdateOrder = {
-            ID_detalle: data.Id_Comanda,
+           ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
             ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
+            ID_rol: '0',
             User_rol: 'Admin',
-            ID_status: data.ID_status,
+            //ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
@@ -330,6 +356,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
+            //File_cedula: req.file.filename 
         };
 
 
@@ -359,82 +386,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
         console.log('Error', e);
     }
 };
-
-
-/*const createOrderDocument = async (req, res) => {
-    
-
-    const data = req.body;
-    const files = req.files;
-    const Id_Comanda = req.params.id;
-
-    try {
-        
-    files.map((file, index) => {
-        const name = req.files[index].filename
-        const type = req.body[`typeDoc_${index}`]
-        })
-
-        const data = req.body;
-        const Id_Comanda = req.params.id;
-
-        const documentOrder = await ModelOrder.create({
-            ID_detalle: Id_Comanda,
-            typeDocument: files.type,
-            User_crea: data.user_crea,
-        });
-        
-        
-        if (documentOrder) {
-            res.status(200).json({ message: 'Documento guardado correctamente' });
-        } else {
-            res.status(404).json({ msj: 'Error en la creación de Documento' });
-        }
-        } catch (e) {
-            console.log('Error', e);
-            res.status(500).json({ error: 'Error al guardar el documento' });
-        }
-};*/
-
-//INSERTAR ARCHIVOS A LA TABLA ARCHIVOS
-// const createOrderDocument = async (req, res) => {
-//     const files = req.files;
-//     let documentOrder;
-
-//     try {
-//         if (!Array.isArray(files)) {
-//             throw new Error('files no es un array');
-//         }
-
-//         const fileData = files.map((file, index) => {
-//             const name = file.filename; 
-//             const type = req.body[`typeDoc_${index}`];
-//             return { name, type }; 
-//         });
-
-//         const data = req.body;
-//         const Id_Comanda = req.params.id;
-
-//         for (const file of fileData) {
-//             documentOrder = await modelOrdersFiles.create({
-//                 ID_detalle: Id_Comanda,
-//                 File: file.name, 
-//                 Type_File: file.type, 
-//                 User_crea: data.user_crea,
-//             });
-//         }
-
-//         if (documentOrder) {
-//             res.status(200).json({ message: 'Documento(s) guardado(s) correctamente' });
-//         } else {
-//             res.status(404).json({ message: 'Error en la creación de Documento' });
-//         }
-//     } catch (e) {
-//         console.error('Error al guardar el documento', e.message);
-//         res.status(500).json({ message: 'Error al guardar el documento' });
-//     }
-// };
-
 
 const createOrderDocument = async (req, res) => {
     const data = req.body;
@@ -648,10 +599,6 @@ const deleteMasterOrder = async (req, res) => {
             where: {ID_order: idOrder},
           });
 
-        // const rtaDetalle = await sequelize.models.modelOrdersdetails.update(dataDetalle,{
-        //     where: {ID_detalle: idOrder},
-        //   });
-
         if(rta){
             res.status(200)
             res.json(rta)
@@ -664,22 +611,6 @@ const deleteMasterOrder = async (req, res) => {
         console.log('Error', e);
     }
 };
-
-// const deleteMasterOrder = async (req, res) => {
-//     try {
-//         const idUser = req.params.ID_order;
-//         const rta = await sequelize.models.modelOrders.destroy({where: { id: idUser }});
-
-//         if(rta){
-//             return res.status(200).rta
-//         }else{
-//             return res.status(404).rta.json({msj: 'Error en la consulta'})
-//         } 
-
-//     } catch (e) {
-//         console.log('Error', e); 
-//     }
-// };
 
 // Export controllers
 module.exports = {
