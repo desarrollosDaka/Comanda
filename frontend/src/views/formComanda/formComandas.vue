@@ -473,12 +473,9 @@ function validateDocuments(): boolean {
     } else {
 
         itemDocument.value.forEach(element => {
-
             if (element.type === null) {
-
                 isvalidate = false
             }
-
         });
 
         if (!isvalidate)
@@ -593,27 +590,12 @@ function validateDocuments(): boolean {
         <br>
         <h4>Paso 2</h4>
         <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="8">
                 <v-label for="origen">Destino</v-label>
                 <v-autocomplete id="origen" placeholder="Origen de la comanda" class="mt-2" clearable chips
                     :items="info_tiendas" variant="outlined" :rules="origenRules" aria-label="Name Documents"
-                    color="primary" v-model="origen"></v-autocomplete>
-            </v-col>
-
-            <v-col cols="12" md="6">
-                <v-label for="direccion">Direccion completa</v-label>
-                <v-text-field id="direccion" type="text" placeholder="Direccion Completa" variant="outlined"
-                    aria-label="Name Documents" class="mt-2 my-input" v-model="direccion" :rules="direccionRules"
-                    color="primary"></v-text-field>
-            </v-col>
-
-        </v-row>
-        <v-row>
-            <v-col cols="12" md="8">
-                <v-label for="referencia">Referencia</v-label>
-                <v-text-field id="referencia" type="text" placeholder="Referencia del delivery" variant="outlined"
-                    aria-label="Name Documents" class="mt-2 my-input" :rules="referenciaRules" v-model="referencia"
-                    color="primary"></v-text-field>
+                    color="primary" v-model="origen">
+                </v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="4">
@@ -621,8 +603,23 @@ function validateDocuments(): boolean {
 
                 <v-autocomplete id="delivery" placeholder="Seleccione el tipo de delivery" class="mt-2" clearable chips
                     :items="info_Delivery" variant="outlined" :rules="metodoRules" aria-label="delivery" color="primary"
-                    v-model="ID_Delivery"></v-autocomplete>
+                    v-model="ID_Delivery">
+                </v-autocomplete>
+            </v-col>
+        </v-row>
+        <v-row v-if="ID_Delivery === 1 || ID_Delivery === 2 || ID_Delivery === 4">
+            <v-col cols="12" md="6">
+                <v-label for="direccion">Direccion completa</v-label>
+                <v-text-field id="direccion" type="text" placeholder="Direccion Completa" variant="outlined"
+                    aria-label="Name Documents" class="mt-2 my-input" v-model="direccion" :rules="direccionRules"
+                    color="primary"></v-text-field>
+            </v-col>
 
+            <v-col cols="12" md="6">
+                <v-label for="referencia">Referencia</v-label>
+                <v-text-field id="referencia" type="text" placeholder="Referencia del delivery" variant="outlined"
+                    aria-label="Name Documents" class="mt-2 my-input" :rules="referenciaRules" v-model="referencia"
+                    color="primary"></v-text-field>
             </v-col>
         </v-row>
         <v-row>
