@@ -26,6 +26,10 @@ const masterUserSchema = {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
+   ID_rol: {
+    allowNull: true,
+    type: DataTypes.STRING(80),
+  },
   Nombre_rol: {
     allowNull: false,
     type: DataTypes.STRING(80),

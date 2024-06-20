@@ -15,6 +15,10 @@ const masterClientsSchema = {
     allowNull: false,
     type: DataTypes.STRING(70),
   },
+  Tipo_cedula: {
+    allowNull: false,
+    type: DataTypes.STRING(15),
+  },
   Cedula: {
     allowNull: false,
     type: DataTypes.STRING(100),
@@ -59,9 +63,37 @@ const masterClientsSchema = {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  Delete: {
-    type: DataTypes.BOOLEAN,
+  Tipo_cedula_rep: {
     allowNull: true,
+    type: DataTypes.STRING(15),
+  },
+  Cedula_rep: {
+    allowNull: true,
+    type: DataTypes.STRING(100),
+  },
+  Nombre_rep: {
+    allowNull: true,
+    type: DataTypes.STRING(70),
+  },
+  Email_rep: {
+    allowNull: true,
+    type: DataTypes.STRING(120),
+  },
+  Telefono_rep: {
+    allowNull: true,
+    type: DataTypes.STRING(13),
+  },
+  Direccion_rep: {
+    allowNull: true,
+    type: DataTypes.STRING(150),
+  },
+  Referencia_rep: {
+    allowNull: true,
+    type: DataTypes.STRING(100),
+  },
+  Delete: {
+    allowNull: true,
+    type: DataTypes.BOOLEAN,
   },
 };
 

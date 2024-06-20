@@ -161,6 +161,7 @@ function updateData(id: string) {
             confirmButtonText: "Si"
         }).then((result) => {
             if (result.isConfirmed) {
+
                 updateEstatus()
                 Swal.fire({
                     title: dataUser.msgButton,
@@ -259,9 +260,11 @@ function handleSelectImages(items: any) {
 
     <v-row class="mb-0 mt-5">
         <v-col cols="12" md="12">
+
             <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
                 @click="updateData">
                 {{ dataUser.msgButton }}
+
             </v-btn>
         </v-col>
     </v-row>
