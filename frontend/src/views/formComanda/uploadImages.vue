@@ -189,6 +189,46 @@ function validadPropertyImage(file:File) {
     return true
 }
 
+function validateDocuments(): boolean {
+    let isvalidate = true
+
+    if (document.value.length <= 0) {
+
+        toast.error("Error: Debes seleccionar al menos un archivo", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
+
+        isvalidate = false
+
+    } else {
+
+      document.value.forEach(element => {
+            if (element.type === null) {
+                isvalidate = false
+            }
+
+        });
+
+        if (!isvalidate)
+            toast.warn(`Error: Seleccione el tipo de documento`, {
+                delay: 1000,
+                position: toast.POSITION.BOTTOM_CENTER,
+                transition: toast.TRANSITIONS.ZOOM,
+                theme: 'dark',
+                autoClose: 3000
+            });
+    }
+
+    return isvalidate
+}
+
 </script>
 
 <template>
