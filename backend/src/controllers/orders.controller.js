@@ -12,7 +12,9 @@ const getMasterOrder = async (req, res) => {
                 ,T1.Sucursal
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
-                ,T2.Status 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
                 ,CAST(T0.Create_date AS DATE) Create_date
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -529,7 +531,8 @@ const filterMasterAsesor = async (req, res) => {
 const updateMasterAsesor = async (req, res) => {
     try {
         const data = {
-            User_asing: req.body.User_asing
+            User_asing: req.body.User_asing,
+            ID_status:req.body.ID_status
         }
 
         const idUser = req.params.id;
