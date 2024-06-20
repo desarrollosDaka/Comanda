@@ -11,7 +11,7 @@ const masterOrderSchema = {
     autoIncrement: true,
   },
   ID_detalle: {
-    allowNull: true, 
+    allowNull: true,
     type: DataTypes.STRING(30),
   },
   ID_sucursal: {

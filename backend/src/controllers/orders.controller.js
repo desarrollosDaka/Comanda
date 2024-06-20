@@ -108,12 +108,15 @@ const filterMasterOrder = async (req, res) => {
                 ,CAST(T0.Create_date AS DATE) Create_date
                 ,CAST(T0.[update_date] AS DATE) [Update_date]
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
-            INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal 
+            INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
             INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
             INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
             INNER JOIN [dbo].[MASTER_STATES] T4 ON T3.ID_state = T4.ID_states
-            INNER JOIN [dbo].[MASTER_CITIES] T5 ON T3.ID_city = T5.ID_city 
+            INNER JOIN [dbo].[MASTER_CITIES] T5 ON T3.ID_city = T5.ID_city
             INNER JOIN [dbo].[MASTER_MUNICIPALITY] T6 ON T3.ID_municipio = T6.ID_municipio
+            INNER JOIN [dbo].[PAYMENT_METHODS] T7 ON T0.ID_pago = T7.ID_pago
+            INNER JOIN [dbo].[MASTER_STATUS] T8 ON T0.ID_status = T8.ID_status
+            INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
             WHERE T0.ID_detalle = '${id}'`);
         if(rta){
             res.status(200)
