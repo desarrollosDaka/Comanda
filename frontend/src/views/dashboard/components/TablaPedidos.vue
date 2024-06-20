@@ -11,7 +11,7 @@ const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const dialog = ref(false);
 
-const selectedStatus = ref()
+const selectedMotivo = ref()
 const idDocuments = ref('')
 const estatus = ref()
 
@@ -37,11 +37,24 @@ const getOrders = async () => {
 }
 
 const deleteDocuments = async (id:string) => {
-  estatus.value = '1'
+  estatus.value = true
     try{
-      const response = await axios.put(`${baseUrl}/updateEstatus/${id}`, {
-      status: estatus.value
+      const response = await axios.put(`${baseUrl}/deleteOrder/${id}`, {
+      status: estatus.value.toString(),
+      motivo: selectedMotivo.value
     })
+    if(response){
+      dialog.value = false
+      Swal.fire({
+        title: "Comanda eliminada",
+        text: "Se acaba de eliminar una comanda",
+        icon: "success"
+      }).then((result) => {
+          if(result.isConfirmed) {
+            location.reload();
+          }
+      });
+    }
         
     } catch(error){
         console.log(error)       
@@ -51,32 +64,6 @@ const deleteDocuments = async (id:string) => {
 onMounted( async () => {
     await getOrders();
 });
-
-function eliminardata(id:string){
-    Swal.fire({
-        title: "¿Desea eliminar este dato?",
-        text: "No podrás revertir esto!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Eliminar!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            deleteDocuments(id)
-            Swal.fire({
-            title: "Eliminado!",
-            text: "Data eliminada con exito!",
-            icon: "success",
-            }).then((result) => {
-            if (result.isConfirmed) {
-                location.reload();
-              }
-            });
-        }
-    });
-}
 
 const headers = ref([
   {title: 'COMANDA', align: 'start', key: 'ID_order'},
@@ -178,7 +165,7 @@ const headers = ref([
                           variant="outlined"
                           class="mt-2 py-3"
                           color="primary"
-                          v-model="selectedStatus"
+                          v-model="selectedMotivo"
                         ></v-autocomplete>
                       </v-col>
               
@@ -200,6 +187,7 @@ const headers = ref([
                     type="submit"
                     color="primary"
                     variant="elevated"
+                    @click="deleteDocuments(deleteItem.ID_order)"
                   >
                     Eliminar
                   </v-btn>

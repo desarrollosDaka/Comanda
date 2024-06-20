@@ -86,6 +86,16 @@ const MainRoutes = {
       path: '/addArticulosUpdate/:id',
       component: () => import('@/views/pages/addArticuloUpdate.vue')
     }
+    ,{
+      name: 'viewAsesor',
+      path: '/viewAsesor/:id',
+      component: () => import('@/views/pages/viewAsesor.vue')
+    }
+    ,{
+      name: 'maestroComandaAsignada',
+      path: '/maestroComandaAsignada',
+      component: () => import('@/views/pages/maestroComandaAsignada.vue')
+    }
   ]
 };
 

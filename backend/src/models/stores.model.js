@@ -3,7 +3,7 @@ const { Sequelize, Model, DataTypes } = require("sequelize");
 
 const tableName = "MASTER_STORES";
 const modelName = "modelStores";
-
+// hola
 const masterStoresSchema = {
   ID_sucursal: {
     allowNull: false,
@@ -22,8 +22,10 @@ const masterStoresSchema = {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
-
-
+  SucursalZoom: {
+    allowNull: true,
+    type: DataTypes.STRING(200),
+  },
 };
 
 class MasterStores extends Model {

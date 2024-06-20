@@ -92,7 +92,7 @@ const getSucursal = async () => {
     const url = `${baseUrlStore}/masterStores`
     const {data} = await axios.get(url);
 
-    infoSucursal.value =  data.map((sucursales: Sucursales) => ({
+    infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
             title: sucursales.Sucursal,
             value: sucursales.ID_sucursal
         }));

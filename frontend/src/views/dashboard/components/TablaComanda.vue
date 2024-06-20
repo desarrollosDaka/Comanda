@@ -15,7 +15,8 @@ const infoAsesores = ref();
 
 const selectedAsesor = ref()
 const idDocuments = ref('')
-const estatus = ref('')
+const estatus = ref(false)
+const motivo = ref()
 
 let editedItem = ref({
   ID_order: '',
@@ -62,17 +63,7 @@ const getAsesores = async () => {
   }
 }
 
-const deleteDocuments = async (id:string) => {
-  estatus.value = '1'
-    try{
-      const response = await axios.put(`${baseUrl}/updateEstatus/${id}`, {
-      status: estatus.value
-    })
-        
-    } catch(error){
-        console.log(error)       
-    }
-}
+
 const asignAsesor = async (id:string) => {
     const status = 2
     try{
@@ -87,10 +78,10 @@ const asignAsesor = async (id:string) => {
               if(result.isConfirmed) {
                 location.reload();
               }
-          });;
+          });
         }
     } catch(error){
-        console.log(error)       
+        console.log(error)        
     }
 }
 
@@ -100,31 +91,7 @@ onMounted( async () => {
     await getAsesores();
 });
 
-function eliminardata(id:string){
-    Swal.fire({
-        title: "¿Desea eliminar este dato?",
-        text: "No podrás revertir esto!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Si, Eliminar!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            deleteDocuments(id)
-            Swal.fire({
-            title: "Eliminado!",
-            text: "Data eliminada con exito!",
-            icon: "success",
-            }).then((result) => {
-            if (result.isConfirmed) {
-                location.reload();
-              }
-            });
-        }
-    });
-}
+
 
 const headers = ref([
   {title: 'COMANDA', align: 'start', key: 'ID_order'},
@@ -351,7 +318,7 @@ const headers = ref([
           </v-chip>
 
           <v-chip
-              variant="tonal"
+              variant="elevated"
               color="error"
               size="x-small"
               prepend-icon="mdi-timer-sand"

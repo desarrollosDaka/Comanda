@@ -5,7 +5,6 @@ const tableName = "ORDERS";
 const modelName = "modelOrders";
 
 const masterOrderSchema = {
-
   ID_order: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -21,7 +20,7 @@ const masterOrderSchema = {
   },
   Cedula: {
     allowNull: false,
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(100),
   },
   ID_pago: {                           
     allowNull: false,
@@ -51,17 +50,21 @@ const masterOrderSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
+  SucursalZoom: {
+    allowNull: true,
+    type: DataTypes.STRING(200),
+  },
   Autoriza: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
   },
-  Personal_autoriza: {
-    allowNull: true,
-    type: DataTypes.STRING(80),
-  },
   Cedula_autoriza: {
     allowNull: true,
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(100),
+  },
+  Telefono_autoriza: {
+    allowNull: true,
+    type: DataTypes.STRING(13),
   },
   Retencion: {
     allowNull: true,
@@ -71,30 +74,6 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
-  File_cedula: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_pago: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_retencion: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  }, 
-  File_factrura: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_despacho: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_ordeVenta: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },  
   Delete: {
     allowNull: true,
     type: DataTypes.BOOLEAN,

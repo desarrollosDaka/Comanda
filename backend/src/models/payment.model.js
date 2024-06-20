@@ -10,13 +10,11 @@ const masterPaymentSchema = {
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
-  Nombre: {
+  Pago: {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
 
-
-  
 };
 
 class MasterPayment extends Model {
