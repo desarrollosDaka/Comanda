@@ -11,6 +11,7 @@ const getMasterOrder = async (req, res) => {
 				,T3.Tipo_cedula
                 ,T0.Cedula
                 ,T3.Nombre Cliente
+                ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
@@ -75,6 +76,7 @@ const filterMasterOrder = async (req, res) => {
                 ,T3.Tipo_cliente
                 ,T3.Email
                 ,T3.Nombre AS Cliente
+                ,T3.Razon_comercial
                 ,T3.Direccion
                 ,T1.ID_sucursal 
                 ,T1.Sucursal 
@@ -145,6 +147,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         // Crear un objeto con los datos del cliente
         const newClients = {
             Nombre: data.nombreCompleto,
+            Razon_comercial: data.razonComercial,
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
@@ -327,6 +330,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
 
         const newClients = {
             Nombre: data.nombreCompleto,
+            Razon_comercial: data.razonComercial,
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
