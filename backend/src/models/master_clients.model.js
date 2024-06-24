@@ -15,6 +15,10 @@ const masterClientsSchema = {
     allowNull: false,
     type: DataTypes.STRING(70),
   },
+  Razon_comercial: {
+    allowNull: true,
+    type: DataTypes.STRING(80),
+  },
   Tipo_cedula: {
     allowNull: false,
     type: DataTypes.STRING(15),
