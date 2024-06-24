@@ -9,6 +9,8 @@ import { router } from '@/router';
 import UploadImages from './uploadImages.vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import { useAddDocument } from '@/composables/addDocuments';
+import { useUploadFiles } from '@/composables/file'
 
 const route = useRoute()
 
@@ -60,7 +62,7 @@ const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 
 const itemDocument = ref<Document[]>([]);
 
-const INSERT_METHOD = 'insert'
+// const INSERT_METHOD = 'insert'
 
 const CodigoZoom = ref([
     {
@@ -71,15 +73,15 @@ const CodigoZoom = ref([
         title: 'Sucursal Barquisimeto - 465754',
         value: '465754',
     }
-    ,{
+    , {
         title: 'Sucursal Valle la Pascua - 965554',
         value: '965554',
     }
-    ,{
+    , {
         title: 'Sucursal San Diego - 9364654',
         value: '9364654',
     }
-    ,{
+    , {
         title: 'Sucursal Maracaibo - 2266754',
         value: '2266754',
     }
@@ -147,7 +149,7 @@ const getOrder = async () => {
         const url = `${baseUrl}/filterOrder/${id.value}`
         const { data } = await axios.get(url);
 
-        if (data){
+        if (data) {
             cedulaUno.value = data[0][0]["Cedula"]
             tipo.value = data[0][0]["Tipo_cliente"]
             retencion.value = data[0][0]["Retencion"]
@@ -162,15 +164,15 @@ const getOrder = async () => {
             referencia.value = data[0][0]["Referencia"]
             ID_Delivery.value = +data[0][0]["Tipo_delivery"]
             direccionZoom.value = data[0][0]["SucursalZoom"]
-            autorizado.value = data[0][0]["Autoriza"] 
+            autorizado.value = data[0][0]["Autoriza"]
             cedulaDos.value = data[0][0]["Cedula_autoriza"]
-            telefonoUno.value = data[0][0]["Telefono"]  
-            telefonoDos.value = data[0][0]["Telefono_autoriza"]  
+            telefonoUno.value = data[0][0]["Telefono"]
+            telefonoDos.value = data[0][0]["Telefono_autoriza"]
             ID_pago.value = data[0][0]["ID_pago"]
             user_crea.value = data[0][0]["User_crea"]
         }
     } catch (error) {
-        
+
         toast.error("Ocurrio un error al consultar los datos de la comanda", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
@@ -288,14 +290,14 @@ interface Destino {
     Sucursal: string;
     ID_sucursal: number;
 }
-async function getSucursal(){
-    try{
-        const {data} = await axios.get(`${baseUrlStore}/masterStores`)
-        info_tiendas.value = data[0].map((destino: Destino) =>({
+async function getSucursal() {
+    try {
+        const { data } = await axios.get(`${baseUrlStore}/masterStores`)
+        info_tiendas.value = data[0].map((destino: Destino) => ({
             title: destino.Sucursal,
             value: destino.ID_sucursal
         }));
-    } catch(error){
+    } catch (error) {
         console.log(error)
     }
 }
@@ -304,48 +306,48 @@ interface Delivery {
     ID_Delivery: number;
 }
 
-async function getDelivery(){
-    try{
-        const {data} = await axios.get(`${baseUrlDelivery}/masterDelivery`)
-        info_Delivery.value = data.map((delivery: Delivery) =>({
+async function getDelivery() {
+    try {
+        const { data } = await axios.get(`${baseUrlDelivery}/masterDelivery`)
+        info_Delivery.value = data.map((delivery: Delivery) => ({
             title: delivery.Delivery_type,
             value: delivery.ID_Delivery
-   
+
         }));
-        
-    } catch(error){
+
+    } catch (error) {
         console.log(error)
     }
 }
 
-interface Payment{
+interface Payment {
     Pago: string;
     ID_pago: number;
 }
-async function getPayment(){
-    try{
-        const {data} = await axios.get(`${baseUrlPayment}/masterPayment`)
-        info_Payment.value = data.map((payment: Payment) =>({
+async function getPayment() {
+    try {
+        const { data } = await axios.get(`${baseUrlPayment}/masterPayment`)
+        info_Payment.value = data.map((payment: Payment) => ({
             title: payment.Pago,
             value: payment.ID_pago
         }));
-    } catch(error){
+    } catch (error) {
         console.log(error)
     }
 }
 
-interface Zoom{
+interface Zoom {
     SucursalZoom: string
     Sucursal: string;
 }
-async function getZoom(){
-    try{
-        const {data} = await axios.get(`${baseUrlStore}/masterStores`)
-        info_Zoom.value = data[0].map((zoom: Zoom) =>({
+async function getZoom() {
+    try {
+        const { data } = await axios.get(`${baseUrlStore}/masterStores`)
+        info_Zoom.value = data[0].map((zoom: Zoom) => ({
             title: zoom.Sucursal,
             value: zoom.SucursalZoom
         }));
-    } catch(error){
+    } catch (error) {
         console.log(error)
     }
 }
@@ -411,7 +413,7 @@ async function handleFormComanda() {
 
     // ACTUALIZAMOS PRIMERO LA DATA DEL FORMULARIO
     try {
-               await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
+        await axios.put(`${baseUrl}/updateOrder/${id.value}`, jsonData)
     } catch (error) {
 
         toast.error("Ocurrio un error al momento de actualizar los datos de la comanda", {
@@ -426,47 +428,50 @@ async function handleFormComanda() {
         });
     }
 
+    useAddDocument(itemDocument.value, id.value) //Visualizan y agregan  archivos
+    // const formDataDocuments = new FormData();
 
-    const formDataDocuments = new FormData();
-    
-    // filtramos solos los item tipo insert
-    itemDocument.value = itemDocument.value.filter(item => item.mode === INSERT_METHOD)
+    // // filtramos solos los item tipo insert
+    // itemDocument.value = itemDocument.value.filter(item => item.mode === INSERT_METHOD)
 
-    for (let i = 0; i < itemDocument.value.length; i++) {
+    // for (let i = 0; i < itemDocument.value.length; i++) {
 
-        const file = itemDocument.value[i].file;
-        const type = itemDocument.value[i].type;
-        const mode = itemDocument.value[i].mode
+    //     const file = itemDocument.value[i].file;
+    //     const type = itemDocument.value[i].type;
+    //     const mode = itemDocument.value[i].mode
 
-        formDataDocuments.append('doc_file', file)
-        formDataDocuments.append(`typeDoc_${i}`, type);
-        formDataDocuments.append(`user_${i}`, user_crea.value);
+    //     formDataDocuments.append('doc_file', file)
+    //     formDataDocuments.append(`typeDoc_${i}`, type);
+    //     formDataDocuments.append(`user_${i}`, user_crea.value);
 
-    }
-    try {
-        await axios.post(`${baseUrl}/createOrderDocument/${id.value}`, formDataDocuments)
-    } catch (error) {
+    // }
+    // try {
+    //     await axios.post(`${baseUrl}/createOrderDocument/${id.value}`, formDataDocuments)
+    // } catch (error) {
 
-        toast.error("Ocurrio un error al momento de registrar los datos de los archivos", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000,
-            theme: 'colored',
-            toastStyle: {
-                fontSize: '16px',
-                opacity: '1',
-            },
-        });
-    }
+    //     toast.error("Ocurrio un error al momento de registrar los datos de los archivos", {
+    //         position: toast.POSITION.TOP_CENTER,
+    //         transition: toast.TRANSITIONS.ZOOM,
+    //         autoClose: 4000,
+    //         theme: 'colored',
+    //         toastStyle: {
+    //             fontSize: '16px',
+    //             opacity: '1',
+    //         },
+    //     });
+    // }
 }
 
 // Function para enviar form
 async function validate() {
 
     // VALIDAMOS PRIMERO QUE EXISTAN LOS DOCUMENTOS CON SUS RESPECTIVOS TIPO DE DOCUMENTOS
-    const isvalidateDocuments = validateDocuments()
+    // const isvalidateDocuments = validateDocuments()
 
-    if (isvalidateDocuments)
+    // if (isvalidateDocuments)
+    const { isvalidate } = useUploadFiles(itemDocument.value) //Verificamos los tipos de documentos
+
+    if (isvalidate)
         // Alerta
         Swal.fire({
             title: `Actualizar Comanda`,
@@ -507,45 +512,45 @@ function handleSelectImages(items: any) {
     itemDocument.value = items
 }
 
-function validateDocuments(): boolean {
-    let isvalidate = true
+// function validateDocuments(): boolean {
+//     let isvalidate = true
 
-    if (itemDocument.value.length <= 0) {
+//     if (itemDocument.value.length <= 0) {
 
-        toast.error("Error: Debes seleccionar al menos un archivo", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000,
-            theme: 'colored',
-            toastStyle: {
-                fontSize: '16px',
-                opacity: '1',
-            },
-        });
+//         toast.error("Error: Debes seleccionar al menos un archivo", {
+//             position: toast.POSITION.TOP_CENTER,
+//             transition: toast.TRANSITIONS.ZOOM,
+//             autoClose: 4000,
+//             theme: 'colored',
+//             toastStyle: {
+//                 fontSize: '16px',
+//                 opacity: '1',
+//             },
+//         });
 
-        isvalidate = false
+//         isvalidate = false
 
-    } else {
+//     } else {
 
-        itemDocument.value.forEach(element => {
-            if (element.type === null) {
-                isvalidate = false
-            }
+//         itemDocument.value.forEach(element => {
+//             if (element.type === null) {
+//                 isvalidate = false
+//             }
 
-        });
+//         });
 
-        if (!isvalidate)
-            toast.warn(`Error: Seleccione el tipo de documento`, {
-                delay: 1000,
-                position: toast.POSITION.BOTTOM_CENTER,
-                transition: toast.TRANSITIONS.ZOOM,
-                theme: 'dark',
-                autoClose: 3000
-        });
-    }
+//         if (!isvalidate)
+//             toast.warn(`Error: Seleccione el tipo de documento`, {
+//                 delay: 1000,
+//                 position: toast.POSITION.BOTTOM_CENTER,
+//                 transition: toast.TRANSITIONS.ZOOM,
+//                 theme: 'dark',
+//                 autoClose: 3000
+//             });
+//     }
 
-    return isvalidate
-}
+//     return isvalidate
+// }
 
 onMounted(async () => {
     await getOrder();
@@ -563,7 +568,7 @@ onMounted(async () => {
 <template>
     <Form @submit="validate" enctype="multipart/form-data" class="mt-3" v-slot="{ isSubmitting }">
 
-<!-- /////////////////////////////////////// CLIENTE ///////////////////////////////////////////////////// -->
+        <!-- /////////////////////////////////////// CLIENTE ///////////////////////////////////////////////////// -->
         <v-row>
             <v-col cols="12" md="11">
                 <h4>Paso 1</h4>
@@ -573,34 +578,17 @@ onMounted(async () => {
         <v-row>
             <v-col cols="12" md="6">
                 <v-label for="cedulaUno">Cedula/Rif</v-label>
-                <v-text-field 
-                    id="cedulaUno" 
-                    type="number" 
-                    placeholder="Cedula/Rif" 
-                    variant="outlined"
-                    aria-label="Name Documents" 
-                    class="mt-2" 
-                    v-model="cedulaUno" 
-                    @change="searchModel"
-                    :rules="CedulaUnoRules" 
-                    color="primary">
+                <v-text-field id="cedulaUno" type="number" placeholder="Cedula/Rif" variant="outlined"
+                    aria-label="Name Documents" class="mt-2" v-model="cedulaUno" @change="searchModel"
+                    :rules="CedulaUnoRules" color="primary">
                 </v-text-field>
             </v-col>
 
             <v-col cols="12" md="6">
                 <v-label for="tipo">Tipo</v-label>
-                <v-autocomplete 
-                    id="tipo" 
-                    placeholder="Tipo de Proceso" 
-                    class="mt-2" 
-                    clearable 
-                    chips
-                    :items="['NATURAL', 'JURIDICO']" 
-                    variant="outlined" 
-                    :rules="tipoRules" 
-                    aria-label="Name Documents"
-                    color="primary" 
-                    v-model="tipo">
+                <v-autocomplete id="tipo" placeholder="Tipo de Proceso" class="mt-2" clearable chips
+                    :items="['NATURAL', 'JURIDICO']" variant="outlined" :rules="tipoRules" aria-label="Name Documents"
+                    color="primary" v-model="tipo">
                 </v-autocomplete>
             </v-col>
         </v-row>
@@ -608,27 +596,14 @@ onMounted(async () => {
         <v-row v-if="tipo === 'JURIDICO'">
             <v-col cols="12" md="1">
                 <v-label for="roles">Retención</v-label>
-                <v-switch 
-                    class="mt-3" 
-                    v-model="retencion" 
-                    color="warning">
+                <v-switch class="mt-3" v-model="retencion" color="warning">
                 </v-switch>
             </v-col>
 
             <v-col cols="12" md="3">
                 <v-label for="porcentaje"></v-label>
-                <v-autocomplete 
-                    clearable 
-                    chips 
-                    prepend-icon="mdi-percent-outline" 
-                    id="porcentaje" 
-                    placeholder="%"
-                    :items="[75, 100]" 
-                    variant="outlined" 
-                    v-model="porcentaje" 
-                    required 
-                    color="primary"
-                    class="mt-2">
+                <v-autocomplete clearable chips prepend-icon="mdi-percent-outline" id="porcentaje" placeholder="%"
+                    :items="[75, 100]" variant="outlined" v-model="porcentaje" required color="primary" class="mt-2">
                 </v-autocomplete>
             </v-col>
         </v-row>
@@ -636,133 +611,69 @@ onMounted(async () => {
         <v-row>
             <v-col cols="12" md="4">
                 <v-label for="email">Email</v-label>
-                <v-text-field
-                    id="email"
-                    type="email"
-                    placeholder="ejmeplo@tiendasdaka.com"
-                    variant="outlined"
-                    aria-label="Name Documents"
-                    class="mt-2"
-                    :rules="emailRules"
-                    v-model="email"
-                    color="primary"
-                ></v-text-field>
-            </v-col>
-        
-            <v-col cols="12" md="4">
-                <v-label for="name">Nombre Completo</v-label>
-                <v-text-field
-                    id="name"
-                    type="text"
-                    placeholder="Nombre Completo"
-                    variant="outlined"
-                    aria-label="Name Documents"
-                    class="mt-2 my-input"
-                    :rules="nombreCompletoRules"
-                    v-model="nombreCompleto"
-                    color="primary"
-                ></v-text-field>
+                <v-text-field id="email" type="email" placeholder="ejmeplo@tiendasdaka.com" variant="outlined"
+                    aria-label="Name Documents" class="mt-2" :rules="emailRules" v-model="email"
+                    color="primary"></v-text-field>
             </v-col>
 
-             <v-col cols="12" md="4">
+            <v-col cols="12" md="4">
+                <v-label for="name">Nombre Completo</v-label>
+                <v-text-field id="name" type="text" placeholder="Nombre Completo" variant="outlined"
+                    aria-label="Name Documents" class="mt-2 my-input" :rules="nombreCompletoRules"
+                    v-model="nombreCompleto" color="primary"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="4">
                 <v-label for="telefonoCliente">Telefono</v-label>
-                <v-text-field
-                    id="telefonoCliente"
-                    type="number"
-                    placeholder="Numero Telefonico del cliente"
-                    variant="outlined"
-                    class="mt-2"
-                    :rules="telefonoRules"
-                    v-model="telefonoUno"
-                    color="primary"
-                ></v-text-field>
+                <v-text-field id="telefonoCliente" type="number" placeholder="Numero Telefonico del cliente"
+                    variant="outlined" class="mt-2" :rules="telefonoRules" v-model="telefonoUno"
+                    color="primary"></v-text-field>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" md="4">
                 <v-label for="estado">Estado</v-label>
-                <v-autocomplete 
-                    id="estado" 
-                    placeholder="Seleccione el estado" 
-                    class="mt-2" 
-                    clearable 
-                    chips
-                    :items="info_estado" 
-                    variant="outlined" 
-                    :rules="estadosRules" 
-                    aria-label="Name Documents"
-                    color="primary" 
-                    v-model="estado">
+                <v-autocomplete id="estado" placeholder="Seleccione el estado" class="mt-2" clearable chips
+                    :items="info_estado" variant="outlined" :rules="estadosRules" aria-label="Name Documents"
+                    color="primary" v-model="estado">
                 </v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="4">
                 <v-label for="ciudad">Ciudad</v-label>
-                <v-autocomplete 
-                    id="ciudad" 
-                    placeholder="Seleccione la ciudad" 
-                    class="mt-2" 
-                    clearable 
-                    chips
-                    :items="info_ciudad" 
-                    variant="outlined" 
-                    :rules="ciudadRules" 
-                    aria-label="Name Documents"
-                    color="primary" 
-                    v-model="ciudad"></v-autocomplete>
+                <v-autocomplete id="ciudad" placeholder="Seleccione la ciudad" class="mt-2" clearable chips
+                    :items="info_ciudad" variant="outlined" :rules="ciudadRules" aria-label="Name Documents"
+                    color="primary" v-model="ciudad"></v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="4">
                 <v-label for="municipio">Municipio</v-label>
-                <v-autocomplete 
-                    id="municipio"
-                    placeholder="Seleccione el municipio" 
-                    class="mt-2" 
-                    clearable 
-                    chips
-                    :items="info_muni" 
-                    variant="outlined" 
-                    :rules="municipioRules" 
-                    aria-label="Name Documents"
-                    color="primary" 
-                    v-model="municipio">
+                <v-autocomplete id="municipio" placeholder="Seleccione el municipio" class="mt-2" clearable chips
+                    :items="info_muni" variant="outlined" :rules="municipioRules" aria-label="Name Documents"
+                    color="primary" v-model="municipio">
                 </v-autocomplete>
             </v-col>
         </v-row>
         <br>
 
-<!-- /////////////////////////////////////// COMANDA ///////////////////////////////////////////////////// -->
+        <!-- /////////////////////////////////////// COMANDA ///////////////////////////////////////////////////// -->
         <v-divider></v-divider>
         <br>
         <h4>Paso 2</h4>
         <v-row>
             <v-col cols="12" md="6">
                 <v-label for="origen">Destino</v-label>
-                <v-autocomplete 
-                    id="origen" 
-                    placeholder="Origen de la comanda" 
-                    class="mt-2" clearable chips
-                    :items="info_tiendas" 
-                    variant="outlined" 
-                    :rules="origenRules" 
-                    aria-label="Name Documents" 
-                    color="primary"
-                    v-model="origen">
+                <v-autocomplete id="origen" placeholder="Origen de la comanda" class="mt-2" clearable chips
+                    :items="info_tiendas" variant="outlined" :rules="origenRules" aria-label="Name Documents"
+                    color="primary" v-model="origen">
                 </v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="6">
                 <v-label for="direccion">Direccion completa</v-label>
-                <v-text-field 
-                    id="direccion" 
-                    type="text" 
-                    placeholder="Direccion Completa" 
-                    variant="outlined"
-                    aria-label="Name Documents" 
-                    class="mt-2 my-input" 
-                    v-model="direccion" 
-                    :rules="direccionRules"
+                <v-text-field id="direccion" type="text" placeholder="Direccion Completa" variant="outlined"
+                    aria-label="Name Documents" class="mt-2 my-input" v-model="direccion" :rules="direccionRules"
                     color="primary">
                 </v-text-field>
             </v-col>
@@ -771,123 +682,61 @@ onMounted(async () => {
         <v-row>
             <v-col cols="12" md="8">
                 <v-label for="referencia">Referencia</v-label>
-                <v-text-field 
-                    id="referencia" 
-                    type="text" 
-                    placeholder="Referencia del delivery" 
-                    variant="outlined"
-                    aria-label="Name Documents" 
-                    class="mt-2 my-input" 
-                    :rules="referenciaRules" 
-                    v-model="referencia"
+                <v-text-field id="referencia" type="text" placeholder="Referencia del delivery" variant="outlined"
+                    aria-label="Name Documents" class="mt-2 my-input" :rules="referenciaRules" v-model="referencia"
                     color="primary">
                 </v-text-field>
             </v-col>
 
             <v-col cols="12" md="4">
                 <v-label for="delivery">Delivery</v-label>
-                <v-autocomplete
-                    id="delivery"
-                    placeholder="Seleccione el tipo de delivery"
-                    class="mt-2"
-                    clearable
-                    chips
-                    :items="info_Delivery"
-                    variant="outlined"
-                    :rules="metodoRules"
-                    aria-label="delivery"
-                    color="primary"
-                    v-model="ID_Delivery"
-                ></v-autocomplete>
+                <v-autocomplete id="delivery" placeholder="Seleccione el tipo de delivery" class="mt-2" clearable chips
+                    :items="info_Delivery" variant="outlined" :rules="metodoRules" aria-label="delivery" color="primary"
+                    v-model="ID_Delivery"></v-autocomplete>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" md="12" v-if="ID_Delivery === 3">
                 <v-label for="direccion">Direccion del Delivery</v-label>
-                <v-autocomplete
-                    id="direccion"
-                    placeholder="Seleccione la Sucursal para el delivery"
-                    class="mt-2"
-                    clearable
-                    chips 
-                    :items="info_Zoom"
-                    variant="outlined"
-                    aria-label="delivery"
-                    color="primary"
-                    v-model="direccionZoom"
-                ></v-autocomplete>
+                <v-autocomplete id="direccion" placeholder="Seleccione la Sucursal para el delivery" class="mt-2"
+                    clearable chips :items="info_Zoom" variant="outlined" aria-label="delivery" color="primary"
+                    v-model="direccionZoom"></v-autocomplete>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" md="3">
                 <v-label for="autorizado">Autorizado para recibir el envio</v-label>
-                <v-switch 
-                    v-model="autorizado"
-                    color="primary"
-                ></v-switch>
+                <v-switch v-model="autorizado" color="primary"></v-switch>
             </v-col>
 
             <v-col cols="12" md="4" v-if="autorizado == true">
                 <v-label for="cedulaDos">Cedula/Rif del Autorizado</v-label>
-                <v-text-field
-                    id="cedulaDos"
-                    type="number"
-                    placeholder="Referencia del delivery"
-                    variant="outlined"
-                    aria-label="Name Documents"
-                    class="mt-2"
-                    v-model="cedulaDos"
-                    :rules="cedulaDosRules"
-                    color="primary"
-                ></v-text-field>
+                <v-text-field id="cedulaDos" type="number" placeholder="Referencia del delivery" variant="outlined"
+                    aria-label="Name Documents" class="mt-2" v-model="cedulaDos" :rules="cedulaDosRules"
+                    color="primary"></v-text-field>
             </v-col>
 
             <v-col cols="12" md="5" v-if="autorizado == true">
                 <v-label for="telefono">Telefono del Autorizado</v-label>
-                <v-text-field
-                    id="telefono"
-                    type="number"
-                    placeholder="Telefono del autorizado"
-                    variant="outlined"
-                    class="mt-2"
-                    :rules="telefonoRules"
-                    v-model="telefonoDos"
-                    color="primary"
-                ></v-text-field>
+                <v-text-field id="telefono" type="number" placeholder="Telefono del autorizado" variant="outlined"
+                    class="mt-2" :rules="telefonoRules" v-model="telefonoDos" color="primary"></v-text-field>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" md="6">
                 <v-label for="medioPago">Medio de Pago</v-label>
-                <v-autocomplete 
-                    id="medioPago" 
-                    placeholder="Seleccione el tipo de pago" 
-                    class="mt-2" 
-                    clearable 
-                    chips
-                    :items="info_Payment" 
-                    variant="outlined" 
-                    :rules="metodoRules" 
-                    aria-label="pago" 
-                    color="primary"
-                    v-model="ID_pago"
-                ></v-autocomplete>
+                <v-autocomplete id="medioPago" placeholder="Seleccione el tipo de pago" class="mt-2" clearable chips
+                    :items="info_Payment" variant="outlined" :rules="metodoRules" aria-label="pago" color="primary"
+                    v-model="ID_pago"></v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="6">
                 <v-label for="creado">Creado Por</v-label>
-                <v-text-field 
-                    disabled id="creado" 
-                    placeholder="Creado por" 
-                    variant="outlined" 
-                    required
-                    aria-label="Name Documents" 
-                    class="mt-2" 
-                    v-model="user_crea" 
-                    color="primary">
+                <v-text-field disabled id="creado" placeholder="Creado por" variant="outlined" required
+                    aria-label="Name Documents" class="mt-2" v-model="user_crea" color="primary">
                 </v-text-field>
             </v-col>
         </v-row>
@@ -895,40 +744,26 @@ onMounted(async () => {
         <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
         <UploadImages @isSelectImages=handleSelectImages :ID_detalle=id />
 
-        <v-btn 
-            color="primary" 
-            :loading="isSubmitting" 
-            append-icon="mdi-arrow-right" 
-            class="mt-6" 
-            variant="flat"
-            size="large" 
-            :disabled="
-                !origen || 
-                !tipo || 
-                !cedulaUno || 
-                !estado || 
-                !ciudad || 
-                !municipio || 
-                !direccion || 
-                !referencia|| 
-                !email || 
-                !nombreCompleto || 
-                !autorizado || 
-                !cedulaDos || 
-                !telefonoUno || 
-                !ID_pago" 
-                type="submit">
+        <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
+            size="large" :disabled="!origen ||
+                !tipo ||
+                !cedulaUno ||
+                !estado ||
+                !ciudad ||
+                !municipio ||
+                !direccion ||
+                !referencia ||
+                !email ||
+                !nombreCompleto ||
+                !autorizado ||
+                !cedulaDos ||
+                !telefonoUno ||
+                !ID_pago" type="submit">
             Actualizar
         </v-btn>
 
-        <v-btn 
-            class="mt-6 mx-1" 
-            variant="flat" 
-            append-icon="mdi-arrow-right" 
-            size="large" 
-            color="warning"
-            @click="handleProductUpdate"
-            >Detalle Articulos
+        <v-btn class="mt-6 mx-1" variant="flat" append-icon="mdi-arrow-right" size="large" color="warning"
+            @click="handleProductUpdate">Detalle Articulos
         </v-btn>
     </Form>
 </template>

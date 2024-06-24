@@ -11,10 +11,13 @@ const getMasterOrder = async (req, res) => {
 				,T3.Tipo_cedula
                 ,T0.Cedula
                 ,T3.Nombre Cliente
+                ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
-                ,T2.Status 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
                 ,CAST(T0.Create_date AS DATE) Create_date
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -73,6 +76,7 @@ const filterMasterOrder = async (req, res) => {
                 ,T3.Tipo_cliente
                 ,T3.Email
                 ,T3.Nombre AS Cliente
+                ,T3.Razon_comercial
                 ,T3.Direccion
                 ,T1.ID_sucursal 
                 ,T1.Sucursal 
@@ -143,6 +147,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         // Crear un objeto con los datos del cliente
         const newClients = {
             Nombre: data.nombreCompleto,
+            Razon_comercial: data.razonComercial,
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
@@ -325,6 +330,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
 
         const newClients = {
             Nombre: data.nombreCompleto,
+            Razon_comercial: data.razonComercial,
             Email: data.email,
             Cedula: data.cedulaUno,
             Direccion: data.direccion,
@@ -479,7 +485,8 @@ const filterMasterAsesor = async (req, res) => {
 const updateMasterAsesor = async (req, res) => {
     try {
         const data = {
-            User_asing: req.body.User_asing
+            User_asing: req.body.User_asing,
+            ID_status:req.body.ID_status
         }
 
         const idUser = req.params.id;

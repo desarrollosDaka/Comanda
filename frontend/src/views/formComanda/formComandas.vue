@@ -7,6 +7,9 @@ import { router } from '@/router';
 import UploadImages from './uploadImages.vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import { useAddDocument } from '@/composables/addDocuments';
+import { useUploadFiles } from '@/composables/file'
+
 // variables
 const valid = ref(false);
 const origen = ref();
@@ -128,7 +131,7 @@ const TipoDocumentoRules = ref([
 // api post
 async function Created(json: any) {
     try {
-        //       await axios.post(`${baseUrl}/createOrder`, json)
+        await axios.post(`${baseUrl}/createOrder`, json)
     } catch (error) {
         console.log(error)
     }
@@ -138,16 +141,16 @@ async function Created(json: any) {
 async function searchModel() {
     try {
 
-        const {data} = await axios.get(`${baseUrlClients}/searchClient/${cedulaUno.value}`)
-        
-        if(data){
-            tipo.value =  data.Tipo_cliente
-            email.value =  data.Email
-            telefonoUno.value =  data.Telefono
-            nombreCompleto.value =  data.Nombre
-            estado.value =  data.ID_state
-            ciudad.value =  data.ID_city
-            municipio.value =  data.ID_municipio
+        const { data } = await axios.get(`${baseUrlClients}/searchClient/${cedulaUno.value}`)
+
+        if (data) {
+            tipo.value = data.Tipo_cliente
+            email.value = data.Email
+            telefonoUno.value = data.Telefono
+            nombreCompleto.value = data.Nombre
+            estado.value = data.ID_state
+            ciudad.value = data.ID_city
+            municipio.value = data.ID_municipio
         }
 
     } catch (error) {
@@ -258,18 +261,20 @@ async function getPayment() {
     }
 }
 
-interface Zoom{
+
+
+interface Zoom {
     SucursalZoom: string
     Sucursal: string;
 }
-async function getZoom(){
-    try{
-        const {data} = await axios.get(`${baseUrlStore}/masterStores`)
-        info_Zoom.value = data[0].map((zoom: Zoom) =>({
+async function getZoom() {
+    try {
+        const { data } = await axios.get(`${baseUrlStore}/masterStores`)
+        info_Zoom.value = data[0].map((zoom: Zoom) => ({
             title: zoom.Sucursal,
             value: zoom.SucursalZoom
         }));
-    } catch(error){
+    } catch (error) {
         console.log(error)
     }
 
@@ -329,33 +334,37 @@ async function handleFormComanda() {
 
 
     // REGISTRAMOS PRIMERO LA DATA DEL FORMULARIO
-    try {
-        await axios.post(`${baseUrl}/createOrder`, jsonData)
-    } catch (error) {
-        console.log(error)
-    }
 
-    const formDataDocuments = new FormData();
 
-    // filtramos solos los item tipo insert
-    itemDocument.value = itemDocument.value.filter(item => item.mode === 'insert')
+    // try {
+    //     await axios.post(`${baseUrl}/createOrder`, jsonData)
+    // } catch (error) {
+    //     console.log(error)
+    // }
+    Created(jsonData)
+    useAddDocument(itemDocument.value, idComandaRandom.value) //Visualizan y agregan  archivos
 
-    for (let i = 0; i < itemDocument.value.length; i++) {
+    // const formDataDocuments = new FormData();
 
-        const file = itemDocument.value[i].file;
-        const type = itemDocument.value[i].type;
-        const mode = itemDocument.value[i].mode
+    // // filtramos solos los item tipo insert
+    // itemDocument.value = itemDocument.value.filter(item => item.mode === 'insert')
 
-        formDataDocuments.append('doc_file', file)
-        formDataDocuments.append(`typeDoc_${i}`, type);
-        formDataDocuments.append(`user_${i}`, user_crea.value);
+    // for (let i = 0; i < itemDocument.value.length; i++) {
 
-    }
-    try {
-        await axios.post(`${baseUrl}/createOrderDocument/${idComandaRandom.value}`, formDataDocuments)
-    } catch (error) {
-        console.log(error)
-    }
+    //     const file = itemDocument.value[i].file;
+    //     const type = itemDocument.value[i].type;
+    //     const mode = itemDocument.value[i].mode
+
+    //     formDataDocuments.append('doc_file', file)
+    //     formDataDocuments.append(`typeDoc_${i}`, type);
+    //     formDataDocuments.append(`user_${i}`, user_crea.value);
+
+    // }
+    // try {
+    //     await axios.post(`${baseUrl}/createOrderDocument/${idComandaRandom.value}`, formDataDocuments)
+    // } catch (error) {
+    //     console.log(error)
+    // }
 }
 
 // Function para enviar form
@@ -363,9 +372,12 @@ async function handleFormComanda() {
 async function validate() {
 
     // VALIDAMOS PRIMERO QUE EXISTAN LOS DOCUMENTOS CON SUS RESPECTIVOS TIPO DE DOCUMENTOS
-    const isvalidateDocuments = validateDocuments()
+    // const isvalidateDocuments = validateDocuments()
 
-    if (isvalidateDocuments)
+    // if (isvalidateDocuments)
+    const { isvalidate } = useUploadFiles(itemDocument.value) //Verificamos los tipos de documentos
+
+    if (isvalidate)
         // Alerta
         Swal.fire({
             title: `Comanda Generada`,
@@ -421,45 +433,50 @@ function handleSelectImages(items: any) {
     itemDocument.value = items
 }
 
-function validateDocuments(): boolean {
+// function validateDocuments(): boolean {
 
-    let isvalidate = true
+//     let isvalidate = true
 
-    if (itemDocument.value.length <= 0) {
+//     if (itemDocument.value.length <= 0) {
 
-        toast.error("Error: Debes seleccionar al menos un archivo", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000,
-            theme: 'colored',
-            toastStyle: {
-                fontSize: '16px',
-                opacity: '1',
-            },
-        });
+//         toast.error("Error: Debes seleccionar al menos un archivo", {
+//             position: toast.POSITION.TOP_CENTER,
+//             transition: toast.TRANSITIONS.ZOOM,
+//             autoClose: 4000,
+//             theme: 'colored',
+//             toastStyle: {
+//                 fontSize: '16px',
+//                 opacity: '1',
+//             },
+//         });
 
-        isvalidate = false
+//         isvalidate = false
 
-    } else {
+//     } else {
 
-        itemDocument.value.forEach(element => {
-            if (element.type === null) {
-                isvalidate = false
-            }
-        });
 
-        if (!isvalidate)
-            toast.warn(`Error: Seleccione el tipo de documento`, {
-                delay: 1000,
-                position: toast.POSITION.BOTTOM_CENTER,
-                transition: toast.TRANSITIONS.ZOOM,
-                theme: 'dark',
-                autoClose: 3000
-            });
-    }
+//         itemDocument.value.forEach(element => {
 
-    return isvalidate
-}
+//             if (element.type === null) {
+
+//                 isvalidate = false
+//             }
+
+//         });
+
+
+//         if (!isvalidate)
+//             toast.warn(`Error: Seleccione el tipo de documento`, {
+//                 delay: 1000,
+//                 position: toast.POSITION.BOTTOM_CENTER,
+//                 transition: toast.TRANSITIONS.ZOOM,
+//                 theme: 'dark',
+//                 autoClose: 3000
+//             });
+//     }
+
+//     return isvalidate
+// }
 
 
 </script>
@@ -541,6 +558,8 @@ function validateDocuments(): boolean {
                     v-model="nombreCompleto" color="primary">
                 </v-text-field>
             </v-col>
+
+
 
             <v-col cols="12" md="4">
                 <v-label for="telefonoCliente">Telefono</v-label>
@@ -722,18 +741,9 @@ function validateDocuments(): boolean {
         <v-row>
             <v-col cols="12" md="12" v-if="ID_Delivery === 3">
                 <v-label for="direccion">Direccion del Delivery</v-label>
-                <v-autocomplete
-                    id="direccion"
-                    placeholder="Seleccione la Direccion del Delivery"
-                    class="mt-2"
-                    clearable
-                    chips
-                    :items="info_Zoom"
-                    variant="outlined"
-                    aria-label="delivery"
-                    color="primary"
-                    v-model="direccionZoom"
-                ></v-autocomplete>
+                <v-autocomplete id="direccion" placeholder="Seleccione la Direccion del Delivery" class="mt-2" clearable
+                    chips :items="info_Zoom" variant="outlined" aria-label="delivery" color="primary"
+                    v-model="direccionZoom"></v-autocomplete>
             </v-col>
         </v-row>
         <v-row>
