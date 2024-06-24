@@ -43,6 +43,18 @@ const ID_Delivery = ref();
 const info_tiendas = ref();
 const info_Delivery = ref();
 const info_Payment = ref();
+// new
+const ID_rol = ref();
+const tipoDocumento = ref();
+const tipoDocumentoRL = ref();
+const razonSocial = ref();
+const razonComercial = ref();
+const Nombre_rep = ref();
+const cedula_rep = ref();
+const email_rep = ref();
+const telefono_rep = ref();
+const direccion_rep = ref();
+const referencia_rep = ref();
 
 const itemDocument = ref<Document[]>([]);
 
@@ -55,34 +67,12 @@ const baseUrlClients = `${import.meta.env.VITE_URL}/api/clients`;
 const baseUrlDelivery = `${import.meta.env.VITE_URL}/api/delivery`;
 const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 
-const CodigoZoom = ref([
-    {
-        title: 'Sucursal Valencia - 887654',
-        value: '887654',
-    },
-    {
-        title: 'Sucursal Barquisimeto - 465754',
-        value: '465754',
-    }
-    , {
-        title: 'Sucursal Valle la Pascua - 965554',
-        value: '965554',
-    }
-    , {
-        title: 'Sucursal San Diego - 9364654',
-        value: '9364654',
-    }
-    , {
-        title: 'Sucursal Maracaibo - 2266754',
-        value: '2266754',
-    }
-]);
-
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
     const parsedData = JSON.parse(jsonFromLocalStorage);
     user_crea.value = parsedData.data.Nombre;
+    ID_rol.value = parsedData.data.id_rol;
 }
 
 /// validaciones
@@ -131,6 +121,10 @@ const metodoRules = ref([
 ]);
 const fileRules = ref([
     (v: any) => !!v || 'El archivo es requerido',
+]);
+
+const TipoDocumentoRules = ref([
+    (v: any) => !!v || 'El tipo de documento es requerido',
 ]);
 
 
@@ -268,6 +262,7 @@ async function getPayment() {
 }
 
 
+
 interface Zoom {
     SucursalZoom: string
     Sucursal: string;
@@ -279,9 +274,6 @@ async function getZoom() {
             title: zoom.Sucursal,
             value: zoom.SucursalZoom
         }));
-
-        console.log(info_Zoom)
-
     } catch (error) {
         console.log(error)
     }
@@ -304,7 +296,6 @@ const File = (event: any) => {
 async function handleFormComanda() {
 
     let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
-
     const jsonData = {
         "Id_Comanda": idComandaRandom.value,
         "origen": origen.value,
@@ -327,38 +318,23 @@ async function handleFormComanda() {
         "retencion": retencion.value.toString(),
         "ID_delivery": ID_Delivery.value,
         "porcentaje": porcentajeValue,
-        "user_crea": user_crea.value
+        "user_crea": user_crea.value,
+        // new
+        "ID_rol": ID_rol.value,
+        "tipoDocumento": tipoDocumento.value,
+        "tipoDocumentoRL": tipoDocumentoRL.value,
+        "razonComercial": razonComercial.value,
+        "Nombre_rep": Nombre_rep.value,
+        "cedula_rep": cedula_rep.value,
+        "email_rep": email_rep.value,
+        "telefono_rep": telefono_rep.value,
+        "direccion_rep": direccion_rep.value,
+        "referencia_rep": referencia_rep.value
     }
 
 
-    // let formData = new FormData();
-    // let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
-    // formData.append('Id_Comanda', idComandaRandom.value);
-    // formData.append('origen', origen.value);
-    // formData.append('tipo', tipo.value);
-    // formData.append('cedulaUno', cedulaUno.value);
-    // formData.append('email', email.value);
-    // formData.append('nombreCompleto', nombreCompleto.value);
-    // formData.append('estado', estado.value);
-    // formData.append('ciudad', ciudad.value);
-    // formData.append('doc_file', doc_file.value);
-    // formData.append('municipio', municipio.value);
-    // formData.append('direccion', direccion.value);
-    // formData.append('sucursalZoom', direccionZoom.value);
-    // formData.append('referencia', referencia.value);
-    // formData.append('autorizado', autorizado.value.toString());
-    // formData.append('cedulaDos', cedulaDos.value);
-    // formData.append('telefonoUno', telefonoUno.value);
-    // formData.append('telefonoDos', telefonoDos.value);
-    // formData.append('ID_pago', ID_pago.value);
-    // formData.append('ID_status', ID_status.value);
-    // formData.append('retencion', retencion.value.toString());
-    // formData.append('ID_delivery', ID_Delivery.value);
-    // formData.append('porcentaje', porcentajeValue);
-    // formData.append('user_crea', user_crea.value);
-
-
     // REGISTRAMOS PRIMERO LA DATA DEL FORMULARIO
+
 
     // try {
     //     await axios.post(`${baseUrl}/createOrder`, jsonData)
@@ -428,7 +404,6 @@ async function validate() {
                 });
             }
         });
-
 }
 
 function generarCadenaAleatoria(longitud: number) {
@@ -520,56 +495,102 @@ function handleSelectImages(items: any) {
         </v-row>
 
         <v-row>
+            <v-col cols="12" md="2">
+                <v-label for="tipoDocumento"></v-label>
+                <v-autocomplete  
+                    id="tipoDocumento" 
+                    :items="['V', 'J', 'F', 'E']" 
+                    variant="outlined"
+                    v-model="tipoDocumento"
+                    required color="primary"
+                    placeholder="V"
+                    :rules="TipoDocumentoRules"
+                    class="mt-2">
+                </v-autocomplete>
+            </v-col>
+
             <v-col cols="12" md="6">
                 <v-label for="cedulaUno">Cedula/Rif</v-label>
-                <v-text-field id="cedulaUno" type="number" placeholder="Cedula/Rif" variant="outlined"
-                    aria-label="Name Documents" class="mt-2" v-model="cedulaUno" :rules="CedulaUnoRules"
-                    color="primary"></v-text-field>
+                <v-text-field 
+                    id="cedulaUno" 
+                    type="number" 
+                    placeholder="Cedula/Rif" 
+                    variant="outlined"
+                    aria-label="Name Documents" 
+                    class="mt-2" 
+                    v-model="cedulaUno" 
+                    :rules="CedulaUnoRules"
+                    color="primary">
+                </v-text-field>
             </v-col>
-            <v-col cols="12" md="6">
+
+            <v-col cols="12" md="4">
                 <v-label for="tipo">Tipo</v-label>
-                <v-autocomplete id="tipo" placeholder="Tipo de Proceso" class="mt-2" clearable chips
-                    :items="['NATURAL', 'JURIDICO']" variant="outlined" :rules="tipoRules" aria-label="Name Documents"
-                    color="primary" v-model="tipo"></v-autocomplete>
-            </v-col>
-        </v-row>
-
-        <v-row v-if="tipo === 'JURIDICO'">
-            <v-col cols="12" md="1">
-                <v-label for="roles">Retención</v-label>
-                <v-switch class="mt-3" v-model="retencion" color="warning"></v-switch>
-            </v-col>
-
-            <v-col cols="12" md="2">
-                <v-label for="porcentaje"></v-label>
-                <v-autocomplete clearable chips prepend-icon="mdi-percent-outline" id="porcentaje" placeholder="%"
-                    :items="['75', '100']" variant="outlined" v-model="porcentaje" required color="primary"
-                    class="mt-2"></v-autocomplete>
+                <v-autocomplete 
+                    id="tipo" 
+                    placeholder="Tipo de Proceso" 
+                    class="mt-2" clearable chips
+                    :items="['NATURAL', 'JURIDICO']" 
+                    variant="outlined" 
+                    :rules="tipoRules" 
+                    aria-label="Name Documents"
+                    color="primary" 
+                    v-model="tipo">
+                </v-autocomplete>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col cols="12" md="4">
                 <v-label for="email">Email</v-label>
-                <v-text-field id="email" type="email" placeholder="ejmeplo@tiendasdaka.com" variant="outlined"
+                <v-text-field id="email" type="email" placeholder="EJEMPLO@TIENDASDAKA.COM" variant="outlined"
                     aria-label="Name Documents" class="mt-2" :rules="emailRules" v-model="email"
-                    color="primary"></v-text-field>
+                    color="primary">
+                </v-text-field>
             </v-col>
 
             <v-col cols="12" md="4">
-                <v-label for="name">Nombre Completo</v-label>
-                <v-text-field id="name" type="text" placeholder="Nombre Completo" variant="outlined"
+                <v-label for="name" v-if="tipo === 'JURIDICO'">Razon Social</v-label>
+                <v-label for="name" v-else-if="tipo === 'NATURAL'">Nombre Completo</v-label>
+                <v-label for="name" v-else>Nombre Completo</v-label>
+                <v-text-field id="name" type="text" placeholder="Tiendas Dakas" variant="outlined"
                     aria-label="Name Documents" class="mt-2 my-input" :rules="nombreCompletoRules"
-                    v-model="nombreCompleto" color="primary"></v-text-field>
+                    v-model="nombreCompleto" color="primary">
+                </v-text-field>
             </v-col>
 
 
-            <v-col cols="12" md="4">
 
+            <v-col cols="12" md="4">
                 <v-label for="telefonoCliente">Telefono</v-label>
                 <v-text-field id="telefonoCliente" type="number" placeholder="Numero Telefonico del cliente"
                     variant="outlined" class="mt-2" :rules="telefonoRules" v-model="telefonoUno"
-                    color="primary"></v-text-field>
+                    color="primary">
+                </v-text-field>
+            </v-col>
+        </v-row>
+
+        
+        <v-row v-if="tipo === 'JURIDICO'">
+            <v-col cols="12" md="1">
+                <v-label for="retencion">Retención</v-label>
+                <v-switch id="retencion" class="mt-3" v-model="retencion" color="warning"></v-switch>
+            </v-col>
+
+            <v-col cols="12" md="3">
+                <v-label for="porcentaje"></v-label>
+                <v-autocomplete prepend-icon="mdi-percent-outline" id="porcentaje" placeholder="%"
+                    :items="['75', '100']" variant="outlined" v-model="porcentaje" required color="primary"
+                    class="mt-2">
+                </v-autocomplete>
+            </v-col>
+        
+            <v-col cols="12" md="4">
+                <v-label for="razonComercial">Razon Comercial</v-label>
+                <v-text-field id="razonComercial" type="text" placeholder="Razon Comercial" variant="outlined"
+                    aria-label="Name Documents" class="mt-2" v-model="razonComercial"
+                    color="primary">
+                </v-text-field>
             </v-col>
         </v-row>
 
@@ -578,26 +599,109 @@ function handleSelectImages(items: any) {
                 <v-label for="estado">Estado</v-label>
                 <v-autocomplete id="estado" placeholder="Seleccione el estado" class="mt-2" clearable chips
                     :items="info_estado" variant="outlined" :rules="estadosRules" aria-label="Name Documents"
-                    color="primary" v-model="estado"></v-autocomplete>
+                    color="primary" v-model="estado">
+                </v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="4">
                 <v-label for="ciudad">Ciudad</v-label>
                 <v-autocomplete id="ciudad" placeholder="Seleccione la ciudad" class="mt-2" clearable chips
                     :items="info_ciudad" variant="outlined" :rules="ciudadRules" aria-label="Name Documents"
-                    color="primary" v-model="ciudad"></v-autocomplete>
+                    color="primary" v-model="ciudad">
+                </v-autocomplete>
             </v-col>
 
             <v-col cols="12" md="4">
                 <v-label for="municipio">Municipio</v-label>
                 <v-autocomplete id="municipio" placeholder="Seleccione el municipio" class="mt-2" clearable chips
                     :items="info_muni" variant="outlined" :rules="municipioRules" aria-label="Name Documents"
-                    color="primary" v-model="municipio"></v-autocomplete>
+                    color="primary" v-model="municipio">
+                </v-autocomplete>
             </v-col>
         </v-row>
         <br>
-        <!-- /////////////////////////////////////// COMANDA ///////////////////////////////////////////////////// -->
 
+<!-- /////////////////////////////////////// Representante legal ///////////////////////////////////////////////////// -->
+        <div v-if="tipo === 'JURIDICO'">
+            <v-divider></v-divider>
+            <br>
+            <h4>Datos del Representante Legal</h4>
+            <v-row>
+                <v-col cols="12" md="2">
+                    <v-label for="tipoDocumento"></v-label>
+                    <v-autocomplete  
+                        id="tipoDocumento" 
+                        :items="['V', 'J', 'F', 'E']" 
+                        variant="outlined" 
+                        v-model="tipoDocumentoRL" 
+                        required color="primary"
+                        placeholder="V" 
+                        :rules="TipoDocumentoRules"
+                        class="mt-2">
+                    </v-autocomplete>
+                </v-col>
+
+                <v-col cols="12" md="6">
+                    <v-label for="cedulaUno">Cedula/Rif</v-label>
+                    <v-text-field 
+                        id="cedulaUno" 
+                        type="number" 
+                        placeholder="Cedula/Rif" 
+                        variant="outlined"
+                        aria-label="Name Documents" 
+                        class="mt-2" 
+                        v-model="cedula_rep" 
+                        :rules="CedulaUnoRules"
+                        color="primary">
+                    </v-text-field>
+                </v-col>
+
+                <v-col cols="12" md="4">
+                    <v-label for="email">Email del Representante</v-label>
+                    <v-text-field id="email" type="email" placeholder="ejmeplo@tiendasdaka.com" variant="outlined"
+                        aria-label="Name Documents" class="mt-2" :rules="emailRules" v-model="email_rep"
+                        color="primary">
+                    </v-text-field>
+                </v-col>
+
+                <v-col cols="12" md="6">
+                    <v-label for="name">Nombre Completo del Representante</v-label>
+                    <v-text-field id="name" type="text" placeholder="Nombre Completo" variant="outlined"
+                        aria-label="Name Documents" class="mt-2 my-input" :rules="nombreCompletoRules"
+                        v-model="Nombre_rep" color="primary">
+                    </v-text-field>
+                </v-col>
+
+
+                <v-col cols="12" md="6">        
+                    <v-label for="telefonoCliente">Telefono del Representante</v-label>
+                    <v-text-field id="telefonoCliente" type="number" placeholder="Numero Telefonico del cliente"
+                        variant="outlined" class="mt-2" :rules="telefonoRules" v-model="telefono_rep"
+                        color="primary">
+                    </v-text-field>
+                </v-col>
+            
+                <v-col cols="12" md="6">
+                    <v-label for="direccion">Direccion completa</v-label>
+                    <v-text-field id="direccion" type="text" placeholder="Direccion Completa" variant="outlined"
+                        aria-label="Name Documents" class="mt-2 my-input" v-model="direccion_rep" :rules="direccionRules"
+                        color="primary">
+                    </v-text-field>
+                </v-col> 
+
+                <v-col cols="12" md="6">
+                    <v-label for="referencia">Referencia</v-label>
+                    <v-text-field id="referencia" type="text" placeholder="Referencia del delivery" variant="outlined"
+                        aria-label="Name Documents" class="mt-2 my-input" :rules="referenciaRules" v-model="referencia_rep"
+                        color="primary">
+                    </v-text-field>
+                </v-col>
+            </v-row>
+        </div>
+        <br>
+<!-- /////////////////////////////////////// Representante legal ////////////////////////////////////////// -->
+                                                                                                  
+<!-- /////////////////////////////////////// COMANDA ///////////////////////////////////////////////////// -->
         <v-divider></v-divider>
         <br>
         <h4>Paso 2</h4>
@@ -625,7 +729,7 @@ function handleSelectImages(items: any) {
                 <v-text-field id="direccion" type="text" placeholder="Direccion Completa" variant="outlined"
                     aria-label="Name Documents" class="mt-2 my-input" v-model="direccion" :rules="direccionRules"
                     color="primary"></v-text-field>
-            </v-col>
+            </v-col> 
 
             <v-col cols="12" md="6">
                 <v-label for="referencia">Referencia</v-label>
@@ -680,21 +784,7 @@ function handleSelectImages(items: any) {
 
         <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
         <UploadImages @isSelectImages=handleSelectImages :ID_detalle=idComandaRandom />
-        <!-- <v-row>
-            <v-col cols="12">
-                <br>
-                <v-file-input
-                multiple
-                clearable 
-                label="Coloque el archivo aqui"
-                variant="outlined"
-                color="primary"
-                required
-                @change="File"
-                ></v-file-input>
-            </v-col>
-        </v-row> -->
-
+ 
         <v-btn color="primary" :loading="isSubmitting" append-icon="mdi-arrow-right" class="mt-6" variant="flat"
             size="large" :disabled="!origen || !tipo || !cedulaUno || !estado || !ciudad || !municipio || !direccion || !referencia
                 || !email || !nombreCompleto || !autorizado || !cedulaDos || !telefonoUno || !ID_pago" type="submit">
