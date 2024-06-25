@@ -90,7 +90,7 @@ const filterMasterOrder = async (req, res) => {
                 ,t0.[User_crea]
                 ,t0.[User_mod]
                 ,t0.[User_asing]
-                ,t0.[User_rol]
+                ,t0.[ID_rol]
                 ,t0.[ID_status]
                 ,t0.[Tipo_delivery]
                 ,t0.[SucursalZoom]
@@ -108,6 +108,7 @@ const filterMasterOrder = async (req, res) => {
                 ,t0.[Retencion]
                 ,T3.Referencia
                 ,t0.[Porc_retencion]
+                ,t0.ID_ticket
                 ,t0.[Delete]
                 ,t0.[Motivo_delete]    
                 ,T2.Status
@@ -188,6 +189,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
             //File_cedula: req.file.filename 
+            ID_ticket: data.ID_ticket 
         };
 
         //Comprobar si la cédula ya existe en la base de datos
@@ -346,13 +348,13 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            Nombre_rep: data.nombreCompleto_rep,
+            Nombre_rep: data.nombre_rep,
             Email_rep: data.email_rep,
-            Tipo_cedula_rep: data.tipo_cedula_rep,
-            Cedula_rep: data.cedulaUno_rep,
+            Tipo_cedula_rep: data.Tipo_cedula_rep,
+            Cedula_rep: data.cedula_rep,
             Direccion_rep: data.direccion_rep,
             Referencia_rep: data.referencia_rep,
-            Telefono_rep: data.telefonoUno_rep,       
+            Telefono_rep: data.telefono_rep,                
         };
 
         const UpdateOrder = {
@@ -362,8 +364,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
             User_crea: data.user_crea,
-            ID_rol: '0',
-            User_rol: 'Admin',
+            ID_rol: data.ID_rol,
+            //User_rol: 'Admin',
             //ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
@@ -373,6 +375,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
             //File_cedula: req.file.filename 
+            ID_ticket: data.ID_ticket 
         };
 
 

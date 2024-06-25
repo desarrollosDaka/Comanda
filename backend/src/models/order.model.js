@@ -38,9 +38,13 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
-  User_rol: {
+  // User_rol: {
+  //   allowNull: false,
+  //   type: DataTypes.STRING(80),
+  // },
+  ID_rol: {
     allowNull: false,
-    type: DataTypes.STRING(80),
+    type: DataTypes.STRING(20),
   },
   ID_status: {
     allowNull: false,
@@ -73,6 +77,10 @@ const masterOrderSchema = {
   Porc_retencion: {
     allowNull: true,
     type: DataTypes.INTEGER,
+  },
+  ID_ticket: {
+    allowNull: true,
+    type: DataTypes.STRING(30),
   },
   Delete: {
     allowNull: true,
