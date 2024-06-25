@@ -161,14 +161,13 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            Nombre_rep: data.nombreCompleto_rep,
+            Nombre_rep: data.Nombre_rep,
             Email_rep: data.email_rep,
-            Tipo_cedula_rep: data.tipo_cedula_rep,
-            Cedula_rep: data.cedulaUno_rep,
+            Tipo_cedula_rep: data.Tipo_cedula_rep,
+            Cedula_rep: data.cedula_rep,
             Direccion_rep: data.direccion_rep,
             Referencia_rep: data.referencia_rep,
-            Telefono_rep: data.telefonoUno_rep,      
-     
+            Telefono_rep: data.telefono_rep,           
         };
 
         // Crear un objeto con los datos del pedido
@@ -178,9 +177,9 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
-            User_crea: data.user_crea,
+            User_crea: data.user_crea, 
             ID_rol: data.ID_rol,
-            //User_rol: 'Admin',
+            // User_rol: 'Admin',
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
@@ -332,6 +331,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
         const idOrder = data.Id_Comanda
+        console.log(data)
 
         const newClients = {
             Nombre: data.nombreCompleto,

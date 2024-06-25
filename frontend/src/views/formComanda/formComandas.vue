@@ -321,8 +321,8 @@ async function handleFormComanda() {
         "user_crea": user_crea.value,
         // new
         "ID_rol": ID_rol.value,
-        "tipoDocumento": tipoDocumento.value,
-        "tipoDocumentoRL": tipoDocumentoRL.value,
+        "tipo_cedula": tipoDocumento.value,
+        "Tipo_cedula_rep": tipoDocumentoRL.value,
         "razonComercial": razonComercial.value,
         "Nombre_rep": Nombre_rep.value,
         "cedula_rep": cedula_rep.value,
