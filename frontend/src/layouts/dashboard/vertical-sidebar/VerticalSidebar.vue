@@ -2,7 +2,7 @@
 import { shallowRef } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
 import sidebarItems from './sidebarItem';
-import sidebarItemsRol from './sidebarItemUser';
+import sidebarItemsRol from './sidebarItemAsesor';
 import { ref } from 'vue';
 
 import NavGroup from './NavGroup/NavGroup.vue';
@@ -14,14 +14,17 @@ const customizer = useCustomizerStore();
 const sidebarMenu = shallowRef(sidebarItems);
 const sidebarMenuUSer = shallowRef(sidebarItemsRol);
 const User = ref('');
-const Rol = ref('');
+const Rol = ref<number>(0)
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User.value = parsedData.data.Nombre;
-  Rol.value = parsedData.data.Nombre_rol;
+  Rol.value = +parsedData.data.ID_rol;
+
+
 } 
+
 </script>
 
 <template>
@@ -43,7 +46,7 @@ if (jsonFromLocalStorage !== null) {
     <!---Navigation -->
     <!-- ---------------------------------------------- -->
     <perfect-scrollbar class="scrollnavbar">
-      <v-list aria-busy="true" aria-label="menu list" v-if="Rol == 'Admin'">
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 0">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenu" :key="i">
           <!---Item Sub Header -->
@@ -57,7 +60,10 @@ if (jsonFromLocalStorage !== null) {
           <!---End Single Item-->
         </template>
       </v-list>
-      <v-list aria-busy="true" aria-label="menu list" v-else="Rol == 'Usuario'">
+
+      <!-- ASESORES -->
+ 
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 1 || Rol === 5">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenuUSer" :key="i">
           <!---Item Sub Header -->

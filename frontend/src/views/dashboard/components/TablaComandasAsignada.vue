@@ -42,7 +42,7 @@ if (jsonFromLocalStorage !== null) {
     const parsedData = JSON.parse(jsonFromLocalStorage);
 
     user_crea.value = parsedData.data.Nombre;
-    USER_ROL.value = parsedData.data.ID_rol;
+    USER_ROL.value = +parsedData.data.ID_rol;
     USER.value = parsedData.data.ID_user;
 }
 
@@ -67,7 +67,7 @@ const getOrders = async () => {
         return item.ID_status === dataUser.param["ID_status"] && 
         item.User_asing === USER.value;
       } else {
-        return item.ID_status === dataUser.param["ID_status"];
+        return item?.ID_status === dataUser?.param["ID_status"];
       }
     });
 

@@ -26,7 +26,7 @@ const singIn = async (req, res) =>{
     
         if(checkPassword) {
             res.json({
-                id: user.ID_user,
+                ID_user: user.ID_user,
                 Nombre: user.Nombre,
                 Email: user.Email,
                 ID_rol: user.ID_rol,
