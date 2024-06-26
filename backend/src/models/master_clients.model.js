@@ -36,11 +36,11 @@ const masterClientsSchema = {
     type: DataTypes.STRING(13),
   },
   Direccion: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING(150),
   },
   Referencia: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING(100),
   },
   ID_state: {

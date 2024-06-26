@@ -5,7 +5,7 @@ const getMasterProducts = async (req, res) => {
     try {
         //const rta = await sequelize.models.modelProducts_replica.findAll();
         const rta = await sequelize.query(
-            `SELECT TOP (1000) [ID_producto]
+            `SELECT  [ID_producto]
             ,[Producto]
             ,[Serial]
             ,[Unidades]
