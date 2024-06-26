@@ -492,7 +492,7 @@ function handleSelectImages(items: any) {
           color="primary"
           placeholder="V"
           :rules="TipoDocumentoRules"
-          class="mt-2"
+          class="mt-2 my-input"
         >
         </v-autocomplete>
       </v-col>
@@ -505,7 +505,7 @@ function handleSelectImages(items: any) {
           placeholder="Cedula/Rif"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="cedulaUno"
           :rules="CedulaUnoRules"
           color="primary"
@@ -518,7 +518,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="tipo"
           placeholder="Tipo de Proceso"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="['NATURAL', 'JURIDICO']"
@@ -541,7 +541,7 @@ function handleSelectImages(items: any) {
           placeholder="EJEMPLO@TIENDASDAKA.COM"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           :rules="emailRules"
           v-model="email"
           color="primary"
@@ -576,7 +576,7 @@ function handleSelectImages(items: any) {
           type="number"
           placeholder="Numero Telefonico del cliente"
           variant="outlined"
-          class="mt-2"
+          class="mt-2 my-input"
           :rules="telefonoRules"
           v-model="telefonoUno"
           color="primary"
@@ -607,7 +607,7 @@ function handleSelectImages(items: any) {
           v-model="porcentaje"
           required
           color="primary"
-          class="mt-2"
+          class="mt-2 my-input"
         >
         </v-autocomplete>
       </v-col>
@@ -620,7 +620,7 @@ function handleSelectImages(items: any) {
           placeholder="Razon Comercial"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="razonComercial"
           color="primary"
         >
@@ -634,7 +634,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="estado"
           placeholder="Seleccione el estado"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_estado"
@@ -652,7 +652,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="ciudad"
           placeholder="Seleccione la ciudad"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_ciudad"
@@ -670,7 +670,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="municipio"
           placeholder="Seleccione el municipio"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_muni"
@@ -701,7 +701,7 @@ function handleSelectImages(items: any) {
             required
             color="primary"
             placeholder="V"
-            class="mt-2"
+            class="mt-2 my-input"
           >
           </v-autocomplete>
         </v-col>
@@ -714,7 +714,7 @@ function handleSelectImages(items: any) {
             placeholder="Cedula/Rif"
             variant="outlined"
             aria-label="Name Documents"
-            class="mt-2"
+            class="mt-2 my-input"
             v-model="cedula_rep"
             :rules="CedulaUnoRules"
             color="primary"
@@ -730,7 +730,7 @@ function handleSelectImages(items: any) {
             placeholder="ejmeplo@tiendasdaka.com"
             variant="outlined"
             aria-label="Name Documents"
-            class="mt-2"
+            class="mt-2 my-input"
             :rules="emailRules"
             v-model="email_rep"
             color="primary"
@@ -761,7 +761,7 @@ function handleSelectImages(items: any) {
             type="number"
             placeholder="Numero Telefonico del cliente"
             variant="outlined"
-            class="mt-2"
+            class="mt-2 my-input"
             :rules="telefonoRules"
             v-model="telefono_rep"
             color="primary"
@@ -815,7 +815,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="origen"
           placeholder="Origen de la comanda"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_tiendas"
@@ -834,7 +834,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="delivery"
           placeholder="Seleccione el tipo de delivery"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_Delivery"
@@ -884,7 +884,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="direccion"
           placeholder="Seleccione la Direccion del Delivery"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_Zoom"
@@ -909,7 +909,7 @@ function handleSelectImages(items: any) {
           placeholder="Referencia del delivery"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="cedulaDos"
           :rules="cedulaDosRules"
           color="primary"
@@ -923,7 +923,7 @@ function handleSelectImages(items: any) {
           type="number"
           placeholder="Telefono del autorizado"
           variant="outlined"
-          class="mt-2"
+          class="mt-2 my-input"
           :rules="telefonoRules"
           v-model="telefonoDos"
           color="primary"
@@ -936,7 +936,7 @@ function handleSelectImages(items: any) {
         <v-autocomplete
           id="medioPago"
           placeholder="Seleccione el tipo de pago"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_Payment"
@@ -957,7 +957,7 @@ function handleSelectImages(items: any) {
           variant="outlined"
           required
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="user_crea"
           color="primary"
         ></v-text-field>

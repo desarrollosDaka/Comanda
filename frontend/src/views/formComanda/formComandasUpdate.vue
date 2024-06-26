@@ -566,7 +566,7 @@ onMounted(async () => {
           color="primary"
           placeholder="V"
           :rules="TipoDocumentoRules"
-          class="mt-2"
+          class="mt-2 my-input"
         >
         </v-autocomplete>
       </v-col>
@@ -579,7 +579,7 @@ onMounted(async () => {
           placeholder="Cedula/Rif"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="cedulaUno"
           :rules="CedulaUnoRules"
           color="primary"
@@ -592,7 +592,7 @@ onMounted(async () => {
         <v-autocomplete
           id="tipo"
           placeholder="Tipo de Proceso"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="['NATURAL', 'JURIDICO']"
@@ -615,7 +615,7 @@ onMounted(async () => {
           placeholder="EJEMPLO@TIENDASDAKA.COM"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           :rules="emailRules"
           v-model="email"
           color="primary"
@@ -648,7 +648,7 @@ onMounted(async () => {
           type="number"
           placeholder="Numero Telefonico del cliente"
           variant="outlined"
-          class="mt-2"
+          class="mt-2 my-input"
           :rules="telefonoRules"
           v-model="telefonoUno"
           color="primary"
@@ -662,7 +662,7 @@ onMounted(async () => {
         <v-label for="retencion">Retención</v-label>
         <v-switch
           id="retencion"
-          class="mt-3"
+          class="mt-3 my-input"
           v-model="retencion"
           color="warning"
         ></v-switch>
@@ -679,7 +679,7 @@ onMounted(async () => {
           v-model="porcentaje"
           required
           color="primary"
-          class="mt-2"
+          class="mt-2 my-input"
         >
         </v-autocomplete>
       </v-col>
@@ -692,7 +692,7 @@ onMounted(async () => {
           placeholder="Razon Comercial"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="razonComercial"
           color="primary"
         >
@@ -706,7 +706,7 @@ onMounted(async () => {
         <v-autocomplete
           id="estado"
           placeholder="Seleccione el estado"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_estado"
@@ -724,7 +724,7 @@ onMounted(async () => {
         <v-autocomplete
           id="ciudad"
           placeholder="Seleccione la ciudad"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_ciudad"
@@ -742,7 +742,7 @@ onMounted(async () => {
         <v-autocomplete
           id="municipio"
           placeholder="Seleccione el municipio"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_muni"
@@ -773,7 +773,7 @@ onMounted(async () => {
             required
             color="primary"
             placeholder="V"
-            class="mt-2"
+            class="mt-2 my-input"
           >
           </v-autocomplete>
         </v-col>
@@ -786,7 +786,7 @@ onMounted(async () => {
             placeholder="Cedula/Rif"
             variant="outlined"
             aria-label="Name Documents"
-            class="mt-2"
+            class="mt-2 my-input"
             v-model="cedula_rep"
             :rules="CedulaUnoRules"
             color="primary"
@@ -802,7 +802,7 @@ onMounted(async () => {
             placeholder="ejmeplo@tiendasdaka.com"
             variant="outlined"
             aria-label="Name Documents"
-            class="mt-2"
+            class="mt-2 my-input"
             :rules="emailRules"
             v-model="email_rep"
             color="primary"
@@ -833,7 +833,7 @@ onMounted(async () => {
             type="number"
             placeholder="Numero Telefonico del cliente"
             variant="outlined"
-            class="mt-2"
+            class="mt-2 my-input"
             :rules="telefonoRules"
             v-model="telefono_rep"
             color="primary"
@@ -887,7 +887,7 @@ onMounted(async () => {
         <v-autocomplete
           id="origen"
           placeholder="Origen de la comanda"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_tiendas"
@@ -906,7 +906,7 @@ onMounted(async () => {
         <v-autocomplete
           id="delivery"
           placeholder="Seleccione el tipo de delivery"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_Delivery"
@@ -956,7 +956,7 @@ onMounted(async () => {
         <v-autocomplete
           id="direccion"
           placeholder="Seleccione la Direccion del Delivery"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_Zoom"
@@ -981,7 +981,7 @@ onMounted(async () => {
           placeholder="Referencia del delivery"
           variant="outlined"
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="cedulaDos"
           :rules="cedulaDosRules"
           color="primary"
@@ -995,7 +995,7 @@ onMounted(async () => {
           type="number"
           placeholder="Telefono del autorizado"
           variant="outlined"
-          class="mt-2"
+          class="mt-2 my-input"
           :rules="telefonoRules"
           v-model="telefonoDos"
           color="primary"
@@ -1008,7 +1008,7 @@ onMounted(async () => {
         <v-autocomplete
           id="medioPago"
           placeholder="Seleccione el tipo de pago"
-          class="mt-2"
+          class="mt-2 my-input"
           clearable
           chips
           :items="info_Payment"
@@ -1029,7 +1029,7 @@ onMounted(async () => {
           variant="outlined"
           required
           aria-label="Name Documents"
-          class="mt-2"
+          class="mt-2 my-input"
           v-model="user_mod"
           color="primary"
         >
