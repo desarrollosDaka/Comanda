@@ -72,6 +72,7 @@ const filterMasterOrder = async (req, res) => {
             `SELECT DISTINCT    
                 T0.[ID_order]
                 ,T0.ID_detalle
+                ,T3.Tipo_cedula
                 ,T0.Cedula
                 ,T3.Tipo_cliente
                 ,T3.Email
@@ -98,7 +99,7 @@ const filterMasterOrder = async (req, res) => {
                 ,t0.[Cedula_autoriza]
                 ,t0.[Telefono_autoriza]
                 ,T3.Tipo_cedula_rep
-                ,T3.Cedula_rep	
+                ,T3.Cedula_rep
                 ,T3.Nombre_rep	
                 ,T3.Email_rep	
                 ,T3.Telefono_rep	
@@ -354,8 +355,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Cedula_rep: data.cedula_rep,
             Direccion_rep: data.direccion_rep,
             Referencia_rep: data.referencia_rep,
-            Telefono_rep: data.telefono_rep,                
-        };
+            Telefono_rep: data.telefono_rep,               
+        }; 
 
         const UpdateOrder = {
            ID_detalle: data.Id_Comanda,
