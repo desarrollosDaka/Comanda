@@ -36,6 +36,11 @@ import {
       icon: SnippetsOutlined, 
       to: '/documentacionDaka'
     },
+    {
+      title: 'Comandas Asignadas',
+      icon: ClusterOutlined, 
+      to: '/maestroComandaAsignada'
+    },
   ];
   
   export default sidebarItem;
