@@ -21,8 +21,6 @@ if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User.value = parsedData.data.Nombre;
   Rol.value = +parsedData.data.ID_rol;
-
-
 } 
 
 </script>
@@ -63,7 +61,7 @@ if (jsonFromLocalStorage !== null) {
 
       <!-- ASESORES -->
  
-      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 1 || Rol === 5">
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 1 || Rol === 5 || Rol === 7 || Rol === 9 || Rol === 6 || Rol === 8">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenuUSer" :key="i">
           <!---Item Sub Header -->

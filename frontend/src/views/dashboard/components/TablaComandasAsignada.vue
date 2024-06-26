@@ -65,7 +65,7 @@ const getOrders = async () => {
     const dataFilterStatus: any = data[0].filter((item: Table_Orders) => {
       if (ROLFILTERUSER.includes(USER_ROL.value)) {
         return item.ID_status === dataUser.param["ID_status"] && 
-        item.User_asing === USER.value;
+        item.User_asing.toString() === USER.value.toString();
       } else {
         return item?.ID_status === dataUser?.param["ID_status"];
       }
