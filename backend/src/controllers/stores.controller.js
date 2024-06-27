@@ -26,10 +26,10 @@ const getMasterStores = async (req, res) => {
 // get filter user
 const filterMasterStores = async (req, res) => {
     try {
-        const id = req.params.ID_sucursal; 
+        const id = req.params.id; 
         const rta = await sequelize.models.modelStores.findOne({
             where: {
-                id : id,
+                ID_sucursal : id,
             }, 
         });
 
