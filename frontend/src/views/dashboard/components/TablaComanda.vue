@@ -12,6 +12,7 @@ const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const dialog = ref(false);
 const infoAsesores = ref();
+const id_sucursal = ref();
 
 const selectedAsesor = ref()
 const idDocuments = ref('')
@@ -27,6 +28,13 @@ let editedItem = ref({
   Status: '',
 })
 
+// Localstorage
+const jsonFromLocalStorage = sessionStorage.getItem('user');
+if (jsonFromLocalStorage !== null) {
+    const parsedData = JSON.parse(jsonFromLocalStorage);
+    id_sucursal.value = parsedData.data.Id_sucursal;
+}
+
 const editItem = (item: any) => {
   editedItem.value = Object.assign({}, item)
   dialog.value = true
@@ -35,7 +43,7 @@ const editItem = (item: any) => {
 const getOrders = async () => {
     loadingInfo.value = true
     try{
-        const url = `${baseUrl}/masterOrder`
+        const url = `${baseUrl}/filterOrderForSucursal/${id_sucursal.value}`
         const {data} = await axios.get(url);
         info.value =  data[0]
     } catch(error){
