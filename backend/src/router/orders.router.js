@@ -36,7 +36,8 @@ const {
     //getMasterOrderDetails,
     createOrderDocument,
     filterOrderDetailsFiles,
-    deleteOrderDocument
+    deleteOrderDocument,
+    getMasterOrderForStore
 } 
 = require("../controllers/orders.controller");
 
@@ -50,6 +51,9 @@ router.get("/masterOrder", getMasterOrder);
 
 // Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
+
+// Filter ORDER For Store
+router.get("/filterOrderForSucursal/:id_sucursal", getMasterOrderForStore);
 
 //FILTRO DETALLE ORDER
 router.get("/filterOrderDetails/:id", filterOrderDetails);

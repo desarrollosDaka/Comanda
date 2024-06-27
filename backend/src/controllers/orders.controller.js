@@ -6,7 +6,7 @@ const getMasterOrder = async (req, res) => {
     try {
        // const rta = await sequelize.models.modelOrders.findAll();
        const rta = await sequelize.query(
-        `SELECT T0.[ID_order]
+        `	SELECT T0.[ID_order]
                 ,T0.ID_detalle
 				,T3.Tipo_cedula
                 ,T0.Cedula
@@ -23,8 +23,42 @@ const getMasterOrder = async (req, res) => {
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL 
+        ORDER BY T0.[ID_order] DESC`);
 
+        if(rta){
+            res.status(201)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        }   
+    } catch (e) {
+        console.log('Error', e);
+    }
+};
+const getMasterOrderForStore = async (req, res) => {
+    try {
+        const id_sucursal = req.params.id_sucursal
+       const rta = await sequelize.query(
+        `	SELECT T0.[ID_order]
+                ,T0.ID_detalle
+				,T3.Tipo_cedula
+                ,T0.Cedula
+                ,T3.Nombre Cliente
+                ,T3.Razon_comercial
+                ,T1.Sucursal
+                ,T0.[User_crea]
+                ,T0.[User_asing] Asesor 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
+                ,CAST(T0.Create_date AS DATE) Create_date
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.ID_sucursal = '${id_sucursal}'
         ORDER BY T0.[ID_order] DESC`);
 
         if(rta){
@@ -651,5 +685,6 @@ module.exports = {
     getMasterOrderDetails,
     createOrderDocument,
     filterOrderDetailsFiles,
-    deleteOrderDocument
+    deleteOrderDocument,
+    getMasterOrderForStore
 };
