@@ -59,6 +59,8 @@ const getOrders = async () => {
   loadingInfo.value = false
 }
 
+// Hola
+
 interface getDataComanda {
   ID_order: string;
   Cedula: string;
