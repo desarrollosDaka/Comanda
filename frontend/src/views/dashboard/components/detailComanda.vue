@@ -23,9 +23,16 @@ const route = useRoute()
 const search = ref('')
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
+const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const id = ref()
+const id_orders = ref()
+const infoAsesores = ref();
+const selectedAsesor = ref()
+const dialog = ref(false)
+const numFactura = ref()
 id.value = route.params.id
+id_orders.value = route.params.id_orders
 
 const info = ref([]);
 const origen = ref();
@@ -67,7 +74,7 @@ const { dataUser } = useUserRol(USER_ROL.value) // buscamos los datos para el ti
 
 const ROLESNOTMEDIOPAGO = [1, 5] //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 
-const ROLEADDFILES = [6, 8] // ROLES CON ACCESO A CARGAR DOCUMENTOS
+const ROLEADDFILESBILL = [6, 8] // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 
 const itemDocument = ref<Document[]>([]);
 
@@ -123,14 +130,15 @@ const updateEstatus = async () => {
     try {
 
         //SOLO USUARIOS CON ROL DE CAJERAS
-        if (ROLEADDFILES.includes(USER_ROL.value)) {
+        if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
 
             useAddDocument(itemDocument.value, id.value) //Visualizan y agregan  archivos
 
         }
 
         await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
-            status_comanda: dataUser.changeID_status
+            status_comanda: dataUser.changeID_status,
+
         });
 
     } catch (error) {
@@ -139,14 +147,43 @@ const updateEstatus = async () => {
 
 }
 
+interface Asesores {
+    Nombre: string;
+    ID_user: number;
+}
+
+const getAsesores = async () => {
+    try {
+        const url = `${baseUrlAsesor}/filterMasterAsesor`
+        const { data } = await axios.get(url);
+
+        infoAsesores.value = data[0].map((asesor: Asesores) => ({
+            title: asesor.Nombre,
+            value: asesor.ID_user
+        }));
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 onMounted(async () => {
     await getOrder();
     await getArticulos();
+    await getAsesores();
 });
 
-function updateData(id: string) {
+async function updateData() {
 
-    const { isvalidate } = ROLEADDFILES.includes(USER_ROL.value) ? useUploadFiles(itemDocument.value) : {isvalidate: true };//Verificamos los tipos de documentos si el rol permite cargar archivos
+    if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value) {
+
+        return toast.error(`Error. Debes ingresar el numero de factura`, {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000
+        });
+    }
+
+    const { isvalidate } = ROLEADDFILESBILL.includes(USER_ROL.value) ? useUploadFiles(itemDocument.value) : { isvalidate: true };//Verificamos los tipos de documentos si el rol permite cargar archivos
 
     if (isvalidate)
 
@@ -183,10 +220,58 @@ function handleSelectImages(items: any) {
     itemDocument.value = items
 }
 
+const asignAsesor = async () => {
+
+    if (!selectedAsesor.value) {
+        return toast.error("Error. Debe seleccionar un asesor", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000
+        });
+    }
+
+    const status = dataUser.changeID_status
+    try {
+        const response = await axios.put(`${baseUrl}/updateOrderAsesor/${id_orders.value}`, { User_asing: selectedAsesor.value, ID_status: status })
+        if (response) {
+            Swal.fire({
+                title: "Asesor Asignado",
+                text: "Se asigno un asesor a la comanda seleccionada!",
+                icon: "success"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.push(`/maestroComandaAsignada`);
+                }
+            });
+        }
+    } catch (error) {
+        toast.error(`Error, al momento de guardar el asesor ${error}`, {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000
+        });
+    }
+
+}
+
 </script>
 
 <template>
     <!-- informacion de la comanda -->
+
+    <div class="card">
+        <div class="data">
+            <p>
+                COMANDA NRO: {{ id_orders }}
+            </p>
+
+            <div class="range">
+                <div class="fill">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <v-row class="mb-0">
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos del Cliente</h2>
@@ -259,20 +344,101 @@ function handleSelectImages(items: any) {
     <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" @isSelectImages=handleSelectImages :ID_detalle=id />
 
     <v-row class="mb-0 mt-5">
-        <v-col cols="12" md="12">
 
-            <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
-                @click="updateData">
-                {{ dataUser.msgButton }}
-
-            </v-btn>
+        <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
+            <v-label text="Asignar Asesor"></v-label>
+            <br>
+            <v-autocomplete id="tipo" placeholder="Asesores de ventas" clearable chips :items="infoAsesores"
+                variant="outlined" class="mt-2" color="primary" v-model="selectedAsesor"></v-autocomplete>
         </v-col>
+
     </v-row>
+
+    <v-container>
+        <v-row align="center" justify="start">
+
+            <v-col cols="auto">
+                <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
+                    @click="USER_ROL === 4 ? asignAsesor() : updateData()">
+                    {{ dataUser.msgButton }}
+
+                </v-btn>
+            </v-col>
+
+            <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
+                <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
+                    INGRESAR NUMERO DE FACTURA
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-container>
+
+
+
+    <v-dialog v-model="dialog" width="auto">
+        <v-card max-width="400" prepend-icon="mdi-counter" title="Numero de Factura">
+
+            <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Numero factura es requerido']"
+                placeholder="79938" required></v-text-field>
+           
+
+            <template v-slot:actions>
+                <v-btn class="ms-auto" text="Ok" @click="dialog = false"></v-btn>
+            </template>
+        </v-card>
+
+    </v-dialog>
+
+
 
 </template>
 
 <style>
+
 thead {
     background-color: rgb(250, 250, 250);
+}
+
+.card {
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 5px 5px #323232;
+    border: 2px solid #323232;
+    margin-bottom: 50px;
+}
+
+.data {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.data p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #1F2937;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    text-align: left;
+}
+
+.data .range {
+    position: relative;
+    background-color: #E5E7EB;
+    width: 100%;
+    height: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.data .range .fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #143E90;
+    width: 76%;
+    height: 100%;
+    border-radius: 0.25rem;
 }
 </style>

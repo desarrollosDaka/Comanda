@@ -18,7 +18,7 @@ const routerMotivo = require("../router/motivo.router");
 const routerDelivery = require("../router/delivery.router");
 const routerPayment = require("../router/payment.router");
 const routerProducts = require("../router/products.router");
-
+const routerStatus = require("../router/status.router");
 // Middlewares
 app.use(express.json());
 app.use(morgan("dev"));
@@ -41,6 +41,6 @@ app.use("/api/motivo", routerMotivo);
 app.use("/api/delivery", routerDelivery);
 app.use("/api/payment", routerPayment);
 app.use("/api/products", routerProducts);
-
+app.use("/api/status", routerStatus);
 
 module.exports = app;
