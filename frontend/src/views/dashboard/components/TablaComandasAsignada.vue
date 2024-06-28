@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2'
 import axios from 'axios';
-import { shallowRef, ref, onMounted } from 'vue';
-import { router } from '@/router';
+import { ref, onMounted } from 'vue';
 import { useUserRol } from '@/composables/users'
+import { useGetStatus } from '@/composables/status'
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 const search = ref('')
@@ -11,22 +10,8 @@ const info = ref([]);
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
-const dialog = ref(false);
 const infoAsesores = ref();
-
-const selectedAsesor = ref()
-const idDocuments = ref('')
-const estatus = ref(false)
-const motivo = ref()
-
-let editedItem = ref({
-  ID_order: '',
-  Cedula: '',
-  Sucursal: '',
-  User_crea: '',
-  Asesor: '',
-  Status: '',
-})
+const infogetStatus = ref()
 
 //////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,35 +24,30 @@ let user_crea = ref<string>('')
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
-    const parsedData = JSON.parse(jsonFromLocalStorage);
+  const parsedData = JSON.parse(jsonFromLocalStorage);
 
-    user_crea.value = parsedData.data.Nombre;
-    USER_ROL.value = +parsedData.data.ID_rol;
-    USER.value = parsedData.data.ID_user;
+  user_crea.value = parsedData.data.Nombre;
+  USER_ROL.value = +parsedData.data.ID_rol;
+  USER.value = parsedData.data.ID_user;
 }
 
-const ROLFILTERUSER = [1,5] //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
+const ROLFILTERUSER = [1, 5] //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
+
+const STATUSPRINTER = [4] //ESTE ARREGLO INDICA EN QUE ESTATUS DEBE ESTAR LA COMANDA PARA IMPRIMIR
 
 const { dataUser } = useUserRol(USER_ROL.value) // buscamos los datos para el tipo de ROL DE USUARIO
-
-const editItem = (item: any) => {
-  editedItem.value = Object.assign({}, item)
-  dialog.value = true
-}
-
 
 const getOrders = async () => {
   loadingInfo.value = true
   try {
     const url = `${baseUrl}/masterOrder`
     const { data } = await axios.get(url);
-
     const dataFilterStatus: any = data[0].filter((item: Table_Orders) => {
-      if (ROLFILTERUSER.includes(USER_ROL.value)) {
-        return item.ID_status === dataUser.param["ID_status"] && 
-        item.User_asing.toString() === USER.value.toString();
-      } else {
-        return item?.ID_status === dataUser?.param["ID_status"];
+      if (ROLFILTERUSER.includes(USER_ROL.value)) { //FILTRAMOS POR ASESORES ASIGNADOS
+        return dataUser.status.includes(item.ID_status) &&
+          item.User_asing.toString() === USER.value.toString();
+      } else {//FILTRAMOS SOLO POR ESTATUS
+        return dataUser.status.includes(item.ID_status);
       }
     });
 
@@ -78,6 +58,17 @@ const getOrders = async () => {
   }
   loadingInfo.value = false
 }
+
+interface getDataComanda {
+  ID_order: string;
+  Cedula: string;
+  Sucursal: string;
+  User_crea: string;
+  Asesor: string;
+  Status: number;
+  ID_detalle: string;
+}
+
 
 interface Asesores {
   Nombre: string;
@@ -103,18 +94,39 @@ const getAsesores = async () => {
     const { data } = await axios.get(url);
 
     infoAsesores.value = data[0].map((asesor: Asesores) => ({
-      title: asesor.Nombre,
-      value: asesor.Nombre
+      value: asesor.ID_user,
+      title: asesor.Nombre
     }));
+
   } catch (error) {
     console.log(error)
   }
 }
 
+const getMessageStatus = (id: number) => {
+  if (infogetStatus && infogetStatus.value) {
+    const status = infogetStatus.value.find((item: any) => item.ID_status === id).Status;
+    return status;
+  }
+  return null;
+};
+
+const getNameAsesor = (id: number) => {
+  if (infoAsesores && infoAsesores.value) {
+    const asesor = infoAsesores.value.find((item: any) => item.value == id).title;
+    return asesor;
+  }
+  return null;
+};
+
+
 onMounted(async () => {
 
   await getOrders();
   await getAsesores();
+  const { status } = await useGetStatus()
+  infogetStatus.value = status
+
 });
 
 const headers = ref([
@@ -126,6 +138,19 @@ const headers = ref([
   { title: 'STATUS', key: 'Status' },
   { title: 'ACCIÓN', sortable: false, key: 'action' },
 ] as const);
+
+
+const COLORSTATUS: any = {
+  1: 'success',
+  2: 'warning',
+  3: 'success',
+  4: 'info',
+  5: 'warning',
+  6: 'success',
+  7: 'warning',
+  8: 'success',
+  9: 'error',
+}
 
 </script>
 
@@ -150,38 +175,40 @@ const headers = ref([
       <v-data-table hover density="comfortable" v-model:search="search" :loading="loadingInfo" :items="info"
         :headers="headers" :no-data-text="'No hay datos disponibles'">
 
-        <!-- view, update y delete -->
+        <!-- process -->
         <template v-slot:item.action="{ item }">
-          <!-- ver -->
-          <router-link :to="{ path: `/viewAsesor/${item['ID_detalle']}` }">
+
+          <router-link :to="{ path: `/viewProcessComandas/${item['ID_detalle']}/${item['ID_order']}` }">
             <v-icon size="23" class="me-4" color="primary">
               mdi-eye-check
             </v-icon>
           </router-link>
+
+        
+            <v-icon v-if="STATUSPRINTER.includes((item as Table_Orders).ID_status)" size="23" class="me-4" color="primary">
+              mdi-printer
+            </v-icon>
+
+          
         </template>
 
-        <!-- estado -->
+
+
+        <!-- status -->
         <template v-slot:item.Status="{ item }">
-          <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
-            v-if="(item as any).Status === 'Creada'">
-            <p class="mb-0">Creada</p>
-          </v-chip>
 
-          <v-chip variant="tonal" color="success" size="x-small" prepend-icon="mdi-check"
-            v-else-if="(item as any).Status === 'Asignada'">
-            <p class=" mb-0">Asignada</p>
-          </v-chip>
-
-          <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand" v-else>
-            <p class="mb-0">Pendiente</p>
+          <v-chip variant="tonal" :color="COLORSTATUS[(item as Table_Orders).ID_status]" size="x-small"
+            :prepend-icon="(item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'">
+            <p class="mb-0">{{ getMessageStatus((item as any).ID_status) }}</p>
           </v-chip>
 
         </template>
 
         <!-- asesor -->
         <template v-slot:item.Asesor="{ item }">
-          <v-chip variant="tonal" color="success" size="x-small" prepend-icon="mdi-check" v-if="(item as any).Asesor">
-            <p class="mb-0">{{ (item as any).Asesor }}</p>
+          <v-chip variant="tonal" :color="COLORSTATUS[(item as Table_Orders).ID_status]" size="x-small"
+            prepend-icon="mdi-check" v-if="(item as any).Asesor">
+            <p class="mb-0">{{ getNameAsesor((item as any).Asesor) }}</p>
           </v-chip>
 
           <v-chip variant="elevated" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>

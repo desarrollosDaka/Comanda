@@ -32,12 +32,7 @@ import {
       to: '/dashboard'
     },
     {
-      title: 'Documentacion de Daka',
-      icon: SnippetsOutlined, 
-      to: '/documentacionDaka'
-    },
-    {
-      title: 'Comandas Asignadas',
+      title: 'Comandas',
       icon: ClusterOutlined, 
       to: '/maestroComandaAsignada'
     },

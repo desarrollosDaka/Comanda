@@ -5,7 +5,8 @@ import {
     FontSizeOutlined,
     ClusterOutlined,
     SnippetsOutlined,
-    UserOutlined
+    UserOutlined,
+    BarcodeOutlined,
   } from '@ant-design/icons-vue';
   
   export interface menu {
@@ -32,7 +33,12 @@ import {
       to: '/dashboard'
     },
     {
-      title: 'Comandas Asignadas',
+        title: 'Pedidos Online',
+        icon: BarcodeOutlined, 
+        to: '/maestroPedidos'
+      },
+    {
+      title: 'Comandas',
       icon: ClusterOutlined, 
       to: '/maestroComandaAsignada'
     },
