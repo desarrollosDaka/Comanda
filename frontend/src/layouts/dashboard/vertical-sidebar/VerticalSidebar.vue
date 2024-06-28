@@ -3,6 +3,7 @@ import { shallowRef } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
 import sidebarItems from './sidebarItem';
 import sidebarItemsRol from './sidebarItemAsesor';
+import sidebarItemsGerentes from './sidebaritemGerente';
 import { ref } from 'vue';
 
 import NavGroup from './NavGroup/NavGroup.vue';

@@ -19,7 +19,6 @@ interface Document {
 }
 
 const route = useRoute()
-
 const search = ref('')
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
@@ -64,17 +63,13 @@ if (jsonFromLocalStorage !== null) {
 }
 
 const { dataUser } = useUserRol(USER_ROL.value) // buscamos los datos para el tipo de asesor
-
 const ROLESNOTMEDIOPAGO = [1, 5] //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
-
 const ROLEADDFILES = [6, 8] // ROLES CON ACCESO A CARGAR DOCUMENTOS
-
 const itemDocument = ref<Document[]>([]);
 
 
 const getOrder = async () => {
     try {
-        // const url = `${baseUrl}/filterOrder/${id.value}`
         const url = `${baseUrl}/filterOrder/${id.value}`
         const { data } = await axios.get(url);
 
@@ -124,7 +119,6 @@ const updateEstatus = async () => {
 
         //SOLO USUARIOS CON ROL DE CAJERAS
         if (ROLEADDFILES.includes(USER_ROL.value)) {
-
             useAddDocument(itemDocument.value, id.value) //Visualizan y agregan  archivos
 
         }
@@ -149,7 +143,6 @@ function updateData(id: string) {
     const { isvalidate } = ROLEADDFILES.includes(USER_ROL.value) ? useUploadFiles(itemDocument.value) : {isvalidate: true };//Verificamos los tipos de documentos si el rol permite cargar archivos
 
     if (isvalidate)
-
         Swal.fire({
             title: dataUser.msgButton,
             text: "No podrás revertir esto!",
@@ -264,7 +257,6 @@ function handleSelectImages(items: any) {
             <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
                 @click="updateData">
                 {{ dataUser.msgButton }}
-
             </v-btn>
         </v-col>
     </v-row>
