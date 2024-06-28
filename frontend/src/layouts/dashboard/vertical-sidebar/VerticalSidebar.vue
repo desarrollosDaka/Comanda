@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
-import sidebarItems from './sidebarItem';
-import sidebarItemsRol from './sidebarItemAsesor';
+import sidebarItems from './sidebarItemAdministrators';
+import sidebarItemsRol from './sidebarItemGroup_1';
+import sidebarItemsGerente from './sidebartItemManagers';
 import { ref } from 'vue';
 
 import NavGroup from './NavGroup/NavGroup.vue';
@@ -13,8 +14,12 @@ import Logo from '../logo/LogoDark.vue';
 const customizer = useCustomizerStore();
 const sidebarMenu = shallowRef(sidebarItems);
 const sidebarMenuUSer = shallowRef(sidebarItemsRol);
+
 const User = ref('');
 const Rol = ref<number>(0)
+
+const ADVISORS_STORERS_CASHIER = [1,5,6,7,8,9] //rol asesores, almacenistas, cajeras
+const MANAGERS = [4] //rol gerentes
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
@@ -44,6 +49,9 @@ if (jsonFromLocalStorage !== null) {
     <!---Navigation -->
     <!-- ---------------------------------------------- -->
     <perfect-scrollbar class="scrollnavbar">
+
+       <!-- ADMINISTRADORES-->
+
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 0">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenu" :key="i">
@@ -59,11 +67,29 @@ if (jsonFromLocalStorage !== null) {
         </template>
       </v-list>
 
-      <!-- ASESORES -->
- 
-      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 1 || Rol === 5 || Rol === 7 || Rol === 9 || Rol === 6 || Rol === 8">
+      <!-- ASESORES ALMACENISTAS Y CAJERAS-->
+
+        <v-list aria-busy="true" aria-label="menu list" v-if="ADVISORS_STORERS_CASHIER.includes(Rol)">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenuUSer" :key="i">
+          <!---Item Sub Header -->
+          <NavGroup :item="item" v-if="item.header" :key="item.title" />
+          <!---Item Divider -->
+          <v-divider class="my-3" v-else-if="item.divider" />
+          <!---If Has Child -->
+          <NavCollapse class="leftPadding" :item="item" :level="0" v-else-if="item.children" />
+          <!---Single Item-->
+          <NavItem :item="item" v-else />
+          <!---End Single Item-->
+        </template>
+      </v-list>
+
+
+
+    <!-- GERENTES-->
+        <v-list aria-busy="true" aria-label="menu list" v-if="MANAGERS.includes(Rol)">
+        <!---Menu Loop -->
+        <template v-for="(item, i) in sidebarItemsGerente" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->

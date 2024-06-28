@@ -3,7 +3,7 @@
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import detallesComandaAsesor from '../dashboard/components/detallesComandaAsesor.vue';
+import detailComanda from '../dashboard/components/detailComanda.vue';
 
 // component content
 const page = ref({ title: 'Comanda Asignadas' });
@@ -22,7 +22,7 @@ const breadcrumbs = ref([
   <v-row>
     <v-col cols="12" md="12">
       <UiParentCard title="Datos de la comanda">
-        <detallesComandaAsesor/>
+        <detailComanda/>
       </UiParentCard>
     </v-col>
   </v-row>

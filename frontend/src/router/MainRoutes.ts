@@ -87,9 +87,9 @@ const MainRoutes = {
       component: () => import('@/views/pages/addArticuloUpdate.vue')
     }
     ,{
-      name: 'viewAsesor',
-      path: '/viewAsesor/:id',
-      component: () => import('@/views/pages/viewAsesor.vue')
+      name: 'viewProcessComandas',
+      path: '/viewProcessComandas/:id/:id_orders',
+      component: () => import('@/views/pages/viewProcessComandas.vue')
     }
     ,{
       name: 'maestroComandaAsignada',
