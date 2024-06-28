@@ -12,6 +12,7 @@ const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const dialog = ref(false);
 const infoAsesores = ref();
+const id_sucursal = ref();
 
 const selectedAsesor = ref()
 const idDocuments = ref('')
@@ -26,6 +27,13 @@ let editedItem = ref({
   Asesor: '',
   Status: '',
 })
+
+// Localstorage
+const jsonFromLocalStorage = sessionStorage.getItem('user');
+if (jsonFromLocalStorage !== null) {
+    const parsedData = JSON.parse(jsonFromLocalStorage);
+    id_sucursal.value = parsedData.data.Id_sucursal;
+}
 
 const editItem = (item: any) => {
   editedItem.value = Object.assign({}, item)

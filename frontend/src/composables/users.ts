@@ -69,9 +69,8 @@ const ARRAYUSER_ROL = [
          "printer":false},
     ];
 
-     //BUSCAMOS los datos del usuario
-     const dataUser:any= ARRAYUSER_ROL.find(item => item.userRol === rol)
+    //BUSCAMOS los datos del usuario
+    const dataUser:any= ARRAYUSER_ROL.find(item => item.userRol === rol)
 
-return { dataUser }
-
+    return { dataUser }
 }
