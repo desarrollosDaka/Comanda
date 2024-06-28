@@ -32,7 +32,7 @@ import {
       to: '/dashboard'
     },
     {
-      title: 'Comandas Asignadas',
+      title: 'Comandas',
       icon: ClusterOutlined, 
       to: '/maestroComandaAsignada'
     },
