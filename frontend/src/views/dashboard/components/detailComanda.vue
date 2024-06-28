@@ -257,7 +257,7 @@ const asignAsesor = async () => {
     <div class="card">
         <div class="data">
             <p>
-                COMANDA NRO: {{ id_orders }}
+                COMANDA #{{ id_orders }}
             </p>
 
             <div class="range">

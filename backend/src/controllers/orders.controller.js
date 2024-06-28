@@ -37,6 +37,8 @@ const getMasterOrder = async (req, res) => {
         console.log('Error', e);
     }
 };
+
+// New
 const getMasterOrderForStore = async (req, res) => {
     try {
         const id_sucursal = req.params.id_sucursal
