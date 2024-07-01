@@ -20,7 +20,6 @@ const masterMunicipalitiesSchema = {
   },
 
 
-  
 };
 
 class MasterMunicipalities extends Model {
