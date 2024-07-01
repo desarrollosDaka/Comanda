@@ -6,7 +6,7 @@ const getMasterOrder = async (req, res) => {
     try {
        // const rta = await sequelize.models.modelOrders.findAll();
        const rta = await sequelize.query(
-        `SELECT T0.[ID_order]
+        `	SELECT T0.[ID_order]
                 ,T0.ID_detalle
 				,T3.Tipo_cedula
                 ,T0.Cedula
@@ -15,14 +15,52 @@ const getMasterOrder = async (req, res) => {
                 ,T1.Sucursal
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
-                ,T2.Status 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
                 ,CAST(T0.Create_date AS DATE) Create_date
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL 
         ORDER BY T0.[ID_order] DESC`);
+
+        if(rta){
+            res.status(201)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        }   
+    } catch (e) {
+        console.log('Error', e);
+    }
+};
+const getMasterOrderForStore = async (req, res) => {
+    try {
+        const id_sucursal = req.params.id_sucursal
+       const rta = await sequelize.query(
+        `	SELECT T0.[ID_order]
+                ,T0.ID_detalle
+				,T3.Tipo_cedula
+                ,T0.Cedula
+                ,T3.Nombre Cliente
+                ,T3.Razon_comercial
+                ,T1.Sucursal
+                ,T0.[User_crea]
+                ,T0.[User_asing] Asesor 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
+                ,CAST(T0.Create_date AS DATE) Create_date
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.ID_sucursal = '${id_sucursal}'
+        ORDER BY T0.[ID_order] DESC`);
+
         if(rta){
             res.status(201)
             res.json(rta)
@@ -68,6 +106,7 @@ const filterMasterOrder = async (req, res) => {
             `SELECT DISTINCT    
                 T0.[ID_order]
                 ,T0.ID_detalle
+                ,T3.Tipo_cedula
                 ,T0.Cedula
                 ,T3.Tipo_cliente
                 ,T3.Email
@@ -94,7 +133,7 @@ const filterMasterOrder = async (req, res) => {
                 ,t0.[Cedula_autoriza]
                 ,t0.[Telefono_autoriza]
                 ,T3.Tipo_cedula_rep
-                ,T3.Cedula_rep	
+                ,T3.Cedula_rep
                 ,T3.Nombre_rep	
                 ,T3.Email_rep	
                 ,T3.Telefono_rep	
@@ -157,14 +196,13 @@ const createMasterOrderAndDetails = async (req, res) => {
             Tipo_cliente: data.tipo,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            Nombre_rep: data.nombreCompleto_rep,
+            Nombre_rep: data.Nombre_rep,
             Email_rep: data.email_rep,
-            Tipo_cedula_rep: data.tipo_cedula_rep,
-            Cedula_rep: data.cedulaUno_rep,
+            Tipo_cedula_rep: data.Tipo_cedula_rep,
+            Cedula_rep: data.cedula_rep,
             Direccion_rep: data.direccion_rep,
             Referencia_rep: data.referencia_rep,
-            Telefono_rep: data.telefonoUno_rep,      
-     
+            Telefono_rep: data.telefono_rep,           
         };
 
         // Crear un objeto con los datos del pedido
@@ -327,6 +365,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
         const idOrder = data.Id_Comanda
+        console.log(data)
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -349,8 +388,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Cedula_rep: data.cedula_rep,
             Direccion_rep: data.direccion_rep,
             Referencia_rep: data.referencia_rep,
-            Telefono_rep: data.telefono_rep,                
-        };
+            Telefono_rep: data.telefono_rep,               
+        }; 
 
         const UpdateOrder = {
             ID_detalle: data.Id_Comanda,
@@ -489,7 +528,8 @@ const filterMasterAsesor = async (req, res) => {
 const updateMasterAsesor = async (req, res) => {
     try {
         const data = {
-            User_asing: req.body.User_asing
+            User_asing: req.body.User_asing,
+            ID_status:req.body.ID_status
         }
 
         const idUser = req.params.id;
@@ -645,5 +685,6 @@ module.exports = {
     getMasterOrderDetails,
     createOrderDocument,
     filterOrderDetailsFiles,
-    deleteOrderDocument
+    deleteOrderDocument,
+    getMasterOrderForStore
 };

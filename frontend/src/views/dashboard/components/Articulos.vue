@@ -321,7 +321,6 @@ async function handleProductUpdate() {
                 <template v-slot:item="{ props, item }">
                     <!-- GENERA ERROR EN LA TERMINAR, PERO NO EN CONSOLA -->
                     <v-list-item v-bind="props" :subtitle="item.raw.title"></v-list-item>
-                    <v-list-item v-bind="props" ></v-list-item>
                 </template>
 
             </v-autocomplete>
