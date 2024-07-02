@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useUserRol } from '@/composables/users'
 import { useGetStatus } from '@/composables/status'
+import { io } from 'socket.io-client';
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 const search = ref('')
@@ -13,8 +14,25 @@ const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const infoAsesores = ref();
 const infogetStatus = ref()
 
+
+const socket = io('http://localhost:3003', {
+  reconnection: false // Deshabilitar la reconexión automática
+});
+
+// Listen for events from the server
+socket.on('get-master-order', (rta) => {
+  console.log('Datos actualizados:', rta);
+  if (Array.isArray(rta)) {
+    info.value = rta[0];
+   // console.log(info.value);
+  } else {
+    console.error('La respuesta no es un array:', rta);
+  }
+});
+
 //////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 let USER_ROL = ref<number>(0) //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0) //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -38,25 +56,25 @@ const STATUSPRINTER = [4] //ESTE ARREGLO INDICA EN QUE ESTATUS DEBE ESTAR LA COM
 const { dataUser } = useUserRol(USER_ROL.value) // buscamos los datos para el tipo de ROL DE USUARIO
 
 const getOrders = async () => {
-  loadingInfo.value = true
-  try {
-    const url = `${baseUrl}/masterOrder`
-    const { data } = await axios.get(url);
-    const dataFilterStatus: any = data[0].filter((item: Table_Orders) => {
-      if (ROLFILTERUSER.includes(USER_ROL.value)) { //FILTRAMOS POR ASESORES ASIGNADOS
-        return dataUser.status.includes(item.ID_status) &&
-          item.User_asing.toString() === USER.value.toString();
-      } else {//FILTRAMOS SOLO POR ESTATUS
-        return dataUser.status.includes(item.ID_status);
-      }
-    });
+  // loadingInfo.value = true
+  // try {
+  //   const url = `${baseUrl}/masterOrder`
+  //   const { data } = await axios.get(url);
+  //   const dataFilterStatus: any = data[0].filter((item: Table_Orders) => {
+  //     if (ROLFILTERUSER.includes(USER_ROL.value)) { //FILTRAMOS POR ASESORES ASIGNADOS
+  //       return dataUser.status.includes(item.ID_status) &&
+  //         item.User_asing.toString() === USER.value.toString();
+  //     } else {//FILTRAMOS SOLO POR ESTATUS
+  //       return dataUser.status.includes(item.ID_status);
+  //     }
+  //   });
 
-    info.value = dataFilterStatus
+  //   info.value = dataFilterStatus
 
-  } catch (error) {
-    console.log(error)
-  }
-  loadingInfo.value = false
+  // } catch (error) {
+  //   console.log(error)
+  // }
+  // loadingInfo.value = false
 }
 
 interface getDataComanda {
@@ -122,12 +140,19 @@ const getNameAsesor = (id: number) => {
 
 onMounted(async () => {
 
-  await getOrders();
+  //await getOrders();
   await getAsesores();
   const { status } = await useGetStatus()
   infogetStatus.value = status
 
 });
+
+
+onUnmounted(() => {
+  socket.disconnect();
+  console.log('Socket desconectado');
+});
+
 
 const headers = ref([
   { title: 'COMANDA', align: 'start', key: 'ID_order' },

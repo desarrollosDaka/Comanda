@@ -1,5 +1,6 @@
 const sequelize = require("../config/conexion");
 const fs = require('fs').promises;
+const io = require('../socket.js'); 
 
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
@@ -27,12 +28,11 @@ const getMasterOrder = async (req, res) => {
         ORDER BY T0.[ID_order] DESC`);
 
         if(rta){
-            res.status(201)
-            res.json(rta)
-        }else{
-            res.status(404)
-            res.json({msj: 'Error en la consulta'})
-        }   
+            return rta;
+         }else{
+             res.status(404)
+             res.json({msj: 'Error en la consulta'})
+         }  
     } catch (e) {
         console.log('Error', e);
     }
@@ -507,8 +507,8 @@ const deleteOrderDocument = async (req, res) => {
 const filterMasterAsesor = async (req, res) => {
     try {
         const rta = await sequelize.query(
-            `SELECT [ID_user]  
-                    ,[Nombre]
+            `SELECT [ID_user]   
+                   ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             FROM [COMANDA_TEST].[dbo].[MASTER_USER]
             WHERE Nombre_rol = 'Asesor'`);
         if(rta){ 
