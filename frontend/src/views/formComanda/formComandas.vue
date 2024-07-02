@@ -481,6 +481,24 @@ function handleSelectImages(items: any) {
     </v-row>
 
     <v-row>
+      <v-col cols="12" md="4">
+        <v-label for="tipo">Tipo</v-label>
+        <v-autocomplete
+          id="tipo"
+          placeholder="Tipo de "
+          class="mt-2 my-input"
+          clearable
+          chips
+          :items="['NATURAL', 'JURIDICO']"
+          variant="outlined"
+          :rules="tipoRules"
+          aria-label="Name Documents"
+          color="primary"
+          v-model="tipo"
+        >
+        </v-autocomplete>
+      </v-col>
+
       <v-col cols="12" md="2">
         <v-label for="tipoDocumento"></v-label>
         <v-autocomplete
@@ -511,24 +529,6 @@ function handleSelectImages(items: any) {
           color="primary"
         >
         </v-text-field>
-      </v-col>
-
-      <v-col cols="12" md="4">
-        <v-label for="tipo">Tipo</v-label>
-        <v-autocomplete
-          id="tipo"
-          placeholder="Tipo de Proceso"
-          class="mt-2 my-input"
-          clearable
-          chips
-          :items="['NATURAL', 'JURIDICO']"
-          variant="outlined"
-          :rules="tipoRules"
-          aria-label="Name Documents"
-          color="primary"
-          v-model="tipo"
-        >
-        </v-autocomplete>
       </v-col>
     </v-row>
 
@@ -637,7 +637,7 @@ function handleSelectImages(items: any) {
           class="mt-2 my-input"
           clearable
           chips
-          :items="info_estado"
+          :items="info_estado" 
           variant="outlined"
           :rules="estadosRules"
           aria-label="Name Documents"
@@ -847,7 +847,7 @@ function handleSelectImages(items: any) {
         </v-autocomplete>
       </v-col>
     </v-row>
-    <v-row v-if="ID_Delivery === 1 || ID_Delivery === 2 || ID_Delivery === 4">
+    <v-row v-if="ID_Delivery === 1  || ID_Delivery === 4">
       <v-col cols="12" md="6">
         <v-label for="direccion">Direccion completa</v-label>
         <v-text-field
