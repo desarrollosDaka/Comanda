@@ -509,8 +509,8 @@ const deleteOrderDocument = async (req, res) => {
 const filterMasterAsesor = async (req, res) => {
     try {
         const rta = await sequelize.query(
-            `SELECT [ID_user]  
-                    ,[Nombre]
+            `SELECT [ID_user]   
+                   ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             FROM [COMANDA_TEST].[dbo].[MASTER_USER]
             WHERE Nombre_rol = 'Asesor'`);
         if(rta){ 
