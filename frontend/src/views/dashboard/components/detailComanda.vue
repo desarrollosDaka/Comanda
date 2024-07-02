@@ -226,256 +226,205 @@ const asignAsesor = async () => {
         }
       });
     }
-  } catch (error) {
-    toast.error(`Error, al momento de guardar el asesor ${error}`, {
-      position: toast.POSITION.TOP_CENTER,
-      transition: toast.TRANSITIONS.ZOOM,
-      autoClose: 4000,
-    });
+
+}
+const getNameAsesor = (id: number) => {
+  if (infoAsesores && infoAsesores.value) {
+    const asesor = infoAsesores.value.find((item: any) => item.value == id).title;
+    return asesor;
   }
+  return null;
 };
+
 </script>
 
 <template>
-  <!-- informacion de la comanda -->
+    <!-- informacion de la comanda -->
 
-  <div class="card">
-    <div class="data">
-      <p>COMANDA #{{ id_orders }}</p>
-      <div class="range">
-        <div class="fill"></div>
-      </div>
+    <div class="card">
+        <div class="data">
+            <p>
+                COMANDA NRO: {{ id_orders }}
+            </p>
+
+            <div class="range">
+                <div class="fill">
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <v-row class="mb-0">
-    <v-col cols="12" md="4" class="px-10 py-5">
-      <h2>Datos del Cliente</h2>
-      <p><b>Cedula:</b> {{ cedulaUno }}</p>
-      <p><b>Tipo:</b> {{ tipo }}</p>
-      <p><b>Email:</b> {{ email }}</p>
-      <p><b>Cliente:</b> {{ nombreCompleto }}</p>
-      <p><b>Estados:</b> {{ estado }}</p>
-      <p><b>Ciudad:</b> {{ ciudad }}</p>
-      <p><b>Municipio:</b> {{ municipio }}</p>
-    </v-col>
-    <v-col cols="12" md="4" class="px-10 py-5">
-      <h2>Datos de la comanda</h2>
-      <p><b>Origen:</b> {{ origen }}</p>
-      <p><b>Direccion Completa:</b> {{ direccion }}</p>
-      <p><b>Referencia:</b> {{ referencia }}</p>
-      <p><b>Delivery:</b> {{ ID_delivery }}</p>
-      <p>
-        <b>Autorizado para recibir:</b>
-        <v-chip
-          variant="tonal"
-          color="warning"
-          size="x-small"
-          prepend-icon="mdi-timer-sand"
-          v-if="autorizado === true"
-        >
-          <p class="mb-0">Si</p>
-        </v-chip>
+    <v-row class="mb-0">
+        <v-col cols="12" md="4" class="px-10 py-5">
+            <h2>Datos del Cliente</h2>
+            <p><b>Cedula:</b> {{ cedulaUno }}</p>
+            <p><b>Tipo:</b> {{ tipo }}</p>
+            <p><b>Email:</b> {{ email }}</p>
+            <p><b>Cliente:</b> {{ nombreCompleto }}</p>
+            <p><b>Estados:</b> {{ estado }}</p>
+            <p><b>Ciudad:</b> {{ ciudad }}</p>
+            <p><b>Municipio:</b> {{ municipio }}</p>
+        </v-col>
+        <v-col cols="12" md="4" class="px-10 py-5">
+            <h2>Datos de la comanda</h2>
+            <p><b>Origen:</b> {{ origen }}</p>
+            <p><b>Direccion Completa:</b> {{ direccion }}</p>
+            <p><b>Referencia:</b> {{ referencia }}</p>
+            <p><b>Delivery:</b> {{ ID_delivery }}</p>
+            <p><b>Autorizado para recibir:</b>
+                <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
+                    v-if="autorizado === true">
+                    <p class="mb-0">Si</p>
+                </v-chip>
 
-        <v-chip
-          variant="tonal"
-          color="error"
-          size="x-small"
-          prepend-icon="mdi-timer-sand"
-          v-else
-        >
-          <p class="mb-0">No</p>
-        </v-chip>
-      </p>
-      <p><b>Cedula/Rif:</b> {{ cedulaDos }}</p>
-      <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)">
-        <b>medio de pago:</b> {{ ID_pago }}
-      </p>
-    </v-col>
-    <v-col cols="12" md="4" class="px-10 py-5">
-      <h2>Estatus</h2>
-      <p><b>Status de comanda:</b> {{ ID_status }}</p>
-      <p><b>Asesor:</b> {{ User_asing }}</p>
-    </v-col>
-  </v-row>
-
-  <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0">
-    <!-- productos de la comanda -->
-    <v-row>
-      <v-col cols="12" md="12">
-        <v-table
-          class="bordered-table"
-          hover
-          density="comfortable"
-          rounded="lg"
-        >
-          <thead class="bg-containerBg">
-            <tr class="bg-containerBg">
-              <th
-                class="text-left text-caption font-weight-bold text-uppercase"
-              >
-                Producto
-              </th>
-              <th
-                class="text-left text-caption font-weight-bold text-uppercase"
-              >
-                SKU
-              </th>
-              <th
-                class="text-right text-caption font-weight-bold text-uppercase"
-                style="min-width: 100px"
-              >
-                Cantidad
-              </th>
-              <th
-                class="text-left text-caption font-weight-bold text-uppercase"
-              >
-                Precio
-              </th>
-              <th
-                class="text-right text-caption font-weight-bold text-uppercase"
-              >
-                Sub Total
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="item in info">
-              <td class="py-3 text-secondary">{{ item["Producto"] }}</td>
-              <td class="py-3">{{ item["ID_producto"] }}</td>
-              <td class="py-3 text-right" style="min-width: 100px">
-                <span>{{ item["Unidades"] }}</span>
-              </td>
-              <td class="py-3">{{ item["Precio"] }}$</td>
-              <td class="py-3 text-right" style="min-width: 100px">
-                {{ item["Subtotal"] }}$
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-col>
+                <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>
+                    <p class="mb-0">No</p>
+                </v-chip>
+            </p>
+            <p><b>Cedula/Rif:</b> {{ cedulaDos }}</p>
+            <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
+        </v-col>
+        <v-col cols="12" md="4" class="px-10 py-5">
+            <h2>Estatus</h2>
+            <p><b>Status de comanda:</b> {{ ID_status }}</p>
+            <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
+        </v-col>
     </v-row>
-  </UiTitleCard>
 
-  <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-  <UploadImages
-    v-if="USER_ROL === 6 || USER_ROL === 8"
-    @isSelectImages="handleSelectImages"
-    :ID_detalle="id"
-  />
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0">
+        <!-- productos de la comanda -->
+        <v-row>
+            <v-col cols="12" md="12">
+                <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+                    <thead class="bg-containerBg">
+                        <tr class="bg-containerBg">
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+                            <th class="text-right text-caption font-weight-bold text-uppercase"
+                                style="min-width: 100px">Cantidad</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+                            <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
+                        </tr>
+                    </thead>
 
-  <v-row class="mb-0 mt-5">
-    <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
-      <v-label text="Asignar Asesor"></v-label>
-      <br />
-      <v-autocomplete
-        id="tipo"
-        placeholder="Asesores de ventas"
-        clearable
-        chips
-        :items="infoAsesores"
-        variant="outlined"
-        class="mt-2"
-        color="primary"
-        v-model="selectedAsesor"
-      ></v-autocomplete>
-    </v-col>
-  </v-row>
+                    <tbody>
+                        <tr v-for="item in info">
+                            <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+                            <td class="py-3">{{ item['ID_producto'] }} </td>
+                            <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
+                            </td>
+                            <td class="py-3">{{ item['Precio'] }}$</td>
+                            <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
+                        </tr>
+                    </tbody>
+                </v-table>
+            </v-col>
+        </v-row>
+    </UiTitleCard>
 
-  <v-container>
-    <v-row align="center" justify="start">
-      <v-col cols="auto">
-        <v-btn
-          :disabled="ID_status == 2"
-          append-icon="mdi-check-all"
-          variant="elevated"
-          color="primary"
-          @click="USER_ROL === 4 ? asignAsesor() : updateData()"
-        >
-          {{ dataUser.msgButton }}
-        </v-btn>
-      </v-col>
+    <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
+    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" 
+    @isSelectImages=handleSelectImages 
+    :ID_detalle=id 
+    :deleteImageUpdate=false
+    />
 
-      <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
-        <v-btn
-          @click="dialog = true"
-          append-icon="mdi-check-all"
-          variant="elevated"
-          color="primary"
-        >
-          INGRESAR NUMERO DE FACTURA
-        </v-btn>
-      </v-col>
+    <v-row class="mb-0 mt-5">
+
+        <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
+            <v-label text="Asignar Asesor"></v-label>
+            <br>
+            <v-autocomplete id="tipo" placeholder="Asesores de ventas" clearable chips :items="infoAsesores"
+                variant="outlined" class="mt-2" color="primary" v-model="selectedAsesor"></v-autocomplete>
+        </v-col>
+
     </v-row>
-  </v-container>
 
-  <v-dialog v-model="dialog" width="auto">
-    <v-card
-      max-width="400"
-      prepend-icon="mdi-counter"
-      title="Numero de Factura"
-    >
-      <v-text-field
-        ref="zip"
-        v-model="numFactura"
-        :rules="[() => !!numFactura || 'Numero factura es requerido']"
-        placeholder="79938"
-        required
-      ></v-text-field>
+    <v-container>
+        <v-row align="center" justify="start">
 
-      <template v-slot:actions>
-        <v-btn class="ms-auto" text="Ok" @click="dialog = false"></v-btn>
-      </template>
-    </v-card>
-  </v-dialog>
+            <v-col cols="auto">
+                <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
+                    @click="USER_ROL === 4 ? asignAsesor() : updateData()">
+                    {{ dataUser.msgButton }}
+
+                </v-btn>
+            </v-col>
+
+            <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
+                <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
+                    INGRESAR NUMERO DE FACTURA
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-container>
+
+
+
+    <v-dialog v-model="dialog" width="auto">
+        <v-card max-width="400" prepend-icon="mdi-counter" title="Numero de Factura">
+
+            <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Numero factura es requerido']"
+                placeholder="79938" required></v-text-field>
+           
+
+            <template v-slot:actions>
+                <v-btn class="ms-auto" text="Ok" @click="dialog = false"></v-btn>
+            </template>
+        </v-card>
+
+    </v-dialog>
+
+
+
 </template>
 
 <style>
+
 thead {
-  background-color: rgb(250, 250, 250);
+    background-color: rgb(250, 250, 250);
 }
 
 .card {
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 5px 5px #323232;
-  border: 2px solid #323232;
-  margin-bottom: 50px;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 5px 5px #323232;
+    border: 2px solid #323232;
+    margin-bottom: 50px;
 }
 
 .data {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .data p {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  color: #1f2937;
-  font-size: 2.25rem;
-  line-height: 2.5rem;
-  font-weight: 700;
-  text-align: left;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #1F2937;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    text-align: left;
 }
 
 .data .range {
-  position: relative;
-  background-color: #e5e7eb;
-  width: 100%;
-  height: 0.5rem;
-  border-radius: 0.25rem;
+    position: relative;
+    background-color: #E5E7EB;
+    width: 100%;
+    height: 0.5rem;
+    border-radius: 0.25rem;
 }
 
 .data .range .fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #143e90;
-  width: 76%;
-  height: 100%;
-  border-radius: 0.25rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #143E90;
+    width: 76%;
+    height: 100%;
+    border-radius: 0.25rem;
 }
 </style>
