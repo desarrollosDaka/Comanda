@@ -227,7 +227,15 @@ const asignAsesor = async () => {
       });
     }
 
+  } catch (error) {
+        toast.error(`Error, al momento de guardar el asesor ${error}`, {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000
+        });
+    }
 }
+
 const getNameAsesor = (id: number) => {
   if (infoAsesores && infoAsesores.value) {
     const asesor = infoAsesores.value.find((item: any) => item.value == id).title;
