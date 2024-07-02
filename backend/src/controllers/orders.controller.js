@@ -1,5 +1,6 @@
 const sequelize = require("../config/conexion");
 const fs = require('fs').promises;
+const io = require('../socket.js'); 
 
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
@@ -27,12 +28,11 @@ const getMasterOrder = async (req, res) => {
         ORDER BY T0.[ID_order] DESC`);
 
         if(rta){
-            res.status(201)
-            res.json(rta)
-        }else{
-            res.status(404)
-            res.json({msj: 'Error en la consulta'})
-        }   
+            return rta;
+         }else{
+             res.status(404)
+             res.json({msj: 'Error en la consulta'})
+         }  
     } catch (e) {
         console.log('Error', e);
     }
@@ -214,9 +214,8 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
-            User_crea: data.user_crea, 
-            ID_rol: data.ID_rol,
-            // User_rol: 'Admin',
+            User_crea: data.user_crea,
+            ID_rol: data.ID_rol,     
             ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
@@ -395,12 +394,13 @@ const updateMasterOrderAndDetails = async (req, res) => {
         }; 
 
         const UpdateOrder = {
-           ID_detalle: data.Id_Comanda,
+            ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
             ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
             ID_pago: data.ID_pago,
-            User_crea: data.user_crea,
+            //User_crea: data.user_crea,
+            User_mod: data.user_mod,
             ID_rol: data.ID_rol,
             //User_rol: 'Admin',
             //ID_status: data.ID_status,

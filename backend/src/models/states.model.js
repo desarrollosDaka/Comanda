@@ -14,6 +14,7 @@ const masterStatesSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   }
+
 };
 
 class MasterStates extends Model {
@@ -28,7 +29,7 @@ class MasterStates extends Model {
       modelName: modelName,
       createdAt: "Create_date",
       updatedAt: "Update_date"
-    };    
+    };
   }
 }
 

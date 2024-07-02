@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2'
 import axios from 'axios';
-import { shallowRef, ref, onMounted } from 'vue';
+import { shallowRef, ref, onMounted, onUnmounted } from 'vue';
+import { io } from 'socket.io-client';
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 
@@ -15,6 +16,24 @@ const selectedMotivo = ref()
 const idDocuments = ref('')
 const estatus = ref()
 
+const socket = io('http://localhost:3003', {
+  reconnection: false // Deshabilitar la reconexión automática
+});
+
+
+
+
+// Listen for events from the server
+socket.on('get-master-order', (rta) => {
+  console.log('Datos actualizados:', rta);
+  if (Array.isArray(rta)) {
+    info.value = rta[0];
+    //console.log(info.value);
+  } else {
+    console.error('La respuesta no es un array:', rta);
+  }
+});
+
 let deleteItem = ref({
   ID_order: ''
 })
@@ -25,15 +44,15 @@ const editItem = (item: any) => {
 }
 
 const getOrders = async () => {
-    loadingInfo.value = true
-    try{
-        const url = `${baseUrl}/masterOrder`
-        const {data} = await axios.get(url);
-        info.value =  data[0]
-    } catch(error){
-        console.log(error)
-    }
-    loadingInfo.value = false
+    // loadingInfo.value = true
+    // try{
+    //     const url = `${baseUrl}/masterOrder`
+    //     const {data} = await axios.get(url);
+    //     info.value =  data[0]
+    // } catch(error){
+    //     console.log(error)
+    // }
+    // loadingInfo.value = false
 }
 
 const deleteDocuments = async (id:string) => {
@@ -51,7 +70,7 @@ const deleteDocuments = async (id:string) => {
         icon: "success"
       }).then((result) => {
           if(result.isConfirmed) {
-            location.reload();
+         //   location.reload();
           }
       });
     }
@@ -61,8 +80,12 @@ const deleteDocuments = async (id:string) => {
     }
 }
 
-onMounted( async () => {
-    await getOrders();
+// onMounted( async () => {
+//    // await getOrders();
+// });
+onUnmounted(() => {
+  socket.disconnect();
+  console.log('Socket desconectado');
 });
 
 const headers = ref([
@@ -74,6 +97,7 @@ const headers = ref([
   {title: 'STATUS', key: 'Status'},
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);
+
 
 </script>
  
