@@ -13,18 +13,14 @@ const masterStatesSchema = {
   Nombre: {
     allowNull: false,
     type: DataTypes.STRING(100),
-  },
-  Region: {
-    allowNull: true,
-    type: DataTypes.INTEGER,
-  },
+  }
 
 };
 
 class MasterStates extends Model {
   static associate() {
     // associate
-  }  
+  }
 
   static config(sequelize) {
     return {
@@ -33,7 +29,7 @@ class MasterStates extends Model {
       modelName: modelName,
       createdAt: "Create_date",
       updatedAt: "Update_date"
-    };    
+    };
   }
 }
 
