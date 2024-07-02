@@ -253,6 +253,13 @@ const asignAsesor = async () => {
     }
 
 }
+const getNameAsesor = (id: number) => {
+  if (infoAsesores && infoAsesores.value) {
+    const asesor = infoAsesores.value.find((item: any) => item.value == id).title;
+    return asesor;
+  }
+  return null;
+};
 
 </script>
 
@@ -305,7 +312,7 @@ const asignAsesor = async () => {
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Estatus</h2>
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
-            <p><b>Asesor:</b> {{ User_asing }}</p>
+            <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
         </v-col>
     </v-row>
 
@@ -341,7 +348,11 @@ const asignAsesor = async () => {
     </UiTitleCard>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" @isSelectImages=handleSelectImages :ID_detalle=id />
+    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" 
+    @isSelectImages=handleSelectImages 
+    :ID_detalle=id 
+    :deleteImageUpdate=false
+    />
 
     <v-row class="mb-0 mt-5">
 
