@@ -28,7 +28,7 @@ socket.on('get-master-order', (rta) => {
   console.log('Datos actualizados:', rta);
   if (Array.isArray(rta)) {
     info.value = rta[0];
-    //console.log(info.value);
+    console.log(info.value);
   } else {
     console.error('La respuesta no es un array:', rta);
   }
@@ -68,10 +68,10 @@ const deleteDocuments = async (id:string) => {
         title: "Comanda eliminada",
         text: "Se acaba de eliminar una comanda",
         icon: "success"
-      }).then((result) => {
-          if(result.isConfirmed) {
-         //   location.reload();
-          }
+      // }).then((result) => {
+      //     if(result.isConfirmed) {
+      //      //location.reload();
+      //     }
       });
     }
         

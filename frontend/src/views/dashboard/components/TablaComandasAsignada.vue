@@ -24,7 +24,7 @@ socket.on('get-master-order', (rta) => {
   console.log('Datos actualizados:', rta);
   if (Array.isArray(rta)) {
     info.value = rta[0];
-   // console.log(info.value);
+    console.log(info.value);
   } else {
     console.error('La respuesta no es un array:', rta);
   }
