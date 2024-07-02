@@ -23,8 +23,7 @@ const getMasterUser = async (req, res) => {
           INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.Id_sucursal = T1.ID_sucursal
           WHERE [Delete] = 0 OR  [Delete] IS NULL`);
         if(rta){
-            res.status(201)
-            res.json(rta)
+           return rta;
         }else{
             res.status(404)
             res.json({msj: 'Error en la consulta'})
