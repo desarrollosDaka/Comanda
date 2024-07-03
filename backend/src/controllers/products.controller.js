@@ -4,16 +4,17 @@ const sequelize = require("../config/conexion");
 const getMasterProducts = async (req, res) => {
     try {
         //const rta = await sequelize.models.modelProducts_replica.findAll();
+        //
         const rta = await sequelize.query(
-            `SELECT  [ID_producto]
-            ,[Producto]
-            ,[Serial]
-            ,[Unidades]
-            ,[Precio]
-            ,[create_date]
-            ,[update_date]
-        FROM [COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]
-        where [Precio] != 0`);
+            `SELECT [ID_producto]
+                ,[Producto]
+                ,[Serial]
+                ,[Unidades]
+                ,[Precio]
+                ,[create_date]
+                ,[update_date]
+            FROM [COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]
+            where [Precio] != 0`);
         if(rta){
             res.status(201)
             res.json(rta)
@@ -40,6 +41,7 @@ const filterMasterProducts = async (req, res) => {
         if(rta){
             res.status(200)
             res.json(rta)
+
         }else{
             res.status(404)
             res.json({msj: 'Error en la consulta'})
