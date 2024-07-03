@@ -179,8 +179,6 @@ const filterMasterOrder = async (req, res) => {
 const createMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
-
-        console.log(data);
 0
         // Crear un objeto con los datos del cliente
         const newClients = {
@@ -292,7 +290,6 @@ const filterOrderDetails = async (req, res) => {
             res.status(404)
             res.json({msj: 'Error en la consulta'})
         } 
-
     } catch (e) {
         console.log('Error', e);
     }
