@@ -108,7 +108,6 @@ const deleteMasterUser = async (req, res) => {
 module.exports = {
     getMasterUser,
     filterMasterUser,
-   
     updateMasterUser,
     deleteMasterUser
 }; 
