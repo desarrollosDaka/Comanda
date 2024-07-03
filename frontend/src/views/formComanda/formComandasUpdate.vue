@@ -1018,6 +1018,7 @@ onMounted(async () => {
           aria-label="pago"
           color="primary"
           v-model="ID_pago"
+          multiple
         ></v-autocomplete>
       </v-col>
 
