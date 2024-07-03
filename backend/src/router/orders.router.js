@@ -48,7 +48,6 @@ const {
 // Select Order
 router.get("/masterOrder", getMasterOrder);
 
-
 // Filter ORDER + CLIENT
 router.get("/filterOrder/:id", filterMasterOrder);
 

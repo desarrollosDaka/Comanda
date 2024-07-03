@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import imgUrl from '@/assets/images/archivoPdf.png'
+import { useRouter, useRoute } from 'vue-router'
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 
@@ -13,12 +14,21 @@ const UPDATE_METHOD = 'update'
 const DOCUMENT_PDF = 'pdf'
 const URLIMAGEPDF = imgUrl
 
+const route = useRoute()
+
 let route_upload = ref()
+const sort = route?.name;
+
 const props = defineProps({
   ID_detalle: {
     type: String as () => string,
     required: false,
   }, //Id de la Comanda
+
+  deleteImageUpdate:{
+    type: Boolean as () => boolean,
+    required: false,
+  },
 })
 
 
@@ -99,7 +109,7 @@ async function viewImages(event: Event) {
 
   emits('isSelectImages', document.value);
 }
-
+ 
 
 
 async function encodeFileAsBase64URL(file: File): Promise<string> {
@@ -117,7 +127,7 @@ function typeValue(index: number, valor: string): void {
 
 async function deldata(data: any, index: number) {
 
-
+  if(!props?.deleteImageUpdate && data.mode ==='update' && sort ==='viewProcessComandas') return
 
   if (data.Id > 0) { // SI LA DATA VIENE DEL FORMULARIO DE ACTUALIZAR
 

@@ -48,6 +48,10 @@ const socket = io("http://localhost:3003", {
 });
 
 
+// Emitir evento para solicitar datos del servidor
+const requestMasterOrder = () => {
+  socket.emit('request-master-order');
+};
 
 
 // Listen for events from the server
@@ -57,7 +61,7 @@ socket.on("get-master-order", (rta: any) => {
   if (Array.isArray(rta)) {
     info.value = rta[0];
   } else {
-    console.error("La respuesta no es un array:", rta);
+    console.error('La respuesta no es un array:', rta);
   }
   loadingInfo.value = false;
 });
@@ -106,6 +110,11 @@ const deleteDocuments = async (id: string) => {
         title: "Comanda eliminada",
         text: "Se acaba de eliminar una comanda",
         icon: "success",
+      }).then((result) => {
+          if(result.isConfirmed) {
+           //location.reload();
+           requestMasterOrder();
+          }
       });
     }
   } catch (error) {
@@ -113,9 +122,11 @@ const deleteDocuments = async (id: string) => {
   }
 };
 
-// onMounted( async () => {
-//    // await getOrders();
-// });
+// Emitir evento al montar el componente
+onMounted(() => {
+  requestMasterOrder();
+});
+
 onUnmounted(() => {
   socket.disconnect();
   console.log("Socket desconectado");
