@@ -95,6 +95,18 @@ const masterClientsSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
+  ID_state_rep: {
+    allowNull: true,
+    type: DataTypes.INTEGER,
+  },
+  ID_city_rep: {
+    allowNull: true,
+    type: DataTypes.INTEGER,
+  },
+  ID_municipio_rep: {
+    allowNull: true,
+    type: DataTypes.INTEGER,
+  },
   Delete: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
