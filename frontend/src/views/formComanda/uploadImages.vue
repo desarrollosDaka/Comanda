@@ -9,6 +9,7 @@ import { useRouter, useRoute } from 'vue-router'
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 
+
 const INSERT_METHOD = 'insert'
 const UPDATE_METHOD = 'update'
 const DOCUMENT_PDF = 'pdf'
@@ -25,7 +26,7 @@ const props = defineProps({
     required: false,
   }, //Id de la Comanda
 
-  deleteImageUpdate:{
+  deleteImageUpdate: {
     type: Boolean as () => boolean,
     required: false,
   },
@@ -70,14 +71,14 @@ interface Documento {
   mode: string;
   disabled: boolean;
   Id: number;
-  typefile:string | undefined;
+  typefile: string | undefined;
 }
 
 interface DocumentData {
   File: string,
   Type_File: string,
   ID_File: number,
-  Type_File_Document:string
+  Type_File_Document: string
 }
 
 
@@ -89,27 +90,27 @@ const tipoRules = ref([
 ]);
 
 async function viewImages(event: Event) {
-  
+
   const target = event.target as HTMLInputElement;
-  
+
   if (!target.files) return;
 
   for (const file of target.files) {
 
     if (!validadPropertyImage(file)) {
-  
+
       break;
     }
 
     const base64URL = await encodeFileAsBase64URL(file);
-    const extension =file.name.split('.').pop();
-    document.value.push({ imagen: base64URL, file, type: null, mode: INSERT_METHOD, disabled: false, Id: 0 , typefile:extension});
+    const extension = file.name.split('.').pop();
+    document.value.push({ imagen: base64URL, file, type: null, mode: INSERT_METHOD, disabled: false, Id: 0, typefile: extension });
   }
 
 
   emits('isSelectImages', document.value);
 }
- 
+
 
 
 async function encodeFileAsBase64URL(file: File): Promise<string> {
@@ -127,7 +128,7 @@ function typeValue(index: number, valor: string): void {
 
 async function deldata(data: any, index: number) {
 
-  if(!props?.deleteImageUpdate && data.mode ==='update' && sort ==='viewProcessComandas') return
+  if (!props?.deleteImageUpdate && data.mode === 'update' && sort === 'viewProcessComandas') return
 
   if (data.Id > 0) { // SI LA DATA VIENE DEL FORMULARIO DE ACTUALIZAR
 
@@ -152,7 +153,7 @@ async function deldata(data: any, index: number) {
         }
       }
     });
-  }else{
+  } else {
 
     document.value.splice(index, 1);
   }
@@ -160,85 +161,116 @@ async function deldata(data: any, index: number) {
 }
 
 
-function validadPropertyImage(file:File) {
+function validadPropertyImage(file: File) {
 
-    const allowedTypes=["application/pdf","application/docx","application/txt","image/jpg","image/jpeg","image/png"];
-    const allowedSize = 52428800; //MAX 5MB
+  const allowedTypes = ["application/pdf", "application/docx", "application/txt", "image/jpg", "image/jpeg", "image/png"];
+  const allowedSize = 52428800; //MAX 5MB
 
-    if (file?.size > allowedSize) {
-      
-      toast.error("Error. El peso del archivo no puede superar mas de 5Mb", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000,
-            theme: 'colored',
-            toastStyle: {
-                fontSize: '16px',
-                opacity: '1',
-            },
-        });
+  if (file?.size > allowedSize) {
 
-        return false
-    }
+    toast.error("Error. El peso del archivo no puede superar mas de 5Mb", {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+      theme: 'colored',
+      toastStyle: {
+        fontSize: '16px',
+        opacity: '1',
+      },
+    });
 
-    if (!allowedTypes.includes(file?.type)) {
+    return false
+  }
 
-      toast.error("Error. Solo se aceptan archivos con extensiones jpg - jpeg - png - pdf ", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000,
-            theme: 'colored',
-            toastStyle: {
-                fontSize: '16px',
-                opacity: '1',
-            },
-        });
-        return false
-    }
+  if (!allowedTypes.includes(file?.type)) {
 
-    return true
+    toast.error("Error. Solo se aceptan archivos con extensiones jpg - jpeg - png - pdf ", {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+      theme: 'colored',
+      toastStyle: {
+        fontSize: '16px',
+        opacity: '1',
+      },
+    });
+    return false
+  }
+
+  return true
 }
 
 function validateDocuments(): boolean {
-    let isvalidate = true
+  let isvalidate = true
 
-    if (document.value.length <= 0) {
+  if (document.value.length <= 0) {
 
-        toast.error("Error: Debes seleccionar al menos un archivo", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000,
-            theme: 'colored',
-            toastStyle: {
-                fontSize: '16px',
-                opacity: '1',
-            },
-        });
+    toast.error("Error: Debes seleccionar al menos un archivo", {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+      theme: 'colored',
+      toastStyle: {
+        fontSize: '16px',
+        opacity: '1',
+      },
+    });
 
+    isvalidate = false
+
+  } else {
+
+    document.value.forEach(element => {
+      if (element.type === null) {
         isvalidate = false
+      }
 
-    } else {
+    });
 
-      document.value.forEach(element => {
-            if (element.type === null) {
-                isvalidate = false
-            }
+    if (!isvalidate)
+      toast.warn(`Error: Seleccione el tipo de documento`, {
+        delay: 1000,
+        position: toast.POSITION.BOTTOM_CENTER,
+        transition: toast.TRANSITIONS.ZOOM,
+        theme: 'dark',
+        autoClose: 3000
+      });
+  }
 
-        });
-
-        if (!isvalidate)
-            toast.warn(`Error: Seleccione el tipo de documento`, {
-                delay: 1000,
-                position: toast.POSITION.BOTTOM_CENTER,
-                transition: toast.TRANSITIONS.ZOOM,
-                theme: 'dark',
-                autoClose: 3000
-            });
-    }
-
-    return isvalidate
+  return isvalidate
 }
 
+async function downLoadArchive(param: Documento) {
+
+  //VERIFICAMOS QUE EL ARCHIVO QUE SE ESTA CONSULTADO ESTE GUARDADO EN EL SERVIDOR
+  if (param.mode === UPDATE_METHOD) {
+
+    try {
+      Swal.fire({
+        title: "<strong>DESCARGAR ARCHIVO</strong>",
+        icon: "info",
+        html: `Haga clic aqui para, <a href="${baseUrl}/download/${param.imagen}" target="_blank">descargar archivo</a>`,
+        showCloseButton: false,
+        showCancelButton: false,
+        focusConfirm: false,
+        confirmButtonText: `<i class="fa fa-thumbs-up"></i> Listo!`,
+        cancelButtonText: `<i class="fa fa-thumbs-down"></i>`,
+        cancelButtonAriaLabel: "Thumbs down"
+      });
+    } catch (error) {
+
+      toast.warn(`Error: No se pudo descargar el archivo`, {
+        delay: 1000,
+        position: toast.POSITION.BOTTOM_CENTER,
+        transition: toast.TRANSITIONS.ZOOM,
+        theme: 'dark',
+        autoClose: 3000
+      });
+
+    }
+  }
+
+}
 </script>
 
 <template>
@@ -263,11 +295,11 @@ function validateDocuments(): boolean {
 
       <v-sheet class="mx-auto" width="300">
 
-        <v-img 
-          :lazy-src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}${index * 5 + 10}` : `${document[index].imagen}${index * 5 + 10}` : `${URLIMAGEPDF}${index * 5 + 10}`"
-          :src=" data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : URLIMAGEPDF "
-          aspect-ratio="1" class="bg-grey-lighten-2 pl-2 " cover>
-       
+        <v-img
+          :lazy-src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : `${URLIMAGEPDF}`"
+          :src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : URLIMAGEPDF"
+          aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
+
           <!-- ICONO DE ELIMINAR -->
           <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline"
             color="error"></v-btn>
@@ -279,16 +311,17 @@ function validateDocuments(): boolean {
           </template>
         </v-img>
 
-        <v-col cols="12" md="12">
-
-          <v-select :id="'tipo' + index" placeholder="Tipo de archivo" :disabled="data.disabled" class="mt-2" clearable
-            chips :items="['CEDULA', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA']" density="compact"
-            label="Indique el tipo de documento" variant="outlined" :rules="tipoRules"
-            :aria-label="'TipoDocuments' + index" color="primary" theme="dark" with-background :key="index"
-            v-model="document[index].type" :item-value="document[index].type"
-            @update:modelValue="typeValue(index, $event)">
-          </v-select>
-
+        <v-col cols="12" md="12" @click="downLoadArchive(data)" style="cursor:pointer;">
+          <div class="tooltip">
+            <div class="tooltiptext" v-if="data.mode === UPDATE_METHOD">Clic para descargar!</div>
+            <v-select :id="'tipo' + index" placeholder="Tipo de archivo" :disabled="data.disabled" class="mt-2"
+              clearable chips :items="['CEDULA', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA']"
+              density="compact" label="Indique el tipo de documento" variant="outlined" :rules="tipoRules"
+              :aria-label="'TipoDocuments' + index" color="primary" theme="dark" with-background :key="index"
+              v-model="document[index].type" :item-value="document[index].type"
+              @update:modelValue="typeValue(index, $event)">
+            </v-select>
+          </div>
         </v-col>
       </v-sheet>
     </v-col>
@@ -297,4 +330,43 @@ function validateDocuments(): boolean {
   </v-row>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+.tooltip {
+  position: relative;
+  cursor: pointer;
+  
+}
+
+.tooltip:hover .tooltiptext {
+ 
+  opacity: 1;
+}
+
+.tooltiptext {
+  width: 160px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -80px;
+}
+
+.tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+
+</style>
