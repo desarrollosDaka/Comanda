@@ -128,7 +128,6 @@ const filterMasterOrder = async (req, res) => {
                     ,T5.Nombre AS Ciudad
                     ,T6.ID_municipio 
                     ,T6.NOMBRE AS Municipio
-                    -- ,t0.[ID_pago]
                     ,T7.ID_pago
                     ,t0.[User_crea]
                     ,t0.[User_mod]
@@ -167,8 +166,7 @@ const filterMasterOrder = async (req, res) => {
             INNER JOIN [dbo].[MASTER_STATES] T4 ON T3.ID_state = T4.ID_states
             INNER JOIN [dbo].[MASTER_CITIES] T5 ON T3.ID_city = T5.ID_city
             INNER JOIN [dbo].[MASTER_MUNICIPALITY] T6 ON T3.ID_municipio = T6.ID_municipio
-            --INNER JOIN [dbo].[PAYMENT_METHODS] T7 ON T0.ID_pago = T7.ID_pago
-            LEFT JOIN  [dbo].[ORDERS_PAYMENT] T7 ON T7.ID_detalle = T0.ID_detalle
+            INNER JOIN [dbo].[ORDERS_PAYMENT] T7 ON T7.ID_detalle = T0.ID_detalle
             INNER JOIN [dbo].[MASTER_STATUS] T8 ON T0.ID_status = T8.ID_status
             INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
             WHERE T0.ID_detalle = '${id}'`
@@ -796,5 +794,6 @@ module.exports = {
     createOrderDocument,
     filterOrderDetailsFiles,
     deleteOrderDocument,
-    getMasterOrderForStore
+    getMasterOrderForStore,
+    download
 };
