@@ -53,8 +53,9 @@ const Nombre_rep = ref();
 const cedula_rep = ref();
 const email_rep = ref();
 const telefono_rep = ref();
-const direccion_rep = ref();
-const referencia_rep = ref();
+const estado_rep = ref();
+const ciudad_rep = ref();
+const municipio_rep = ref();
 
 const itemDocument = ref<Document[]>([]);
 
@@ -79,25 +80,34 @@ if (jsonFromLocalStorage !== null) {
 const origenRules = ref([
   (v: string) => !!v || "El origen del cliente es requerido",
 ]);
+
 const tipoRules = ref([
   (v: string) => !!v || "El tipo de cliente es requerido",
 ]);
+
 const emailRules = ref([
   (v: string) => !!v || "El email es requerido",
   (v: string) => /.+@.+\..+/.test(v) || "El email debe ser válido",
 ]);
+
 const CedulaUnoRules = ref([
   (v: string) => !!v || "La cedula/rif del cliente es requerido",
 ]);
+
 const nombreCompletoRules = ref([
   (v: string) => !!v || "El nombre del cliente es requerido",
 ]);
+
 const estadosRules = ref([(v: any) => !!v || "El estado es requerido"]);
+
 const municipioRules = ref([(v: any) => !!v || "El municipio es requerido"]);
+
 const ciudadRules = ref([(v: any) => !!v || "El ciudad es requerido"]);
+
 const direccionRules = ref([
   (v: string) => !!v || "La direccion completa es requerido",
 ]);
+
 const referenciaRules = ref([
   (v: string) => !!v || "La referencia del delivery es requerido",
 ]);
@@ -137,12 +147,25 @@ async function searchModel() {
 
     if (data) {
       tipo.value = data.Tipo_cliente;
+      tipoDocumento.value = data.Tipo_cedula;
       email.value = data.Email;
       telefonoUno.value = data.Telefono;
+      nombreCompleto.value = data.Nombre;
       nombreCompleto.value = data.Nombre;
       estado.value = data.ID_state;
       ciudad.value = data.ID_city;
       municipio.value = data.ID_municipio;
+      retencion.value = data.Retencion;
+      razonComercial.value = data.Razon_comercial;
+      porcentaje.value = data.Porc_retencion;
+      estado_rep.value = data.ID_state_rep;
+      ciudad_rep.value = data.ID_city_rep;
+      municipio_rep.value = data.ID_municipio_rep;
+      Nombre_rep.value = data.Nombre_rep;
+      email_rep.value = data.Email_rep;
+      tipoDocumentoRL.value = data.Tipo_cedula_rep;
+      cedula_rep.value = data.Cedula_rep;
+      telefono_rep.value = data.Telefono_rep;
     }
   } catch (error) {
     Swal.fire({
@@ -317,8 +340,9 @@ async function handleFormComanda() {
     cedula_rep: tipo.value === "NATURAL" ? null : cedula_rep.value,
     email_rep: tipo.value === "NATURAL" ? null : email_rep.value,
     telefono_rep: tipo.value === "NATURAL" ? null : telefono_rep.value,
-    direccion_rep: tipo.value === "NATURAL" ? null : direccion_rep.value,
-    referencia_rep: tipo.value === "NATURAL" ? null : referencia_rep.value,
+    estado_rep: tipo.value === "NATURAL" ? null : estado_rep.value,
+    ciudad_rep: tipo.value === "NATURAL" ? null : ciudad_rep.value,
+    municipio_rep: tipo.value === "NATURAL" ? null : municipio_rep.value,
   };
 
   // REGISTRAMOS PRIMERO LA DATA DEL FORMULARIO
@@ -485,7 +509,7 @@ function handleSelectImages(items: any) {
         <v-label for="tipo">Tipo</v-label>
         <v-autocomplete
           id="tipo"
-          placeholder="Tipo de "
+          placeholder="Tipo de cliente"
           class="mt-2 my-input"
           clearable
           chips
@@ -637,7 +661,7 @@ function handleSelectImages(items: any) {
           class="mt-2 my-input"
           clearable
           chips
-          :items="info_estado" 
+          :items="info_estado"
           variant="outlined"
           :rules="estadosRules"
           aria-label="Name Documents"
@@ -688,121 +712,143 @@ function handleSelectImages(items: any) {
     <!-- ////////////////////////////////// Representante legal //////////////////////////////////////////// -->
     <div v-if="tipo === 'JURIDICO'">
       <v-divider></v-divider>
-      <br />
+      <br/>
       <h4>Datos del Representante Legal</h4>
       <v-row>
-        <v-col cols="12" md="2">
-          <v-label for="tipoDocumento"></v-label>
-          <v-autocomplete
-            id="tipoDocumento"
-            :items="['V', 'J', 'F', 'E']"
-            variant="outlined"
-            v-model="tipoDocumentoRL"
-            required
-            color="primary"
-            placeholder="V"
-            class="mt-2 my-input"
-          >
-          </v-autocomplete>
-        </v-col>
+          <v-col cols="12" md="2">
+            <v-label for="tipoDocumento"></v-label>
+            <v-autocomplete
+              id="tipoDocumento"
+              :items="['V', 'J', 'F', 'E']"
+              variant="outlined"
+              v-model="tipoDocumentoRL"
+              required
+              color="primary"
+              placeholder="V"
+              class="mt-2 my-input"
+            >
+            </v-autocomplete>
+          </v-col>
 
-        <v-col cols="12" md="6">
-          <v-label for="cedulaUno">Cedula/Rif</v-label>
-          <v-text-field
-            id="cedulaUno"
-            type="number"
-            placeholder="Cedula/Rif"
-            variant="outlined"
-            aria-label="Name Documents"
-            class="mt-2 my-input"
-            v-model="cedula_rep"
-            :rules="CedulaUnoRules"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+          <v-col cols="12" md="6">
+            <v-label for="cedulaUno">Cedula/Rif</v-label>
+            <v-text-field
+              id="cedulaUno"
+              type="number"
+              placeholder="Cedula/Rif"
+              variant="outlined"
+              aria-label="Name Documents"
+              class="mt-2 my-input"
+              v-model="cedula_rep"
+              :rules="CedulaUnoRules"
+              color="primary"
+            >
+            </v-text-field>
+          </v-col>
 
-        <v-col cols="12" md="4">
-          <v-label for="email">Email del Representante</v-label>
-          <v-text-field
-            id="email"
-            type="email"
-            placeholder="ejmeplo@tiendasdaka.com"
-            variant="outlined"
-            aria-label="Name Documents"
-            class="mt-2 my-input"
-            :rules="emailRules"
-            v-model="email_rep"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+          <v-col cols="12" md="4">
+            <v-label for="email">Email del Representante</v-label>
+            <v-text-field
+              id="email"
+              type="email"
+              placeholder="ejmeplo@tiendasdaka.com"
+              variant="outlined"
+              aria-label="Name Documents"
+              class="mt-2 my-input"
+              :rules="emailRules"
+              v-model="email_rep"
+              color="primary"
+            >
+            </v-text-field>
+          </v-col>
 
-        <v-col cols="12" md="6">
-          <v-label for="name">Nombre Completo del Representante</v-label>
-          <v-text-field
-            id="name"
-            type="text"
-            placeholder="Nombre Completo"
-            variant="outlined"
-            aria-label="Name Documents"
-            class="mt-2 my-input"
-            :rules="nombreCompletoRules"
-            v-model="Nombre_rep"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+          <v-col cols="12" md="6">
+            <v-label for="name">Nombre Completo del Representante</v-label>
+            <v-text-field
+              id="name"
+              type="text"
+              placeholder="Nombre Completo"
+              variant="outlined"
+              aria-label="Name Documents"
+              class="mt-2 my-input"
+              :rules="nombreCompletoRules"
+              v-model="Nombre_rep"
+              color="primary"
+            >
+            </v-text-field>
+          </v-col>
 
-        <v-col cols="12" md="6">
-          <v-label for="telefonoCliente">Telefono del Representante</v-label>
-          <v-text-field
-            id="telefonoCliente"
-            type="number"
-            placeholder="Numero Telefonico del cliente"
-            variant="outlined"
-            class="mt-2 my-input"
-            :rules="telefonoRules"
-            v-model="telefono_rep"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+          <v-col cols="12" md="6">
+            <v-label for="telefonoCliente">Telefono del Representante</v-label>
+            <v-text-field
+              id="telefonoCliente"
+              type="number"
+              placeholder="Numero Telefonico del cliente"
+              variant="outlined"
+              class="mt-2 my-input"
+              :rules="telefonoRules"
+              v-model="telefono_rep"
+              color="primary"
+            >
+            </v-text-field>
+          </v-col>
 
-        <v-col cols="12" md="6">
-          <v-label for="direccion">Direccion completa</v-label>
-          <v-text-field
-            id="direccion"
-            type="text"
-            placeholder="Direccion Completa"
-            variant="outlined"
-            aria-label="Name Documents"
-            class="mt-2 my-input"
-            v-model="direccion_rep"
-            :rules="direccionRules"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+          <v-col cols="12" md="4">
+            <v-label for="estado">Estado</v-label>
+            <v-autocomplete
+              id="estado"
+              placeholder="Seleccione el estado"
+              class="mt-2 my-input"
+              clearable
+              chips
+              :items="info_estado"
+              variant="outlined"
+              :rules="estadosRules"
+              aria-label="Name Documents"
+              color="primary"
+              v-model="estado_rep"
+            >
+            </v-autocomplete>
+          </v-col>
 
-        <v-col cols="12" md="6">
-          <v-label for="referencia">Referencia</v-label>
-          <v-text-field
-            id="referencia"
-            type="text"
-            placeholder="Referencia del delivery"
-            variant="outlined"
-            aria-label="Name Documents"
-            class="mt-2 my-input"
-            :rules="referenciaRules"
-            v-model="referencia_rep"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+          <v-col cols="12" md="4">
+            <v-label for="ciudad">Ciudad</v-label>
+            <v-autocomplete
+              id="ciudad"
+              placeholder="Seleccione la ciudad"
+              class="mt-2 my-input"
+              clearable
+              chips
+              :items="info_ciudad"
+              variant="outlined"
+              :rules="ciudadRules"
+              aria-label="Name Documents"
+              color="primary"
+              v-model="ciudad_rep"
+            >
+            </v-autocomplete>
+          </v-col>
+
+          <v-col cols="12" md="4">
+            <v-label for="municipio">Municipio</v-label>
+            <v-autocomplete
+              id="municipio"
+              placeholder="Seleccione el municipio"
+              class="mt-2 my-input"
+              clearable
+              chips
+              :items="info_muni"
+              variant="outlined"
+              :rules="municipioRules"
+              aria-label="Name Documents"
+              color="primary"
+              v-model="municipio_rep"
+            >
+            </v-autocomplete>
+          </v-col>
       </v-row>
     </div>
-    <br />
+    <br/>
     <!-- /////////////////////////////////////// Representante legal ////////////////////////////////////////// -->
 
     <!-- /////////////////////////////////////// COMANDA ///////////////////////////////////////////////////// -->
@@ -847,7 +893,7 @@ function handleSelectImages(items: any) {
         </v-autocomplete>
       </v-col>
     </v-row>
-    <v-row v-if="ID_Delivery === 1  || ID_Delivery === 4">
+    <v-row v-if="ID_Delivery === 1 || ID_Delivery === 4">
       <v-col cols="12" md="6">
         <v-label for="direccion">Direccion completa</v-label>
         <v-text-field
@@ -945,6 +991,7 @@ function handleSelectImages(items: any) {
           aria-label="pago"
           color="primary"
           v-model="ID_pago"
+          multiple
         ></v-autocomplete>
       </v-col>
 
