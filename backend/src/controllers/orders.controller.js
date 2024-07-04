@@ -267,6 +267,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         //crear pago
         //const payment = await sequelize.models.modelOrdersPay.create(newPay);
 
+
         const payments = data.ID_pago; // Asumiendo que los pagos vienen en un array en data.ID_pago
 
         
@@ -277,6 +278,7 @@ const createMasterOrderAndDetails = async (req, res) => {
                 User_crea: data.user_crea,
             });
         }
+
 
         if (order && client) {
             res.status(201).json({ order, client, payments });
@@ -486,6 +488,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
         res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
+
 
 const addwatermark = async (f,id) => {
 
