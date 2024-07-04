@@ -49,6 +49,7 @@ module.exports = (server) => {
         emitUserData();
 
         // Configurar un intervalo para emitir datos cada 10 segundos (por ejemplo)
+
         const intervalIdOrder = setInterval(emitOrderData, 5000);
         const intervalIdUser = setInterval(emitUserData, 5000);
         // Escuchar eventos específicos para emitir datos
