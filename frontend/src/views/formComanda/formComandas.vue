@@ -80,25 +80,34 @@ if (jsonFromLocalStorage !== null) {
 const origenRules = ref([
   (v: string) => !!v || "El origen del cliente es requerido",
 ]);
+
 const tipoRules = ref([
   (v: string) => !!v || "El tipo de cliente es requerido",
 ]);
+
 const emailRules = ref([
   (v: string) => !!v || "El email es requerido",
   (v: string) => /.+@.+\..+/.test(v) || "El email debe ser válido",
 ]);
+
 const CedulaUnoRules = ref([
   (v: string) => !!v || "La cedula/rif del cliente es requerido",
 ]);
+
 const nombreCompletoRules = ref([
   (v: string) => !!v || "El nombre del cliente es requerido",
 ]);
+
 const estadosRules = ref([(v: any) => !!v || "El estado es requerido"]);
+
 const municipioRules = ref([(v: any) => !!v || "El municipio es requerido"]);
+
 const ciudadRules = ref([(v: any) => !!v || "El ciudad es requerido"]);
+
 const direccionRules = ref([
   (v: string) => !!v || "La direccion completa es requerido",
 ]);
+
 const referenciaRules = ref([
   (v: string) => !!v || "La referencia del delivery es requerido",
 ]);
@@ -138,12 +147,25 @@ async function searchModel() {
 
     if (data) {
       tipo.value = data.Tipo_cliente;
+      tipoDocumento.value = data.Tipo_cedula;
       email.value = data.Email;
       telefonoUno.value = data.Telefono;
+      nombreCompleto.value = data.Nombre;
       nombreCompleto.value = data.Nombre;
       estado.value = data.ID_state;
       ciudad.value = data.ID_city;
       municipio.value = data.ID_municipio;
+      retencion.value = data.Retencion;
+      razonComercial.value = data.Razon_comercial;
+      porcentaje.value = data.Porc_retencion;
+      estado_rep.value = data.ID_state_rep;
+      ciudad_rep.value = data.ID_city_rep;
+      municipio_rep.value = data.ID_municipio_rep;
+      Nombre_rep.value = data.Nombre_rep;
+      email_rep.value = data.Email_rep;
+      tipoDocumentoRL.value = data.Tipo_cedula_rep;
+      cedula_rep.value = data.Cedula_rep;
+      telefono_rep.value = data.Telefono_rep;
     }
   } catch (error) {
     Swal.fire({
