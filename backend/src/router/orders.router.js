@@ -73,6 +73,7 @@ router.post("/createOrderDetails", createOrderDetails);
 //CREATE ARCHIVOS DE ORDER DOCUMENT
 router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
 
+
 //CREATE DETALLE DE ORDEN
 router.get("/download/:id", download);
 

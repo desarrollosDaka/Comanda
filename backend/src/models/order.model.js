@@ -22,10 +22,10 @@ const masterOrderSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
-  ID_pago: {                           
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
+  // ID_pago: {                           
+  //   allowNull: false,
+  //   type: DataTypes.INTEGER,
+  // },
   User_crea: {
     allowNull: false,
     type: DataTypes.STRING(100),
