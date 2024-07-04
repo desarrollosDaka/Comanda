@@ -13,11 +13,7 @@ const masterStatesSchema = {
   Nombre: {
     allowNull: false,
     type: DataTypes.STRING(100),
-  },
-  // Region: {
-  //   allowNull: true,
-  //   type: DataTypes.INTEGER,
-  // },
+  }
 
 };
 

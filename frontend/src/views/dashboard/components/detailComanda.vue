@@ -1,53 +1,52 @@
 <script setup lang="ts">
-import UiTitleCard from '@/components/shared/UiTitleCard.vue';
-import Swal from 'sweetalert2'
-import axios from 'axios';
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router'
-import { router } from '@/router';
-import { useUserRol } from '@/composables/users'
-import UploadImages from '@/views/formComanda/uploadImages.vue'
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
-import { useAddDocument } from '@/composables/addDocuments';
-import { useUploadFiles } from '@/composables/file'
+import UiTitleCard from "@/components/shared/UiTitleCard.vue";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { router } from "@/router";
+import { useUserRol } from "@/composables/users";
+import UploadImages from "@/views/formComanda/uploadImages.vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import { useAddDocument } from "@/composables/addDocuments";
+import { useUploadFiles } from "@/composables/file";
 
 interface Document {
-    file: File;
-    type: string;
-    mode: string;
+  file: File;
+  type: string;
+  mode: string;
 }
 
-const route = useRoute()
-
-const search = ref('')
+const route = useRoute();
+const search = ref("");
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
-const id = ref()
-const id_orders = ref()
+const id = ref();
+const id_orders = ref();
 const infoAsesores = ref();
-const selectedAsesor = ref()
-const dialog = ref(false)
-const numFactura = ref()
-id.value = route.params.id
-id_orders.value = route.params.id_orders
+const selectedAsesor = ref();
+const dialog = ref(false);
+const numFactura = ref();
+id.value = route.params.id;
+id_orders.value = route.params.id_orders;
 
 const info = ref([]);
 const origen = ref();
 const tipo = ref();
 const cedulaUno = ref();
-const email = ref('');
-const nombreCompleto = ref('');
+const email = ref("");
+const nombreCompleto = ref("");
 const estado = ref();
 const ciudad = ref();
 const municipio = ref();
-const direccion = ref('');
-const referencia = ref('');
+const direccion = ref("");
+const referencia = ref("");
 const autorizado = ref(false);
-const cedulaDos = ref('');
-const telefonoUno = ref('');
+const cedulaDos = ref("");
+const telefonoUno = ref("");
 const ID_pago = ref();
 const ID_status = ref();
 const porcentaje = ref();
@@ -55,204 +54,195 @@ const retencion = ref(false);
 const ID_delivery = ref();
 const User_asing = ref();
 
-let USER_ROL = ref<number>(0) //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
-let USER = ref<number>(0) //Variable donde se almacena el ID USUARIO que vendria del localstorage
-let user_crea = ref<string>('')
-
+let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
+let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
+let user_crea = ref<string>("");
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
-    const parsedData = JSON.parse(jsonFromLocalStorage);
+  const parsedData = JSON.parse(jsonFromLocalStorage);
 
-    user_crea.value = parsedData.data.Nombre;
-    USER_ROL.value = +parsedData.data.ID_rol;
-    USER.value = parsedData.data.ID_user;
+  user_crea.value = parsedData.data.Nombre;
+  USER_ROL.value = +parsedData.data.ID_rol;
+  USER.value = parsedData.data.ID_user;
 }
 
-const { dataUser } = useUserRol(USER_ROL.value) // buscamos los datos para el tipo de asesor
-
-const ROLESNOTMEDIOPAGO = [1, 5] //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
-
-const ROLEADDFILESBILL = [6, 8] // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
+const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
+const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
+const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 
 const itemDocument = ref<Document[]>([]);
 
-
 const getOrder = async () => {
-    try {
-        // const url = `${baseUrl}/filterOrder/${id.value}`
-        const url = `${baseUrl}/filterOrder/${id.value}`
-        const { data } = await axios.get(url);
+  try {
+    const url = `${baseUrl}/filterOrder/${id.value}`;
+    const { data } = await axios.get(url);
 
-        if (data) {
-            cedulaUno.value = data[0][0]["Cedula"]
-            tipo.value = data[0][0]["Tipo_cliente"]
-            retencion.value = data[0][0]["Retencion"]
-            porcentaje.value = data[0][0]["Porc_retencion"]
-            email.value = data[0][0]["Email"]
-            nombreCompleto.value = data[0][0]["Cliente"]
-            estado.value = data[0][0]["Estado"]
-            ciudad.value = data[0][0]["Ciudad"]
-            municipio.value = data[0][0]["Municipio"]
-            origen.value = data[0][0]["Sucursal"]
-            direccion.value = data[0][0]["Direccion"]
-            referencia.value = data[0][0]["Referencia"]
-            ID_delivery.value = data[0][0]["Delivery_type"]
-            ID_status.value = data[0][0]["Status"]
-            autorizado.value = data[0][0]["Autoriza"]
-            cedulaDos.value = data[0][0]["Cedula_autoriza"]
-            telefonoUno.value = data[0][0]["Telefono_autoriza"]
-            ID_pago.value = data[0][0]["Pago"]
-            User_asing.value = data[0][0]["User_asing"]
-        }
-
-    } catch (error) {
-        console.log(error)
+    if(data){
+      cedulaUno.value = data[0][0]["Cedula"];
+      tipo.value = data[0][0]["Tipo_cliente"];
+      retencion.value = data[0][0]["Retencion"];
+      porcentaje.value = data[0][0]["Porc_retencion"];
+      email.value = data[0][0]["Email"];
+      nombreCompleto.value = data[0][0]["Cliente"];
+      estado.value = data[0][0]["Estado"];
+      ciudad.value = data[0][0]["Ciudad"];
+      municipio.value = data[0][0]["Municipio"];
+      origen.value = data[0][0]["Sucursal"];
+      direccion.value = data[0][0]["Direccion"];
+      referencia.value = data[0][0]["Referencia"];
+      ID_delivery.value = data[0][0]["Delivery_type"];
+      ID_status.value = data[0][0]["Status"];
+      autorizado.value = data[0][0]["Autoriza"];
+      cedulaDos.value = data[0][0]["Cedula_autoriza"];
+      telefonoUno.value = data[0][0]["Telefono_autoriza"];
+      ID_pago.value = data[0][0]["Pago"];
+      User_asing.value = data[0][0]["User_asing"];
     }
-}
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const getArticulos = async () => {
-    loadingInfo.value = true
-    try {
-        const url = `${baseUrl}/filterOrderDetails/${id.value}`
-        const { data } = await axios.get(url);
-        info.value = data[0]
-
-    } catch (error) {
-        console.log(error)
-    }
-    loadingInfo.value = false
-}
+  loadingInfo.value = true;
+  try {
+    const url = `${baseUrl}/filterOrderDetails/${id.value}`;
+    const { data } = await axios.get(url);
+    info.value = data[0];
+  } catch (error) {
+    console.log(error);
+  }
+  loadingInfo.value = false;
+};
 
 const updateEstatus = async () => {
-
-    try {
-
-        //SOLO USUARIOS CON ROL DE CAJERAS
-        if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
-
-            useAddDocument(itemDocument.value, id.value) //Visualizan y agregan  archivos
-
-        }
-
-        await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
-            status_comanda: dataUser.changeID_status,
-
-        });
-
-    } catch (error) {
-        console.log(error)
+  try {
+    //SOLO USUARIOS CON ROL DE CAJERAS
+    if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
+      useAddDocument(itemDocument.value, id.value); //Visualizan y agregan  archivos
     }
 
-}
+    await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
+      status_comanda: dataUser.changeID_status,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 interface Asesores {
-    Nombre: string;
-    ID_user: number;
+  Nombre: string;
+  ID_user: number;
 }
 
 const getAsesores = async () => {
-    try {
-        const url = `${baseUrlAsesor}/filterMasterAsesor`
-        const { data } = await axios.get(url);
+  try {
+    const url = `${baseUrlAsesor}/filterMasterAsesor`;
+    const { data } = await axios.get(url);
 
-        infoAsesores.value = data[0].map((asesor: Asesores) => ({
-            title: asesor.Nombre,
-            value: asesor.ID_user
-        }));
-    } catch (error) {
-        console.log(error)
-    }
-}
+    infoAsesores.value = data[0].map((asesor: Asesores) => ({
+      title: asesor.Nombre,
+      value: asesor.ID_user,
+    }));
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 onMounted(async () => {
-    await getOrder();
-    await getArticulos();
-    await getAsesores();
+  await getOrder();
+  await getArticulos();
+  await getAsesores();
 });
 
 async function updateData() {
+  if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value) {
+    return toast.error(`Error. Debes ingresar el numero de factura`, {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+    });
+  }
 
-    if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value) {
+  const { isvalidate } = ROLEADDFILESBILL.includes(USER_ROL.value)
+    ? useUploadFiles(itemDocument.value)
+    : { isvalidate: true }; //Verificamos los tipos de documentos si el rol permite cargar archivos
 
-        return toast.error(`Error. Debes ingresar el numero de factura`, {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000
-        });
-    }
-
-    const { isvalidate } = ROLEADDFILESBILL.includes(USER_ROL.value) ? useUploadFiles(itemDocument.value) : { isvalidate: true };//Verificamos los tipos de documentos si el rol permite cargar archivos
-
-    if (isvalidate)
-
+  if (isvalidate)
+    Swal.fire({
+      title: dataUser.msgButton,
+      text: "No podrás revertir esto!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Si",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updateEstatus();
         Swal.fire({
-            title: dataUser.msgButton,
-            text: "No podrás revertir esto!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Si"
+          title: dataUser.msgButton,
+          text: "la comanda ha cambiado de estatus!",
+          icon: "success",
         }).then((result) => {
-            if (result.isConfirmed) {
-
-                updateEstatus()
-                Swal.fire({
-                    title: dataUser.msgButton,
-                    text: "la comanda ha cambiado de estatus!",
-                    icon: "success",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        router.push(`/maestroComandaAsignada`);
-                    }
-                });
-
-            }
+          if (result.isConfirmed) {
+            router.push(`/maestroComandaAsignada`);
+          }
         });
+      }
+    });
 }
 
-
 function handleSelectImages(items: any) {
-
-    itemDocument.value = items
+  itemDocument.value = items;
 }
 
 const asignAsesor = async () => {
+  if (!selectedAsesor.value) {
+    return toast.error("Error. Debe seleccionar un asesor", {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+    });
+  }
 
-    if (!selectedAsesor.value) {
-        return toast.error("Error. Debe seleccionar un asesor", {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000
-        });
+  const status = dataUser.changeID_status;
+  try {
+    const response = await axios.put(
+      `${baseUrl}/updateOrderAsesor/${id_orders.value}`,
+      { User_asing: selectedAsesor.value, ID_status: status }
+    );
+    if (response) {
+      Swal.fire({
+        title: "Asesor Asignado",
+        text: "Se asigno un asesor a la comanda seleccionada!",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push(`/maestroComandaAsignada`);
+        }
+      });
     }
 
-    const status = dataUser.changeID_status
-    try {
-        const response = await axios.put(`${baseUrl}/updateOrderAsesor/${id_orders.value}`, { User_asing: selectedAsesor.value, ID_status: status })
-        if (response) {
-            Swal.fire({
-                title: "Asesor Asignado",
-                text: "Se asigno un asesor a la comanda seleccionada!",
-                icon: "success"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    router.push(`/maestroComandaAsignada`);
-                }
-            });
-        }
-    } catch (error) {
+  } catch (error) {
         toast.error(`Error, al momento de guardar el asesor ${error}`, {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
             autoClose: 4000
         });
     }
-
 }
+
+const getNameAsesor = (id: number) => {
+  if (infoAsesores && infoAsesores.value) {
+    const asesor = infoAsesores.value.find((item: any) => item.value == id).title;
+    return asesor;
+  }
+  return null;
+};
 
 </script>
 
@@ -305,7 +295,7 @@ const asignAsesor = async () => {
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Estatus</h2>
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
-            <p><b>Asesor:</b> {{ User_asing }}</p>
+            <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
         </v-col>
     </v-row>
 
@@ -341,7 +331,11 @@ const asignAsesor = async () => {
     </UiTitleCard>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" @isSelectImages=handleSelectImages :ID_detalle=id />
+    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" 
+    @isSelectImages=handleSelectImages 
+    :ID_detalle=id 
+    :deleteImageUpdate=false
+    />
 
     <v-row class="mb-0 mt-5">
 
