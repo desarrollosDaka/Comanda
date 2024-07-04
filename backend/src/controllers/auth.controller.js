@@ -10,6 +10,7 @@ const singIn = async (req, res) =>{
         const user = await sequelize.models.modelMasterUser.findOne({
             where: {
                 Email : Email,
+                Delete: 0,
             }, 
         });
         
@@ -32,6 +33,7 @@ const singIn = async (req, res) =>{
                 ID_rol: user.ID_rol,
                 Nombre_rol: user.Nombre_rol,
                 Id_sucursal: user.Id_sucursal,
+                Delete: 0,
                 id: tokenSession,
                 token: tokenSession
             })
@@ -70,6 +72,7 @@ const signUp = async (req, res) => {
         const email = await sequelize.models.modelMasterUser.findOne({
             where: {
                 Email : Email,
+                Delete: 0
             }, 
         });
         if(email) {
