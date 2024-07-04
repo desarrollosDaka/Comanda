@@ -69,9 +69,6 @@ router.post("/createOrderDetails", createOrderDetails);
 //CREATE ARCHIVOS DE ORDER DOCUMENT
 router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
 
-// Update Order(SOLO CABECERA) (DESACTIVADO)
-//router.put("/updateOrder/:id", updateMasterOrder);
-
 
 
 /////////////////////////////ANDERSON ///////////////////////////////////////////////////

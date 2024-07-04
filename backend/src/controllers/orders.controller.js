@@ -103,58 +103,58 @@ const getMasterOrderDetails = async (req, res) => {
 const filterMasterOrder = async (req, res) => {
     try {
         const id = req.params.id; 
-  //cambios 170624
         const rta = await sequelize.query(
             `SELECT DISTINCT    
-                T0.[ID_order]
-                ,T0.ID_detalle
-                ,T0.Caja_factura
-                ,T3.Tipo_cedula
-                ,T0.Cedula
-                ,T3.Tipo_cliente
-                ,T3.Email
-                ,T3.Nombre AS Cliente
-                ,T3.Razon_comercial
-                ,T3.Direccion
-                ,T1.ID_sucursal 
-                ,T1.Sucursal 
-                ,T4.ID_states 
-                ,T4.Nombre AS Estado
-                ,T5.ID_city
-                ,T5.Nombre AS Ciudad
-                ,T6.ID_municipio 
-                ,T6.NOMBRE AS Municipio
-                ,t0.[ID_pago]
-                ,t0.[User_crea]
-                ,t0.[User_mod]
-                ,t0.[User_asing]
-                ,t0.[ID_rol]
-                ,t0.[ID_status]
-                ,t0.[Tipo_delivery]
-                ,t0.[SucursalZoom]
-                ,t0.[Autoriza]
-                ,t0.[Cedula_autoriza]
-                ,t0.[Telefono_autoriza]
-                ,T3.Tipo_cedula_rep
-                ,T3.Cedula_rep
-                ,T3.Nombre_rep	
-                ,T3.Email_rep	
-                ,T3.Telefono_rep	
-                ,T3.Direccion_rep	
-                ,T3.Referencia_rep
-                ,T3.ID_state_rep
-                ,T3.ID_city_rep
-                ,T3.ID_municipio_rep
-                ,T3.[Telefono]
-                ,t0.[Retencion]
-                ,T3.Referencia
-                ,t0.[Porc_retencion]
-                ,t0.ID_ticket
-                ,t0.[Delete]
-                ,t0.[Motivo_delete]    
-                ,T2.Status
-                ,CAST(T0.Create_date AS DATE) Create_date
-                ,CAST(T0.[update_date] AS DATE) [Update_date]
+                    T0.[ID_order]
+                    ,T0.ID_detalle
+                    ,T0.Caja_factura
+                    ,T3.Tipo_cedula
+                    ,T0.Cedula
+                    ,T3.Tipo_cliente
+                    ,T3.Email
+                    ,T3.Nombre AS Cliente
+                    ,T3.Razon_comercial
+                    ,T3.Direccion
+                    ,T1.ID_sucursal 
+                    ,T1.Sucursal 
+                    ,T4.ID_states 
+                    ,T4.Nombre AS Estado
+                    ,T5.ID_city
+                    ,T5.Nombre AS Ciudad
+                    ,T6.ID_municipio 
+                    ,T6.NOMBRE AS Municipio
+                    -- ,t0.[ID_pago]
+                    ,T7.ID_pago
+                    ,t0.[User_crea]
+                    ,t0.[User_mod]
+                    ,t0.[User_asing]
+                    ,t0.[ID_rol]
+                    ,t0.[ID_status]
+                    ,t0.[Tipo_delivery]
+                    ,t0.[SucursalZoom]
+                    ,t0.[Autoriza]
+                    ,t0.[Cedula_autoriza]
+                    ,t0.[Telefono_autoriza]
+                    ,T3.Tipo_cedula_rep
+                    ,T3.Cedula_rep
+                    ,T3.Nombre_rep	
+                    ,T3.Email_rep	
+                    ,T3.Telefono_rep	
+                    ,T3.Direccion_rep	
+                    ,T3.Referencia_rep
+                    ,T3.ID_state_rep
+                    ,T3.ID_city_rep
+                    ,T3.ID_municipio_rep
+                    ,T3.[Telefono]
+                    ,t0.[Retencion]
+                    ,T3.Referencia
+                    ,t0.[Porc_retencion]
+                    ,t0.ID_ticket
+                    ,t0.[Delete]
+                    ,t0.[Motivo_delete]    
+                    ,T2.Status
+                    ,CAST(T0.Create_date AS DATE) Create_date
+                    ,CAST(T0.[update_date] AS DATE) [Update_date]
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
             INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
             INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -162,7 +162,8 @@ const filterMasterOrder = async (req, res) => {
             INNER JOIN [dbo].[MASTER_STATES] T4 ON T3.ID_state = T4.ID_states
             INNER JOIN [dbo].[MASTER_CITIES] T5 ON T3.ID_city = T5.ID_city
             INNER JOIN [dbo].[MASTER_MUNICIPALITY] T6 ON T3.ID_municipio = T6.ID_municipio
-            INNER JOIN [dbo].[PAYMENT_METHODS] T7 ON T0.ID_pago = T7.ID_pago
+            --INNER JOIN [dbo].[PAYMENT_METHODS] T7 ON T0.ID_pago = T7.ID_pago
+            LEFT JOIN  [dbo].[ORDERS_PAYMENT] T7 ON T7.ID_detalle = T0.ID_detalle
             INNER JOIN [dbo].[MASTER_STATUS] T8 ON T0.ID_status = T8.ID_status
             INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
             WHERE T0.ID_detalle = '${id}'`);
@@ -184,7 +185,7 @@ const createMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
 
-        console.log(data);
+        //console.log(data);
 0
         // Crear un objeto con los datos del cliente
         const newClients = {
@@ -221,7 +222,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             Caja_factura: data.Caja_factura,
             ID_detalle: data.Id_Comanda,
             Cedula: data.cedulaUno,
-            ID_pago: data.ID_pago,
+            // ID_pago: data.ID_pago,
             User_crea: data.user_crea,
             ID_rol: data.ID_rol,     
             ID_status: data.ID_status,
@@ -236,6 +237,12 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_ticket: data.ID_ticket 
         };
 
+        const newPay = {
+            ID_detalle: data.Id_Comanda,
+            ID_pago: data.ID_pago,
+            User_crea: data.user_crea,
+        }
+
         //Comprobar si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
         if (client) {
@@ -249,9 +256,13 @@ const createMasterOrderAndDetails = async (req, res) => {
         // Crear el pedido
         const order = await sequelize.models.modelOrders.create(newOrder);
 
-        if (order && client) {
+        //crear pago
+        const payment = await sequelize.models.modelOrdersPay.create(newPay);
+
+
+        if (order && client && payment) {
             res.status(201);
-            res.json({ order: order, clients: client});
+            res.json({ order: order, clients: client, payment: payment});
             
         } else {
             res.status(404);
@@ -410,7 +421,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             ID_detalle: data.Id_Comanda,
             Caja_factura: data.Caja_factura,
             Cedula: data.cedulaUno,
-            ID_pago: data.ID_pago,
+           // ID_pago: data.ID_pago,
             //User_crea: data.user_crea,
             User_mod: data.user_mod,
             ID_rol: data.ID_rol,
@@ -427,6 +438,11 @@ const updateMasterOrderAndDetails = async (req, res) => {
             ID_ticket: data.ID_ticket 
         };
 
+        const newPay = {
+            //ID_detalle: data.Id_Comanda,
+            ID_pago: data.ID_pago,
+           // User_crea: data.user_crea,
+        }
 
         // Comprueba si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
@@ -442,10 +458,27 @@ const updateMasterOrderAndDetails = async (req, res) => {
             where: { ID_detalle: idOrder },
         });
 
+        // Validar y actualizar pagos
+        const existingPayments = await sequelize.models.modelOrdersPay.findAll({ where: { ID_detalle: idOrder } });
+        const newPayments = data.payments; // Asumiendo que los nuevos pagos vienen en un array en data.payments
+
+        // Eliminar pagos que ya no existen
+        for (const existingPayment of existingPayments) {
+            if (!newPayments.some(newPay => newPay.ID_pago === existingPayment.ID_pago)) {
+                await existingPayment.destroy();
+            }
+        }
+
+        // Insertar o actualizar pagos
+        for (const newPayment of newPayments) {
+            await sequelize.models.modelOrdersPay.upsert({
+                ...newPayment,
+                ID_detalle: idOrder,
+            });
+        }
 
         if (order && client) {
-            res.status(201);
-            res.json({ order: order, clients: client });
+            res.status(201).json({ order, client, payments: newPayments });
         } else {
             res.status(404);
             res.json({ msj: 'Error en la creación' });

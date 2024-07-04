@@ -3,6 +3,7 @@ const { masterUserSchema, MasterUser } = require("./user.model")
 const { masterOrderSchema, MasterOrders } = require("./order.model")
 const { masterOrderdetailsSchema, MasterOrdersdetails } = require("./order_details.model")
 const { masterOrderFilesSchema, MasterOrdersFiles } = require("./orderFiles.model")
+const { masterOrderPaySchema, MasterOrdersPay } = require("./orderPayment.model")
 const { masterProductsSchema, MasterProducts } = require("./products_replica.model")
 const { masterClientsSchema, Master_clients } = require("./master_clients.model")
 const { masterStoresSchema, MasterStores } = require("./stores.model")
@@ -22,6 +23,7 @@ function setupModels(sequelize) {
   MasterOrders.init(masterOrderSchema, MasterOrders.config(sequelize));
   MasterOrdersdetails.init(masterOrderdetailsSchema, MasterOrdersdetails.config(sequelize));
   MasterOrdersFiles.init(masterOrderFilesSchema, MasterOrdersFiles.config(sequelize));
+  MasterOrdersPay.init(masterOrderPaySchema, MasterOrdersPay.config(sequelize));
   MasterProducts.init(masterProductsSchema, MasterProducts.config(sequelize));
   Master_clients.init(masterClientsSchema, Master_clients.config(sequelize));
   MasterStores.init(masterStoresSchema, MasterStores.config(sequelize));
