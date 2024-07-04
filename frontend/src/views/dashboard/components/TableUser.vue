@@ -2,10 +2,10 @@
 import { useAuthStore } from '@/stores/auth';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 
+import { io } from 'socket.io-client';
 import Swal from 'sweetalert2'
 import axios from 'axios';
 import { shallowRef, ref, onMounted, onUnmounted } from 'vue';
-import { io } from 'socket.io-client';
 
 const search = ref('') 
 const loadingInfo = ref(false);
@@ -19,9 +19,8 @@ const socket = io('http://localhost:3003', {
 const info = ref([]) ;
 
 
-
 // Listen for events from the server
-socket.on('get-master-user', (rta) => {
+socket.on('get-master-user', (rta:any) => {
   console.log('Datos actualizados:', rta);
   if (Array.isArray(rta)) {
     info.value = rta[0];
@@ -94,12 +93,7 @@ function eliminardata(id:string){
             title: "Eliminado!",
             text: "Data eliminada con exito!",
             icon: "success",
-            }).then((result) => {
-            if (result.isConfirmed) {
-                location.reload();
-                }
-            });
-    
+            })
         }
     });
 }

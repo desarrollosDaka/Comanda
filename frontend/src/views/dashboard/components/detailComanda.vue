@@ -238,7 +238,7 @@ const asignAsesor = async () => {
 
 const getNameAsesor = (id: number) => {
   if (infoAsesores && infoAsesores.value) {
-    const asesor = infoAsesores.value.find((item: any) => item.value == id).title;
+    const asesor = infoAsesores.value.find((item: any) => item.value == id)?.title;
     return asesor;
   }
   return null;
@@ -252,7 +252,7 @@ const getNameAsesor = (id: number) => {
     <div class="card">
         <div class="data">
             <p>
-                COMANDA NRO: {{ id_orders }}
+                COMANDA #{{ id_orders }}
             </p>
 
             <div class="range">

@@ -1,23 +1,50 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2'
-import axios from 'axios';
-import { shallowRef, ref, onMounted, onUnmounted } from 'vue';
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { useGetStatus } from "@/composables/status";
+import { shallowRef, ref, onMounted, onUnmounted } from "vue";
 
-import UiTitleCard from '@/components/shared/UiTitleCard.vue';
+import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 
-const search = ref('') 
+const search = ref("");
 const info = ref([]);
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const dialog = ref(false);
 
-const selectedMotivo = ref()
-const idDocuments = ref('')
-const estatus = ref()
+const selectedMotivo = ref();
+const idDocuments = ref("");
+const estatus = ref();
+const infogetStatus = ref();
 
-const socket = io('http://localhost:3003', {
-  reconnection: false // Deshabilitar la reconexión automática
+const COLORSTATUS: any = {
+  1: "success",
+  2: "warning",
+  3: "success",
+  4: "info",
+  5: "warning",
+  6: "success",
+  7: "warning",
+  8: "success",
+  9: "error",
+};
+
+interface Table_Orders {
+  ID_order: number;
+  ID_detalle: string;
+  Cedula: string;
+  Cliente: string;
+  Sucursal: string;
+  User_crea: string;
+  User_asing: number;
+  Status: string;
+  ID_status: number;
+  Create_date: Date;
+}
+
+const socket = io("http://localhost:3003", {
+  reconnection: false, // Deshabilitar la reconexión automática
 });
 
 
@@ -28,62 +55,61 @@ const requestMasterOrder = () => {
 
 
 // Listen for events from the server
-socket.on('get-master-order', (rta) => {
-  console.log('Datos actualizados:', rta);
+socket.on("get-master-order", (rta: any) => {
+  console.log("Datos actualizados:", rta);
+  loadingInfo.value = true;
   if (Array.isArray(rta)) {
     info.value = rta[0];
-    console.log(info.value);
   } else {
     console.error('La respuesta no es un array:', rta);
   }
+  loadingInfo.value = false;
 });
 
-
-// Escuchar evento de actualización de orden
-// socket.on('update-master-order', (rta) => {
-//   console.log('Orden actualizada:', rta);
-//   if (Array.isArray(rta)) {
-//     info.value = rta[0];
-//     console.log(info.value);
-//   } else {
-//     console.error('La respuesta no es un array:', rta);
-//   }
-// });
-
 let deleteItem = ref({
-  ID_order: ''
-})
+  ID_order: "",
+});
+
+const getMessageStatus = (id: number) => {
+  if (infogetStatus && infogetStatus.value) {
+    const status = infogetStatus.value.find(
+      (item: any) => item.ID_status === id
+    ).Status;
+    return status;
+  }
+  return null;
+};
 
 const editItem = (item: any) => {
-  deleteItem.value = Object.assign({}, item)
-  dialog.value = true
-}
+  deleteItem.value = Object.assign({}, item);
+  dialog.value = true;
+};
 
-const getOrders = async () => {
-    // loadingInfo.value = true
-    // try{
-    //     const url = `${baseUrl}/masterOrder`
-    //     const {data} = await axios.get(url);
-    //     info.value =  data[0]
-    // } catch(error){
-    //     console.log(error)
-    // }
-    // loadingInfo.value = false
-}
+// const getOrders = async () => {
+//     // loadingInfo.value = true
+//     // try{
+//     //     const url = `${baseUrl}/masterOrder`
+//     //     const {data} = await axios.get(url);
+//     //     info.value =  data[0]
+//     // } catch(error){
+//     //     console.log(error)
+//     // }
+//     // loadingInfo.value = false
+// }
 
-const deleteDocuments = async (id:string) => {
-  estatus.value = true
-    try{
-      const response = await axios.put(`${baseUrl}/deleteOrder/${id}`, {
+const deleteDocuments = async (id: string) => {
+  estatus.value = true;
+  try {
+    const response = await axios.put(`${baseUrl}/deleteOrder/${id}`, {
       status: estatus.value.toString(),
-      motivo: selectedMotivo.value
-    })
-    if(response){
-      dialog.value = false
+      motivo: selectedMotivo.value,
+    });
+    if (response) {
+      dialog.value = false;
       Swal.fire({
         title: "Comanda eliminada",
         text: "Se acaba de eliminar una comanda",
-        icon: "success"
+        icon: "success",
       }).then((result) => {
           if(result.isConfirmed) {
            //location.reload();
@@ -91,11 +117,10 @@ const deleteDocuments = async (id:string) => {
           }
       });
     }
-        
-    } catch(error){
-        console.log(error)       
-    }
-}
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // Emitir evento al montar el componente
 onMounted(() => {
@@ -104,17 +129,22 @@ onMounted(() => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log('Socket desconectado');
+  console.log("Socket desconectado");
+});
+
+onMounted(async () => {
+  const { status } = await useGetStatus();
+  infogetStatus.value = status;
 });
 
 const headers = ref([
-  {title: 'COMANDA', align: 'start', key: 'ID_order'},
-  {title: 'CEDULA', key: 'Cedula'}, 
-  {title: 'SUCURSAL', key: 'Sucursal'}, 
-  {title: 'CLIENTE', key: 'User_crea'}, 
-  {title: 'FECHA', key: 'Create_date'},
-  {title: 'STATUS', key: 'Status'},
-  {title: 'ACCIÓN',  sortable: false, key: 'action'},
+  { title: "COMANDA", align: "start", key: "ID_order"},
+  { title: "CEDULA", key: "Cedula"},
+  { title: "SUCURSAL", key: "Sucursal"},
+  { title: "CLIENTE", key: "Cliente"},
+  { title: "FECHA", key: "Create_date"},
+  { title: "STATUS", key: "Status"},
+  { title: "ACCIÓN", sortable: false, key: "action"},
 ] as const);
 
 
