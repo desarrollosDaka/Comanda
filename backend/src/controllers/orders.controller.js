@@ -28,8 +28,7 @@ const getMasterOrder = async (req, res) => {
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL 
-        ORDER BY T0.[ID_order] DESC`
-    );
+        ORDER BY T0.[ID_order] DESC`);
 
     if (rta) {
       return rta;
@@ -255,8 +254,8 @@ const createMasterOrderAndDetails = async (req, res) => {
         }
 
 
-    // Crear el pedido
-    const order = await sequelize.models.modelOrders.create(newOrder);
+        // Crear el pedido
+        const order = await sequelize.models.modelOrders.create(newOrder);
 
 
         //crear pago

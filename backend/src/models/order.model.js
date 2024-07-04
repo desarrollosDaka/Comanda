@@ -14,6 +14,10 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(30),
   },
+  Caja_factura: {
+    allowNull: true,
+    type: DataTypes.STRING(30),
+  },
   ID_sucursal: {
     allowNull: false,
     type: DataTypes.INTEGER,
