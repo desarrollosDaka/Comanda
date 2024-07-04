@@ -127,7 +127,7 @@ const filterMasterOrder = async (req, res) => {
                     ,T5.Nombre AS Ciudad
                     ,T6.ID_municipio 
                     ,T6.NOMBRE AS Municipio
-                    ,T7.ID_pago
+                    ,STRING_AGG(T7.ID_pago, ',') AS ID_pago
                     ,t0.[User_crea]
                     ,t0.[User_mod]
                     ,t0.[User_asing]
@@ -140,10 +140,10 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[Telefono_autoriza]
                     ,T3.Tipo_cedula_rep
                     ,T3.Cedula_rep
-                    ,T3.Nombre_rep	
-                    ,T3.Email_rep	
-                    ,T3.Telefono_rep	
-                    ,T3.Direccion_rep	
+                    ,T3.Nombre_rep  
+                    ,T3.Email_rep   
+                    ,T3.Telefono_rep    
+                    ,T3.Direccion_rep   
                     ,T3.Referencia_rep
                     ,T3.ID_state_rep
                     ,T3.ID_city_rep
@@ -168,7 +168,13 @@ const filterMasterOrder = async (req, res) => {
             INNER JOIN [dbo].[ORDERS_PAYMENT] T7 ON T7.ID_detalle = T0.ID_detalle
             INNER JOIN [dbo].[MASTER_STATUS] T8 ON T0.ID_status = T8.ID_status
             INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-            WHERE T0.ID_detalle = '${id}'`
+            WHERE T0.ID_detalle = '${id}'
+            GROUP BY 
+            T0.[ID_order]  ,T0.ID_detalle   ,T0.Caja_factura   ,T3.Tipo_cedula  ,T0.Cedula ,T3.Tipo_cliente  ,T3.Email ,T3.Nombre ,T3.Razon_comercial ,T3.Direccion ,T1.ID_sucursal  ,T1.Sucursal  ,T4.ID_states 
+            ,T4.Nombre  ,T5.ID_city  ,T5.Nombre ,T6.ID_municipio ,T6.NOMBRE ,t0.[User_crea]  ,t0.[User_mod]  ,t0.[User_asing] ,t0.[ID_rol]   ,t0.[ID_status]  ,t0.[Tipo_delivery]  ,t0.[SucursalZoom] ,t0.[Autoriza]
+            ,t0.[Cedula_autoriza]  ,t0.[Telefono_autoriza] ,T3.Tipo_cedula_rep  ,T3.Cedula_rep  ,T3.Nombre_rep    ,T3.Email_rep    ,T3.Telefono_rep    ,T3.Direccion_rep   ,T3.Referencia_rep, T3.ID_state_rep
+            ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,CAST(T0.Create_date AS DATE) 
+            ,CAST(T0.[update_date] AS DATE)`
     );
     if (rta) {
       res.status(200);
@@ -186,7 +192,7 @@ const filterMasterOrder = async (req, res) => {
 const createMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
-        //console.log(data);
+        console.log(data);
         // Crear un objeto con los datos del cliente
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -237,11 +243,11 @@ const createMasterOrderAndDetails = async (req, res) => {
             ID_ticket: data.ID_ticket 
         };
 
-        const newPay = {
-            ID_detalle: data.Id_Comanda,
-            ID_pago: data.ID_pago,
-            User_crea: data.user_crea,
-        }
+        // const newPay = {
+        //     ID_detalle: data.Id_Comanda,
+        //     ID_pago: data.ID_pago,
+        //     User_crea: data.user_crea,
+        // }
 
         //Comprobar si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
@@ -259,16 +265,23 @@ const createMasterOrderAndDetails = async (req, res) => {
 
 
         //crear pago
-        const payment = await sequelize.models.modelOrdersPay.create(newPay);
+        //const payment = await sequelize.models.modelOrdersPay.create(newPay);
 
+        const payments = data.ID_pago; // Asumiendo que los pagos vienen en un array en data.ID_pago
 
-        if (order && client && payment) {
-            res.status(201);
-            res.json({ order: order, clients: client, payment: payment});
-            
+        
+        for (const paymentId of payments) {
+            await sequelize.models.modelOrdersPay.create({
+                ID_detalle: data.Id_Comanda,
+                ID_pago: paymentId,
+                User_crea: data.user_crea,
+            });
+        }
+
+        if (order && client) {
+            res.status(201).json({ order, client, payments });
         } else {
-            res.status(404);
-            res.json({ msj: 'Error en la creación' });
+            res.status(404).json({ msj: 'Error en la creación' });
         }
     } catch (e) {
         console.log('Error', e);
@@ -388,8 +401,8 @@ const deleteOrderDetails = async (req, res) => {
 const updateMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
-        const idOrder = data.Id_Comanda
-        console.log(data)
+        const idOrder = data.Id_Comanda;
+        console.log(data);
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -421,15 +434,10 @@ const updateMasterOrderAndDetails = async (req, res) => {
         const UpdateOrder = {
             ID_detalle: data.Id_Comanda,
             ID_sucursal: data.origen,
-            ID_detalle: data.Id_Comanda,
             Caja_factura: data.Caja_factura,
             Cedula: data.cedulaUno,
-           // ID_pago: data.ID_pago,
-            //User_crea: data.user_crea,
             User_mod: data.user_mod,
             ID_rol: data.ID_rol,
-            //User_rol: 'Admin',
-            //ID_status: data.ID_status,
             Tipo_delivery: data.ID_delivery,
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
@@ -437,15 +445,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            //File_cedula: req.file.filename 
             ID_ticket: data.ID_ticket 
         };
-
-        const newPay = {
-            //ID_detalle: data.Id_Comanda,
-            ID_pago: data.ID_pago,
-           // User_crea: data.user_crea,
-        }
 
         // Comprueba si la cédula ya existe en la base de datos
         let client = await sequelize.models.modelMasterClients.findOne({ where: { Cedula: data.cedulaUno } });
@@ -461,33 +462,28 @@ const updateMasterOrderAndDetails = async (req, res) => {
             where: { ID_detalle: idOrder },
         });
 
-        // Validar y actualizar pagos
-        const existingPayments = await sequelize.models.modelOrdersPay.findAll({ where: { ID_detalle: idOrder } });
-        const newPayments = data.payments; // Asumiendo que los nuevos pagos vienen en un array en data.payments
+        // Eliminar todos los pagos existentes para el id_detalle
+        await sequelize.models.modelOrdersPay.destroy({ where: { ID_detalle: idOrder } });
 
-        // Eliminar pagos que ya no existen
-        for (const existingPayment of existingPayments) {
-            if (!newPayments.some(newPay => newPay.ID_pago === existingPayment.ID_pago)) {
-                await existingPayment.destroy();
-            }
-        }
-
-        // Insertar o actualizar pagos
-        for (const newPayment of newPayments) {
-            await sequelize.models.modelOrdersPay.upsert({
-                ...newPayment,
-                ID_detalle: idOrder,
+        // Insertar los nuevos pagos
+        const payments = data.ID_pago; // Asumiendo que los pagos vienen en un array en data.ID_pago
+        for (const paymentId of payments) {
+            await sequelize.models.modelOrdersPay.create({
+                ID_detalle: data.Id_Comanda,
+                ID_pago: paymentId,
+                User_crea: data.user_crea,
             });
         }
 
+
         if (order && client) {
-            res.status(201).json({ order, client, payments: newPayments });
+            res.status(201).json({ order, client, payments  });
         } else {
-            res.status(404);
-            res.json({ msj: 'Error en la creación' });
+            res.status(400).json({ message: 'Error al actualizar la orden o el cliente' });
         }
-    } catch (e) {
-        console.log('Error', e);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
 
