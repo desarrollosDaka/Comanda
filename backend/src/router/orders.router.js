@@ -5,12 +5,15 @@ const multer = require('multer')
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-
         cb(null, 'uploads')
     },
     filename: function (req, file, cb){
-        
-        const nameDocument = `${Date.now()}-${file.originalname}`
+
+        const { id } = req.params;
+        const extension = file.originalname.split('.').pop(); 
+
+        //const nameDocument = `${Date.now()}-${file.originalname}`
+        const nameDocument = `${Date.now()}-${id}.${extension}`; //QUE SE guarde el id de la comanda
         cb(null, nameDocument)
     }
 })
@@ -37,7 +40,8 @@ const {
     createOrderDocument,
     filterOrderDetailsFiles,
     deleteOrderDocument,
-    getMasterOrderForStore
+    getMasterOrderForStore,
+    download
 } 
 = require("../controllers/orders.controller");
 
@@ -68,6 +72,10 @@ router.post("/createOrderDetails", createOrderDetails);
 
 //CREATE ARCHIVOS DE ORDER DOCUMENT
 router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
+
+
+//CREATE DETALLE DE ORDEN
+router.get("/download/:id", download);
 
 // Update Order(SOLO CABECERA) (DESACTIVADO)
 //router.put("/updateOrder/:id", updateMasterOrder);

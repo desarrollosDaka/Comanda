@@ -38,9 +38,11 @@ const routerPayment = require("../router/payment.router");
 const routerProducts = require("../router/products.router");
 const routerStatus = require("../router/status.router");
 
+
 ///////////////////////////////////////////ANDERSON///////////////////////////////
 app.use(express.urlencoded({ extended: true}));
 app.use('/public', express.static(path.join(__dirname, '../../uploads')));
+app.use('/public', express.static(path.join(__dirname, '../../imagesWatermark')));
 ///////////////////////////////////////////FIN///////////////////////////////
 
 app.use("/api/users", routerUsers);
@@ -58,5 +60,6 @@ app.use("/api/payment", routerPayment);
 app.use("/api/products", routerProducts);
 app.use("/api/status", routerStatus);
 app.use('/', require('../socket.js'));
+
 
 module.exports = { app, server , io};

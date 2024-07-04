@@ -14,6 +14,10 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(30),
   },
+  Caja_factura: {
+    allowNull: true,
+    type: DataTypes.STRING(30),
+  },
   ID_sucursal: {
     allowNull: false,
     type: DataTypes.INTEGER,
@@ -22,10 +26,10 @@ const masterOrderSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
-  ID_pago: {                           
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
+  // ID_pago: {                           
+  //   allowNull: false,
+  //   type: DataTypes.INTEGER,
+  // },
   User_crea: {
     allowNull: false,
     type: DataTypes.STRING(100),
