@@ -794,5 +794,6 @@ module.exports = {
     createOrderDocument,
     filterOrderDetailsFiles,
     deleteOrderDocument,
-    getMasterOrderForStore
+    getMasterOrderForStore,
+    download
 };
