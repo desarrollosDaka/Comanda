@@ -34,6 +34,7 @@ const cedulaDos = ref("");
 const telefonoUno = ref("");
 const telefonoDos = ref("");
 const ID_pago = ref();
+const pagosArray = ref();
 const user_crea = ref();
 const doc_file = ref();
 const info_estado = ref();
@@ -148,6 +149,7 @@ const getOrder = async () => {
       telefonoUno.value = data[0][0]["Telefono"];
       telefonoDos.value = data[0][0]["Telefono_autoriza"];
       ID_pago.value = data[0][0]["ID_pago"];
+      pagosArray.value = ID_pago.value.split(',').map(Number);
       user_crea.value = data[0][0]["User_crea"];
       //new
       tipoDocumento.value = data[0][0]["Tipo_cedula"];
@@ -376,7 +378,7 @@ async function handleFormComanda() {
     cedulaDos: autorizado.value === false ? null : cedulaDos.value,
     telefonoDos: autorizado.value === false ? null : telefonoDos.value,
     telefonoUno: telefonoUno.value,
-    ID_pago: ID_pago.value,
+    ID_pago: pagosArray.value,
     ID_status: ID_status.value,
     retencion: tipo.value === "NATURAL" ? "false" : retencion.value.toString(),
     porcentaje: tipo.value === "NATURAL" ? null : porcentajeValue,
@@ -920,7 +922,7 @@ onMounted(async () => {
         </v-autocomplete>
       </v-col>
     </v-row>
-    <v-row v-if="ID_Delivery === 1 || ID_Delivery === 2 || ID_Delivery === 4">
+    <v-row v-if="ID_Delivery === 1 || ID_Delivery === 4">
       <v-col cols="12" md="6">
         <v-label for="direccion">Direccion completa</v-label>
         <v-text-field
@@ -1017,7 +1019,7 @@ onMounted(async () => {
           :rules="metodoRules"
           aria-label="pago"
           color="primary"
-          v-model="ID_pago"
+          v-model="pagosArray"
           multiple
         ></v-autocomplete>
       </v-col>

@@ -22,7 +22,19 @@ const socket = io("http://localhost:3003", {
 socket.on("get-master-order", (rta) => {
   console.log("Datos actualizados:", rta);
   if (Array.isArray(rta)) {
-    info.value = rta[0];
+
+  const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
+      if (ROLFILTERUSER.includes(USER_ROL.value)) { //FILTRAMOS POR ASESORES ASIGNADOS
+        return dataUser.status.includes(item.ID_status) &&
+          item.User_asing.toString() === USER.value.toString();
+      } else {//FILTRAMOS SOLO POR ESTATUS
+        return dataUser.status.includes(item.ID_status);
+      }
+    });
+    info.value = dataFilterStatus
+
+
+    //info.value = rta[0];
     // console.log(info.value);
     console.log(info.value);
   } else {
@@ -112,6 +124,8 @@ const getAsesores = async () => {
       value: asesor.ID_user,
       title: asesor.Nombre,
     }));
+    console.log(infoAsesores.value);
+    
   } catch (error) {
     console.log(error);
   }

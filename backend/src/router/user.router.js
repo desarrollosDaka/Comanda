@@ -5,7 +5,7 @@ const sequelize = require("../config/conexion");
 const {
     getMasterUser, 
     filterMasterUser,
-    //filterMasterAsesor, 
+    // filterMasterAsesor, 
     updateMasterUser, 
     deleteMasterUser} 
 = require("../controllers/user.controller");
