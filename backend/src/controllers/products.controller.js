@@ -15,13 +15,13 @@ const getMasterProducts = async (req, res) => {
                 ,[update_date]
             FROM [COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]
             where [Precio] != 0`);
-        if(rta){
+        if (rta) {
             res.status(201)
             res.json(rta)
-        }else{
+        } else {
             res.status(404)
-            res.json({msj: 'Error en la consulta'})
-        }   
+            res.json({ msj: 'Error en la consulta' })
+        }
     } catch (e) {
         console.log('Error', e);
     }
@@ -31,21 +31,21 @@ const getMasterProducts = async (req, res) => {
 // get filter user
 const filterMasterProducts = async (req, res) => {
     try {
-        const id = req.params.ID_producto; 
+        const id = req.params.ID_producto;
         const rta = await sequelize.models.modelProducts_replica.findOne({
             where: {
-                id : id,
-            }, 
+                id: id,
+            },
         });
 
-        if(rta){
+        if (rta) {
             res.status(200)
             res.json(rta)
 
-        }else{
+        } else {
             res.status(404)
-            res.json({msj: 'Error en la consulta'})
-        } 
+            res.json({ msj: 'Error en la consulta' })
+        }
 
     } catch (e) {
         console.log('Error', e);
