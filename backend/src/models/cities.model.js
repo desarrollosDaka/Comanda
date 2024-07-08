@@ -14,7 +14,7 @@ const masterCitiesSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
-  ID_municipio: {
+  ID_states: {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
