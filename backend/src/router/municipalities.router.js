@@ -17,11 +17,6 @@ const {
 router.get("/masterMunicipality", getMasterMunicipality);
 // Filter user
 router.get("/filterMunicipality/:id", filterMasterMunicipality);
-// Update user
-//router.put("/updateUser/:id", updateMasterUser);
-// Delete user
-// router.delete("/deleteUser/:id", checkAuth, deleteMasterUser);
-//router.delete("/deleteUser/:id", deleteMasterUser);
 
 module.exports = router;
 

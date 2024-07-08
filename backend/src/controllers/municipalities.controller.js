@@ -20,7 +20,7 @@ const getMasterMunicipality = async (req, res) => {
 // get filter user
 const filterMasterMunicipality = async (req, res) => {
     try {
-        const ID_state = req.params.ID_state; 
+        const ID_state = req.params.id; 
         const rta = await sequelize.query(
             `SELECT 
                     T1.*
