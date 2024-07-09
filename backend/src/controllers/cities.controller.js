@@ -20,13 +20,15 @@ const getMasterCities = async (req, res) => {
 // get filter user
 const filterMasterCities = async (req, res) => {
     try {
-        const id = req.params.ID_city; 
-        const rta = await sequelize.models.modelCities.findOne({
-            where: {
-                id : id,
-            }, 
-        });
-
+        const ID_state = req.params.id; 
+        const rta = await sequelize.query(
+            `SELECT 
+                    T1.*
+        FROM [dbo].[MASTER_STATES] T0
+        INNER JOIN [dbo].[MASTER_CITIES] T1 ON T0.ID_states = T1.ID_states
+        WHERE T0.ID_states = '${ID_state}'
+        ORDER BY T0.[ID_order] DESC`
+        );
         if(rta){
             res.status(200)
             res.json(rta)

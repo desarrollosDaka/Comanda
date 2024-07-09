@@ -98,7 +98,7 @@ async function addProducts(json: any) {
         if (result.isConfirmed) {
             Created()
             Swal.fire({
-                title: "Guardado!",
+                title: "Guardado!", 
                 text: "Datos guardados con exito!",
                 icon: "success"
             }).then((result) => {
@@ -114,8 +114,6 @@ async function addProducts(json: any) {
 
 
 async function Created() {
-
-
     listProduct.value.forEach(element => {
 
         const json = {

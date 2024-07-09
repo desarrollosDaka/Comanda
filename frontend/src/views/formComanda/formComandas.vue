@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form } from "vee-validate";
-import { ref, computed, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { router } from "@/router";
@@ -43,6 +43,7 @@ const ID_Delivery = ref();
 const info_tiendas = ref();
 const info_Delivery = ref();
 const info_Payment = ref();
+const valorSeleccionado = ref();
 // new
 const ID_rol = ref();
 const tipoDocumento = ref();
@@ -193,38 +194,67 @@ async function getEstados() {
   }
 }
 
-interface Muni {
-  Nombre: string;
-  ID_municipio: number;
-}
-// api get
-async function getMunicipio() {
-  try {
-    const { data } = await axios.get(`${baseUrlMunicipio}/masterMunicipality`);
-    info_muni.value = data.map((muni: Muni) => ({
-      title: muni.Nombre,
-      value: muni.ID_municipio,
-    }));
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 interface Ciudad {
   Nombre: string;
   ID_city: number;
 }
-async function getCiudad() {
-  try {
-    const { data } = await axios.get(`${baseUrlCiudad}/masterCities`);
-    info_ciudad.value = data.map((ciudad: Ciudad) => ({
+interface Muni {
+  Nombre: string;
+  ID_municipio: number;
+}
+
+const getSelect = async () => {
+
+  valorSeleccionado.value = estado.value
+  if (valorSeleccionado.value) {
+    const { data:ciudad } = await axios.get(`${baseUrlCiudad}/filterCities/${valorSeleccionado.value}`);
+    info_ciudad.value = ciudad[0].map((ciudad: Ciudad) => ({
       title: ciudad.Nombre,
       value: ciudad.ID_city,
     }));
-  } catch (error) {
-    console.log(error);
+
+    const { data:municipio } = await axios.get(`${baseUrlMunicipio}/filterMunicipality/${valorSeleccionado.value}`);
+    info_muni.value = municipio[0].map((muni: Muni) => ({
+      title: muni.Nombre,
+      value: muni.ID_municipio,
+    }));
+  } else {
+    // Si no se selecciona ningún estado, vacía la lista de ciudades
+    info_ciudad.value = [];
+    info_muni.value = [];
   }
 }
+    
+
+
+watch(valorSeleccionado, getSelect);
+
+
+// api get
+// async function getMunicipio() {
+//   try {
+//     const { data } = await axios.get(`${baseUrlMunicipio}/masterMunicipality`);
+//     info_muni.value = data.map((muni: Muni) => ({
+//       title: muni.Nombre,
+//       value: muni.ID_municipio,
+//     }));
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+// async function getCiudad() {
+//   const valorSeleccionado = municipio.value?.value
+//   try {
+//     const { data } = await axios.get(`${baseUrlCiudad}/filterCities/${valorSeleccionado}`);
+//     info_uno.value = data.map((ciudad: Ciudad) => ({
+//       title: ciudad.Nombre,
+//       value: ciudad.ID_city,
+//     }));
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 interface Destino {
   Sucursal: string;
@@ -410,7 +440,7 @@ async function validate() {
           if (result.isConfirmed) {
             router.push(`/addArticulos/${idComandaRandom.value}`);
           }
-        });
+        }); 
       }
     });
 }
@@ -427,8 +457,9 @@ function generarCadenaAleatoria(longitud: number) {
 
 onMounted(async () => {
   await getEstados();
-  await getMunicipio();
-  await getCiudad();
+  // await getSelect();
+  // await getMunicipio();
+  // await getCiudad();
   await getSucursal();
   await getDelivery();
   await getPayment();
@@ -667,6 +698,7 @@ function handleSelectImages(items: any) {
           aria-label="Name Documents"
           color="primary"
           v-model="estado"
+          @update:modelValue="getSelect"
         >
         </v-autocomplete>
       </v-col>
