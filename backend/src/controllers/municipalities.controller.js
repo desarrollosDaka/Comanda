@@ -26,8 +26,7 @@ const filterMasterMunicipality = async (req, res) => {
                     T1.*
         FROM [dbo].[MASTER_STATES] T0
         INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.ID_states = T1.ID_states
-        WHERE T0.ID_states ='${ID_state}'
-        ORDER BY T0.[ID_order] DESC`
+        WHERE T0.ID_states ='${ID_state}'`
         );
 
         if(rta){

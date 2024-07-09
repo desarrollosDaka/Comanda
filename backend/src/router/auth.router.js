@@ -2,8 +2,10 @@ const router = require("express").Router();
 
 const {singIn, signUp} = require("../controllers/auth.controller");
 
-// register user es daniel alo
 
+//const { checkAuth } = require("../middleware/auth"); // Importa tu middleware
+
+// register user es daniel alo
 router.post("/signup", signUp);
 
 // Login
