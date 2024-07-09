@@ -5,6 +5,7 @@ const getMasterProducts = async (req, res) => {
     try {
         //const rta = await sequelize.models.modelProducts_replica.findAll();
         //
+        const id = req.params.id; 
         const rta = await sequelize.query(
             `SELECT [ID_producto]
                 ,[Producto]
@@ -14,7 +15,7 @@ const getMasterProducts = async (req, res) => {
                 ,[create_date]
                 ,[update_date]
             FROM [COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]
-            where [Precio] != 0`);
+            WHERE [Precio] != 0 and [ID_producto] LIKE '%${id}%'`);
         if (rta) {
             res.status(201)
             res.json(rta)
