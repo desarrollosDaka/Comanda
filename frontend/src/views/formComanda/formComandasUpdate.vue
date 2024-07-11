@@ -557,6 +557,24 @@ onMounted(async () => {
     </v-row>
 
     <v-row>
+      <v-col cols="12" md="4">
+        <v-label for="tipo">Tipo</v-label>
+        <v-autocomplete
+          id="tipo"
+          placeholder="Tipo de cliente"
+          class="mt-2 my-input"
+          clearable
+          chips
+          :items="['NATURAL', 'JURIDICO']"
+          variant="outlined"
+          :rules="tipoRules"
+          aria-label="Name Documents"
+          color="primary"
+          v-model="tipo"
+        >
+        </v-autocomplete>
+      </v-col>
+
       <v-col cols="12" md="2">
         <v-label for="tipoDocumento"></v-label>
         <v-autocomplete
@@ -587,24 +605,6 @@ onMounted(async () => {
           color="primary"
         >
         </v-text-field>
-      </v-col>
-
-      <v-col cols="12" md="4">
-        <v-label for="tipo">Tipo</v-label>
-        <v-autocomplete
-          id="tipo"
-          placeholder="Tipo de Proceso"
-          class="mt-2 my-input"
-          clearable
-          chips
-          :items="['NATURAL', 'JURIDICO']"
-          variant="outlined"
-          :rules="tipoRules"
-          aria-label="Name Documents"
-          color="primary"
-          v-model="tipo"
-        >
-        </v-autocomplete>
       </v-col>
     </v-row>
 
