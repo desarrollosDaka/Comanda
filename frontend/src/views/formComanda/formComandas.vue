@@ -75,6 +75,7 @@ if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
   ID_rol.value = parsedData.data.ID_rol;
+  
 }
 
 /// validaciones
