@@ -195,7 +195,7 @@ const headers = ref([
 
           <!-- Editar -->
           <router-link
-            :to="{ path: `/formComandaUpdate/${item['ID_detalle']}` }"
+            :to="{ path: `/formComandaUpdate/${item['ID_detalle']}/${item['ID_order']}` }"
           >
             <v-icon size="23" class="me-4" color="warning"> mdi-pencil </v-icon>
           </router-link>

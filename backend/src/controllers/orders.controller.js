@@ -1,8 +1,17 @@
 const sequelize = require("../config/conexion");
 const fs = require("fs").promises;
+const fs1 = require("fs");
 const io = require("../socket.js");
 const sharp = require("sharp");
 const path = require("path");
+const { PDFDocument, rgb } = require("pdf-lib");
+const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
+const uploadsDirectory = require("../../uploads/index.js");
+const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
+
+const fontBytes = fs1.readFileSync(
+  "C:/Users/d.marcano/Desktop/fuentes/SELENA MARIN.ttf"
+);
 
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
@@ -195,7 +204,6 @@ T0.[ID_order]  ,T0.ID_detalle   ,T0.Caja_factura   ,T3.Tipo_cedula  ,T0.Cedula ,
 const createMasterOrderAndDetails = async (req, res) => {
   try {
     const data = req.body;
-    console.log(data);
     // Crear un objeto con los datos del cliente
     const newClients = {
       Nombre: data.nombreCompleto,
@@ -404,7 +412,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
   try {
     const data = req.body;
     const idOrder = data.Id_Comanda;
-    console.log(data);
 
     const newClients = {
       Nombre: data.nombreCompleto,
@@ -526,6 +533,68 @@ const addwatermark = async (f, id) => {
   }
 };
 
+const addWaterMarkPDF = async (f, id) => {
+  try {
+    // Capturar la ruta de entrada y destino de los archivos PDF.
+    let directory = uploadsDirectory();
+    let destinationDirectory = folderWaterMarkDirectory();
+
+    // Lee el PDF original.
+    const pdfBytes = fs1.readFileSync(`${directory}/${f.filename}`);
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+
+    // Registra fontkit.
+    pdfDoc.registerFontkit(fontkit);
+
+    // Obtiene la primera página.
+    const page = pdfDoc.getPages()[0];
+
+    // Obtiene las dimensiones de la pagina.
+    const { width, height } = page.getSize();
+
+    // Ajusta las coordenadas del logo en el eje X && Y.
+    let coordenadaX = width - width * 0.5;
+    let coordenadaY = height - height * 0.95;
+
+    // Prepara el contenido que va a ser agregado.
+    let waterInPdf = `DAKA ONLINE: #${id}`;
+    let waterInPdfLon = `DAKA ONLINE: #${id}`.length;
+    let logitudRectangulo = waterInPdfLon * 10;
+
+    // Crea un rectángulo alrededor de la frase
+    page.drawRectangle({
+      x: coordenadaX - 10,
+      y: coordenadaY / 1.5,
+      width: logitudRectangulo,
+      height: 30,
+      borderWidth: 1,
+      borderColor: rgb(0.15, 0.15, 0.15),
+      color: rgb(1, 1, 1),
+    });
+
+    // Crea una anotación de texto libre
+    page.drawText(waterInPdf, {
+      x: coordenadaX,
+      y: coordenadaY,
+      size: 16,
+      color: rgb(0.15, 0.15, 0.15),
+      font: await pdfDoc.embedFont(fontBytes),
+      bold: true,
+      italic: true,
+    });
+
+    // Guarda el PDF modificado en disco
+    const modifiedPdfBytes = await pdfDoc.save();
+    console.log("modifiedPdfBytes", modifiedPdfBytes);
+    fs1.writeFileSync(
+      `${destinationDirectory}/${f.filename}`,
+      modifiedPdfBytes
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const resizeImage = async (f) => {
   try {
     const outputPath = path.join(__dirname, "../../resizeImages", f.filename);
@@ -558,12 +627,18 @@ const createOrderDocument = async (req, res) => {
   const files = req.files;
   const Id_Comanda = req.params.id;
 
+  console.log("req.params", req.params);
+
   try {
     const results = await Promise.all(
       files.map(async (file, index) => {
         try {
-          await resizeImage(file); //comprimimos la imagen
-          await addwatermark(file, Id_Comanda);
+          if (file.mimetype.includes("image")) {
+            await resizeImage(file); //comprimimos la imagen
+            await addwatermark(file, Id_Comanda);
+          } else {
+            await addWaterMarkPDF(file, Id_Comanda);
+          }
         } catch (error) {
           console.log(
             `Ocurrio un error al momento de leer los datos de la imagen ${error}`
@@ -580,7 +655,6 @@ const createOrderDocument = async (req, res) => {
           File: name,
           User_crea: user,
         };
-        console.log(ordersFiles);
         return await sequelize.models.modelOrdersFiles.create(ordersFiles);
       })
     );
@@ -605,7 +679,6 @@ const deleteOrderDocument = async (req, res) => {
   const Id = req.params.id;
   const imagen = req.body.imagen;
 
-  console.log(imagen);
   try {
     // Encuentra el registro en la base de datos
     const documentOrder = await sequelize.models.modelOrdersFiles.findOne({
@@ -750,9 +823,6 @@ const deleteMasterOrder = async (req, res) => {
 
     const idOrder = req.params.id;
     //const idDetalle = req.body.Id_Comanda;
-
-    console.log(idOrder);
-    // console.log(data);
 
     // const userUpdate = req.body;
     const rta = await sequelize.models.modelOrders.update(data, {
