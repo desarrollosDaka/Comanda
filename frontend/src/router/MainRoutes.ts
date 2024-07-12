@@ -48,7 +48,7 @@ const MainRoutes = {
     },
     {
       name: 'formComandaUpdate',
-      path: '/formComandaUpdate/:id',
+      path: '/formComandaUpdate/:id/:idComanda',
       component: () => import('@/views/pages/formComandaUpdate.vue')
     }
     ,{

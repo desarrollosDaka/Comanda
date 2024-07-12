@@ -193,7 +193,7 @@ const headers = ref([
         <template v-slot:item.action="{ item }">
           <!-- ver -->
 
-          <!-- Editar -->
+          <!-- Editar --> 
           <router-link
             :to="{ path: `/formComandaUpdate/${item['ID_detalle']}/${item['ID_order']}` }"
           >

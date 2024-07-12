@@ -13,8 +13,11 @@ import "vue3-toastify/dist/index.css";
 const route = useRoute();
 
 // CAPTURAMOS EL ID DE COMANDA
-const id = ref(); // id de la COMANDA
+const id = ref(); // id de la COMANDA (INTERNO )
+const idComanda = ref()
+
 id.value = route.params.id;
+idComanda.value = route.params.idComanda;
 
 // variables
 const valid = ref(false);
@@ -431,7 +434,7 @@ async function handleFormComanda() {
   }
   try {
     await axios.post(
-      `${baseUrl}/createOrderDocument/${id.value}`,
+      `${baseUrl}/createOrderDocument/${id.value}/${idComanda.value}`,
       formDataDocuments
     );
   } catch (error) {
