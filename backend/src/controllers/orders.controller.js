@@ -538,6 +538,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Lee el PDF original. lol
     const pdfBytes = fs1.readFileSync(`${directory}/${f.filename}`);
+    const fontBytes = fs1.readFileSync(`${fontsDirectory()}/SELENA MARIN/SELENA MARIN.ttf`);
     const pdfDoc = await PDFDocument.load(pdfBytes);
 
     // Registra fontkit.
