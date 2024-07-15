@@ -8,9 +8,10 @@ const { PDFDocument, rgb } = require("pdf-lib");
 const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
+const fontsDirectory = require("../assets/fonts/index.js");
 
 const fontBytes = fs1.readFileSync(
-  "C:/Users/d.marcano/Desktop/fuentes/SELENA MARIN.ttf"
+  path.join(fontsDirectory(),"/SELENA MARIN/SELENA MARIN.ttf")
 );
 
 //CONSULTA DE ORDENES
@@ -511,14 +512,14 @@ const addwatermark = async (f, id) => {
   try {
     const width = 400;
     const height = 400;
-    const text = `Nro # ${id}`;
+    const text = `DAKA ONLINE # ${id}`;
 
     const svgImage = `
           <svg width="${width}" height="${height}">
             <style>
             .title { fill: #001; font-size: 20px; font-weight: bold;}
             </style>
-            <text x="38%" y="98%" text-anchor="middle" class="title">${text}</text>
+            <text x="50%" y="98%" text-anchor="middle" class="title">${text}</text>
           </svg>
           `;
     const svgBuffer = Buffer.from(svgImage); // creamos la marca de agua en formato svg
@@ -560,7 +561,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Ajusta las coordenadas del logo en el eje X && Y.
     let coordenadaX = width - width * 0.5;
-    let coordenadaY = height - height * 0.95;
+    let coordenadaY = height - height * 0.98;
 
     // Prepara el contenido que va a ser agregado.
     let waterInPdf = `DAKA ONLINE: #${id}`;
@@ -568,15 +569,15 @@ const addWaterMarkPDF = async (f, id) => {
     let logitudRectangulo = waterInPdfLon * 10;
 
     // Crea un rectángulo alrededor de la frase
-    page.drawRectangle({
-      x: coordenadaX - 10,
-      y: coordenadaY / 1.5,
-      width: logitudRectangulo,
-      height: 30,
-      borderWidth: 1,
-      borderColor: rgb(0.15, 0.15, 0.15),
-      color: rgb(1, 1, 1),
-    });
+    // page.drawRectangle({
+    //   x: coordenadaX - 10,
+    //   y: coordenadaY / 1.2,
+    //   width: logitudRectangulo,
+    //   height: 30,
+    //   borderWidth: 1,
+    //   borderColor: rgb(0.15, 0.15, 0.15),
+    //   color: rgb(1, 1, 1),
+    // });
 
     // Crea una anotación de texto libre
     page.drawText(waterInPdf, {
@@ -632,6 +633,7 @@ const createOrderDocument = async (req, res) => {
   const data = req.body;
   const files = req.files;
   const Id_Comanda = req.params.id;
+  const Id_Comanda2 = req.params.idComanda;
 
   console.log("req.params", req.params);
 
@@ -641,9 +643,10 @@ const createOrderDocument = async (req, res) => {
         try {
           if (file.mimetype.includes("image")) {
             await resizeImage(file); //comprimimos la imagen
-            await addwatermark(file, Id_Comanda);
+            await addwatermark(file, Id_Comanda2);
           } else {
-            await addWaterMarkPDF(file, Id_Comanda);
+            console.log("Id_Comanda2",Id_Comanda2);
+            await addWaterMarkPDF(file, Id_Comanda2);
           }
         } catch (error) {
           console.log(

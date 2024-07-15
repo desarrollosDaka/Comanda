@@ -71,7 +71,7 @@ router.post("/createOrder", createMasterOrderAndDetails);
 router.post("/createOrderDetails", createOrderDetails);
 
 //CREATE ARCHIVOS DE ORDER DOCUMENT
-router.post("/createOrderDocument/:id", upload.array('doc_file'), createOrderDocument);
+router.post("/createOrderDocument/:id/:idComanda", upload.array('doc_file'), createOrderDocument);
 
 
 //CREATE DETALLE DE ORDEN
