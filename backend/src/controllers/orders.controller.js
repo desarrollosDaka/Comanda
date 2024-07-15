@@ -201,9 +201,7 @@ const filterMasterOrder = async (req, res) => {
         console.log("Error", e);
 
     }
-  } catch (e) {
-    console.log("Error", e);
-  }
+
 };
 
 //CREAR CABECERA ORDENES Y CLIENTES
@@ -506,10 +504,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
         res.status(500).json({ message: 'Error interno del servidor' });
 
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error interno del servidor" });
-  }
+
 };
 
 const addwatermark = async (f, id) => {
@@ -822,9 +817,7 @@ const updateMasterOrderDetails = async (req, res) => {
         console.log("Error", e);
 
     }
-  } catch (e) {
-    console.log("Error", e);
-  }
+
 };
 
 // // DELETE ORDER
