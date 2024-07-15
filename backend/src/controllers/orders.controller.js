@@ -10,10 +10,6 @@ const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
 
-const fontBytes = fs1.readFileSync(
-  path.join(fontsDirectory(),"/SELENA MARIN/SELENA MARIN.ttf")
-);
-
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
   try {
@@ -540,7 +536,7 @@ const addWaterMarkPDF = async (f, id) => {
     let directory = uploadsDirectory();
     let destinationDirectory = folderWaterMarkDirectory();
 
-    // Lee el PDF original.
+    // Lee el PDF original. lol
     const pdfBytes = fs1.readFileSync(`${directory}/${f.filename}`);
     const pdfDoc = await PDFDocument.load(pdfBytes);
 
