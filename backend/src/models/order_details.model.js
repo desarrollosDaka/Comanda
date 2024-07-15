@@ -11,8 +11,8 @@ const masterOrderdetailsSchema = {
     autoIncrement: true,
   },
   ID_detalle: {
+    allowNull: false,
     type: DataTypes.STRING(30),
-   // autoIncrement: true,
   },
   ID_producto: {
     allowNull: false,
@@ -20,10 +20,6 @@ const masterOrderdetailsSchema = {
   },
   Producto: {
     allowNull: false,
-    type: DataTypes.STRING(100),
-  },
-  Serial: {
-    allowNull: true,
     type: DataTypes.STRING(100),
   },
   Unidades: {
@@ -37,6 +33,14 @@ const masterOrderdetailsSchema = {
   Subtotal: {
     allowNull: false,
     type: DataTypes.FLOAT,
+  },
+  Direccion: {
+    allowNull: true,
+    type: DataTypes.STRING(150),
+  },
+  Zoom: {
+    allowNull: true,
+    type: DataTypes.STRING(100),
   },
   Delete: {
     allowNull: true,
