@@ -38,7 +38,7 @@ if (jsonFromLocalStorage !== null) {
                     </router-link>
                 </div>
                 <div class="imgBanner">
-                    <img src="../../../assets/images/logos/banner-logo2.png" alt="Banner Image">
+                    <img src="../../../assets/images/daki.png" alt="Banner Image">
                 </div>
             </div>
         </aside>

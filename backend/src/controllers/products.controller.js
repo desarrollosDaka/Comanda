@@ -15,6 +15,7 @@ const getMasterProducts = async (req, res) => {
                 ,[update_date]
             FROM [COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]
             WHERE [Precio] != 0 `);//and [ID_producto] LIKE '%${id}%'
+
         if (rta) {
             res.status(201)
             res.json(rta)
