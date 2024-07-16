@@ -11,7 +11,6 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 import Vue3Toasity, { type ToastContainerOptions } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import { io } from 'socket.io-client';
 
 // google-fonts
 import '@fontsource/public-sans/400.css';
