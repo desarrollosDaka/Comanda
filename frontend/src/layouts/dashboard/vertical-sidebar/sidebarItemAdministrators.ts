@@ -49,27 +49,12 @@ const sidebarItem: menu[] = [
   {
     title: 'Comandas',
     icon: ClusterOutlined, 
-    to: '/maestroComanda'
-  },
-  {
-    title: 'Comandas Asignadas',
-    icon: ClusterOutlined, 
     to: '/maestroComandaAsignada'
   },
   {
     title: 'Reportes',
     icon: ContainerOutlined, 
     to: '/comanda'
-  },
-  {
-    title: 'Factura Online',
-    icon: SnippetsOutlined, 
-    to: '/documentacionDaka'
-  },
-  {
-    title: 'Despacho',
-    icon: ToolOutlined, 
-    to: '/documentacionDaka'
   },
   { header: 'Configuración' },
   {
