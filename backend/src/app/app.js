@@ -16,7 +16,7 @@ const io = socketIOInitializer(server);
 
 // Middlewares
 app.use(express.json());
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(cors({
     origin: 'http://localhost:5173', // Reemplaza con la URL de tu frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE'],

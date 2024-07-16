@@ -384,7 +384,7 @@ async function handleFormComanda() {
   //     console.log(error)
   // }
   Created(jsonData);
-  useAddDocument(itemDocument.value, idComandaRandom.value); //Visualizan y agregan  archivos
+  useAddDocument(itemDocument.value, idComandaRandom.value ); //Visualizan y agregan  archivos
 
   // const formDataDocuments = new FormData();
 
@@ -909,7 +909,7 @@ function handleSelectImages(items: any) {
 
       <v-col cols="12" md="4">
         <v-label for="delivery">Delivery</v-label>
-
+        
         <v-autocomplete
           id="delivery"
           placeholder="Seleccione el tipo de delivery"
