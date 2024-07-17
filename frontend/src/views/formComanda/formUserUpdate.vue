@@ -99,7 +99,7 @@ const getRol = async () => {
 
     rolInfo.value =  data.map((rol: Roles) => ({
             title: rol.Nombre_rol,
-            value: rol.Nombre_rol
+            value: rol.ID_rol
         }));
   } catch(error){
       console.log(error)

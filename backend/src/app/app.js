@@ -38,7 +38,6 @@ const routerPayment = require("../router/payment.router");
 const routerProducts = require("../router/products.router");
 const routerStatus = require("../router/status.router");
 
-
 ///////////////////////////////////////////ANDERSON///////////////////////////////
 app.use(express.urlencoded({ extended: true}));
 app.use('/public', express.static(path.join(__dirname, '../../uploads')));

@@ -84,8 +84,6 @@ if (jsonFromLocalStorage !== null) {
         </template>
       </v-list>
 
-
-
     <!-- GERENTES-->
         <v-list aria-busy="true" aria-label="menu list" v-if="MANAGERS.includes(Rol)">
         <!---Menu Loop -->
