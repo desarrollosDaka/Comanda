@@ -23,7 +23,7 @@ const filterMasterCities = async (req, res) => {
         const ID_municipio = req.params.id; 
         const rta = await sequelize.query(
             `SELECT 
-                    T1.*
+               T1.*
         FROM [dbo].[MASTER_MUNICIPALITY] T0
         INNER JOIN [dbo].[MASTER_CITIES] T1 ON T0.ID_municipio = T1.ID_municipio
         WHERE T0.ID_municipio = '${ID_municipio}'`);

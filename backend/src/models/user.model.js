@@ -30,10 +30,6 @@ const masterUserSchema = {
     allowNull: true,
     type: DataTypes.STRING(80),
   },
-  Nombre_rol: {
-    allowNull: false,
-    type: DataTypes.STRING(80),
-  },
   Dpto_ventas: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
