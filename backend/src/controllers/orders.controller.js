@@ -246,7 +246,7 @@ const createMasterOrderAndDetails = async (req, res) => {
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
-            Nombre_autoriza: data.Nombre_autoriza,
+            Nombre_autoriza: data.nombreDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
@@ -458,7 +458,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             SucursalZoom: data.sucursalZoom,
             Autoriza: data.autorizado,
             Cedula_autoriza: data.cedulaDos,
-            Nombre_autoriza: data.Nombre_autoriza,
+            Nombre_autoriza: data.nombreDos,
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
@@ -720,7 +720,7 @@ const filterMasterAsesor = async (req, res) => {
                    ,[Nombre] as [Name]
                    ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-            WHERE Nombre_rol = 'Asesor'`
+            WHERE ID_rol = '1' ` //Nombre_rol = 'Asesor'
     );
     if (rta) {
       res.status(200);
