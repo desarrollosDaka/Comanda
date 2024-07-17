@@ -31,7 +31,6 @@ const singIn = async (req, res) => {
                 Nombre: user.Nombre,
                 Email: user.Email,
                 ID_rol: user.ID_rol,
-              //  ID_rol: user.ID_rol,
                 Id_sucursal: user.Id_sucursal,
                 Delete: 0,
                 id: tokenSession,
