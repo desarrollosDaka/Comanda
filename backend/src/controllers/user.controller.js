@@ -11,7 +11,7 @@ const getMasterUser = async (req, res) => {
               ,T0.[Password]
               ,T0.[Id_sucursal]
               ,T1.Sucursal
-              ,T0.[Nombre_rol]
+              ,T0.[ID_rol]
               ,T0.[Dpto_ventas]
               ,T0.[Linea_ventas]
               ,T0.[User_crea]

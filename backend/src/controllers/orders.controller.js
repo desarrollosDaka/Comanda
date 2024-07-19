@@ -536,7 +536,7 @@ const addWaterMarkPDF = async (f, id) => {
     let directory = uploadsDirectory();
     let destinationDirectory = folderWaterMarkDirectory();
 
-    // Lee el PDF original. lol
+    // Lee el PDF original. 
     const pdfBytes = fs1.readFileSync(`${directory}/${f.filename}`);
     const fontBytes = fs1.readFileSync(`${fontsDirectory()}/SELENA MARIN/SELENA MARIN.ttf`);
     const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -714,7 +714,7 @@ const filterMasterAsesor = async (req, res) => {
                    ,[Nombre] as [Name]
                    ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-            WHERE Nombre_rol = 'Asesor'`
+            WHERE ID_rol = 'Asesor'`
     );
     if (rta) {
       res.status(200);

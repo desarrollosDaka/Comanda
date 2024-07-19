@@ -1,9 +1,3 @@
-// const cors = require("cors");
-// const express = require("express");
-// const morgan = require("morgan");
-// const app = express();
-// const path = require('path');
-
 const cors = require("cors");
 const express = require("express");
 const morgan = require("morgan");
@@ -15,6 +9,7 @@ const server = http.createServer(app);
 const io = socketIOInitializer(server);
 
 // Middlewares
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 // app.use(morgan("dev"));
 app.use(cors({
@@ -37,6 +32,7 @@ const routerDelivery = require("../router/delivery.router");
 const routerPayment = require("../router/payment.router");
 const routerProducts = require("../router/products.router");
 const routerStatus = require("../router/status.router");
+const routerNotifications = require("../router/notifications.router");
 
 
 ///////////////////////////////////////////ANDERSON///////////////////////////////
@@ -59,7 +55,10 @@ app.use("/api/delivery", routerDelivery);
 app.use("/api/payment", routerPayment);
 app.use("/api/products", routerProducts);
 app.use("/api/status", routerStatus);
+app.use("/api/", routerNotifications);
 app.use('/', require('../socket.js'));
 
 
+
 module.exports = { app, server , io};
+
