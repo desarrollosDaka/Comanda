@@ -88,7 +88,7 @@ interface Table_Orders {
 }
 
 const getAsesores = async () => {
-  try {
+  try{
     const url = `${baseUrlAsesor}/filterMasterAsesor`;
     const { data } = await axios.get(url);
 
@@ -107,7 +107,7 @@ const getMessageStatus = (id: number) => {
   if (infogetStatus && infogetStatus.value) {
     const status = infogetStatus.value.find(
       (item: any) => item.ID_status === id
-    ).Status;
+    )?.Status;
     return status;
   }
   return null;
@@ -117,7 +117,7 @@ const getNameAsesor = (id: number) => {
   if (infoAsesores && infoAsesores.value) {
     const asesor = infoAsesores.value.find(
       (item: any) => item.value == id
-    ).title;
+    )?.title;
     return asesor;
   }
   return null;

@@ -18,7 +18,7 @@ const sidebarMenuUSer = shallowRef(sidebarItemsRol);
 const User = ref('');
 const Rol = ref<number>(0)
 
-const ADVISORS_STORERS_CASHIER = [1,5,6,7,8,9] //rol asesores, almacenistas, cajeras
+const ADVISORS_STORERS_CASHIER = [1,5,6,7,8,9, 10] //rol asesores, almacenistas, cajeras
 const MANAGERS = [4] //rol gerentes
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
@@ -52,7 +52,7 @@ if (jsonFromLocalStorage !== null) {
 
        <!-- ADMINISTRADORES-->
 
-      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 0">
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 99">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenu" :key="i">
           <!---Item Sub Header -->
