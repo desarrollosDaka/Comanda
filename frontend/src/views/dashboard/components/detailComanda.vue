@@ -155,9 +155,7 @@ const update = async () => {
   console.log(jsonData);
   
   // try {
-  //   await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
-  //     status_comanda: dataUser.changeID_status,
-  //   });
+  //   await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, jsonData
   // } catch (error) {
   //   console.log(error);
   // }

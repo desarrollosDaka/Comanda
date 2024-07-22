@@ -57,10 +57,6 @@ const RolRules = ref([
   (v: string) => !!v || 'El rol del usuario es requerido', 
 ]);
 
-const departmentsRules = ref([
-  (v: string) => !!v || 'El departamento es requerido', 
-]);
-
 const fullnameRules = ref([
   (v: string) => !!v || 'El nombre y apellido del es requerido', 
 ]);

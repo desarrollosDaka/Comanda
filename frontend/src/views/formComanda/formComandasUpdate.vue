@@ -663,7 +663,7 @@ onMounted(async () => {
         <v-label for="tipoDocumento"></v-label>
         <v-autocomplete
           id="tipoDocumento"
-          :items="['V', 'J', 'G', 'E']"
+          :items="['V', 'P', 'E', 'J', 'G']"
           variant="outlined"
           v-model="tipoDocumento"
           required

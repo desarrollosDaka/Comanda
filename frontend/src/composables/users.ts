@@ -68,12 +68,12 @@ const ARRAYUSER_ROL = [
     {   "userRol": 9 , 
         "status":[10,4],
         "msgButton":'Comanda Revisada por Almacen', 
-        "changeID_status":3,
+        "changeID_status":3, 
         "printer":true
     }, 
-      //ATC TIENDA   
+      //ATC TIENDA  
     {   "userRol": 10,
-        "status":[4, 6],
+        "status":[4, 6], 
         "msgButton":'Despachada por ATC',
         "changeID_status":8,
         "printer":false
