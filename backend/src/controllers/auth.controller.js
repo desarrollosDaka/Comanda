@@ -18,7 +18,7 @@ const singIn = async (req, res) => {
             res.status(404)
             res.send({ error: 'El usuario no existe.' })
         }
-
+        //console.log(user);
         // Comparar Password
         const checkPassword = await compare(Password, user.Password);
 

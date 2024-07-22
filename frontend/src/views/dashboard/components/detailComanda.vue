@@ -63,8 +63,10 @@ const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
 const User_asing = ref();
+const id_sucursal = ref();
 const guiaZoom = ref();
 const direccionDelivery = ref();
+
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -77,6 +79,7 @@ if (jsonFromLocalStorage !== null) {
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;
+  id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
@@ -168,7 +171,8 @@ interface Asesores {
 
 const getAsesores = async () => {
   try {
-    const url = `${baseUrlAsesor}/filterMasterAsesor`;
+
+    const url = `${baseUrlAsesor}/filterMasterAsesorSuc/${id_sucursal.value}`;
     const { data } = await axios.get(url);
 
     infoAsesores.value = data[0].map((asesor: Asesores) => ({

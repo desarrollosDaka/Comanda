@@ -18,11 +18,12 @@ const getMasterOrder = async (req, res) => {
       `SELECT  T0.[ID_order]
                 ,T0.ID_detalle
                 ,T0.Caja_factura
-				,T3.Tipo_cedula
+				        ,T3.Tipo_cedula
                 ,T0.Cedula  
                 ,T3.Nombre Cliente
                 ,T3.Razon_comercial
                 ,T1.Sucursal
+                ,T1.ID_Sucursal
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
@@ -56,7 +57,7 @@ const getMasterOrderForStore = async (req, res) => {
       `	SELECT T0.[ID_order]
                 ,T0.ID_detalle
                 ,T0.Caja_factura
-				,T3.Tipo_cedula
+				        ,T3.Tipo_cedula
                 ,T0.Cedula
                 ,T3.Nombre Cliente
                 ,T3.Razon_comercial
@@ -374,8 +375,6 @@ const createOrderDetails = async (req, res) => {
         }
 
 
-    //const orderDetails = await sequelize.models.modelOrdersdetails.create(orderDetailData);
-
     if (orderDetailData) {
       res.status(201);
       res.json({ product: product });
@@ -386,6 +385,37 @@ const createOrderDetails = async (req, res) => {
   } catch (e) {
     console.log("Error", e);
   }
+};
+
+//ACTUALIZA DETALLES DE LA ORDER 
+const updateOrderDetails = async (req, res) => {
+
+  const data = req.body;
+
+  try {
+      const orderDetailData = {
+          ID_detalle: data.id_Comanda,
+          ID_producto: data.id_producto,
+          Direccion: data.direccionDelivery,
+          Zoom: data.guiaZoom,
+      };
+
+      let product = await sequelize.models.modelOrdersdetails.findOne({
+          where: { ID_detalle: data.id_Comanda, ID_producto: data.id_producto },
+      });
+    
+    product = await product.update(orderDetailData);
+
+  if (orderDetailData) {
+    res.status(201);
+    res.json({ product: product });
+  } else {
+    res.status(404);
+    res.json({ msj: "Error en la creación" });
+  }
+} catch (e) {
+  console.log("Error", e);
+}
 };
 
 const deleteOrderDetails = async (req, res) => {
@@ -717,12 +747,14 @@ const filterMasterAsesor = async (req, res) => {
   try {
     const rta = await sequelize.query(
       `SELECT [ID_user]   
-                   ,[Nombre] as [Name]
-                   ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
-            FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-            WHERE ID_rol = '1' ` //Nombre_rol = 'Asesor'
 
+            ,[Nombre] as [Name]
+            ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
+            ,[Id_sucursal]
+    FROM [COMANDA_TEST].[dbo].[MASTER_USER]
+    WHERE ID_rol = '1' `
     );
+
     if (rta) {
       res.status(200);
       res.json(rta);
@@ -734,6 +766,34 @@ const filterMasterAsesor = async (req, res) => {
     console.log("Error", e);
   }
 };
+
+
+//FILTRO DE ASESOR
+const filterMasterAsesorSucursal = async (req, res) => {
+  try {
+    const id_sucursal = req.params.id_sucursal;
+    
+    const rta = await sequelize.query(
+      `SELECT [ID_user]   
+            ,[Nombre] as [Name]
+            ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
+            ,[Id_sucursal]
+    FROM [COMANDA_TEST].[dbo].[MASTER_USER]
+    WHERE ID_rol = '1' and Id_sucursal = '${id_sucursal}'`);
+
+    console.log(rta);
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
 
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateMasterAsesor = async (req, res) => {
@@ -797,8 +857,8 @@ const updateMasterOrderDetails = async (req, res) => {
             Unidades: data.unidades,
             Precio: data.precio,
             Subtotal: data.subtotal,          
-            Direccion: data.direccion,
-            Zoom: data.zoom,
+            Direccion: data.direccionDelivery,
+            Zoom: data.guiaZoom,
         };
 
         const idOrder = req.params.id;
@@ -829,14 +889,9 @@ const deleteMasterOrder = async (req, res) => {
       Delete: req.body.status,
       Motivo_delete: req.body.motivo,
     };
-    // const dataDetalle ={
-    //     Delete: '1',
-    // }
 
     const idOrder = req.params.id;
-    //const idDetalle = req.body.Id_Comanda;
 
-    // const userUpdate = req.body;
     const rta = await sequelize.models.modelOrders.update(data, {
       where: { ID_order: idOrder },
     });
@@ -857,9 +912,11 @@ const deleteMasterOrder = async (req, res) => {
 module.exports = {
   getMasterOrder,
   filterMasterOrder,
-  filterMasterAsesor,
+  filterMasterAsesor,  
+  filterMasterAsesorSucursal,
   filterOrderDetails,
   createOrderDetails,
+  updateOrderDetails,
   deleteOrderDetails,
   createMasterOrderAndDetails,
   updateMasterOrderAndDetails,
