@@ -236,7 +236,7 @@ interface Estado {
 // api get
 async function getEstados() {
   try {
-    const { data } = await axios.get(`${baseUrlEstado}/masterStores`);
+    const { data } = await axios.get(`${baseUrlEstado}/masterStates`);
     info_estado.value = data.map((estados: Estado) => ({
       title: estados.Nombre,
       value: estados.ID_states,
@@ -311,7 +311,7 @@ interface EstadoRL {
 // api get
 async function getEstadosRL() {
   try {
-    const { data } = await axios.get(`${baseUrlEstado}/masterStores`);
+    const { data } = await axios.get(`${baseUrlEstado}/masterStates`);
     info_estadoRl.value = data.map((estadosrl: EstadoRL) => ({
       title: estadosrl.Nombre,
       value: estadosrl.ID_states,
