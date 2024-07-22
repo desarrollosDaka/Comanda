@@ -18,6 +18,16 @@ interface Document {
   mode: string;
 }
 
+interface Item {
+  Producto: string;
+  ID_producto: number;
+  guiaZoom: string;
+  direccionDelivery: string;
+  Precio: number;
+  Unidades: number;
+  Subtotal: number;
+}
+
 const route = useRoute();
 const search = ref("");
 const loadingInfo = ref(false);
@@ -33,7 +43,7 @@ const numFactura = ref();
 id.value = route.params.id;
 id_orders.value = route.params.id_orders;
 
-const info = ref([]);
+const info = ref<Item[]>();
 const origen = ref();
 const tipo = ref();
 const cedulaUno = ref();
@@ -53,6 +63,8 @@ const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
 const User_asing = ref();
+const guiaZoom = ref();
+const direccionDelivery = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -62,7 +74,6 @@ let user_crea = ref<string>("");
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
-
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;
@@ -130,6 +141,24 @@ const updateEstatus = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+const update = async () => {
+  const jsonData = info.value?.map((item) => ({
+    id_comanda: id.value,
+    producto: item.Producto,
+    id_producto: item.ID_producto,
+    guiaZoom: item.guiaZoom,
+    direccionDelivery: item.direccionDelivery,
+    precio: item.Precio,
+  }));
+
+  console.log(jsonData);
+  
+  // try {
+  //   await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, jsonData
+  // } catch (error) {
+  //   console.log(error);
+  // }
 };
 
 interface Asesores {
@@ -299,7 +328,10 @@ const getNameAsesor = (id: number) => {
         </v-col>
     </v-row>
 
-    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0">
+    <!-- tabla para los demas usuarios -->
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 6 || USER_ROL === 8">
+
+
         <!-- productos de la comanda -->
         <v-row>
             <v-col cols="12" md="12">
@@ -308,6 +340,7 @@ const getNameAsesor = (id: number) => {
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+
                             <th class="text-right text-caption font-weight-bold text-uppercase"
                                 style="min-width: 100px">Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
@@ -316,13 +349,59 @@ const getNameAsesor = (id: number) => {
                     </thead>
 
                     <tbody>
-                        <tr v-for="item in info">
+                        <tr v-for="(item, index) in info" :key="index">
                             <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
                             <td class="py-3">{{ item['ID_producto'] }} </td>
                             <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
                             </td>
                             <td class="py-3">{{ item['Precio'] }}$</td>
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
+                        </tr>
+                    </tbody>
+                </v-table>
+            </v-col>
+        </v-row>
+    </UiTitleCard>
+
+    <!-- tabla ATC -->
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 10">
+        <!-- productos de la comanda -->
+        <v-row>
+            <v-col cols="12" md="12">
+                <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+                    <thead class="bg-containerBg">
+                        <tr class="bg-containerBg">
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Direccion</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Guia Zoom</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr v-for="(item, index) in info" :key="index">
+                            <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+                            <td class="py-3">{{ item['ID_producto'] }} </td>
+                            <td class="py-3">
+                              <v-text-field 
+                                variant="solo-inverted"
+                                v-model="item.direccionDelivery"
+                                placeholder="Direccion"
+                                class="inputDelivery"
+                              >
+                              </v-text-field>
+                            </td>
+                            <td class="py-3">
+                              <v-text-field 
+                                variant="solo-inverted"
+                                v-model="item.guiaZoom"
+                                placeholder="Guia"
+                                class="inputDelivery2"
+                              >
+                              </v-text-field>
+                            </td>
+                            <td class="py-3">{{ item['Precio'] }}$</td>
                         </tr>
                     </tbody>
                 </v-table>
@@ -338,14 +417,12 @@ const getNameAsesor = (id: number) => {
     />
 
     <v-row class="mb-0 mt-5">
-
         <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
             <v-label text="Asignar Asesor"></v-label>
             <br>
             <v-autocomplete id="tipo" placeholder="Asesores de ventas" clearable chips :items="infoAsesores"
                 variant="outlined" class="mt-2" color="primary" v-model="selectedAsesor"></v-autocomplete>
         </v-col>
-
     </v-row>
 
     <v-container>
@@ -358,6 +435,12 @@ const getNameAsesor = (id: number) => {
 
                 </v-btn>
             </v-col>
+            <v-col cols="auto">
+                <v-btn append-icon="mdi-check-all" variant="elevated" color="primary"
+                    @click="update()">
+                    hola
+                </v-btn>
+            </v-col>
 
             <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
                 <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
@@ -366,8 +449,6 @@ const getNameAsesor = (id: number) => {
             </v-col>
         </v-row>
     </v-container>
-
-
 
     <v-dialog v-model="dialog" width="auto">
         <v-card max-width="400" prepend-icon="mdi-counter" title="Numero de Factura">
@@ -382,9 +463,6 @@ const getNameAsesor = (id: number) => {
         </v-card>
 
     </v-dialog>
-
-
-
 </template>
 
 <style>
@@ -434,5 +512,12 @@ thead {
     width: 76%;
     height: 100%;
     border-radius: 0.25rem;
+}
+
+.inputDelivery{
+  width: 200px;
+}
+.inputDelivery2{
+  width: 200px;
 }
 </style>
