@@ -58,7 +58,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 fetch(route + '/notification', {
   method: 'POST',
-  body: JSON.stringify({ message: "ALICEDEV94" }),
+  body: JSON.stringify({ message: "BIENVENIDO" }),
   headers: {
     'Content-Type': 'application/json'
   }
