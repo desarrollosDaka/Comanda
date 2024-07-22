@@ -10,7 +10,7 @@ import SalesReport from './components/SalesReport.vue';
 import Banner from './components/Banners.vue';
 
 const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
-const route: string = "http://localhost:3002/api"
+const route: string = `${import.meta.env.VITE_URL}/api`
 
 const subscription = async (): Promise<void> => {
   // Service Worker

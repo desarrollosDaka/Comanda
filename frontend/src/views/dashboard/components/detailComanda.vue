@@ -12,6 +12,7 @@ import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
 import { useUploadFiles } from "@/composables/file";
 
+
 interface Document {
   file: File;
   type: string;
@@ -42,6 +43,8 @@ const dialog = ref(false);
 const numFactura = ref();
 id.value = route.params.id;
 id_orders.value = route.params.id_orders;
+
+
 
 const info = ref<Item[]>();
 const origen = ref();
@@ -85,6 +88,7 @@ if (jsonFromLocalStorage !== null) {
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
+const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 
 const itemDocument = ref<Document[]>([]);
 
@@ -132,10 +136,21 @@ const getArticulos = async () => {
 };
 
 const updateEstatus = async () => {
+  const jsonData = info.value?.map((item) => ({
+    id_comanda: id.value,
+    producto: item.Producto,
+    id_producto: item.ID_producto,
+    guiaZoom: item.guiaZoom,
+    direccionDelivery: item.direccionDelivery,
+    precio: item.Precio,
+  }));
   try {
     //SOLO USUARIOS CON ROL DE CAJERAS
     if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
       useAddDocument(itemDocument.value, id.value); //Visualizan y agregan  archivos
+
+    } else if(ROLEATC.includes(USER_ROL.value)){
+      await axios.put(`${baseUrl}/updateOrderDetails/${id.value}`, jsonData);
     }
 
     await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
@@ -333,7 +348,7 @@ const getNameAsesor = (id: number) => {
     </v-row>
 
     <!-- tabla para los demas usuarios -->
-    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 6 || USER_ROL === 8">
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 3 || USER_ROL === 4 || USER_ROL === 5 || USER_ROL === 6 || USER_ROL === 7 || USER_ROL === 8 || USER_ROL === 9 || USER_ROL === 99">
 
 
         <!-- productos de la comanda -->

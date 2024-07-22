@@ -389,33 +389,28 @@ const createOrderDetails = async (req, res) => {
 
 //ACTUALIZA DETALLES DE LA ORDER 
 const updateOrderDetails = async (req, res) => {
-
-  const data = req.body;
-
   try {
+    const id = req.params.id;
+    const data = await req.body;
+
+    for (const item of data) {
       const orderDetailData = {
-          ID_detalle: data.id_Comanda,
-          ID_producto: data.id_producto,
-          Direccion: data.direccionDelivery,
-          Zoom: data.guiaZoom,
+        ID_detalle: id,
+        ID_producto: item.id_producto,
+        Direccion: item.direccionDelivery,
+        Zoom: item.guiaZoom,
       };
 
-      let product = await sequelize.models.modelOrdersdetails.findOne({
-          where: { ID_detalle: data.id_Comanda, ID_producto: data.id_producto },
+      await sequelize.models.modelOrdersdetails.update(orderDetailData, {
+        where: { ID_detalle: id, ID_producto: item.id_producto },
       });
-    
-    product = await product.update(orderDetailData);
+    }
 
-  if (orderDetailData) {
-    res.status(201);
-    res.json({ product: product });
-  } else {
-    res.status(404);
-    res.json({ msj: "Error en la creación" });
+    res.status(201).json({ message: "Detalles de la orden actualizados correctamente" });
+  } catch (e) {
+    console.log("Error", e);
+    res.status(500).json({ error: "Error en el servidor" });
   }
-} catch (e) {
-  console.log("Error", e);
-}
 };
 
 const deleteOrderDetails = async (req, res) => {
