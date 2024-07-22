@@ -19,7 +19,7 @@ const infogetStatus = ref();
 const id_sucursal = ref();
 
 
-const socket = io("http://localhost:3003", {
+const socket = io(import.meta.env.BACK_URL, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
@@ -33,7 +33,7 @@ socket.on("get-master-order", (rta) => {
         return dataUser.status.includes(item.ID_status) &&
           item.User_asing.toString() === USER.value.toString() &&
           item.ID_Sucursal === id_sucursal.value
-          
+
       } else {//FILTRAMOS SOLO POR ESTATUS
         return (
           dataUser.status.includes(item.ID_status) &&
@@ -43,27 +43,12 @@ socket.on("get-master-order", (rta) => {
     });
     info.value = dataFilterStatus
 
-
-    if (ROLFILTERUSER.includes(USER_ROL.value)) {
-
-      //FILTRAMOS POR ASESORES ASIGNADOS
-      return dataUser.status.includes(item.ID_status) &&
-      item.User_asing.toString() === USER.value.toString();
-    } else {
-
-      //FILTRAMOS SOLO POR ESTATUS
-      return dataUser.status.includes(item.ID_status);
-    }
-  });
-    info.value = dataFilterStatus
-
-
     //info.value = rta[0];
     console.log(info.value);
 
   } else {
     console.error("La respuesta no es un array:", rta);
-  }
+ } 
 });
 
 
@@ -144,16 +129,16 @@ const getAsesores = async () => {
 
   try {
     const url = `${baseUrlAsesor}/filterMasterAsesor/`;
-  
+
     const { data } = await axios.get(url);
     console.log(data);
-    
+
     infoAsesores.value = data[0].map((asesor: Asesores) => ({
       value: asesor.ID_user,
       title: asesor.Nombre,
     }));
     console.log(infoAsesores.value);
-    
+
   } catch (error) {
     console.log(error);
   }
