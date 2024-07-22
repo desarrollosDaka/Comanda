@@ -30,7 +30,9 @@ const {
     updateMasterOrderDetails,
     updateMasterOrderAndDetails,
     createOrderDetails,
+    updateOrderDetails,
     filterMasterAsesor, 
+    filterMasterAsesorSucursal,
     updateMasterAsesor,
     updateStatusOrder,
     //updateMasterOrder,
@@ -62,7 +64,10 @@ router.get("/filterOrderForSucursal/:id_sucursal", getMasterOrderForStore);
 router.get("/filterOrderDetails/:id", filterOrderDetails);
 
 //filtro de asesor
-router.get("/filterMasterAsesor", filterMasterAsesor);
+router.get("/filterMasterAsesor", filterMasterAsesor);///:id_sucursal
+
+//filtro por sucursal asesor
+router.get("/filterMasterAsesorSuc/:id_sucursal", filterMasterAsesorSucursal);
 
 //CREAR ORDER + CLIENTE
 router.post("/createOrder", createMasterOrderAndDetails);
@@ -102,7 +107,7 @@ router.put("/updateOrderAsesor/:id", updateMasterAsesor);
 router.put("/updateStatusOrder/:id", updateStatusOrder);
 
 // Update OrderDetails
-router.put("/updateOrderDetails/:id", updateMasterOrderDetails);
+router.put("/updateOrderDetails/", updateOrderDetails);
 
 // DELETE ORDER
 //router.delete("/deleteOrder/:id", deleteMasterOrder);

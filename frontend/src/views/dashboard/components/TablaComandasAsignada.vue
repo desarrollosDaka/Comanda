@@ -4,6 +4,8 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useUserRol } from "@/composables/users";
 import { useGetStatus } from "@/composables/status";
 import { io } from "socket.io-client";
+import { useRoute } from "vue-router";
+const route = useRoute();
 
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 const search = ref("");
@@ -13,6 +15,9 @@ const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const infoAsesores = ref();
 const infogetStatus = ref();
+const id_sucursal = ref();
+
+
 
 const socket = io("http://localhost:3003", {
   reconnection: false, // Deshabilitar la reconexión automática
@@ -26,16 +31,20 @@ socket.on("get-master-order", (rta) => {
   const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
       if (ROLFILTERUSER.includes(USER_ROL.value)) { //FILTRAMOS POR ASESORES ASIGNADOS
         return dataUser.status.includes(item.ID_status) &&
-          item.User_asing.toString() === USER.value.toString();
+          item.User_asing.toString() === USER.value.toString() &&
+          item.ID_Sucursal === id_sucursal.value
+          
       } else {//FILTRAMOS SOLO POR ESTATUS
-        return dataUser.status.includes(item.ID_status);
+        return (
+          dataUser.status.includes(item.ID_status) &&
+          item.ID_Sucursal === id_sucursal.value
+        );
       }
     });
     info.value = dataFilterStatus
 
 
     //info.value = rta[0];
-    // console.log(info.value);
     console.log(info.value);
   } else {
     console.error("La respuesta no es un array:", rta);
@@ -49,7 +58,8 @@ let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO q
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
 
-// Localstorage
+
+// DATA DEL LOCAL STORAGE
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
@@ -57,6 +67,7 @@ if (jsonFromLocalStorage !== null) {
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;
+  id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
 const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
@@ -85,7 +96,6 @@ const getOrders = async () => {
   // loadingInfo.value = false
 };
 
-// Hola
 
 interface getDataComanda {
   ID_order: string;
@@ -108,6 +118,7 @@ interface Table_Orders {
   Cedula: string;
   Cliente: string;
   Sucursal: string;
+  ID_Sucursal:string;
   User_crea: string;
   User_asing: number;
   Status: string;
@@ -117,9 +128,11 @@ interface Table_Orders {
 
 const getAsesores = async () => {
   try {
-    const url = `${baseUrlAsesor}/filterMasterAsesor`;
+    const url = `${baseUrlAsesor}/filterMasterAsesor/`;
+  
     const { data } = await axios.get(url);
-
+    console.log(data);
+    
     infoAsesores.value = data[0].map((asesor: Asesores) => ({
       value: asesor.ID_user,
       title: asesor.Nombre,
@@ -150,6 +163,7 @@ const getNameAsesor = (id: number) => {
   }
   return null;
 };
+
 
 onMounted(async () => {
   //await getOrders();
