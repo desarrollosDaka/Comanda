@@ -9,7 +9,7 @@ server.listen(port2, () => {
 app.listen(port, () => {
     console.log(`-------------- SERVER RUNNING ON PORT ${port} :) -------------------`)
 })
-// Creamos el servidor HTTPS
+// el servidor HTTPS
 // https.createServer(options, app).listen(port, () => {
 //     console.log(`-------------- SERVER RUNNING ON PORT ${port} -------------------`)
 //   });

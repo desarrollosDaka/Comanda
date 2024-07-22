@@ -572,7 +572,7 @@ const addWaterMarkPDF = async (f, id) => {
     let directory = uploadsDirectory();
     let destinationDirectory = folderWaterMarkDirectory();
 
-    // Lee el PDF original. lol
+    // Lee el PDF original. 
     const pdfBytes = fs1.readFileSync(`${directory}/${f.filename}`);
     const fontBytes = fs1.readFileSync(`${fontsDirectory()}/SELENA MARIN/SELENA MARIN.ttf`);
     const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -747,11 +747,12 @@ const filterMasterAsesor = async (req, res) => {
   try {
     const rta = await sequelize.query(
       `SELECT [ID_user]   
+
             ,[Nombre] as [Name]
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-    WHERE ID_rol = '1' ` 
+    WHERE ID_rol = '1' `
     );
 
     if (rta) {

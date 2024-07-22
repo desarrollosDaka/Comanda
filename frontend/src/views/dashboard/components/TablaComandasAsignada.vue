@@ -15,8 +15,8 @@ const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const infoAsesores = ref();
 const infogetStatus = ref();
-const id_sucursal = ref();
 
+const id_sucursal = ref();
 
 
 const socket = io("http://localhost:3003", {
@@ -44,12 +44,28 @@ socket.on("get-master-order", (rta) => {
     info.value = dataFilterStatus
 
 
+    if (ROLFILTERUSER.includes(USER_ROL.value)) {
+
+      //FILTRAMOS POR ASESORES ASIGNADOS
+      return dataUser.status.includes(item.ID_status) &&
+      item.User_asing.toString() === USER.value.toString();
+    } else {
+
+      //FILTRAMOS SOLO POR ESTATUS
+      return dataUser.status.includes(item.ID_status);
+    }
+  });
+    info.value = dataFilterStatus
+
+
     //info.value = rta[0];
     console.log(info.value);
+
   } else {
     console.error("La respuesta no es un array:", rta);
   }
 });
+
 
 //////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +79,6 @@ let user_crea = ref<string>("");
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
-
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;
@@ -71,10 +86,9 @@ if (jsonFromLocalStorage !== null) {
 }
 
 const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
-
 const STATUSPRINTER = [4]; //ESTE ARREGLO INDICA EN QUE ESTATUS DEBE ESTAR LA COMANDA PARA IMPRIMIR
-
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de ROL DE USUARIO
+
 
 const getOrders = async () => {
   // loadingInfo.value = true
@@ -127,6 +141,7 @@ interface Table_Orders {
 }
 
 const getAsesores = async () => {
+
   try {
     const url = `${baseUrlAsesor}/filterMasterAsesor/`;
   
@@ -148,7 +163,7 @@ const getMessageStatus = (id: number) => {
   if (infogetStatus && infogetStatus.value) {
     const status = infogetStatus.value.find(
       (item: any) => item.ID_status === id
-    ).Status;
+    )?.Status;
     return status;
   }
   return null;
@@ -158,7 +173,7 @@ const getNameAsesor = (id: number) => {
   if (infoAsesores && infoAsesores.value) {
     const asesor = infoAsesores.value.find(
       (item: any) => item.value == id
-    ).title;
+    )?.title;
     return asesor;
   }
   return null;
@@ -177,6 +192,7 @@ onUnmounted(() => {
   console.log("Socket desconectado");
 });
 
+// Cabezera de la comanda
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
@@ -187,6 +203,7 @@ const headers = ref([
   { title: "ACCIÓN", sortable: false, key: "action" },
 ] as const);
 
+// COlor de estatus
 const COLORSTATUS: any = {
   1: "success",
   2: "warning",
