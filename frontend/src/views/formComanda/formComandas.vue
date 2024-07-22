@@ -155,7 +155,7 @@ interface Estado {
 // api get
 async function getEstados() {
   try {
-    const { data } = await axios.get(`${baseUrlEstado}/masterStores`);
+    const { data } = await axios.get(`${baseUrlEstado}/masterStates`);
     info_estado.value = data.map((estados: Estado) => ({
       title: estados.Nombre,
       value: estados.ID_states,

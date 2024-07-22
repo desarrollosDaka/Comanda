@@ -11,12 +11,15 @@ const search = ref("");
 const info = ref([]);
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
+const baseUrlMotivo = `${import.meta.env.VITE_URL}/api/motivo`;
 const dialog = ref(false);
 
 const selectedMotivo = ref();
 const idDocuments = ref("");
 const estatus = ref();
 const infogetStatus = ref();
+const infoMotivo = ref();
+
 
 const COLORSTATUS: any = {
   1: "success",
@@ -29,6 +32,12 @@ const COLORSTATUS: any = {
   8: "success",
   9: "error",
 };
+
+
+interface Motivo {
+  Motivo: string;
+  ID_motivo: number;
+}
 
 interface Table_Orders {
   ID_order: number;
@@ -54,7 +63,7 @@ const requestMasterOrder = () => {
 
 // Listen for events from the server
 socket.on("get-master-order", (rta: any) => {
-  console.log("Datos actualizados:", rta);
+  //console.log("Datos actualizados:", rta);
   loadingInfo.value = true;
   if (Array.isArray(rta)) {
     info.value = rta[0];
@@ -67,6 +76,8 @@ socket.on("get-master-order", (rta: any) => {
 let deleteItem = ref({
   ID_order: "",
 });
+
+
 
 const getMessageStatus = (id: number) => {
   if (infogetStatus && infogetStatus.value) {
@@ -94,6 +105,25 @@ const editItem = (item: any) => {
 //     // }
 //     // loadingInfo.value = false
 // }
+
+
+const getMotivo = async () => {
+  try {
+    const url = `${baseUrlMotivo}/masterMotivo`;
+  
+    const { data } = await axios.get(url);
+    console.log(data + " MOTIVOO");
+    
+    infoMotivo.value = data.map((motivo: Motivo) => ({
+      value: motivo.ID_motivo,
+      title: motivo.Motivo,
+    }));
+    console.log(infoMotivo.value);
+    
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const deleteDocuments = async (id: string) => {
   estatus.value = true;
@@ -123,6 +153,7 @@ const deleteDocuments = async (id: string) => {
 // Emitir evento al montar el componente
 onMounted(() => {
   requestMasterOrder();
+
 });
 
 onUnmounted(() => {
@@ -133,6 +164,7 @@ onUnmounted(() => {
 onMounted(async () => {
   const { status } = await useGetStatus();
   infogetStatus.value = status;
+  await getMotivo();
 });
 
 const headers = ref([
@@ -224,13 +256,13 @@ const headers = ref([
 
                     <v-col cols="12" md="8" sm="6">
                       <v-label text="Motivo"></v-label>
-                      <br />
+                      <br />    
                       <v-autocomplete
                         id="tipo"
                         placeholder="Seleccione un motivo"
                         clearable
                         chips
-                        :items="['No me gusto', 'Me confundi', 'error mio']"
+                        :items="infoMotivo"
                         variant="outlined"
                         class="mt-2 py-3"
                         color="primary"

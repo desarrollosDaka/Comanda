@@ -41,7 +41,7 @@ const ARRAYUSER_ROL = [
         "status":[2],
         "msgButton":'Cargar prefactura y enviar a almacen', 
         "changeID_status":10,
-        "printer":false
+        "printer":false 
     }, 
     //ADM CAJA    
     {   "userRol": 6 , 
@@ -68,14 +68,14 @@ const ARRAYUSER_ROL = [
     {   "userRol": 9 , 
         "status":[10,4],
         "msgButton":'Comanda Revisada por Almacen', 
-        "changeID_status":3,
+        "changeID_status":3, 
         "printer":true
     }, 
-      //ATC TIENDA   
+      //ATC TIENDA  
     {   "userRol": 10,
-        "status":[1],
+        "status":[4, 6], 
         "msgButton":'Despachada por ATC',
-        "changeID_status":0,
+        "changeID_status":8,
         "printer":false
     },
     ];

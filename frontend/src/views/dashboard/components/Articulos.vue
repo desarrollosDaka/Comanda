@@ -10,6 +10,10 @@ import 'vue3-toastify/dist/index.css';
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/products`;
 const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
+const route = useRoute()
+const listProduct = ref<ListProduct[]>([])
+const infoProduct = ref()
+const product = ref([])
 
 
 const notify = () => {
@@ -28,14 +32,6 @@ const notify = () => {
         position: toast.POSITION.TOP_LEFT,
     });
 };
-
-//##############################################FIN#################################################################
-//##################################################################################################################
-
-const route = useRoute()
-const listProduct = ref<ListProduct[]>([])
-const infoProduct = ref()
-const product = ref([])
 
 // CAPTURAMOS EL ID DE COMANDA /filterOrderDetails/:id
 const id = ref() // id de la COMANDA
@@ -102,7 +98,6 @@ const getOrders = async () => {
 onMounted(async () => {
 
     getOrders();
-
     if (update.value) handleProductUpdate();
 
     const toastLoading = toast.loading("Cargando Productos...", {
@@ -151,7 +146,6 @@ function addProduct(cod_product: any): void {
     const found = listProduct.value.find((product) => product.code === cod_product)
 
     if (!found) listProduct.value.push(newProduct)
-
 }
 
 
@@ -223,11 +217,9 @@ async function Created() {
     for (const element of listProduct.value) {
 
         const json = {
-
             Id_Comanda: id.value,
             id_producto: element.code,
             producto: element.name,
-
             unidades: element.amount,
             precio: element.price,
             subtotal: element.subtotal
@@ -240,10 +232,7 @@ async function Created() {
         }
 
     };
-
-
     back()
-
 }
 
 const amountInput = (item: any) => {
