@@ -12,7 +12,7 @@ const loadingInfo = ref(false);
 const Delete = ref(true);
 const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
 
-const socket = io(import.meta.env.BACK_URL, {
+const socket = io(import.meta.env.VITE_BACK_URL, {
   reconnection: false // Deshabilitar la reconexión automática
 });
 

@@ -13,13 +13,14 @@ const info = ref([]);
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
+const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const infoAsesores = ref();
 const infogetStatus = ref();
 
 const id_sucursal = ref();
 
 
-const socket = io(import.meta.env.BACK_URL, {
+const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
