@@ -34,5 +34,8 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['vuetify'],
     entries: ['./src/**/*.vue']
+  },
+  server: {
+    host: true
   }
 });

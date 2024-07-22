@@ -85,7 +85,7 @@ if (jsonFromLocalStorage !== null) {
     <v-spacer />
 
     <!-- Notification -->
-    <!-- <NotificationDD /> -->
+    <NotificationDD />
 
     <!-- ---------------------------------------------- -->
     <!-- User Profile -->

@@ -66,6 +66,10 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
+  Nombre_autoriza: {
+    allowNull: true,
+    type: DataTypes.STRING(70),
+  },
   Telefono_autoriza: {
     allowNull: true,
     type: DataTypes.STRING(13),

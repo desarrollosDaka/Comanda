@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form } from "vee-validate";
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted , watch} from "vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 // import { router } from '../../../router';
@@ -33,17 +33,22 @@ const direccion = ref("");
 const direccionZoom = ref();
 const referencia = ref("");
 const autorizado = ref(false);
+const nombreDos = ref("");
 const cedulaDos = ref("");
 const telefonoUno = ref("");
 const telefonoDos = ref("");
 const ID_pago = ref();
-const pagosArray = ref();
-const user_crea = ref();
+const user_mod = ref();
 const doc_file = ref();
 const info_estado = ref();
 const info_muni = ref();
 const info_ciudad = ref();
+const info_estadoRl = ref();
+const info_muniRl = ref();
+const info_ciudadRl = ref();
 const ID_status = ref("1");
+const idComandaRandom = ref();
+const deliveryZoom = ref();
 const info_Zoom = ref();
 const porcentaje = ref();
 const retencion = ref(false);
@@ -51,20 +56,25 @@ const ID_Delivery = ref();
 const info_tiendas = ref();
 const info_Delivery = ref();
 const info_Payment = ref();
-// new
+const valorSeleccionado = ref();
+const valorSeleccionadoTwo = ref();
+const valorSeleccionadoRl = ref();
+const valorSeleccionadoTwoRl = ref();
 const ID_rol = ref();
 const tipoDocumento = ref();
 const tipoDocumentoRL = ref();
+const razonSocial = ref();
 const razonComercial = ref();
-const Nombre_rep = ref('');
+const Nombre_rep = ref();
 const cedula_rep = ref();
 const email_rep = ref();
 const telefono_rep = ref();
-const direccion_rep = ref();
-const referencia_rep = ref();
-const user_mod = ref();
+const estado_rep = ref();
+const ciudad_rep = ref();
+const municipio_rep = ref();
 const itemDocument = ref<Document[]>([]);
 
+const pagosArray = ref();
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
 const baseUrlCiudad = `${import.meta.env.VITE_URL}/api/cities`;
@@ -110,7 +120,7 @@ const referenciaRules = ref([
   (v: string) => !!v || "La referencia del delivery es requerido",
 ]);
 const autorizadoRules = ref([
-  (v: string) => !!v || "La persona autorizada es requerida",
+  (v: string) => !!v || "El nombre del autorizado es requerido",
 ]);
 const cedulaDosRules = ref([
   (v: string) => !!v || "La cedula de la persona autorizada es requerida",
@@ -149,11 +159,12 @@ const getOrder = async () => {
       direccionZoom.value = data[0][0]["SucursalZoom"];
       autorizado.value = data[0][0]["Autoriza"];
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
+      nombreDos.value = data[0][0]["Nombre_autoriza"];
       telefonoUno.value = data[0][0]["Telefono"];
       telefonoDos.value = data[0][0]["Telefono_autoriza"];
       ID_pago.value = data[0][0]["ID_pago"];
       pagosArray.value = ID_pago.value.split(',').map(Number);
-      user_crea.value = data[0][0]["User_crea"];
+      user_mod.value = data[0][0]["User_crea"];
       //new
       tipoDocumento.value = data[0][0]["Tipo_cedula"];
       tipoDocumentoRL.value = data[0][0]["Tipo_cedula_rep"];
@@ -162,8 +173,9 @@ const getOrder = async () => {
       Nombre_rep.value = data[0][0]["Nombre_rep"];
       email_rep.value = data[0][0]["Email_rep"];
       telefono_rep.value = data[0][0]["Telefono_rep"];
-      direccion_rep.value = data[0][0]["Direccion_rep"];
-      referencia_rep.value = data[0][0]["Referencia_rep"]; 
+      estado_rep.value = data[0][0]["ID_state_rep"];
+      municipio_rep.value = data[0][0]["ID_municipio_rep"]; 
+      ciudad_rep.value = data[0][0]["ID_city_rep"]; 
     }
 
   } catch (error) {
@@ -188,11 +200,25 @@ async function searchModel() {
     );
     if (data) {
       tipo.value = data.Tipo_cliente;
+      tipoDocumento.value = data.Tipo_cedula;
       email.value = data.Email;
+      telefonoUno.value = data.Telefono;
+      nombreCompleto.value = data.Nombre;
       nombreCompleto.value = data.Nombre;
       estado.value = data.ID_state;
       ciudad.value = data.ID_city;
       municipio.value = data.ID_municipio;
+      retencion.value = data.Retencion;
+      razonComercial.value = data.Razon_comercial;
+      porcentaje.value = data.Porc_retencion;
+      estado_rep.value = data.ID_state_rep;
+      ciudad_rep.value = data.ID_city_rep;
+      municipio_rep.value = data.ID_municipio_rep;
+      Nombre_rep.value = data.Nombre_rep;
+      email_rep.value = data.Email_rep;
+      tipoDocumentoRL.value = data.Tipo_cedula_rep;
+      cedula_rep.value = data.Cedula_rep;
+      telefono_rep.value = data.Telefono_rep;
     }
   } catch (error) {
     Swal.fire({
@@ -215,49 +241,9 @@ async function getEstados() {
       title: estados.Nombre,
       value: estados.ID_states,
     }));
+    
   } catch (error) {
-    toast.error(
-      "Ocurrio un error al consultar los datos del maestro (getEstados)",
-      {
-        position: toast.POSITION.TOP_CENTER,
-        transition: toast.TRANSITIONS.ZOOM,
-        autoClose: 4000,
-        theme: "colored",
-        toastStyle: {
-          fontSize: "16px",
-          opacity: "1",
-        },
-      }
-    );
-  }
-}
-
-interface Muni {
-  Nombre: string;
-  ID_municipio: number;
-}
-// api get
-async function getMunicipio() {
-  try {
-    const { data } = await axios.get(`${baseUrlMunicipio}/masterMunicipality`);
-    info_muni.value = data.map((muni: Muni) => ({
-      title: muni.Nombre,
-      value: muni.ID_municipio,
-    }));
-  } catch (error) {
-    toast.error(
-      "Ocurrio un error al consultar los datos del maestro (getMunicipio)",
-      {
-        position: toast.POSITION.TOP_CENTER,
-        transition: toast.TRANSITIONS.ZOOM,
-        autoClose: 4000,
-        theme: "colored",
-        toastStyle: {
-          fontSize: "16px",
-          opacity: "1",
-        },
-      }
-    );
+    console.log(error);
   }
 }
 
@@ -265,29 +251,108 @@ interface Ciudad {
   Nombre: string;
   ID_city: number;
 }
-async function getCiudad() {
-  try {
-    const { data } = await axios.get(`${baseUrlCiudad}/masterCities`);
-    info_ciudad.value = data.map((ciudad: Ciudad) => ({
+interface Muni {
+  Nombre: string;
+  ID_municipio: number;
+}
+
+
+
+const getSelect = async () => {
+
+  watch(estado, (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      municipio.value = null;
+      ciudad.value = null;
+    }
+  });
+
+  if (estado.value) {
+    const { data:municipio } = await axios.get(`${baseUrlMunicipio}/filterMunicipality/${estado.value}`);
+    info_muni.value = municipio[0].map((muni: Muni) => ({
+      title: muni.Nombre,
+      value: muni.ID_municipio,
+    }));
+  }
+  
+}
+
+const getSelectTwo = async () => {
+
+  watch(municipio, (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      ciudad.value = null;
+    }
+  });
+
+  if (municipio.value) {
+    const { data:ciudad } = await axios.get(`${baseUrlCiudad}/filterCities/${municipio.value}`);
+    info_ciudad.value = ciudad[0].map((ciudad: Ciudad) => ({
       title: ciudad.Nombre,
       value: ciudad.ID_city,
     }));
-  } catch (error) {
-    toast.error(
-      "Ocurrio un error al consultar los datos del maestro (getCiudad)",
-      {
-        position: toast.POSITION.TOP_CENTER,
-        transition: toast.TRANSITIONS.ZOOM,
-        autoClose: 4000,
-        theme: "colored",
-        toastStyle: {
-          fontSize: "16px",
-          opacity: "1",
-        },
-      }
-    );
+    
   }
 }
+
+// Representante legal
+interface CiudadRl {
+  Nombre: string;
+  ID_city: number;
+}
+interface MuniRl {
+  Nombre: string;
+  ID_municipio: number;
+}
+interface EstadoRL {
+  Nombre: string;
+  ID_states: string;
+}
+// api get
+async function getEstadosRL() {
+  try {
+    const { data } = await axios.get(`${baseUrlEstado}/masterStores`);
+    info_estadoRl.value = data.map((estadosrl: EstadoRL) => ({
+      title: estadosrl.Nombre,
+      value: estadosrl.ID_states,
+    }));
+    
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const getSelectRL = async () => {
+  
+  watch(estado_rep, (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      municipio_rep.value = null;
+      ciudad_rep.value = null;
+    }
+  });
+
+  const { data } = await axios.get(`${baseUrlMunicipio}/filterMunicipality/${estado_rep.value}`);
+  info_muniRl.value = data[0].map((munirl: MuniRl) => ({
+    title: munirl.Nombre,
+    value: munirl.ID_municipio,
+  }));
+}
+
+const getSelectTwoRL = async () => {
+
+  watch(municipio_rep, (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+      ciudad_rep.value = null;
+    }
+  });
+
+  const { data:ciudad } = await axios.get(`${baseUrlCiudad}/filterCities/${municipio_rep.value}`);
+  info_ciudadRl.value = ciudad[0].map((ciudadrl: CiudadRl) => ({
+    title: ciudadrl.Nombre,
+    value: ciudadrl.ID_city,
+  }));
+}
+
 
 interface Destino {
   Sucursal: string;
@@ -316,6 +381,8 @@ async function getDelivery() {
       title: delivery.Delivery_type,
       value: delivery.ID_Delivery,
     }));
+    console.log(info_Delivery);
+    
   } catch (error) {
     console.log(error);
   }
@@ -379,13 +446,14 @@ async function handleFormComanda() {
     sucursalZoom: ID_Delivery.value === 1 || ID_Delivery.value === 2 || ID_Delivery.value === 4 ? null : direccionZoom.value,
     autorizado: autorizado.value.toString(),
     cedulaDos: autorizado.value === false ? null : cedulaDos.value,
+    nombreDos: autorizado.value === false ? null : nombreDos.value,
     telefonoDos: autorizado.value === false ? null : telefonoDos.value,
     telefonoUno: telefonoUno.value,
     ID_pago: pagosArray.value,
     ID_status: ID_status.value,
     retencion: tipo.value === "NATURAL" ? "false" : retencion.value.toString(),
     porcentaje: tipo.value === "NATURAL" ? null : porcentajeValue,
-    user_crea: user_crea.value,
+    user_mod: user_mod.value,
     tipo_cedula: tipoDocumento.value,
     Tipo_cedula_rep: tipo.value === "NATURAL" ? null : tipoDocumentoRL.value,
     razonComercial: tipo.value === "NATURAL" ? null : razonComercial.value,
@@ -393,8 +461,9 @@ async function handleFormComanda() {
     cedula_rep: tipo.value === "NATURAL" ? null : cedula_rep.value,
     email_rep: tipo.value === "NATURAL" ? null : email_rep.value,
     telefono_rep: tipo.value === "NATURAL" ? null : telefono_rep.value,
-    direccion_rep: tipo.value === "NATURAL" ? null : direccion_rep.value,
-    referencia_rep: tipo.value === "NATURAL" ? null : referencia_rep.value,
+    estado_rep: tipo.value === "NATURAL" ? null : estado_rep.value,
+    ciudad_rep: tipo.value === "NATURAL" ? null : ciudad_rep.value,
+    municipio_rep: tipo.value === "NATURAL" ? null : municipio_rep.value,
   };
 
   // ACTUALIZAMOS PRIMERO LA DATA DEL FORMULARIO
@@ -430,7 +499,7 @@ async function handleFormComanda() {
 
     formDataDocuments.append("doc_file", file);
     formDataDocuments.append(`typeDoc_${i}`, type);
-    formDataDocuments.append(`user_${i}`, user_crea.value);
+    formDataDocuments.append(`user_${i}`, user_mod.value);
   }
   try {
     await axios.post(
@@ -533,11 +602,23 @@ function validateDocuments(): boolean {
 onMounted(async () => {
   await getOrder();
   await getEstados();
-  await getMunicipio();
-  await getCiudad();
+  await getSelect();
+  await getSelectTwo();
+  await getEstadosRL();
+  await getSelectRL();
+  await getSelectTwoRL();
+  
+});
+onMounted(async () => {
   await getSucursal();
+});
+onMounted(async () => {
   await getDelivery();
+});
+onMounted(async () => {
   await getPayment();
+});
+onMounted(async () => {
   await getZoom();
 });
 </script>
@@ -720,24 +801,7 @@ onMounted(async () => {
           aria-label="Name Documents"
           color="primary"
           v-model="estado"
-        >
-        </v-autocomplete>
-      </v-col>
-
-      <v-col cols="12" md="4">
-        <v-label for="ciudad">Ciudad</v-label>
-        <v-autocomplete
-          id="ciudad"
-          placeholder="Seleccione la ciudad"
-          class="mt-2 my-input"
-          clearable
-          chips
-          :items="info_ciudad"
-          variant="outlined"
-          :rules="ciudadRules"
-          aria-label="Name Documents"
-          color="primary"
-          v-model="ciudad"
+          @update:modelValue="getSelect"
         >
         </v-autocomplete>
       </v-col>
@@ -756,6 +820,25 @@ onMounted(async () => {
           aria-label="Name Documents"
           color="primary"
           v-model="municipio"
+          @update:modelValue="getSelectTwo"
+        >
+        </v-autocomplete>
+      </v-col>
+
+      <v-col cols="12" md="4">
+        <v-label for="ciudad">Ciudad</v-label>
+        <v-autocomplete
+          id="ciudad"
+          placeholder="Seleccione la ciudad"
+          class="mt-2 my-input"
+          clearable
+          chips
+          :items="info_ciudad"
+          variant="outlined"
+          :rules="ciudadRules"
+          aria-label="Name Documents"
+          color="primary"
+          v-model="ciudad"
         >
         </v-autocomplete>
       </v-col>
@@ -846,37 +929,61 @@ onMounted(async () => {
           </v-text-field>
         </v-col>
 
-        <v-col cols="12" md="6">
-          <v-label for="direccion">Direccion completa</v-label>
-          <v-text-field
-            id="direccion"
-            type="text"
-            placeholder="Direccion Completa"
-            variant="outlined"
-            aria-label="Name Documents"
-            class="mt-2 my-input"
-            v-model="direccion_rep"
-            :rules="direccionRules"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+        <v-col cols="12" md="4">
+            <v-label for="estado">Estado</v-label>
+            <v-autocomplete
+              id="estado"
+              placeholder="Seleccione el estado"
+              class="mt-2 my-input"
+              clearable
+              chips
+              :items="info_estadoRl"
+              variant="outlined"
+              :rules="estadosRules"
+              aria-label="Name Documents"
+              color="primary"
+              v-model="estado_rep"
+              @update:modelValue="getSelectRL"
+            >
+            </v-autocomplete>
+          </v-col>
 
-        <v-col cols="12" md="6">
-          <v-label for="referencia">Referencia</v-label>
-          <v-text-field
-            id="referencia"
-            type="text"
-            placeholder="Referencia del delivery"
-            variant="outlined"
-            aria-label="Name Documents"
-            class="mt-2 my-input"
-            :rules="referenciaRules"
-            v-model="referencia_rep"
-            color="primary"
-          >
-          </v-text-field>
-        </v-col>
+          <v-col cols="12" md="4">
+            <v-label for="municipio">Municipio</v-label>
+            <v-autocomplete
+              id="municipio"
+              placeholder="Seleccione el municipio"
+              class="mt-2 my-input"
+              clearable
+              chips
+              :items="info_muniRl"
+              variant="outlined"
+              :rules="municipioRules"
+              aria-label="Name Documents"
+              color="primary"
+              v-model="municipio_rep"
+              @update:modelValue="getSelectTwoRL"
+            >
+            </v-autocomplete>
+          </v-col>
+
+          <v-col cols="12" md="4">
+            <v-label for="ciudad">Ciudad</v-label>
+            <v-autocomplete
+              id="ciudad"
+              placeholder="Seleccione la ciudad"
+              class="mt-2 my-input"
+              clearable
+              chips
+              :items="info_ciudadRl"
+              variant="outlined"
+              :rules="ciudadRules"   
+              aria-label="Name Documents"
+              color="primary"
+              v-model="ciudad_rep"
+            >
+            </v-autocomplete>
+          </v-col>
       </v-row>
     </div>
     <br />
@@ -974,9 +1081,25 @@ onMounted(async () => {
       </v-col>
     </v-row>
     <v-row>
+      
       <v-col cols="12" md="3">
         <v-label for="autorizado">Autorizado para recibir el envio</v-label>
         <v-switch v-model="autorizado" color="primary"></v-switch>
+      </v-col>
+
+      <v-col cols="12" md="4" v-if="autorizado == true">
+        <v-label for="nombreDos">Nombre del Autorizado</v-label>
+        <v-text-field
+          id="nombreDos"
+          type="text"
+          placeholder="Nombre del autorizado"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          v-model="nombreDos"
+          :rules="autorizadoRules"
+          color="primary"
+        ></v-text-field>
       </v-col>
 
       <v-col cols="12" md="4" v-if="autorizado == true">
