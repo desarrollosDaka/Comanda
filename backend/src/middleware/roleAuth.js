@@ -13,7 +13,7 @@ const checkRoleAuth = (roles) => async (req, res, next) => {
             }, 
         });
         
-        if([].concat(roles).includes(userData.Nombre_rol)){
+        if([].concat(roles).includes(userData.ID_rol)){
             next()
         } else {
             res.status(409);

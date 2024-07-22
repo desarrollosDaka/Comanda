@@ -52,7 +52,7 @@ if (jsonFromLocalStorage !== null) {
 
        <!-- ADMINISTRADORES-->
 
-      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 0">
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 99">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenu" :key="i">
           <!---Item Sub Header -->
