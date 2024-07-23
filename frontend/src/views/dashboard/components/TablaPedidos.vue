@@ -94,17 +94,6 @@ const editItem = (item: any) => {
   dialog.value = true;
 };
 
-// const getOrders = async () => {
-//     // loadingInfo.value = true
-//     // try{
-//     //     const url = `${baseUrl}/masterOrder`
-//     //     const {data} = await axios.get(url);
-//     //     info.value =  data[0]
-//     // } catch(error){
-//     //     console.log(error)
-//     // }
-//     // loadingInfo.value = false
-// }
 
 
 const getMotivo = async () => {
@@ -112,13 +101,12 @@ const getMotivo = async () => {
     const url = `${baseUrlMotivo}/masterMotivo`;
   
     const { data } = await axios.get(url);
-    console.log(data + " MOTIVOO");
     
     infoMotivo.value = data.map((motivo: Motivo) => ({
       value: motivo.ID_motivo,
       title: motivo.Motivo,
     }));
-    console.log(infoMotivo.value);
+    //console.log(infoMotivo.value);
     
   } catch (error) {
     console.log(error);

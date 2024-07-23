@@ -35,6 +35,7 @@ const {
     filterMasterAsesorSucursal,
     updateMasterAsesor,
     updateStatusOrder,
+    updateOrderCajaFact,
     //updateMasterOrder,
     deleteMasterOrder,
     deleteOrderDetails,
@@ -105,6 +106,9 @@ router.put("/updateOrderAsesor/:id", updateMasterAsesor);
 
 //UPDATE STATUS DE COMANDA
 router.put("/updateStatusOrder/:id", updateStatusOrder);
+
+//UPDATE COMANDA CAJA FACTURA
+router.put("/updateCajaFactura/:id", updateOrderCajaFact);
 
 // Update OrderDetails
 router.put("/updateOrderDetails/:id", updateOrderDetails);
