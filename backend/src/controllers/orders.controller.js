@@ -789,6 +789,30 @@ const filterMasterAsesorSucursal = async (req, res) => {
   }
 };
 
+//AGREGAR CAJA FACTURA COMANDA
+const updateOrderCajaFact = async (req, res) => {
+  try {
+    const data = {
+      Caja_factura: data.caja_factura,
+    };
+
+    const id = req.params.id;
+
+    const rta = await sequelize.models.modelOrders.update(data, {
+      where: { ID_detalle: id },
+    });
+
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
 
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateMasterAsesor = async (req, res) => {
@@ -918,6 +942,7 @@ module.exports = {
   updateMasterOrderDetails,
   updateMasterAsesor,
   updateStatusOrder,
+  updateOrderCajaFact,
   deleteMasterOrder,
   getMasterOrderDetails,
   createOrderDocument,
