@@ -44,8 +44,6 @@ const numFactura = ref();
 id.value = route.params.id;
 id_orders.value = route.params.id_orders;
 
-
-
 const info = ref<Item[]>();
 const origen = ref();
 const tipo = ref();
@@ -452,12 +450,6 @@ const getNameAsesor = (id: number) => {
                     @click="USER_ROL === 4 ? asignAsesor() : updateData()">
                     {{ dataUser.msgButton }}
 
-                </v-btn>
-            </v-col>
-            <v-col cols="auto">
-                <v-btn append-icon="mdi-check-all" variant="elevated" color="primary"
-                    @click="update()">
-                    hola
                 </v-btn>
             </v-col>
 
