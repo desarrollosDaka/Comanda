@@ -47,6 +47,11 @@ const sidebarItem: menu[] = [
     to: '/maestroPedidos'
   },
   {
+    title: 'Retencion',
+    icon: BarcodeOutlined, 
+    to: '/retencion'
+  },
+  {
     title: 'Comandas',
     icon: ClusterOutlined, 
     to: '/maestroComandaAsignada'

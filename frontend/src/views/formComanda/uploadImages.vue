@@ -8,13 +8,10 @@ import imgUrl from '@/assets/images/archivoPdf.png'
 import { useRouter, useRoute } from 'vue-router'
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
-
-
 const INSERT_METHOD = 'insert'
 const UPDATE_METHOD = 'update'
 const DOCUMENT_PDF = 'pdf'
 const URLIMAGEPDF = imgUrl
-
 const route = useRoute()
 
 let route_upload = ref()
@@ -31,6 +28,14 @@ const props = defineProps({
     required: false,
   },
 })
+
+let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
+// Localstorage
+const jsonFromLocalStorage = sessionStorage.getItem("user");
+if (jsonFromLocalStorage !== null) {
+  const parsedData = JSON.parse(jsonFromLocalStorage);
+  USER_ROL.value = +parsedData.data.ID_rol;
+}
 
 
 const document = ref<Documento[]>([]);
@@ -58,10 +63,7 @@ onMounted(async () => {
     }
 
     emits('isSelectImages', document.value); //INDICAMOS AL COMPONENTE PADRE QUE YA EXISTEN ARCHIVOS SELECCIONADOS
-
   }
-
-
 });
 
 interface Documento {
@@ -301,8 +303,9 @@ async function downLoadArchive(param: Documento) {
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline"
-            color="error"></v-btn>
+          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8"
+            color="error">
+          </v-btn>
 
           <template v-slot:placeholder>
             <v-row align="center" class="fill-height ma-0" justify="center">

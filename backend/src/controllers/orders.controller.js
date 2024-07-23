@@ -791,9 +791,10 @@ const filterMasterAsesorSucursal = async (req, res) => {
 
 //AGREGAR CAJA FACTURA COMANDA
 const updateOrderCajaFact = async (req, res) => {
+  console.log(req.body);
   try {
     const data = {
-      Caja_factura: data.caja_factura,
+      Caja_factura: req.body.caja_factura,
     };
 
     const id = req.params.id;

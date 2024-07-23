@@ -1,36 +1,27 @@
 <script setup lang="ts">
-
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import detailComanda from '../dashboard/components/detailComanda.vue';
+import tabla from '../dashboard/components/TablaComandasAsignada.vue';
 
 // component content
-const page = ref({ title: 'Comanda Asignadas' });
-
+const page = ref({ title: 'Comandas con retencion' });
 const breadcrumbs = ref([
   {
-    title: 'Comandas Asignadas',
-    disabled: false,
-    to: '/maestroComandaAsignada'
-  },
-  {
-    title: 'Detalle',
+    title: 'Comandas con retencion',
     disabled: true,
     to: '#'
   }
 ]);
-
 </script>
 
 <template>
   <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
   <v-row>
+    <!-- TABLA -->
     <v-col cols="12" md="12">
-      <UiParentCard title="Datos de la comanda">
-        <detailComanda/>
-      </UiParentCard>
+        <!-- tabla -->
+        <tabla />
     </v-col>
   </v-row>
 </template>
-

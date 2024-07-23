@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import WidgetFive from './components/WidgetFive.vue';
 import UniqueVisitor from './components/UniqueVisitor.vue';
 import IncomeOverview from './components/IncomeOverview.vue';
@@ -8,6 +9,13 @@ import HelpSupport from './components/HelpSupport.vue';
 import TransactionHistory from './components/TransactionHistory.vue';
 import SalesReport from './components/SalesReport.vue';
 import Banner from './components/Banners.vue';
+
+const usuario = ref();
+const jsonFromLocalStorage = sessionStorage.getItem('user');
+if (jsonFromLocalStorage !== null) {
+  const parsedData = JSON.parse(jsonFromLocalStorage);
+  usuario.value = parsedData.data.Nombre;
+} 
 
 const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
 const route: string = `${import.meta.env.VITE_URL}/api`
@@ -58,7 +66,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 fetch(route + '/notification', {
   method: 'POST',
-  body: JSON.stringify({ message: "BIENVENIDO" }),
+  body: JSON.stringify({ message: `Bienvenido ${usuario.value}` }),
   headers: {
     'Content-Type': 'application/json'
   }

@@ -134,6 +134,7 @@ const getArticulos = async () => {
 };
 
 const updateEstatus = async () => {
+
   const jsonData = info.value?.map((item) => ({
     id_comanda: id.value,
     producto: item.Producto,
@@ -142,6 +143,7 @@ const updateEstatus = async () => {
     direccionDelivery: item.direccionDelivery,
     precio: item.Precio,
   }));
+  
   try {
     //SOLO USUARIOS CON ROL DE CAJERAS
     if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
@@ -158,24 +160,7 @@ const updateEstatus = async () => {
     console.log(error);
   }
 };
-const update = async () => {
-  const jsonData = info.value?.map((item) => ({
-    id_comanda: id.value,
-    producto: item.Producto,
-    id_producto: item.ID_producto,
-    guiaZoom: item.guiaZoom,
-    direccionDelivery: item.direccionDelivery,
-    precio: item.Precio,
-  }));
 
-  console.log(jsonData);
-  
-  // try {
-  //   await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, jsonData
-  // } catch (error) {
-  //   console.log(error);
-  // }
-};
 
 interface Asesores {
   Nombre: string;
@@ -192,6 +177,27 @@ const getAsesores = async () => {
       title: asesor.Nombre,
       value: asesor.ID_user,
     }));
+  } catch (error) {
+    console.log(error);
+  }
+};
+const cajaFactura = async () => {
+  try {
+    if(numFactura.value){
+      const url = `${baseUrl}/updateCajaFactura/${id.value}`;
+    const { data:respuesta } = await axios.put(url, {caja_factura: numFactura.value});
+
+    if(respuesta){
+      numFactura.value = ''
+      dialog.value = false
+      return toast.error(`Caja factura asignada a la comanda`, {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+    });
+    }
+    }
+
   } catch (error) {
     console.log(error);
   }
@@ -462,14 +468,14 @@ const getNameAsesor = (id: number) => {
     </v-container>
 
     <v-dialog v-model="dialog" width="auto">
-        <v-card max-width="400" prepend-icon="mdi-counter" title="Numero de Factura">
+        <v-card max-width="600" prepend-icon="mdi-counter" title="Numero de Factura">
 
             <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Numero factura es requerido']"
-                placeholder="79938" required></v-text-field>
+                placeholder="23-734" required></v-text-field>
            
 
             <template v-slot:actions>
-                <v-btn class="ms-auto" text="Ok" @click="dialog = false"></v-btn>
+                <v-btn class="ms-auto" text="Ok" @click="cajaFactura"></v-btn>
             </template>
         </v-card>
 
