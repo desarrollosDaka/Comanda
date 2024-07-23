@@ -15,6 +15,7 @@ const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])
 
+const loadingProducts = ref(false); 
 
 const notify = () => {
     toast.info('Hello1!!');
@@ -44,6 +45,7 @@ const isOrder = ref<boolean>(true)
 
 const getProduct = async () => {
     try {
+        loadingProducts.value = true; // Bloquear el botón al cargar productos
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
 
@@ -64,6 +66,8 @@ const getProduct = async () => {
                 opacity: '1',
             },
         });
+    } finally {
+        loadingProducts.value = false;
     }
 }
 
@@ -305,7 +309,8 @@ async function handleProductUpdate() {
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
                 variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
-                :items="infoProduct">
+                :items="infoProduct"  :disabled="loadingProducts"
+                >
 
                 <template v-slot:item="{ props, item }">
                     <!-- GENERA ERROR EN LA TERMINAR, PERO NO EN CONSOLA -->
@@ -316,7 +321,7 @@ async function handleProductUpdate() {
 
         </v-col>
         <v-col cols="12" md="3" class="py-3">
-            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal">
+            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts">
                 AGREGAR
             </v-btn>
         </v-col>

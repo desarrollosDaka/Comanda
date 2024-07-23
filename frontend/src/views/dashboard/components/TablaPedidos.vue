@@ -52,7 +52,7 @@ interface Table_Orders {
   Create_date: Date;
 }
 
-const socket = io("http://localhost:3003", {
+const socket = io(import.meta.env.VITE_BACK_URL, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
@@ -275,7 +275,10 @@ const headers = ref([
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn color="error" variant="elevated" @click="dialog = false">
+                <v-btn color="error" 
+                variant="elevated" 
+                @click="dialog = false" 
+                >
                   Cancelar
                 </v-btn>
 
@@ -283,6 +286,7 @@ const headers = ref([
                   type="submit"
                   color="primary"
                   variant="elevated"
+                  :disabled="!selectedMotivo"
                   @click="deleteDocuments(deleteItem.ID_order)"
                 >
                   Eliminar
