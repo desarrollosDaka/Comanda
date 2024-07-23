@@ -107,7 +107,7 @@ router.put("/updateOrderAsesor/:id", updateMasterAsesor);
 router.put("/updateStatusOrder/:id", updateStatusOrder);
 
 // Update OrderDetails
-router.put("/updateOrderDetails/", updateOrderDetails);
+router.put("/updateOrderDetails/:id", updateOrderDetails);
 
 // DELETE ORDER
 //router.delete("/deleteOrder/:id", deleteMasterOrder);
