@@ -49,6 +49,44 @@ const getMasterOrder = async (req, res) => {
   }
 };
 
+const getMasterOrderRetencion = async (req, res) => {
+  try {
+    // const rta = await sequelize.models.modelOrders.findAll();
+    const rta = await sequelize.query(
+      `SELECT  T0.[ID_order]
+                ,T0.ID_detalle
+                ,T0.Caja_factura
+				        ,T3.Tipo_cedula
+                ,T0.Cedula  
+                ,T3.Nombre Cliente
+                ,T3.Razon_comercial
+                ,T1.Sucursal
+                ,T1.ID_Sucursal
+                ,T0.[User_crea]
+                ,T0.[User_asing] Asesor 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
+                ,CAST(T0.Create_date AS DATE) Create_date
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 --AND T0.ID_sucursal = 4
+        ORDER BY T0.[ID_order] DESC`
+    );
+
+    if (rta) {
+      return rta;
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
 // New
 const getMasterOrderForStore = async (req, res) => {
   try {
@@ -353,26 +391,26 @@ const createOrderDetails = async (req, res) => {
         const orderDetailData = {
             ID_detalle: data.Id_Comanda,
             ID_producto: data.id_producto,
-            Producto: data.producto,
+            Producto: data.producto, 
             Unidades: data.unidades,
             Precio: data.precio,
             Subtotal: data.subtotal,
             Direccion: data.direccion,
-            Zoom: data.zoom,
+            Zoom: data.zoom
         };
 
         let product = await sequelize.models.modelOrdersdetails.findOne({
             where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto },
         });
-        if (product) {
-            // Actualiza el cliente existente
-            product = await product.update(orderDetailData);
-        } else {
+        // if (product) {
+        //     // Actualiza el cliente existente
+        //     product = await product.update(orderDetailData);
+        // } else {
             // Crea un nuevo cliente
             product = await sequelize.models.modelOrdersdetails.create(
                 orderDetailData
             );
-        }
+        //}
 
 
     if (orderDetailData) {
@@ -657,7 +695,6 @@ const createOrderDocument = async (req, res) => {
   const Id_Comanda = req.params.id;
   const Id_Comanda2 = req.params.idComanda;
 
-  console.log("req.params", req.params);
 
   try {
     const results = await Promise.all(
@@ -667,7 +704,6 @@ const createOrderDocument = async (req, res) => {
             await resizeImage(file); //comprimimos la imagen
             await addwatermark(file, Id_Comanda2);
           } else {
-            console.log("Id_Comanda2",Id_Comanda2);
             await addWaterMarkPDF(file, Id_Comanda2);
           }
         } catch (error) {
@@ -703,6 +739,7 @@ const createOrderDocument = async (req, res) => {
     res.status(500).json({ message: "Error al guardar los documentos" });
   }
 };
+
 
 //BORRAR ARCHVIOS DE LA TABLA ARCHIVOS
 const deleteOrderDocument = async (req, res) => {
@@ -951,4 +988,5 @@ module.exports = {
   deleteOrderDocument,
   getMasterOrderForStore,
   download,
+  getMasterOrderRetencion
 };

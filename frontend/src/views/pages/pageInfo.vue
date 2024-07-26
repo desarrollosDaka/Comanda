@@ -6,6 +6,7 @@ import img from '@/assets/images/trabajo-en-progreso.png';
 
 // component content
 const page = ref({ title: 'Información' });
+
 const breadcrumbs = ref([
   {
     title: 'Comanda',
@@ -17,6 +18,7 @@ const breadcrumbs = ref([
 
 <template>
   <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
+
   <v-row>
     <v-col cols="12">
       <v-row>
@@ -27,6 +29,7 @@ const breadcrumbs = ref([
             <div class="container">
                 <img class="imagen" :src="img" alt="imagen ilustra">
             </div>
+
           </UiParentCard>
         </v-col>
       </v-row>

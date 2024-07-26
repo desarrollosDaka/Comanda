@@ -11,8 +11,9 @@ interface Document {
 const INSERT_METHOD = 'insert'
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 
-export async function useAddDocument(files: Document[], id:string) {
-
+export async function useAddDocument(files: Document[], id:string, idOrder:number) {
+    console.log(idOrder);
+    
 
     const formDataDocuments = new FormData();
     let response = false
@@ -32,7 +33,7 @@ export async function useAddDocument(files: Document[], id:string) {
     }
     try {
         
-        await axios.post(`${baseUrl}/createOrderDocument/${id}`, formDataDocuments)
+        await axios.post(`${baseUrl}/createOrderDocument/${id}/${idOrder}`, formDataDocuments)
         response = true
     } catch (error) {
         response = false

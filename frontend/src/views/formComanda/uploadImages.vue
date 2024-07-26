@@ -43,9 +43,9 @@ const document = ref<Documento[]>([]);
 onMounted(async () => {
 
 
-  if (props.ID_detalle != undefined) {
+  if(props.ID_detalle != undefined){
 
-    route_upload.value = 'http://localhost:3002/public/'
+    route_upload.value=`${import.meta.env.VITE_URL}/public/`
 
     try {
       const url = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
@@ -92,7 +92,6 @@ const tipoRules = ref([
 ]);
 
 async function viewImages(event: Event) {
-
   const target = event.target as HTMLInputElement;
 
   if (!target.files) return;

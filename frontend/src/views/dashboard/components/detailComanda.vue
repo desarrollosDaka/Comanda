@@ -147,7 +147,7 @@ const updateEstatus = async () => {
   try {
     //SOLO USUARIOS CON ROL DE CAJERAS
     if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
-      useAddDocument(itemDocument.value, id.value); //Visualizan y agregan  archivos
+      useAddDocument(itemDocument.value, id.value, id_orders.value); //Visualizan y agregan  archivos
 
     } else if(ROLEATC.includes(USER_ROL.value)){
       await axios.put(`${baseUrl}/updateOrderDetails/${id.value}`, jsonData);
@@ -188,7 +188,6 @@ const cajaFactura = async () => {
     const { data:respuesta } = await axios.put(url, {caja_factura: numFactura.value});
 
     if(respuesta){
-      numFactura.value = ''
       dialog.value = false
       return toast.error(`Caja factura asignada a la comanda`, {
       position: toast.POSITION.TOP_CENTER,
@@ -396,8 +395,8 @@ const getNameAsesor = (id: number) => {
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase">Direccion</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase">Guia Zoom</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'DELIVERY TIENDA'">Direccion</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                         </tr>
                     </thead>
@@ -406,7 +405,7 @@ const getNameAsesor = (id: number) => {
                         <tr v-for="(item, index) in info" :key="index">
                             <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
                             <td class="py-3">{{ item['ID_producto'] }} </td>
-                            <td class="py-3">
+                            <td class="py-3"  v-if="ID_delivery == 'DELIVERY TIENDA'">
                               <v-text-field 
                                 variant="solo-inverted"
                                 v-model="item.direccionDelivery"
@@ -415,7 +414,7 @@ const getNameAsesor = (id: number) => {
                               >
                               </v-text-field>
                             </td>
-                            <td class="py-3">
+                            <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
                               <v-text-field 
                                 variant="solo-inverted"
                                 v-model="item.guiaZoom"
@@ -433,7 +432,7 @@ const getNameAsesor = (id: number) => {
     </UiTitleCard>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" 
+    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1" 
     @isSelectImages=handleSelectImages 
     :ID_detalle=id 
     :deleteImageUpdate=false

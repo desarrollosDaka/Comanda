@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
-import UiParentCard from '@/components/shared/UiParentCard.vue';
-import tabla from '../dashboard/components/TablaComandasAsignada.vue';
+import tablaConRetencion from '../dashboard/components/TablaRetencion.vue';
 
 // component content
 const page = ref({ title: 'Comandas con retencion' });
@@ -20,8 +19,8 @@ const breadcrumbs = ref([
   <v-row>
     <!-- TABLA -->
     <v-col cols="12" md="12">
-        <!-- tabla -->
-        <tabla />
+        <!-- tabla comanda con retencion -->
+        <tablaConRetencion />
     </v-col>
   </v-row>
 </template>

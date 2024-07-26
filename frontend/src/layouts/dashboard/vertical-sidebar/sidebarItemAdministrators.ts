@@ -14,7 +14,7 @@ import {
   UsergroupAddOutlined,
   BarcodeOutlined,
   ContainerOutlined,
-  UserOutlined,
+  UserOutlined, 
   ToolOutlined
 } from '@ant-design/icons-vue';
 
@@ -49,7 +49,7 @@ const sidebarItem: menu[] = [
   {
     title: 'Retencion',
     icon: BarcodeOutlined, 
-    to: '/retencion'
+    to: '/retenciones'
   },
   {
     title: 'Comandas',

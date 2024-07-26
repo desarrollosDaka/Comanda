@@ -8,11 +8,11 @@ const ARRAYUSER_ROL = [
         "changeID_status":0,
         "printer":true
     }, 
-    //ASESOR O
+    //ASESOR ONLINE
     {   "userRol": 1 , 
-        "status":[2],
-        "msgButton":'Cargar prefactura y enviar a almacen', 
-        "changeID_status":10,
+        "status":[4],
+        "msgButton":'Cargar Retencion', 
+        "changeID_status":5,
         "printer":false
     }, 
     //COORDINADOR ONLINE
