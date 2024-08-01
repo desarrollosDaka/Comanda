@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useUserRol } from "@/composables/users";
 import { useGetStatus } from "@/composables/status";
 import { io } from "socket.io-client";
@@ -10,7 +10,9 @@ const route = useRoute();
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 const search = ref("");
 const info = ref([]);
+const infoLength = ref(0); 
 const loadingInfo = ref(false);
+let isFirstLoad = true;
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
@@ -18,15 +20,20 @@ const infoAsesores = ref();
 const infogetStatus = ref();
 
 const id_sucursal = ref();
+ 
+/////////////////notifications /////////////////////
+const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
+const route1: string = "http://localhost:3002/api"
 
 
+////////////////////////
 const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
 // Listen for events from the server
 socket.on("get-master-order", (rta) => {
-  console.log("Datos actualizados:", rta);
+  //console.log("Datos actualizados:", rta);
   if (Array.isArray(rta)) {
 
   const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
@@ -44,8 +51,9 @@ socket.on("get-master-order", (rta) => {
     });
     info.value = dataFilterStatus
 
-    //info.value = rta[0];
-    console.log(info.value);
+    const infoArray = info.value;
+
+    infoLength.value = infoArray.length;
 
   } else {
     console.error("La respuesta no es un array:", rta);
@@ -53,8 +61,34 @@ socket.on("get-master-order", (rta) => {
 });
 
 
-//////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
+const handleNewItem = () => {
+  //console.log("Nuevo valor agregado:", newItem);
+
+
+fetch(route1 + '/notification', {
+  method: 'POST',
+  body: JSON.stringify({ message: "NUEVA COMANDA ASIGNADA" }),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});  
+
+  // Actualizamos la longitud
+  infoLength.value = info.value.length;
+
+};
+
+
+watch(info, (newValue, oldValue) => {
+//console.log("INFO"+info.value);
+if (isFirstLoad) {
+    // Si es la primera carga, no hagas nada
+    isFirstLoad = false;
+  } else if (newValue.length > oldValue.length) {
+    // Se ha agregado un nuevo valor
+    handleNewItem();
+  }
+});
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -74,27 +108,6 @@ if (jsonFromLocalStorage !== null) {
 const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
 const STATUSPRINTER = [4]; //ESTE ARREGLO INDICA EN QUE ESTATUS DEBE ESTAR LA COMANDA PARA IMPRIMIR
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de ROL DE USUARIO
-
-
-const getOrders = async () => {
-  // loadingInfo.value = true
-  // try {
-  //   const url = `${baseUrl}/masterOrder`
-  //   const { data } = await axios.get(url);
-  //   const dataFilterStatus: any = data[0].filter((item: Table_Orders) => {
-  //     if (ROLFILTERUSER.includes(USER_ROL.value)) { //FILTRAMOS POR ASESORES ASIGNADOS
-  //       return dataUser.status.includes(item.ID_status) &&
-  //         item.User_asing.toString() === USER.value.toString();
-  //     } else {//FILTRAMOS SOLO POR ESTATUS
-  //       return dataUser.status.includes(item.ID_status);
-  //     }
-  //   });
-  //   info.value = dataFilterStatus
-  // } catch (error) {
-  //   console.log(error)
-  // }
-  // loadingInfo.value = false
-};
 
 
 interface getDataComanda {
@@ -171,6 +184,7 @@ onMounted(async () => {
   await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;
+
 });
 
 onUnmounted(() => {
