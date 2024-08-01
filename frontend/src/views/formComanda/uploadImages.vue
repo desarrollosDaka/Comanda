@@ -13,6 +13,7 @@ const UPDATE_METHOD = 'update'
 const DOCUMENT_PDF = 'pdf'
 const URLIMAGEPDF = imgUrl
 const route = useRoute()
+const url = ref()
 
 let route_upload = ref()
 const sort = route?.name;
@@ -46,10 +47,14 @@ onMounted(async () => {
   if(props.ID_detalle != undefined){
 
     route_upload.value=`${import.meta.env.VITE_URL}/public/`
-
     try {
-      const url = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
-      const { data } = await axios.get(url);
+      if(USER_ROL.value === 10){
+        url.value = `${baseUrl}/filterOrderDetailsFilesEnvio/${props.ID_detalle}`
+      } else {
+        url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
+      }
+      
+      const { data } = await axios.get(url.value);
 
       data[0].forEach((data: DocumentData) => {
         const extension = data.File.split('.').pop();
@@ -61,7 +66,6 @@ onMounted(async () => {
     } catch (error) {
       console.log(error)
     }
-
     emits('isSelectImages', document.value); //INDICAMOS AL COMPONENTE PADRE QUE YA EXISTEN ARCHIVOS SELECCIONADOS
   }
 });

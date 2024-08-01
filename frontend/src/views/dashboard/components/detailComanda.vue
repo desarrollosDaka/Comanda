@@ -161,7 +161,6 @@ const updateEstatus = async () => {
   }
 };
 
-
 interface Asesores {
   Nombre: string;
   ID_user: number;
