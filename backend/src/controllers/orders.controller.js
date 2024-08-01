@@ -271,34 +271,26 @@ const createMasterOrderAndDetails = async (req, res) => {
       ID_city_rep: data.ciudad_rep,
       ID_municipio_rep: data.municipio_rep,
     };
-
     // Crear un objeto con los datos del pedido
-        const newOrder = {
-            ID_detalle: data.Id_Comanda, // Solo una vez
-            ID_sucursal: data.origen,
-            Caja_factura: data.Caja_factura,
-            Cedula: data.cedulaUno, // También aquí
-            User_crea: data.user_crea,
-            ID_rol: data.ID_rol,
-            ID_status: data.ID_status,
-            Tipo_delivery: data.ID_delivery,
-            SucursalZoom: data.sucursalZoom,
-            Autoriza: data.autorizado,
-            Cedula_autoriza: data.cedulaDos,
-            Nombre_autoriza: data.nombreDos,
-            Telefono_autoriza: data.telefonoDos,
-            Retencion: data.retencion,
-            Porc_retencion: data.porcentaje,
-            ID_ticket: data.ID_ticket
-        };
+    const newOrder = {
+        ID_detalle: data.Id_Comanda, // Solo una vez
+        ID_sucursal: data.origen,
+        Caja_factura: data.Caja_factura,
+        Cedula: data.cedulaUno, // También aquí
+        User_crea: data.user_crea,
+        ID_rol: data.ID_rol,
+        ID_status: data.ID_status,
+        Tipo_delivery: data.ID_delivery,
+        SucursalZoom: data.sucursalZoom,
+        Autoriza: data.autorizado,
+        Cedula_autoriza: data.cedulaDos,
+        Nombre_autoriza: data.nombreDos,
+        Telefono_autoriza: data.telefonoDos,
+        Retencion: data.retencion,
+        Porc_retencion: data.porcentaje,
+        ID_ticket: data.ID_ticket
+    };
         
-
-    // const newPay = {
-    //     ID_detalle: data.Id_Comanda,
-    //     ID_pago: data.ID_pago,
-    //     User_crea: data.user_crea,
-    // }
-
     //Comprobar si la cédula ya existe en la base de datos
     let client = await sequelize.models.modelMasterClients.findOne({
       where: { Cedula: data.cedulaUno },
@@ -310,13 +302,8 @@ const createMasterOrderAndDetails = async (req, res) => {
       // Crear un nuevo cliente
       client = await sequelize.models.modelMasterClients.create(newClients);
     }
-
     // Crear el pedido
     const order = await sequelize.models.modelOrders.create(newOrder);
-
-    //crear pago
-    //const payment = await sequelize.models.modelOrdersPay.create(newPay);
-
 
     const payments = data.ID_pago; // Asumiendo que los pagos vienen en un array en data.ID_pago
 
@@ -347,6 +334,28 @@ const filterOrderDetailsFiles = async (req, res) => {
       `SELECT *
             FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
             WHERE [ID_detalle] = '${id}'`
+    );
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//OBTENER DETALLES DE LOS ARCHIVOS DE LA COMANDA
+const filterOrderDetailsFilesEnvio = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const rta = await sequelize.query(
+      `SELECT *
+            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+            WHERE [ID_detalle] = '${id}' Type_File like '%ORDEN DE VENTA%'`
     );
     if (rta) {
       res.status(200);
@@ -878,6 +887,37 @@ const updateMasterAsesor = async (req, res) => {
   }
 };
 
+
+//CREAR NOTIFICACIONES
+const createNotifications = async (req, res) => {
+
+  const data = req.body;
+  //const id = req.params.id;
+
+  try {
+
+    const notify = {     
+      ID_detalle: req.params.id,
+      Notifications: req.body.notifications,
+      ID_user: req.body.User_asing,
+    };
+
+    const notifications = await sequelize.models.modelNotifications.create(notify);
+
+
+    if (notifications) {
+      res.status(201);
+      res.json({ notifications: notifications });
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la creación" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateStatusOrder = async (req, res) => {
   try {
@@ -979,12 +1019,14 @@ module.exports = {
   updateMasterOrderAndDetails,
   updateMasterOrderDetails,
   updateMasterAsesor,
+  createNotifications,
   updateStatusOrder,
   updateOrderCajaFact,
   deleteMasterOrder,
   getMasterOrderDetails,
   createOrderDocument,
   filterOrderDetailsFiles,
+  filterOrderDetailsFilesEnvio,
   deleteOrderDocument,
   getMasterOrderForStore,
   download,

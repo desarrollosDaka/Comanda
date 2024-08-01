@@ -1,4 +1,7 @@
+const sequelize = require("../config/conexion");
+
 const webpush = require("../config/webpush");
+
 let pushSubscription;
 
 const subscription = async (req, res) => {
@@ -21,4 +24,21 @@ const notification = async (req, res) => {
     }
 };
 
-module.exports = { subscription, notification };
+// get user
+const getMasterNotifications = async (req, res) => {
+    try {
+        const rta = await sequelize.models.modelNotifications.findAll();
+        if(rta){
+            res.status(201)
+            res.json(rta)
+        }else{
+            res.status(404)
+            res.json({msj: 'Error en la consulta'})
+        }   
+    } catch (e) {
+        console.log('Error', e);
+    }
+};
+
+
+module.exports = { subscription, notification , getMasterNotifications};

@@ -29,6 +29,7 @@ const {
     updateMasterOrderDetails,
     updateMasterOrderAndDetails,
     createOrderDetails,
+    createNotifications,
     updateOrderDetails,
     filterMasterAsesor, 
     filterMasterAsesorSucursal,
@@ -41,6 +42,7 @@ const {
     //getMasterOrderDetails,
     createOrderDocument,
     filterOrderDetailsFiles,
+    filterOrderDetailsFilesEnvio,
     deleteOrderDocument,
     getMasterOrderForStore,
     download,
@@ -75,6 +77,9 @@ router.post("/createOrder", createMasterOrderAndDetails);
 //CREATE DETALLE DE ORDEN
 router.post("/createOrderDetails", createOrderDetails);
 
+//CREATE NOTIFICATIONS
+router.post("/createNotifications", createNotifications);
+
 //CREATE ARCHIVOS DE ORDER DOCUMENT
 router.post("/createOrderDocument/:id/:idComanda", upload.array('doc_file'), createOrderDocument);
 
@@ -90,6 +95,13 @@ router.put("/updateOrder/:id", updateMasterOrderAndDetails);
 
 //FILTRO ORDER FILES
 router.get("/filterOrderDetailsfiles/:id", filterOrderDetailsFiles);
+
+
+//FILTRO ORDER FILES Envio
+router.get("/filterOrderDetailsfilesEnvio/:id", filterOrderDetailsFilesEnvio);
+
+/////////////////////////////FIN ///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);

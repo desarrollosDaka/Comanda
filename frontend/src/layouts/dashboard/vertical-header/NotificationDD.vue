@@ -60,7 +60,7 @@ function deactivateItem() {
               <h6 class="text-subtitle-1 font-weight-regular mb-0">
               <span style="font-weight: 600">Daniel Gonzalez</span> Ha creado un nuevo documento.
               </h6>
-              <span class="text-caption">3:00 AM</span>
+              <span class="text-caption">3:00 PM</span>
             </div>
             <p class="text-caption text-medium-emphasis my-0">Hace 2 min</p>
           </v-list-item>
