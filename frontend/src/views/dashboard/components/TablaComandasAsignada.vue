@@ -61,6 +61,9 @@ socket.on("get-master-order", (rta) => {
 });
 
 
+
+//////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
+
 const handleNewItem = () => {
   //console.log("Nuevo valor agregado:", newItem);
 
@@ -89,6 +92,7 @@ if (isFirstLoad) {
     handleNewItem();
   }
 });
+
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -262,14 +266,14 @@ const COLORSTATUS: any = {
             </v-icon>
           </router-link>
 
-          <v-icon
+          <!-- <v-icon
             v-if="STATUSPRINTER.includes((item as Table_Orders).ID_status)"
             size="23"
             class="me-4"
             color="primary"
           >
             mdi-printer
-          </v-icon>
+          </v-icon> -->
         </template>
 
         <!-- status -->

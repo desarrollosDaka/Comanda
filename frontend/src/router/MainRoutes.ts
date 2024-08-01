@@ -96,6 +96,11 @@ const MainRoutes = {
       path: '/maestroComandaAsignada',
       component: () => import('@/views/pages/maestroComandaAsignada.vue')
     }
+    ,{
+      name: 'retenciones',
+      path: '/retenciones',
+      component: () => import('@/views/pages/retencion.vue')
+    }
   ]
 };
 

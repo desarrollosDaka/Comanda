@@ -147,18 +147,15 @@ function addProduct(cod_product: any): void {
     }
 
     // VERIFICO QUE NO SE DUPLIQUE EL PRODUCTO
-    const found = listProduct.value.find((product) => product.code === cod_product)
+    // const found = listProduct.value.find((product) => product.code === cod_product)
 
-    if (!found) listProduct.value.push(newProduct)
+    // if (!found) listProduct.value.push(newProduct)
+    listProduct.value.push(newProduct)
 }
-
-
-
 
 async function removeProduct(code: string, index: number) {
 
     listProduct.value.splice(index, 1)
-
     const data = {
         "ID_detalle": id.value,
         "ID_producto": code
@@ -240,7 +237,6 @@ async function Created() {
 }
 
 const amountInput = (item: any) => {
-
     item.subtotal = item.amount * item.price
 }
 
@@ -262,13 +258,11 @@ const totalSubtotal = computed(() => {
 
 
 const back = () => {
-
     router.push(`/maestroPedidos/`);
 }
 
 
 async function handleProductUpdate() {
-
     let articles
 
     // RECORRO LA DATA DE ARTICULOS PARA AGREGARLO AL OBJECTO DE ARTICULOS

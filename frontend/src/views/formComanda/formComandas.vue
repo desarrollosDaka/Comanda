@@ -10,6 +10,7 @@ import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
 import { useUploadFiles } from "@/composables/file";
 
+
 // variables
 const valid = ref(false);
 const origen = ref();
@@ -63,6 +64,7 @@ const estado_rep = ref();
 const ciudad_rep = ref();
 const municipio_rep = ref();
 const itemDocument = ref<Document[]>([]);
+const idOrder = ref()
 // URL
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -104,11 +106,16 @@ const TipoDocumentoRules = ref([(v: any) => !!v || "El tipo de documento es requ
 // api post
 async function Created(json: any) {
   try {
-    await axios.post(`${baseUrl}/createOrder`, json);
+    const respuesta = await axios.post(`${baseUrl}/createOrder`, json);
+    if(respuesta){
+      let rta = await respuesta.data.order.ID_order
+      return rta
+    }
   } catch (error) {
     console.log(error);
   }
 }
+
 
 // BUSCADOR DE CLIENTES
 async function searchModel() {
@@ -371,37 +378,8 @@ async function handleFormComanda() {
     municipio_rep: tipo.value === "NATURAL" ? null : municipio_rep.value,
   };
 
-  // REGISTRAMOS PRIMERO LA DATA DEL FORMULARIO
-
-  // try {
-  //     await axios.post(`${baseUrl}/createOrder`, jsonData)
-  // } catch (error) {
-  //     console.log(error)
-  // }
-  Created(jsonData);
-  useAddDocument(itemDocument.value, idComandaRandom.value ); //Visualizan y agregan  archivos
-
-  // const formDataDocuments = new FormData();
-
-  // // filtramos solos los item tipo insert
-  // itemDocument.value = itemDocument.value.filter(item => item.mode === 'insert')
-
-  // for (let i = 0; i < itemDocument.value.length; i++) {
-
-  //     const file = itemDocument.value[i].file;
-  //     const type = itemDocument.value[i].type;
-  //     const mode = itemDocument.value[i].mode
-
-  //     formDataDocuments.append('doc_file', file)
-  //     formDataDocuments.append(`typeDoc_${i}`, type);
-  //     formDataDocuments.append(`user_${i}`, user_crea.value);
-
-  // }
-  // try {
-  //     await axios.post(`${baseUrl}/createOrderDocument/${idComandaRandom.value}`, formDataDocuments)
-  // } catch (error) {
-  //     console.log(error)
-  // }
+  let rta = await Created(jsonData);
+  useAddDocument(itemDocument.value, idComandaRandom.value, rta); //Visualizan y agregan  archivos
 }
 
 // Function para enviar form
@@ -465,49 +443,6 @@ onMounted(async () => {
 function handleSelectImages(items: any) {
   itemDocument.value = items;
 }
-
-// function validateDocuments(): boolean {
-
-//     let isvalidate = true
-
-//     if (itemDocument.value.length <= 0) {
-
-//         toast.error("Error: Debes seleccionar al menos un archivo", {
-//             position: toast.POSITION.TOP_CENTER,
-//             transition: toast.TRANSITIONS.ZOOM,
-//             autoClose: 4000,
-//             theme: 'colored',
-//             toastStyle: {
-//                 fontSize: '16px',
-//                 opacity: '1',
-//             },
-//         });
-
-//         isvalidate = false
-
-//     } else {
-
-//         itemDocument.value.forEach(element => {
-
-//             if (element.type === null) {
-
-//                 isvalidate = false
-//             }
-
-//         });
-
-//         if (!isvalidate)
-//             toast.warn(`Error: Seleccione el tipo de documento`, {
-//                 delay: 1000,
-//                 position: toast.POSITION.BOTTOM_CENTER,
-//                 transition: toast.TRANSITIONS.ZOOM,
-//                 theme: 'dark',
-//                 autoClose: 3000
-//             });
-//     }
-
-//     return isvalidate
-// }
 
 </script>
 
