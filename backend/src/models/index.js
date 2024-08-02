@@ -15,7 +15,8 @@ const { masterPaymentSchema, MasterPayment } = require("./payment.model")
 const { masterStatusSchema, MasterStatus } = require("./master_status.model") 
 const { masterDeliverySchema, MasterDelivery } = require("./delivery_type.model") 
 const { masterRolSchema, MasterRol } = require("./roles.model") 
-const { masterNotificationsSchema, MasterNotifications } = require("./notifications.model") 
+
+const {  masterNotificationsSchema, MasterNotifications } = require("./notifications.model") 
 
 
 
@@ -38,7 +39,7 @@ function setupModels(sequelize) {
   MasterDelivery.init(masterDeliverySchema, MasterDelivery.config(sequelize));
   MasterRol.init(masterRolSchema, MasterRol.config(sequelize));
   MasterNotifications.init(masterNotificationsSchema, MasterNotifications.config(sequelize));
- 
+
 
 }
 
