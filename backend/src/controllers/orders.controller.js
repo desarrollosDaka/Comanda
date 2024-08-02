@@ -9,6 +9,7 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
+const { log } = require("console");
 
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
@@ -351,15 +352,14 @@ const filterOrderDetailsFiles = async (req, res) => {
 const filterOrderDetailsFilesEnvio = async (req, res) => {
   try {
     const id = req.params.id;
-
     const rta = await sequelize.query(
-      `SELECT *
-            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
-            WHERE [ID_detalle] = '${id}' Type_File like '%ORDEN DE VENTA%'`
+      `SELECT * FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+            WHERE [ID_detalle] = '${id}' AND Type_File = 'DETALLE DE ENVIO'`
     );
     if (rta) {
       res.status(200);
       res.json(rta);
+      console.log(rta+ 'holaaaaaaaaaaaaaaaaaaaaa');
     } else {
       res.status(404);
       res.json({ msj: "Error en la consulta" });
