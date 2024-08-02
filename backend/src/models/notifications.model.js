@@ -1,8 +1,6 @@
 
+
 // notifications
-
-// MUNICIPIOS
-
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
 const tableName = "ORDER_NOTIFICATIONS";
@@ -12,9 +10,7 @@ const masterNotificationsSchema = {
   ID_Notifications: {
     allowNull: false,
     primaryKey: true,
-
     autoIncrement: true,
-
     type: DataTypes.INTEGER,
   },
   ID_detalle: {
