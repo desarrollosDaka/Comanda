@@ -8,14 +8,12 @@ import imgUrl from '@/assets/images/archivoPdf.png'
 import { useRouter, useRoute } from 'vue-router'
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
-
-
 const INSERT_METHOD = 'insert'
 const UPDATE_METHOD = 'update'
 const DOCUMENT_PDF = 'pdf'
 const URLIMAGEPDF = imgUrl
-
 const route = useRoute()
+const url = ref()
 
 let route_upload = ref()
 const sort = route?.name;
@@ -32,36 +30,43 @@ const props = defineProps({
   },
 })
 
+let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
+// Localstorage
+const jsonFromLocalStorage = sessionStorage.getItem("user");
+if (jsonFromLocalStorage !== null) {
+  const parsedData = JSON.parse(jsonFromLocalStorage);
+  USER_ROL.value = +parsedData.data.ID_rol;
+}
+
 
 const document = ref<Documento[]>([]);
 
 onMounted(async () => {
 
 
-  if (props.ID_detalle != undefined) {
+  if(props.ID_detalle != undefined){
 
-    route_upload.value = 'http://localhost:3002/public/'
-
+    route_upload.value=`${import.meta.env.VITE_URL}/public/`
     try {
-      const url = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
-      const { data } = await axios.get(url);
+
+      if(USER_ROL.value === 10){
+        url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}`
+      } else {
+        url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
+      }
+      const { data } = await axios.get(url.value);
 
       data[0].forEach((data: DocumentData) => {
         const extension = data.File.split('.').pop();
         document.value.push({ imagen: data.File, file: null, type: data.Type_File, mode: UPDATE_METHOD, disabled: true, Id: data.ID_File, typefile: extension });
-
       });
 
 
     } catch (error) {
       console.log(error)
     }
-
     emits('isSelectImages', document.value); //INDICAMOS AL COMPONENTE PADRE QUE YA EXISTEN ARCHIVOS SELECCIONADOS
-
   }
-
-
 });
 
 interface Documento {
@@ -90,7 +95,6 @@ const tipoRules = ref([
 ]);
 
 async function viewImages(event: Event) {
-
   const target = event.target as HTMLInputElement;
 
   if (!target.files) return;
@@ -278,9 +282,18 @@ async function downLoadArchive(param: Documento) {
   <v-row>
     <v-col cols="12">
       <br>
-      <v-file-input multiple clearable label="Haga click para seleccionar todos los archivos necesarios"
-        variant="outlined" color="primary" required @change="viewImages" accept="image/* application/pdf"
-        prepend-icon="mdi-camera"></v-file-input>
+      <v-file-input 
+        multiple 
+        clearable 
+        label="Haga click para seleccionar todos los archivos necesarios"
+        variant="outlined" 
+        color="primary" 
+        required 
+        @change="viewImages" 
+        accept="image/* application/pdf"
+        :disabled="USER_ROL === 10"
+        prepend-icon="mdi-camera">
+      </v-file-input>
     </v-col>
   </v-row>
 
@@ -301,8 +314,9 @@ async function downLoadArchive(param: Documento) {
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline"
-            color="error"></v-btn>
+          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10"
+            color="error">
+          </v-btn>
 
           <template v-slot:placeholder>
             <v-row align="center" class="fill-height ma-0" justify="center">
@@ -315,7 +329,7 @@ async function downLoadArchive(param: Documento) {
           <div class="tooltip">
             <div class="tooltiptext" v-if="data.mode === UPDATE_METHOD">Clic para descargar!</div>
             <v-select :id="'tipo' + index" placeholder="Tipo de archivo" :disabled="data.disabled" class="mt-2"
-              clearable chips :items="['CEDULA', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA']"
+              clearable chips :items="['CEDULA', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA', 'DETALLE DE ENVIO']"
               density="compact" label="Indique el tipo de documento" variant="outlined" :rules="tipoRules"
               :aria-label="'TipoDocuments' + index" color="primary" theme="dark" with-background :key="index"
               v-model="document[index].type" :item-value="document[index].type"

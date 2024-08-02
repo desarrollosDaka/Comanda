@@ -10,7 +10,7 @@ const breadcrumbs = ref([
   {
     title: 'Comandas',
     disabled: false,
-    to: '/maestroComanda'
+    to: '/maestroPedidos'
   },
   {
     title: 'Crear Comandas',

@@ -502,6 +502,7 @@ async function handleFormComanda() {
     formDataDocuments.append(`user_${i}`, user_mod.value);
   }
   try {
+
     await axios.post(
       `${baseUrl}/createOrderDocument/${id.value}/${idComanda.value}`,
       formDataDocuments
@@ -607,6 +608,7 @@ onMounted(async () => {
   await getEstadosRL();
   await getSelectRL();
   await getSelectTwoRL();
+  alert(`${id.value} y ${idComanda.value}`)
   
 });
 onMounted(async () => {

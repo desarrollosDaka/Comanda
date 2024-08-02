@@ -59,7 +59,7 @@ const signUp = async (req, res) => {
             Nombre,
             Email,
             Password,
-            Id_sucursal,
+            Id_sucursal, 
             ID_rol,
             Dpto_ventas,
             Linea_ventas,

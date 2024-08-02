@@ -18,7 +18,6 @@ var storage = multer.diskStorage({
     }
 })
 
-
 const upload = multer({ storage: storage })
 
 // Controllers
@@ -45,7 +44,7 @@ const {
     filterOrderDetailsFilesEnvio,
     deleteOrderDocument,
     getMasterOrderForStore,
-    download
+    download,
 } 
 = require("../controllers/orders.controller");
 
@@ -88,21 +87,18 @@ router.get("/download/:id", download);
 // Update Order(SOLO CABECERA) (DESACTIVADO)
 //router.put("/updateOrder/:id", updateMasterOrder);
 
-/////////////////////////////ANDERSON ///////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////
 //UPDATE ORDERS + CLIENTS
 router.put("/updateOrder/:id", updateMasterOrderAndDetails);
 
-
 //FILTRO ORDER FILES
 router.get("/filterOrderDetailsfiles/:id", filterOrderDetailsFiles);
+
 
 //FILTRO ORDER FILES Envio
 router.get("/filterOrderDetailsfilesEnvio/:id", filterOrderDetailsFilesEnvio);
 
 /////////////////////////////FIN ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-
 
 //UPDATE SOLO CAMPO DE ASESOR ASIGNADO EN CABECERA ORDERS
 router.put("/updateOrderAsesor/:id", updateMasterAsesor);

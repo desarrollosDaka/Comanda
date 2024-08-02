@@ -1,3 +1,5 @@
+
+
 // notifications
 const { Sequelize, Model, DataTypes } = require("sequelize");
 
@@ -49,4 +51,6 @@ module.exports = {
   tableName,
   masterNotificationsSchema,
   MasterNotifications,
+
 };
+

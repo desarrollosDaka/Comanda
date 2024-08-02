@@ -25,7 +25,7 @@ import {
   }
   
   const sidebarItem: menu[] = [
-    { header: 'SGI' },
+    { header: 'Comanda' },
     {
       title: 'Panel de control',
       icon: DashboardOutlined,
