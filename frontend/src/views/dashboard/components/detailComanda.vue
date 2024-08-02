@@ -275,7 +275,7 @@ const asignAsesor = async () => {
   const status = dataUser.changeID_status;
   try {
     const response = await axios.put(
-      `${baseUrl}/updateOrderAsesor/${id_orders.value}`,
+      `${baseUrl}/updateOrderAsesor/${id.value}`,
       { User_asing: selectedAsesor.value, ID_status: status }
     );
     if (response) {
@@ -469,7 +469,6 @@ const getNameAsesor = (id: number) => {
 
                 </v-btn>
             </v-col>
-
             <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
                 <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
                     INGRESAR NUMERO DE FACTURA
