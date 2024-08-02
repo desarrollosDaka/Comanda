@@ -48,18 +48,17 @@ onMounted(async () => {
 
     route_upload.value=`${import.meta.env.VITE_URL}/public/`
     try {
+
       if(USER_ROL.value === 10){
-        url.value = `${baseUrl}/filterOrderDetailsFilesEnvio/${props.ID_detalle}`
+        url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}`
       } else {
         url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
       }
-      
       const { data } = await axios.get(url.value);
 
       data[0].forEach((data: DocumentData) => {
         const extension = data.File.split('.').pop();
         document.value.push({ imagen: data.File, file: null, type: data.Type_File, mode: UPDATE_METHOD, disabled: true, Id: data.ID_File, typefile: extension });
-
       });
 
 
@@ -283,9 +282,18 @@ async function downLoadArchive(param: Documento) {
   <v-row>
     <v-col cols="12">
       <br>
-      <v-file-input multiple clearable label="Haga click para seleccionar todos los archivos necesarios"
-        variant="outlined" color="primary" required @change="viewImages" accept="image/* application/pdf"
-        prepend-icon="mdi-camera"></v-file-input>
+      <v-file-input 
+        multiple 
+        clearable 
+        label="Haga click para seleccionar todos los archivos necesarios"
+        variant="outlined" 
+        color="primary" 
+        required 
+        @change="viewImages" 
+        accept="image/* application/pdf"
+        :disabled="USER_ROL === 10"
+        prepend-icon="mdi-camera">
+      </v-file-input>
     </v-col>
   </v-row>
 
@@ -306,7 +314,7 @@ async function downLoadArchive(param: Documento) {
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8"
+          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10"
             color="error">
           </v-btn>
 

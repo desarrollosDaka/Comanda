@@ -67,6 +67,7 @@ const User_asing = ref();
 const id_sucursal = ref();
 const guiaZoom = ref();
 const direccionDelivery = ref();
+const Type = ref()
 
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
@@ -116,6 +117,17 @@ const getOrder = async () => {
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getDocumentsATC = async () => {
+  try {
+    const url = `${baseUrl}/filterOrderDetailsfilesEnvio/${id.value}`;
+    const { data } = await axios.get(url);
+    Type.value = data[0][0].Type_File;
+    
   } catch (error) {
     console.log(error);
   }
@@ -205,6 +217,7 @@ onMounted(async () => {
   await getOrder();
   await getArticulos();
   await getAsesores();
+  await getDocumentsATC();
 });
 
 async function updateData() {
@@ -350,7 +363,7 @@ const getNameAsesor = (id: number) => {
     </v-row>
 
     <!-- tabla para los demas usuarios -->
-    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 3 || USER_ROL === 4 || USER_ROL === 5 || USER_ROL === 6 || USER_ROL === 7 || USER_ROL === 8 || USER_ROL === 9 || USER_ROL === 99">
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 3 || USER_ROL === 4 || USER_ROL === 5 || USER_ROL === 6 || USER_ROL === 7 || USER_ROL === 8 || USER_ROL === 9 || USER_ROL === 99 || Type !== 'DETALLE DE ENVIO'">
 
 
         <!-- productos de la comanda -->
@@ -385,7 +398,7 @@ const getNameAsesor = (id: number) => {
     </UiTitleCard>
 
     <!-- tabla ATC -->
-    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 10">
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-else="USER_ROL === 10 || Type === 'DETALLE DE ENVIO'">
         <!-- productos de la comanda -->
         <v-row>
             <v-col cols="12" md="12">
@@ -431,10 +444,10 @@ const getNameAsesor = (id: number) => {
     </UiTitleCard>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1" 
-    @isSelectImages=handleSelectImages 
-    :ID_detalle=id 
-    :deleteImageUpdate=false
+    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10" 
+      @isSelectImages=handleSelectImages 
+      :ID_detalle=id 
+      :deleteImageUpdate=false
     />
 
     <v-row class="mb-0 mt-5">

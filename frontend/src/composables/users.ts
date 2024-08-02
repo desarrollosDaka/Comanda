@@ -15,6 +15,7 @@ const ARRAYUSER_ROL = [
         "changeID_status":5,
         "printer":false
     }, 
+    
     //COORDINADOR ONLINE
     {   "userRol": 2 , 
         "status":[1],
