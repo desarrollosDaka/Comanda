@@ -317,7 +317,7 @@ const filterOrderDetailsFilesEnvio = async (req, res) => {
     const rta = await sequelize.query(
       `SELECT *
             FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
-            WHERE [ID_detalle] = '${id}' Type_File like '%ORDEN DE VENTA%'`
+            WHERE [ID_detalle] = '${id}' AND Type_File like '%DETALLE DE ENVIO%'`
     );
     if (rta) {
       res.status(200);
@@ -823,7 +823,7 @@ const updateOrderCajaFact = async (req, res) => {
   }
 };
 
-//UPDATE ASESOR ASIGNADO A COMANDA
+//UPDATE ASESOR ASIGNADO A COMANDA y ENVIA NOTIFICACION
 const updateMasterAsesor = async (req, res) => {
   try {
     const data = {
@@ -831,48 +831,27 @@ const updateMasterAsesor = async (req, res) => {
       ID_status: req.body.ID_status,
     };
 
-    const idUser = req.params.id;
+    const notify = {     
+      ID_detalle: req.params.id,
+      Notifications: 'Comanda Asignada',
+      Type_notification: ' ',
+      ID_user: req.body.User_asing,
+    };
+
+    const id = req.params.id;
 
     const rta = await sequelize.models.modelOrders.update(data, {
-      where: { ID_order: idUser },
+      where: { ID_detalle: id },
     });
 
-    if (rta) {
+    const notifications = await sequelize.models.modelNotifications.create(notify);
+
+    if (rta && notifications) {
       res.status(200);
       res.json(rta);
     } else {
       res.status(404);
       res.json({ msj: "Error en la consulta" });
-    }
-  } catch (e) {
-    console.log("Error", e);
-  }
-};
-
-
-//CREAR NOTIFICACIONES
-const createNotifications = async (req, res) => {
-
-  const data = req.body;
-  //const id = req.params.id;
-
-  try {
-
-    const notify = {     
-      ID_detalle: req.params.id,
-      Notifications: req.body.notifications,
-      ID_user: req.body.User_asing,
-    };
-
-    const notifications = await sequelize.models.modelNotifications.create(notify);
-
-
-    if (notifications) {
-      res.status(201);
-      res.json({ notifications: notifications });
-    } else {
-      res.status(404);
-      res.json({ msj: "Error en la creación" });
     }
   } catch (e) {
     console.log("Error", e);
@@ -981,7 +960,6 @@ module.exports = {
   updateMasterOrderAndDetails,
   updateMasterOrderDetails,
   updateMasterAsesor,
-  createNotifications,
   updateStatusOrder,
   updateOrderCajaFact,
   deleteMasterOrder,

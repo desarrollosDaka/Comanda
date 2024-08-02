@@ -30,7 +30,6 @@ const {
     updateMasterOrderDetails,
     updateMasterOrderAndDetails,
     createOrderDetails,
-    createNotifications,
     updateOrderDetails,
     filterMasterAsesor, 
     filterMasterAsesorSucursal,
@@ -78,8 +77,6 @@ router.post("/createOrder", createMasterOrderAndDetails);
 //CREATE DETALLE DE ORDEN
 router.post("/createOrderDetails", createOrderDetails);
 
-//CREATE NOTIFICATIONS
-router.post("/createNotifications", createNotifications);
 
 //CREATE ARCHIVOS DE ORDER DOCUMENT
 router.post("/createOrderDocument/:id/:idComanda", upload.array('doc_file'), createOrderDocument);
