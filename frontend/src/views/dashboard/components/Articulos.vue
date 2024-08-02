@@ -15,6 +15,7 @@ const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])
 
+const loadingProducts = ref(false); 
 
 const notify = () => {
     toast.info('Hello1!!');
@@ -44,6 +45,7 @@ const isOrder = ref<boolean>(true)
 
 const getProduct = async () => {
     try {
+        loadingProducts.value = true; // Bloquear el botón al cargar productos
         const url = `${baseUrl}/masterProducts`
         const { data } = await axios.get(url);
 
@@ -64,6 +66,8 @@ const getProduct = async () => {
                 opacity: '1',
             },
         });
+    } finally {
+        loadingProducts.value = false;
     }
 }
 
@@ -143,18 +147,15 @@ function addProduct(cod_product: any): void {
     }
 
     // VERIFICO QUE NO SE DUPLIQUE EL PRODUCTO
-    const found = listProduct.value.find((product) => product.code === cod_product)
+    // const found = listProduct.value.find((product) => product.code === cod_product)
 
-    if (!found) listProduct.value.push(newProduct)
+    // if (!found) listProduct.value.push(newProduct)
+    listProduct.value.push(newProduct)
 }
-
-
-
 
 async function removeProduct(code: string, index: number) {
 
     listProduct.value.splice(index, 1)
-
     const data = {
         "ID_detalle": id.value,
         "ID_producto": code
@@ -236,7 +237,6 @@ async function Created() {
 }
 
 const amountInput = (item: any) => {
-
     item.subtotal = item.amount * item.price
 }
 
@@ -258,13 +258,11 @@ const totalSubtotal = computed(() => {
 
 
 const back = () => {
-
     router.push(`/maestroPedidos/`);
 }
 
 
 async function handleProductUpdate() {
-
     let articles
 
     // RECORRO LA DATA DE ARTICULOS PARA AGREGARLO AL OBJECTO DE ARTICULOS
@@ -305,7 +303,8 @@ async function handleProductUpdate() {
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
                 variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
-                :items="infoProduct">
+                :items="infoProduct"  :disabled="loadingProducts"
+                >
 
                 <template v-slot:item="{ props, item }">
                     <!-- GENERA ERROR EN LA TERMINAR, PERO NO EN CONSOLA -->
@@ -316,7 +315,7 @@ async function handleProductUpdate() {
 
         </v-col>
         <v-col cols="12" md="3" class="py-3">
-            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal">
+            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts">
                 AGREGAR
             </v-btn>
         </v-col>

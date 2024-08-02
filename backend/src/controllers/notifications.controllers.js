@@ -1,5 +1,7 @@
-const webpush = require("../config/webpush");
 const sequelize = require("../config/conexion");
+
+const webpush = require("../config/webpush");
+
 
 let pushSubscription;
 
@@ -52,4 +54,6 @@ const ruta = (req, res) => {
   res.status(200).json();
 };
 
+
 module.exports = { subscription, notification, findall, ruta };
+

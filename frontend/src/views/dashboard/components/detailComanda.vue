@@ -12,6 +12,7 @@ import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
 import { useUploadFiles } from "@/composables/file";
 
+
 interface Document {
   file: File;
   type: string;
@@ -85,6 +86,7 @@ if (jsonFromLocalStorage !== null) {
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
+const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 
 const itemDocument = ref<Document[]>([]);
 
@@ -132,20 +134,7 @@ const getArticulos = async () => {
 };
 
 const updateEstatus = async () => {
-  try {
-    //SOLO USUARIOS CON ROL DE CAJERAS
-    if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
-      useAddDocument(itemDocument.value, id.value); //Visualizan y agregan  archivos
-    }
 
-    await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
-      status_comanda: dataUser.changeID_status,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-const update = async () => {
   const jsonData = info.value?.map((item) => ({
     id_comanda: id.value,
     producto: item.Producto,
@@ -154,14 +143,22 @@ const update = async () => {
     direccionDelivery: item.direccionDelivery,
     precio: item.Precio,
   }));
-
-  console.log(jsonData);
   
-  // try {
-  //   await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, jsonData
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  try {
+    //SOLO USUARIOS CON ROL DE CAJERAS
+    if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
+      useAddDocument(itemDocument.value, id.value, id_orders.value); //Visualizan y agregan  archivos
+
+    } else if(ROLEATC.includes(USER_ROL.value)){
+      await axios.put(`${baseUrl}/updateOrderDetails/${id.value}`, jsonData);
+    }
+
+    await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
+      status_comanda: dataUser.changeID_status,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 interface Asesores {
@@ -179,6 +176,26 @@ const getAsesores = async () => {
       title: asesor.Nombre,
       value: asesor.ID_user,
     }));
+  } catch (error) {
+    console.log(error);
+  }
+};
+const cajaFactura = async () => {
+  try {
+    if(numFactura.value){
+      const url = `${baseUrl}/updateCajaFactura/${id.value}`;
+    const { data:respuesta } = await axios.put(url, {caja_factura: numFactura.value});
+
+    if(respuesta){
+      dialog.value = false
+      return toast.error(`Caja factura asignada a la comanda`, {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+    });
+    }
+    }
+
   } catch (error) {
     console.log(error);
   }
@@ -333,7 +350,7 @@ const getNameAsesor = (id: number) => {
     </v-row>
 
     <!-- tabla para los demas usuarios -->
-    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 6 || USER_ROL === 8">
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 3 || USER_ROL === 4 || USER_ROL === 5 || USER_ROL === 6 || USER_ROL === 7 || USER_ROL === 8 || USER_ROL === 9 || USER_ROL === 99">
 
 
         <!-- productos de la comanda -->
@@ -377,8 +394,8 @@ const getNameAsesor = (id: number) => {
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase">Direccion</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase">Guia Zoom</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'DELIVERY TIENDA'">Direccion</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                         </tr>
                     </thead>
@@ -387,7 +404,7 @@ const getNameAsesor = (id: number) => {
                         <tr v-for="(item, index) in info" :key="index">
                             <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
                             <td class="py-3">{{ item['ID_producto'] }} </td>
-                            <td class="py-3">
+                            <td class="py-3"  v-if="ID_delivery == 'DELIVERY TIENDA'">
                               <v-text-field 
                                 variant="solo-inverted"
                                 v-model="item.direccionDelivery"
@@ -396,7 +413,7 @@ const getNameAsesor = (id: number) => {
                               >
                               </v-text-field>
                             </td>
-                            <td class="py-3">
+                            <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
                               <v-text-field 
                                 variant="solo-inverted"
                                 v-model="item.guiaZoom"
@@ -414,7 +431,7 @@ const getNameAsesor = (id: number) => {
     </UiTitleCard>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8" 
+    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1" 
     @isSelectImages=handleSelectImages 
     :ID_detalle=id 
     :deleteImageUpdate=false
@@ -439,12 +456,6 @@ const getNameAsesor = (id: number) => {
 
                 </v-btn>
             </v-col>
-            <v-col cols="auto">
-                <v-btn append-icon="mdi-check-all" variant="elevated" color="primary"
-                    @click="update()">
-                    hola
-                </v-btn>
-            </v-col>
 
             <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
                 <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
@@ -455,14 +466,14 @@ const getNameAsesor = (id: number) => {
     </v-container>
 
     <v-dialog v-model="dialog" width="auto">
-        <v-card max-width="400" prepend-icon="mdi-counter" title="Numero de Factura">
+        <v-card max-width="600" prepend-icon="mdi-counter" title="Numero de Factura">
 
             <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Numero factura es requerido']"
-                placeholder="79938" required></v-text-field>
+                placeholder="23-734" required></v-text-field>
            
 
             <template v-slot:actions>
-                <v-btn class="ms-auto" text="Ok" @click="dialog = false"></v-btn>
+                <v-btn class="ms-auto" text="Ok" @click="cajaFactura"></v-btn>
             </template>
         </v-card>
 

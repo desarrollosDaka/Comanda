@@ -11,4 +11,5 @@ router.post("/subscription", subscription);
 router.post("/notification", notification);
 router.get("/finall/:id", findall);
 
+
 module.exports = router;

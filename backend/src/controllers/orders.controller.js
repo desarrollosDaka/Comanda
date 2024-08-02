@@ -49,6 +49,44 @@ const getMasterOrder = async (req, res) => {
   }
 };
 
+const getMasterOrderRetencion = async (req, res) => {
+  try {
+    // const rta = await sequelize.models.modelOrders.findAll();
+    const rta = await sequelize.query(
+      `SELECT  T0.[ID_order]
+                ,T0.ID_detalle
+                ,T0.Caja_factura
+				        ,T3.Tipo_cedula
+                ,T0.Cedula  
+                ,T3.Nombre Cliente
+                ,T3.Razon_comercial
+                ,T1.Sucursal
+                ,T1.ID_Sucursal
+                ,T0.[User_crea]
+                ,T0.[User_asing] Asesor 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
+                ,CAST(T0.Create_date AS DATE) Create_date
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 --AND T0.ID_sucursal = 4
+        ORDER BY T0.[ID_order] DESC`
+    );
+
+    if (rta) {
+      return rta;
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
 // New
 const getMasterOrderForStore = async (req, res) => {
   try {
@@ -233,34 +271,26 @@ const createMasterOrderAndDetails = async (req, res) => {
       ID_city_rep: data.ciudad_rep,
       ID_municipio_rep: data.municipio_rep,
     };
-
     // Crear un objeto con los datos del pedido
-        const newOrder = {
-            ID_detalle: data.Id_Comanda, // Solo una vez
-            ID_sucursal: data.origen,
-            Caja_factura: data.Caja_factura,
-            Cedula: data.cedulaUno, // También aquí
-            User_crea: data.user_crea,
-            ID_rol: data.ID_rol,
-            ID_status: data.ID_status,
-            Tipo_delivery: data.ID_delivery,
-            SucursalZoom: data.sucursalZoom,
-            Autoriza: data.autorizado,
-            Cedula_autoriza: data.cedulaDos,
-            Nombre_autoriza: data.nombreDos,
-            Telefono_autoriza: data.telefonoDos,
-            Retencion: data.retencion,
-            Porc_retencion: data.porcentaje,
-            ID_ticket: data.ID_ticket
-        };
+    const newOrder = {
+        ID_detalle: data.Id_Comanda, // Solo una vez
+        ID_sucursal: data.origen,
+        Caja_factura: data.Caja_factura,
+        Cedula: data.cedulaUno, // También aquí
+        User_crea: data.user_crea,
+        ID_rol: data.ID_rol,
+        ID_status: data.ID_status,
+        Tipo_delivery: data.ID_delivery,
+        SucursalZoom: data.sucursalZoom,
+        Autoriza: data.autorizado,
+        Cedula_autoriza: data.cedulaDos,
+        Nombre_autoriza: data.nombreDos,
+        Telefono_autoriza: data.telefonoDos,
+        Retencion: data.retencion,
+        Porc_retencion: data.porcentaje,
+        ID_ticket: data.ID_ticket
+    };
         
-
-    // const newPay = {
-    //     ID_detalle: data.Id_Comanda,
-    //     ID_pago: data.ID_pago,
-    //     User_crea: data.user_crea,
-    // }
-
     //Comprobar si la cédula ya existe en la base de datos
     let client = await sequelize.models.modelMasterClients.findOne({
       where: { Cedula: data.cedulaUno },
@@ -272,13 +302,8 @@ const createMasterOrderAndDetails = async (req, res) => {
       // Crear un nuevo cliente
       client = await sequelize.models.modelMasterClients.create(newClients);
     }
-
     // Crear el pedido
     const order = await sequelize.models.modelOrders.create(newOrder);
-
-    //crear pago
-    //const payment = await sequelize.models.modelOrdersPay.create(newPay);
-
 
     const payments = data.ID_pago; // Asumiendo que los pagos vienen en un array en data.ID_pago
 
@@ -309,6 +334,28 @@ const filterOrderDetailsFiles = async (req, res) => {
       `SELECT *
             FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
             WHERE [ID_detalle] = '${id}'`
+    );
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//OBTENER DETALLES DE LOS ARCHIVOS DE LA COMANDA
+const filterOrderDetailsFilesEnvio = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const rta = await sequelize.query(
+      `SELECT *
+            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+            WHERE [ID_detalle] = '${id}' Type_File like '%ORDEN DE VENTA%'`
     );
     if (rta) {
       res.status(200);
@@ -353,26 +400,26 @@ const createOrderDetails = async (req, res) => {
         const orderDetailData = {
             ID_detalle: data.Id_Comanda,
             ID_producto: data.id_producto,
-            Producto: data.producto,
+            Producto: data.producto, 
             Unidades: data.unidades,
             Precio: data.precio,
             Subtotal: data.subtotal,
             Direccion: data.direccion,
-            Zoom: data.zoom,
+            Zoom: data.zoom
         };
 
         let product = await sequelize.models.modelOrdersdetails.findOne({
             where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto },
         });
-        if (product) {
-            // Actualiza el cliente existente
-            product = await product.update(orderDetailData);
-        } else {
+        // if (product) {
+        //     // Actualiza el cliente existente
+        //     product = await product.update(orderDetailData);
+        // } else {
             // Crea un nuevo cliente
             product = await sequelize.models.modelOrdersdetails.create(
                 orderDetailData
             );
-        }
+        //}
 
 
     if (orderDetailData) {
@@ -389,33 +436,28 @@ const createOrderDetails = async (req, res) => {
 
 //ACTUALIZA DETALLES DE LA ORDER 
 const updateOrderDetails = async (req, res) => {
-
-  const data = req.body;
-
   try {
+    const id = req.params.id;
+    const data = await req.body;
+
+    for (const item of data) {
       const orderDetailData = {
-          ID_detalle: data.id_Comanda,
-          ID_producto: data.id_producto,
-          Direccion: data.direccionDelivery,
-          Zoom: data.guiaZoom,
+        ID_detalle: id,
+        ID_producto: item.id_producto,
+        Direccion: item.direccionDelivery,
+        Zoom: item.guiaZoom,
       };
 
-      let product = await sequelize.models.modelOrdersdetails.findOne({
-          where: { ID_detalle: data.id_Comanda, ID_producto: data.id_producto },
+      await sequelize.models.modelOrdersdetails.update(orderDetailData, {
+        where: { ID_detalle: id, ID_producto: item.id_producto },
       });
-    
-    product = await product.update(orderDetailData);
+    }
 
-  if (orderDetailData) {
-    res.status(201);
-    res.json({ product: product });
-  } else {
-    res.status(404);
-    res.json({ msj: "Error en la creación" });
+    res.status(201).json({ message: "Detalles de la orden actualizados correctamente" });
+  } catch (e) {
+    console.log("Error", e);
+    res.status(500).json({ error: "Error en el servidor" });
   }
-} catch (e) {
-  console.log("Error", e);
-}
 };
 
 const deleteOrderDetails = async (req, res) => {
@@ -662,7 +704,6 @@ const createOrderDocument = async (req, res) => {
   const Id_Comanda = req.params.id;
   const Id_Comanda2 = req.params.idComanda;
 
-  console.log("req.params", req.params);
 
   try {
     const results = await Promise.all(
@@ -672,7 +713,6 @@ const createOrderDocument = async (req, res) => {
             await resizeImage(file); //comprimimos la imagen
             await addwatermark(file, Id_Comanda2);
           } else {
-            console.log("Id_Comanda2",Id_Comanda2);
             await addWaterMarkPDF(file, Id_Comanda2);
           }
         } catch (error) {
@@ -708,6 +748,7 @@ const createOrderDocument = async (req, res) => {
     res.status(500).json({ message: "Error al guardar los documentos" });
   }
 };
+
 
 //BORRAR ARCHVIOS DE LA TABLA ARCHIVOS
 const deleteOrderDocument = async (req, res) => {
@@ -794,6 +835,31 @@ const filterMasterAsesorSucursal = async (req, res) => {
   }
 };
 
+//AGREGAR CAJA FACTURA COMANDA
+const updateOrderCajaFact = async (req, res) => {
+  console.log(req.body);
+  try {
+    const data = {
+      Caja_factura: req.body.caja_factura,
+    };
+
+    const id = req.params.id;
+
+    const rta = await sequelize.models.modelOrders.update(data, {
+      where: { ID_detalle: id },
+    });
+
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
 
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateMasterAsesor = async (req, res) => {
@@ -820,6 +886,37 @@ const updateMasterAsesor = async (req, res) => {
     console.log("Error", e);
   }
 };
+
+
+//CREAR NOTIFICACIONES
+const createNotifications = async (req, res) => {
+
+  const data = req.body;
+  //const id = req.params.id;
+
+  try {
+
+    const notify = {     
+      ID_detalle: req.params.id,
+      Notifications: req.body.notifications,
+      ID_user: req.body.User_asing,
+    };
+
+    const notifications = await sequelize.models.modelNotifications.create(notify);
+
+
+    if (notifications) {
+      res.status(201);
+      res.json({ notifications: notifications });
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la creación" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
 
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateStatusOrder = async (req, res) => {
@@ -922,12 +1019,16 @@ module.exports = {
   updateMasterOrderAndDetails,
   updateMasterOrderDetails,
   updateMasterAsesor,
+  createNotifications,
   updateStatusOrder,
+  updateOrderCajaFact,
   deleteMasterOrder,
   getMasterOrderDetails,
   createOrderDocument,
   filterOrderDetailsFiles,
+  filterOrderDetailsFilesEnvio,
   deleteOrderDocument,
   getMasterOrderForStore,
   download,
+  getMasterOrderRetencion
 };

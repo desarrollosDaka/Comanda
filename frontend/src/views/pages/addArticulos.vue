@@ -23,9 +23,11 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
   <v-row>
+
     <!-- TABLA -->
     <v-col cols="12" md="12">
         <Articulo />
     </v-col>
+    
   </v-row>
 </template>

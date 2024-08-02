@@ -52,7 +52,7 @@ interface Table_Orders {
   Create_date: Date;
 }
 
-const socket = io("http://localhost:3003", {
+const socket = io(import.meta.env.VITE_BACK_URL, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
@@ -94,17 +94,6 @@ const editItem = (item: any) => {
   dialog.value = true;
 };
 
-// const getOrders = async () => {
-//     // loadingInfo.value = true
-//     // try{
-//     //     const url = `${baseUrl}/masterOrder`
-//     //     const {data} = await axios.get(url);
-//     //     info.value =  data[0]
-//     // } catch(error){
-//     //     console.log(error)
-//     // }
-//     // loadingInfo.value = false
-// }
 
 
 const getMotivo = async () => {
@@ -112,13 +101,12 @@ const getMotivo = async () => {
     const url = `${baseUrlMotivo}/masterMotivo`;
   
     const { data } = await axios.get(url);
-    console.log(data + " MOTIVOO");
     
     infoMotivo.value = data.map((motivo: Motivo) => ({
       value: motivo.ID_motivo,
       title: motivo.Motivo,
     }));
-    console.log(infoMotivo.value);
+    //console.log(infoMotivo.value);
     
   } catch (error) {
     console.log(error);
@@ -275,7 +263,10 @@ const headers = ref([
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn color="error" variant="elevated" @click="dialog = false">
+                <v-btn color="error" 
+                variant="elevated" 
+                @click="dialog = false" 
+                >
                   Cancelar
                 </v-btn>
 
@@ -283,6 +274,7 @@ const headers = ref([
                   type="submit"
                   color="primary"
                   variant="elevated"
+                  :disabled="!selectedMotivo"
                   @click="deleteDocuments(deleteItem.ID_order)"
                 >
                   Eliminar

@@ -10,10 +10,16 @@ const page = ref({ title: 'Comanda Asignadas' });
 
 const breadcrumbs = ref([
   {
-    title: 'Comandas',
+    title: 'Comandas Asignadas',
     disabled: false,
+    to: '/maestroComandaAsignada'
+  },
+  {
+    title: 'Detalle',
+    disabled: true,
     to: '#'
-  }]);
+  }
+]);
 
 </script>
 
