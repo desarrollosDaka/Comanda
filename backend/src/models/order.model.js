@@ -5,7 +5,6 @@ const tableName = "ORDERS";
 const modelName = "modelOrders";
 
 const masterOrderSchema = {
-
   ID_order: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -15,18 +14,22 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(30),
   },
+  Caja_factura: {
+    allowNull: true,
+    type: DataTypes.STRING(30),
+  },
   ID_sucursal: {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
   Cedula: {
     allowNull: false,
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(100),
   },
-  ID_pago: {                           
-    allowNull: false,
-    type: DataTypes.INTEGER,
-  },
+  // ID_pago: {                           
+  //   allowNull: false,
+  //   type: DataTypes.INTEGER,
+  // },
   User_crea: {
     allowNull: false,
     type: DataTypes.STRING(100),
@@ -39,9 +42,9 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
-  User_rol: {
+  ID_rol: {
     allowNull: false,
-    type: DataTypes.STRING(80),
+    type: DataTypes.STRING(20),
   },
   ID_status: {
     allowNull: false,
@@ -51,17 +54,25 @@ const masterOrderSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
+  SucursalZoom: {
+    allowNull: true,
+    type: DataTypes.STRING(200),
+  },
   Autoriza: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
   },
-  Personal_autoriza: {
-    allowNull: true,
-    type: DataTypes.STRING(80),
-  },
   Cedula_autoriza: {
     allowNull: true,
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(100),
+  },
+  Nombre_autoriza: {
+    allowNull: true,
+    type: DataTypes.STRING(70),
+  },
+  Telefono_autoriza: {
+    allowNull: true,
+    type: DataTypes.STRING(13),
   },
   Retencion: {
     allowNull: true,
@@ -71,30 +82,10 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
-  File_cedula: {
+  ID_ticket: {
     allowNull: true,
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(30),
   },
-  File_pago: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_retencion: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  }, 
-  File_factrura: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_despacho: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },
-  File_ordeVenta: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
-  },  
   Delete: {
     allowNull: true,
     type: DataTypes.BOOLEAN,

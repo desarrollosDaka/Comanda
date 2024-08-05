@@ -12,11 +12,7 @@ const masterProductsSchema = {
   },
   Producto: {
     allowNull: false,
-    type: DataTypes.STRING(100),
-  },
-  Serial: {
-    allowNull: true,
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(200),
   },
   Unidades: {
     allowNull: false,

@@ -2,29 +2,48 @@
 import { useAuthStore } from '@/stores/auth';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 
+import { io } from 'socket.io-client';
 import Swal from 'sweetalert2'
 import axios from 'axios';
-import { shallowRef, ref, onMounted } from 'vue';
+import { shallowRef, ref, onMounted, onUnmounted } from 'vue';
 
 const search = ref('') 
 const loadingInfo = ref(false);
 const Delete = ref(true);
 const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
 
+const socket = io(import.meta.env.VITE_BACK_URL, {
+  reconnection: false // Deshabilitar la reconexión automática
+});
+
 const info = ref([]) ;
 
+
+// Listen for events from the server
+socket.on('get-master-user', (rta:any) => {
+  console.log('Datos actualizados:', rta);
+  if (Array.isArray(rta)) {
+    info.value = rta[0];
+    console.log(info.value);
+  } else {
+    console.error('La respuesta no es un array:', rta);
+  }
+});
+
 const getUser = async () => {
-  loadingInfo.value = true
+  /*loadingInfo.value = true
   try{
 
     const url = `${baseUrl}/masterUser`
     const {data} = await axios.get(url);
       info.value =  data[0]
+      console.log(info.value);
+      
 
   } catch(error){
       console.log(error)
   }
-  loadingInfo.value = false
+  loadingInfo.value = false*/
 }
 
 const deleteUser = async (id:string) => {
@@ -42,15 +61,19 @@ const headers = ref([
   {title: '#', align: 'start', sortable: false, key: 'ID_user',},
   {title: 'CORREO', align: 'start', sortable: false, key: 'Email',},
   {title: 'NOMBRE', key: 'Nombre'},
-
   {title: 'SUCURSAL', key: 'Sucursal'},
   {title: 'ASESOR', key: 'Dpto_ventas'},
   {title: 'ROL', key:'Nombre_rol'},
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);
 
-onMounted( async () => {
-    await getUser();
+// onMounted( async () => {
+//     await getUser();
+// });
+
+onUnmounted(() => {
+  socket.disconnect();
+  console.log('Socket desconectado');
 });
 
 function eliminardata(id:string){
@@ -70,12 +93,7 @@ function eliminardata(id:string){
             title: "Eliminado!",
             text: "Data eliminada con exito!",
             icon: "success",
-            }).then((result) => {
-            if (result.isConfirmed) {
-                location.reload();
-                }
-            });
-    
+            })
         }
     });
 }

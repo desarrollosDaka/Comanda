@@ -19,6 +19,7 @@ const {
 router.get("/masterClients", getMasterClients);
 // Filter Clients
 router.get("/filterClients/:id", filterMasterClients);
+
 router.get("/searchClient/:cedula", filterMasterClientsForCI);
 //create Clients
 router.post("/createClients", createMasterClients);

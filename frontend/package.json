@@ -24,6 +24,7 @@
     "apexcharts": "^3.44.2",
     "axios": "^1.6.7",
     "pinia": "2.1.6",
+    "socket.io-client": "^4.7.5",
     "sweetalert2": "^11.10.6",
     "vee-validate": "4.11.3",
     "vite-plugin-vuetify": "1.0.2",

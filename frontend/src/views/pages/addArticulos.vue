@@ -5,7 +5,7 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import Articulo from '../dashboard/components/Articulos.vue';
 
 // component content
-const page = ref({ title: 'Agregar Articulos' });
+const page = ref({ title: 'Agregar/Actualizar Articulos' });
 const breadcrumbs = ref([
   {
     title: 'Crear comanda',
@@ -23,9 +23,11 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
   <v-row>
+
     <!-- TABLA -->
     <v-col cols="12" md="12">
         <Articulo />
     </v-col>
+    
   </v-row>
 </template>

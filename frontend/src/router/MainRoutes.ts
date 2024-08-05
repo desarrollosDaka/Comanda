@@ -48,7 +48,7 @@ const MainRoutes = {
     },
     {
       name: 'formComandaUpdate',
-      path: '/formComandaUpdate/:id',
+      path: '/formComandaUpdate/:id/:idComanda',
       component: () => import('@/views/pages/formComandaUpdate.vue')
     }
     ,{
@@ -85,6 +85,21 @@ const MainRoutes = {
       name: 'addArticulosUpdate',
       path: '/addArticulosUpdate/:id',
       component: () => import('@/views/pages/addArticuloUpdate.vue')
+    }
+    ,{
+      name: 'viewProcessComandas',
+      path: '/viewProcessComandas/:id/:id_orders',
+      component: () => import('@/views/pages/viewProcessComandas.vue')
+    }
+    ,{
+      name: 'maestroComandaAsignada',
+      path: '/maestroComandaAsignada',
+      component: () => import('@/views/pages/maestroComandaAsignada.vue')
+    }
+    ,{
+      name: 'retenciones',
+      path: '/retenciones',
+      component: () => import('@/views/pages/retencion.vue')
     }
   ]
 };

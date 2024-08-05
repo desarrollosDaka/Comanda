@@ -15,7 +15,7 @@ const show1 = ref(false);
 const Email = ref();
 const Nombre = ref();
 const Password = ref('123456');
-const Nombre_rol = ref();
+const ID_rol = ref();
 const Id_sucursal = ref();
 const Dpto_ventas = ref(false);
 const Linea_ventas = ref();
@@ -57,10 +57,6 @@ const RolRules = ref([
   (v: string) => !!v || 'El rol del usuario es requerido', 
 ]);
 
-const departmentsRules = ref([
-  (v: string) => !!v || 'El departamento es requerido', 
-]);
-
 const fullnameRules = ref([
   (v: string) => !!v || 'El nombre y apellido del es requerido', 
 ]);
@@ -99,7 +95,7 @@ const getRol = async () => {
 
     rolInfo.value =  data.map((rol: Roles) => ({
             title: rol.Nombre_rol,
-            value: rol.Nombre_rol
+            value: rol.ID_rol
         }));
   } catch(error){
       console.log(error)
@@ -108,7 +104,7 @@ const getRol = async () => {
 
 interface Sucursales {
     Sucursal: string;
-    ID_sucursal: number;
+    ID_sucursal: string;
 }
 
 const getSucursal = async () => {
@@ -116,7 +112,7 @@ const getSucursal = async () => {
     const url = `${baseUrlStore}/masterStores`
     const {data} = await axios.get(url);
 
-    infoSucursal.value =  data.map((sucursales: Sucursales) => ({
+    infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
             title: sucursales.Sucursal,
             value: sucursales.ID_sucursal
         }));
@@ -133,7 +129,7 @@ function validate(values: any, { setErrors }: any) {
         Nombre:Nombre.value, 
         Email:Email.value, 
         Id_sucursal:Id_sucursal.value,
-        Nombre_rol:Nombre_rol.value ,
+        ID_rol:ID_rol.value ,
         Dpto_ventas:Dpto_ventas.value.toString() ,
         User_mod:User_mod.value,
         Linea_ventas: Dpto_ventas.value === false ? null : Linea_ventas.value ,
@@ -166,55 +162,6 @@ function validate(values: any, { setErrors }: any) {
     });
 }
 
-const items = ref([
-    {
-        title: 'Ventas',
-        value: 1
-    },
-    
-    {
-        title: 'Tecnologia',
-        value: 2
-    },
-    {
-        title: 'Control y Gestion',
-        value: 3
-    },
-    {
-        title: 'Operaciones',
-        value: 4
-    },
-    {
-        title: 'RRHH',
-        value: 5
-    },
-
-]);
-
-const sucursal = ref([
-    {
-        title: 'Corporativo',
-        value: 1
-    },
-    {
-        title: 'Valencia Centro',
-        value: 2
-    },
-    {
-        title: 'CDD',
-        value: 3
-    },
-    {
-        title: 'Puerto Ordaz',
-        value: 4
-    },  
-    {
-        title: 'Barquisimeto',
-        value: 5
-    },
-
-])
-
     
 onMounted( async () => {
          
@@ -225,7 +172,7 @@ onMounted( async () => {
     Nombre.value = infoFilter.value.Nombre
     Email.value = infoFilter.value.Email
     Id_sucursal.value = infoFilter.value.Id_sucursal
-    Nombre_rol.value = infoFilter.value.Nombre_rol
+    ID_rol.value = +infoFilter.value.ID_rol
     Dpto_ventas.value = infoFilter.value.Dpto_ventas
     Linea_ventas.value = infoFilter.value.Linea_ventas
     User_crea.value = User_crea.value 
@@ -287,7 +234,7 @@ onMounted( async () => {
                     placeholder="Roles"
                     :items="rolInfo"
                     variant="outlined"
-                    v-model="Nombre_rol"
+                    v-model="ID_rol"
                     :rules="RolRules"
                     required
                     color="primary"
@@ -380,7 +327,7 @@ onMounted( async () => {
             class="mt-6" 
             variant="flat" 
             size="large" 
-            :disabled="!Email || !Password  || !Nombre_rol || !Id_sucursal || !Nombre" 
+            :disabled="!Email || !Password  || !ID_rol || !Id_sucursal || !Nombre" 
             type="submit"
         >
         Guardar 

@@ -1,48 +1,52 @@
 const sequelize = require("../config/conexion");
-const {encrypt, compare} = require("../helpers/handleBcrypt");
-const {tokenSign} = require("../helpers/generateToken");
+const { encrypt, compare } = require("../helpers/handleBcrypt");
+const { tokenSign } = require("../helpers/generateToken");
 
 // SIGNIN
-const singIn = async (req, res) =>{
+const singIn = async (req, res) => {
     try {
-        
+
         const { Email, Password } = req.body
         const user = await sequelize.models.modelMasterUser.findOne({
             where: {
-                Email : Email,
-            }, 
+                Email: Email,
+                Delete: 0,
+            },
         });
-        
-        if(!user) {
+
+        if (!user) {
             res.status(404)
-            res.send({error: 'El usuario no existe.'})
+            res.send({ error: 'El usuario no existe.' })
         }
-    
+        //console.log(user);
         // Comparar Password
         const checkPassword = await compare(Password, user.Password);
-    
+
         // JWT
         const tokenSession = await tokenSign(user);
-    
-        if(checkPassword) {
+
+        if (checkPassword) {
             res.json({
+                ID_user: user.ID_user,
                 Nombre: user.Nombre,
                 Email: user.Email,
-                Nombre_rol: user.Nombre_rol,
+                ID_rol: user.ID_rol,
+                Id_sucursal: user.Id_sucursal,
+                Delete: 0,
                 id: tokenSession,
                 token: tokenSession
             })
         }
-        
-        if(!checkPassword) {
+
+        if (!checkPassword) {
             res.status(409)
             res.send({
                 error: 'Contraseña incorrecta.'
             })
         }
-    
+
     } catch (e) {
-    
+
         console.log('error', e)
     }
 }
@@ -52,11 +56,11 @@ const signUp = async (req, res) => {
     try {
 
         const {
-            Nombre, 
+            Nombre,
             Email,
-            Password, 
+            Password,
             Id_sucursal, 
-            Nombre_rol, 
+            ID_rol,
             Dpto_ventas,
             Linea_ventas,
             User_crea,
@@ -66,33 +70,34 @@ const signUp = async (req, res) => {
         // Verifica si el correo existe
         const email = await sequelize.models.modelMasterUser.findOne({
             where: {
-                Email : Email,
-            }, 
+                Email: Email,
+                Delete: 0
+            },
         });
-        if(email) {
-           return res.status(404)
+        if (email) {
+            return res.status(404)
         }
 
         // Encryptar el Password
         const PasswordHash = await encrypt(Password);
 
         const newUser = {
-            Nombre, 
+            Nombre,
             Email,
-            Password: PasswordHash, 
-            Id_sucursal, 
-            Nombre_rol, 
+            Password: PasswordHash,
+            Id_sucursal,
+            ID_rol,
             Dpto_ventas,
             Linea_ventas,
-            User_crea, 
+            User_crea,
             Delete
         }
 
         // Crear el usuario
-        const rta = await sequelize.models.modelMasterUser.create(newUser); 
-        if(rta) {
+        const rta = await sequelize.models.modelMasterUser.create(newUser);
+        if (rta) {
             // res.status(404)
-            res.json({msj: 'Usuario creado'})
+            res.json({ msj: 'Usuario creado' })
         }
 
     } catch (e) {

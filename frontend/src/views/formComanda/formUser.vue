@@ -13,7 +13,7 @@ const show1 = ref(false);
 const Email = ref();
 const Nombre = ref();
 const Password = ref('');
-const Nombre_rol = ref();
+const ID_rol = ref();
 const Id_sucursal = ref();
 const Dpto_ventas = ref(false);
 const Linea_ventas = ref();
@@ -75,7 +75,7 @@ const getRol = async () => {
 
     rolInfo.value =  data.map((rol: Roles) => ({
             title: rol.Nombre_rol,
-            value: rol.Nombre_rol
+            value: rol.ID_rol
         }));
   } catch(error){
       console.log(error)
@@ -92,7 +92,7 @@ const getSucursal = async () => {
     const url = `${baseUrlStore}/masterStores`
     const {data} = await axios.get(url);
 
-    infoSucursal.value =  data.map((sucursales: Sucursales) => ({
+    infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
             title: sucursales.Sucursal,
             value: sucursales.ID_sucursal
         }));
@@ -110,7 +110,7 @@ function validate(values: any, { setErrors }: any) {
         Email:Email.value, 
         Password:Password.value,
         Id_sucursal:Id_sucursal.value,
-        Nombre_rol:Nombre_rol.value ,
+        ID_rol:ID_rol.value ,
         Dpto_ventas:Dpto_ventas.value.toString() ,
         Linea_ventas:Linea_ventas.value,
         Delete:Delete.value.toString(),
@@ -206,7 +206,7 @@ onMounted( async () => {
                     placeholder="Roles"
                     :items="rolInfo"
                     variant="outlined"
-                    v-model="Nombre_rol"
+                    v-model="ID_rol"
                     :rules="RolRules"
                     required
                     color="primary"
@@ -298,7 +298,7 @@ onMounted( async () => {
             class="mt-6" 
             variant="flat" 
             size="large" 
-            :disabled="!Email || !Password  || !Nombre_rol || !Id_sucursal || !Nombre" 
+            :disabled="!Email || !Password  || !ID_rol || !Id_sucursal || !Nombre" 
             type="submit"
         >
         Guardar 

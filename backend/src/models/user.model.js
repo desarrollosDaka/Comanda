@@ -26,8 +26,8 @@ const masterUserSchema = {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
-  Nombre_rol: {
-    allowNull: false,
+   ID_rol: {
+    allowNull: true,
     type: DataTypes.STRING(80),
   },
   Dpto_ventas: {

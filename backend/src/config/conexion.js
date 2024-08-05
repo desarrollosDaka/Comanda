@@ -10,9 +10,9 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: 'mssql',
+    // logging: false, 
     dialectOptions: {
       options: {
-        // Your tedious options here
         encrypt: false,
       }
     }
@@ -20,7 +20,7 @@ const sequelize = new Sequelize(
 );
 
 setupModels(sequelize);
- //sequelize.sync();  
+//sequelize.sync();  
 
 module.exports = sequelize;
 
