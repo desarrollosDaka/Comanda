@@ -23,7 +23,7 @@ const id_sucursal = ref();
  
 /////////////////notifications /////////////////////
 const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
-const route1: string = "http://localhost:3002/api"
+const route1: string = `${import.meta.env.VITE_URL}/api`
 
 
 ////////////////////////
@@ -67,7 +67,6 @@ socket.on("get-master-order", (rta) => {
 const handleNewItem = () => {
   //console.log("Nuevo valor agregado:", newItem);
 
-
 fetch(route1 + '/notification', {
   method: 'POST',
   body: JSON.stringify({ message: "NUEVA COMANDA ASIGNADA" }),
@@ -78,7 +77,6 @@ fetch(route1 + '/notification', {
 
   // Actualizamos la longitud
   infoLength.value = info.value.length;
-
 };
 
 
