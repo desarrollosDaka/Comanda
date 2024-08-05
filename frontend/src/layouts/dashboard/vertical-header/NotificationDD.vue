@@ -29,9 +29,12 @@ const lenNotify = (state: any) => {
 
 onMounted(async () => {
   const notifyStore = useNotifyStore();
-  await getNotify(notifyStore, "14");
+  await getNotify(notifyStore, "10");
   notification(notifyStore);
   lenNotify(notifyStore);
+
+  console.log(localNotify.value);
+  
 });
 
 const isActive = ref(true);
