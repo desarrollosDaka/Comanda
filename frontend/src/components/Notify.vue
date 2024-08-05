@@ -18,7 +18,7 @@ const props = defineProps({
         </template>
         <div class="d-inline-flex justify-space-between w-100">
             <h6 class="text-subtitle-1 font-weight-regular mb-0">
-                <span style="font-weight: 600">{{ props.notifyData.ID_detalle }}</span> Ha creado un nuevo documento.
+                <span style="font-weight: 600">{{ props.notifyData.User_crea }}</span> Ha creado un nuevo documento.
             </h6>
             <span class="text-caption">3:00 PM</span>
         </div>

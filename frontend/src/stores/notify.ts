@@ -12,10 +12,9 @@ export const useNotifyStore = defineStore('notify', {
             const { data }: any = await axios.get(`${baseUrl}/${userId}`);
             let { error } = data;
             if (error) {
-                console.error("Error: stores/notify.js getNotificationsData", error);
                 throw error;
             }
-
+            
             // update state
             this.notifications = data.data;
         }
