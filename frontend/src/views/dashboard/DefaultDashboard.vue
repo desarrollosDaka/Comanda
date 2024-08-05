@@ -22,20 +22,15 @@ const route: string = `${import.meta.env.VITE_URL}/api`
 
 const subscription = async (): Promise<void> => {
   // Service Worker
-  console.log("Registering a Service worker");
   const register = await navigator.serviceWorker.register("/worker.js", {
     scope: "/"
   });
-  console.log("New Service Worker");
 
   // Listen Push Notifications
-  console.log("Listening Push Notifications");
   const subscription = await register.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY)
   });
-
-  console.log(subscription);
 
   // Send Notification
   await fetch(route + "/subscription", {
@@ -45,7 +40,6 @@ const subscription = async (): Promise<void> => {
       "Content-Type": "application/json"
     }
   });
-  console.log("Subscribed!");
 };
 
 // Helper function to convert VAPID key

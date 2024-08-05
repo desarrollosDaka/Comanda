@@ -28,16 +28,34 @@ const notification = async (req, res) => {
 const findall = async (req, res) => {
   const { id } = req.params;
   try {
-    const response = await sequelize.models.modelNotifications.findAll({
-      where: { ID_user: id },
-    });
-    if (response === null) {
+    // const response = await sequelize.models.modelNotifications.findAll({
+    //   where: { ID_user: id },
+    // });
+    const response = await sequelize.query(`SELECT DISTINCT TOP (1000) T0.[ID_user]
+      ,[Nombre]
+      ,[Email]
+      ,[Password]
+      ,[Id_sucursal]
+      ,[ID_rol]
+      ,[Dpto_ventas]
+      ,[Linea_ventas]
+      ,[User_crea]
+      ,[User_mod]
+      ,[Delete]
+      ,T0.[Create_date]
+      ,T0.[Update_date]
+  FROM [COMANDA_TEST].[dbo].[MASTER_USER] T0
+  JOIN [COMANDA_TEST].[dbo].[ORDER_NOTIFICATIONS] T1 ON 
+  T0.ID_user = T1.ID_user 
+  WHERE T0.ID_user = '${id}'`);
+  
+    if (response[0] === null) {
       res.json({ error: true, data: null });
-    } else if (response != null) {
+    } else if (response[0] != null) {
       let notipush = [];
       //   Promise.all(
-      response.forEach((obj) => {
-        notipush.push(obj.dataValues);
+      response[0].forEach((obj) => {
+        notipush.push(obj);
       });
       //   );
       res.json({ error: false, data: notipush });
