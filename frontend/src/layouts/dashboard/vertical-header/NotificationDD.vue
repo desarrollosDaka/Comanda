@@ -1,4 +1,8 @@
 <script setup lang="ts">
+
+import { io } from "socket.io-client";
+const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
+
 import { onMounted, ref } from 'vue';
 import { useNotifyStore } from '@/stores/notify';
 import Notify from '@/components/Notify.vue';
@@ -31,10 +35,62 @@ onMounted(async () => {
 });
 
 const isActive = ref(true);
+const info = ref<{ id: number, message: string }[]>([]);
+
+/////////////////notifications /////////////////////
+const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
+const route1: string = `${import.meta.env.VITE_URL}/api`
+
 
 function deactivateItem() {
   isActive.value = false;
 }
+
+
+const handleNewItem = () => {
+  //console.log("Nuevo valor agregado:", newItem);
+  console.log("handleNewItem called");
+fetch(route1 + '/notification', {
+  method: 'POST',
+  body: JSON.stringify({ message: "NUEVO MENSAJE" }),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});  
+};
+let isFirstLoad = true;
+
+watch(info, (newValue, oldValue) => {
+  // if (isFirstLoad) {
+  //   isFirstLoad = false;
+  // } else if (newValue.length > oldValue.length) {
+  //   handleNewItem();
+  // }
+  console.log("watch triggered", newValue, oldValue);
+  if (newValue.length > oldValue.length) {
+    handleNewItem();
+  }
+});
+
+
+// Función para agregar un nuevo elemento al array
+function addNewItems(items: { id: number, message: string }[]) {
+  items.forEach(item => {
+    //info.value.push(item);
+    info.value = [...info.value, ...items];
+
+    console.log("Item added", item);
+  });
+}
+
+//añadir items
+addNewItems([
+  { id: 1, message: "Nuevo mensaje 1" },
+  // { id: 2, message: "Nuevo mensaje 2" },
+  // { id: 3, message: "Nuevo mensaje 3" }
+]);
+
+
 </script>
 
 <template>
@@ -45,7 +101,9 @@ function deactivateItem() {
   <v-menu :close-on-content-click="false" offset="6, 0">
     <template v-slot:activator="{ props }">
       <v-btn icon class="text-secondary ml-sm-2 ml-1" color="darkText" rounded="sm" size="small" v-bind="props">
+
         <v-badge :content="isActive ? `${localLenNotify}` : '0'" color="primary" offset-x="-4" offset-y="-5">
+
           <BellOutlined :style="{ fontSize: '22px' }" />
         </v-badge>
       </v-btn>
@@ -68,7 +126,9 @@ function deactivateItem() {
       <v-divider></v-divider>
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
+
           <Notify v-for="notify in localNotify" :notifyData="notify" />
+
           <v-divider></v-divider>
         </v-list>
       </perfect-scrollbar>
@@ -79,6 +139,8 @@ function deactivateItem() {
     </v-sheet>
   </v-menu>
 </template>
+
+
 
 <style lang="scss">
 .v-tooltip {
