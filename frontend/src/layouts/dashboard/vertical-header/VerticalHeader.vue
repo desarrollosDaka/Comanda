@@ -8,10 +8,14 @@ import NotificationDD from './NotificationDD.vue';
 import Searchbar from './SearchBarPanel.vue';
 import ProfileDD from './ProfileDD.vue';
 import Sucursales from './Sucursales.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const customizer = useCustomizerStore();
 const User = ref('');
+
+// onMounted(()=> {
+//   console.log("verticalHeader");
+// })
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
