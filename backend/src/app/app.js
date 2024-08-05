@@ -57,7 +57,7 @@ app.use("/api/delivery", routerDelivery);
 app.use("/api/payment", routerPayment);
 app.use("/api/products", routerProducts);
 app.use("/api/status", routerStatus);
-app.use("/api/notify", routerNotifications);
+app.use("/api/", routerNotifications);
 app.use('/', require('../socket.js'));
 
 

@@ -1,14 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useNotifyStore } from '@/stores/notify';
+import Notify from '@/components/Notify.vue';
+
+const localNotify = ref([]);
+
 // icons
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
+
+
+const getNotify = async (state: any, idUser: string) => {
+  await state.getNotificationsData(idUser);
+};
+
+const notification = (state: any) => {
+  localNotify.value = state.notifications;
+};
+
+onMounted(async () => {
+  const notifyStore = useNotifyStore();
+  await getNotify(notifyStore, "10");
+  notification(notifyStore);
+});
 
 const isActive = ref(true);
 
 function deactivateItem() {
   isActive.value = false;
 }
-
 </script>
 
 <template>
@@ -28,17 +47,11 @@ function deactivateItem() {
       <div class="pa-4">
         <div class="d-flex align-center justify-space-between">
           <h6 class="text-subtitle-1 mb-0">Notificaciones</h6>
-          <v-btn
-            variant="text"
-            color="success"
-            icon
-            rounded
-            size="small"
-            @click="deactivateItem()"
-            :class="isActive ? 'd-block' : 'd-none'"
-          >
+          <v-btn variant="text" color="success" icon rounded size="small" @click="deactivateItem()"
+            :class="isActive ? 'd-block' : 'd-none'">
             <CheckCircleOutlined :style="{ fontSize: '16px' }" />
-            <v-tooltip aria-label="tooltip" activator="parent" location="bottom" :content-class="isActive ? 'custom-tooltip' : 'd-none'">
+            <v-tooltip aria-label="tooltip" activator="parent" location="bottom"
+              :content-class="isActive ? 'custom-tooltip' : 'd-none'">
               <span class="text-caption">Mark as all read</span>
             </v-tooltip>
           </v-btn>
@@ -48,23 +61,9 @@ function deactivateItem() {
       <v-divider></v-divider>
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
-
-          <v-list-item value="1" color="secondary" class="no-spacer py-1">
-            <template v-slot:prepend>
-              <v-avatar size="36" variant="flat" color="lightsuccess" class="mr-3 py-2 text-success">
-                <GiftOutlined />
-              </v-avatar>
-
-            </template>
-            <div class="d-inline-flex justify-space-between w-100">
-              <h6 class="text-subtitle-1 font-weight-regular mb-0">
-              <span style="font-weight: 600">Daniel Gonzalez</span> Ha creado un nuevo documento.
-              </h6>
-              <span class="text-caption">3:00 PM</span>
-            </div>
-            <p class="text-caption text-medium-emphasis my-0">Hace 2 min</p>
-          </v-list-item>
-
+          <!-- notify --> 
+          <Notify v-for="notify in localNotify" :notifyData="notify" />
+          <!-- -- -->
           <v-divider></v-divider>
         </v-list>
       </perfect-scrollbar>
@@ -78,7 +77,7 @@ function deactivateItem() {
 
 <style lang="scss">
 .v-tooltip {
-  > .v-overlay__content.custom-tooltip {
+  >.v-overlay__content.custom-tooltip {
     padding: 2px 6px;
   }
 }
