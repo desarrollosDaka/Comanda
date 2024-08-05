@@ -73,22 +73,14 @@ watch(info, (newValue, oldValue) => {
 });
 
 
-// Función para agregar un nuevo elemento al array
-function addNewItems(items: { id: number, message: string }[]) {
-  items.forEach(item => {
-    //info.value.push(item);
-    info.value = [...info.value, ...items];
-
-    console.log("Item added", item);
-  });
-}
-
-//añadir items
-addNewItems([
-  { id: 1, message: "Nuevo mensaje 1" },
-  // { id: 2, message: "Nuevo mensaje 2" },
-  // { id: 3, message: "Nuevo mensaje 3" }
-]);
+// Watch para localLenNotify
+watch(localLenNotify, (newValue, oldValue) => {
+  console.log("localLenNotify changed", newValue, oldValue);
+  if (newValue > oldValue) {
+    console.log("lenNotify ha crecido");
+    // Aquí puedes agregar la lógica que necesites cuando lenNotify crezca
+  }
+});
 
 
 </script>
