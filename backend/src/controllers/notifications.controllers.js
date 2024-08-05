@@ -42,12 +42,15 @@ const findall = async (req, res) => {
       ,[User_crea]
       ,[User_mod]
       ,[Delete]
-      ,T0.[Create_date]
-      ,T0.[Update_date]
+      ,T1.[Create_date]
+      ,T1.[Update_date]
   FROM [COMANDA_TEST].[dbo].[MASTER_USER] T0
   JOIN [COMANDA_TEST].[dbo].[ORDER_NOTIFICATIONS] T1 ON 
   T0.ID_user = T1.ID_user 
   WHERE T0.ID_user = '${id}'`);
+
+  console.log("respnse[0]",response);
+  
   
     if (response[0] === null) {
       res.json({ error: true, data: null });
