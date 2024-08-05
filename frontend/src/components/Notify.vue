@@ -22,6 +22,6 @@ const props = defineProps({
             </h6>
             <span class="text-caption">3:00 PM</span>
         </div>
-        <p class="text-caption text-medium-emphasis my-0">Hace 2 min</p>
+        <!-- <p class="text-caption text-medium-emphasis my-0">Hace 2 min</p> -->
     </v-list-item>
 </template>

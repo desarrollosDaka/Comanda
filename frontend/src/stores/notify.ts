@@ -7,6 +7,11 @@ export const useNotifyStore = defineStore('notify', {
     state: () => ({
         notifications: [],
     }),
+    getters: {
+        countNotifications(state) {
+            return state.notifications.length.toString();
+        }
+    },
     actions: {
         async getNotificationsData(userId: string) {
             const { data }: any = await axios.get(`${baseUrl}/${userId}`);
@@ -14,7 +19,7 @@ export const useNotifyStore = defineStore('notify', {
             if (error) {
                 throw error;
             }
-            
+
             // update state
             this.notifications = data.data;
         }

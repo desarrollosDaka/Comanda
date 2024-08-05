@@ -4,6 +4,7 @@ import { useNotifyStore } from '@/stores/notify';
 import Notify from '@/components/Notify.vue';
 
 const localNotify = ref([]);
+const localLenNotify = ref('');
 
 // icons
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
@@ -17,10 +18,16 @@ const notification = (state: any) => {
   localNotify.value = state.notifications;
 };
 
+const lenNotify = (state: any) => {
+  const len: string = state.countNotifications;
+  localLenNotify.value = len;
+};
+
 onMounted(async () => {
   const notifyStore = useNotifyStore();
-  await getNotify(notifyStore, "10");
+  await getNotify(notifyStore, "14");
   notification(notifyStore);
+  lenNotify(notifyStore);
 });
 
 const isActive = ref(true);
@@ -38,7 +45,7 @@ function deactivateItem() {
   <v-menu :close-on-content-click="false" offset="6, 0">
     <template v-slot:activator="{ props }">
       <v-btn icon class="text-secondary ml-sm-2 ml-1" color="darkText" rounded="sm" size="small" v-bind="props">
-        <v-badge :content="isActive ? '2' : '0'" color="primary" offset-x="-4" offset-y="-5">
+        <v-badge :content="isActive ? `${localLenNotify}` : '0'" color="primary" offset-x="-4" offset-y="-5">
           <BellOutlined :style="{ fontSize: '22px' }" />
         </v-badge>
       </v-btn>
@@ -61,9 +68,7 @@ function deactivateItem() {
       <v-divider></v-divider>
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
-          <!-- notify --> 
           <Notify v-for="notify in localNotify" :notifyData="notify" />
-          <!-- -- -->
           <v-divider></v-divider>
         </v-list>
       </perfect-scrollbar>
