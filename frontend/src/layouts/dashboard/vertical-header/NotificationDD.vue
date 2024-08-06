@@ -23,6 +23,12 @@ const lenNotify = (state: any) => {
   localLenNotify.value = len;
 };
 
+// socket io
+(async ()=> {
+  const notifyStore = useNotifyStore();
+  await notifyStore.socketNotify("10");
+})();
+
 onMounted(async () => {
   const notifyStore = useNotifyStore();
   await getNotify(notifyStore, "10");
