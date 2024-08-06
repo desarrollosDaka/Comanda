@@ -31,7 +31,7 @@ const findall = async (req, res) => {
     // const response = await sequelize.models.modelNotifications.findAll({
     //   where: { ID_user: id },
     // });
-    const response = await sequelize.query(`SELECT DISTINCT TOP (1000) T0.[ID_user]
+    const response = await sequelize.query(`SELECT DISTINCT T0.[ID_user]
       ,[Nombre]
       ,[Email]
       ,[Password]
@@ -49,7 +49,7 @@ const findall = async (req, res) => {
   T0.ID_user = T1.ID_user 
   WHERE T0.ID_user = '${id}'`);
 
-  console.log("respnse[0]",response);
+  //console.log("respnse[0]",response);
   
   
     if (response[0] === null) {

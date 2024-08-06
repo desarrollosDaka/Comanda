@@ -9,7 +9,10 @@ import Notify from '@/components/Notify.vue';
 
 const localNotify = ref([]);
 const localLenNotify = ref('');
-
+////////////////////////
+const socket = io(`${baseUrlBack}`, {
+  reconnection: false, // Deshabilitar la reconexión automática
+});
 // icons
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
 
@@ -61,6 +64,20 @@ fetch(route1 + '/notification', {
   }
 });  
 };
+
+// Listen for events from the server
+socket.on('get-master-notify', (rta:any) => {
+  console.log('Datos actualizados:', rta);
+  if (Array.isArray(rta)) {
+    info.value = rta[0];
+    console.log(info.value);
+  } else {
+    console.error('La respuesta no es un array:', rta);
+  }
+});
+
+
+
 let isFirstLoad = true;
 
 watch(info, (newValue, oldValue) => {
@@ -78,9 +95,10 @@ watch(info, (newValue, oldValue) => {
 
 // Watch para localLenNotify
 watch(localLenNotify, (newValue, oldValue) => {
-  console.log("localLenNotify changed", newValue, oldValue);
+  //console.log("localLenNotify changed", newValue, oldValue);
   if (newValue > oldValue) {
-    console.log("lenNotify ha crecido");
+    //console.log("lenNotify ha crecido");
+    //handleNewItem();
     // Aquí puedes agregar la lógica que necesites cuando lenNotify crezca
   }
 });
