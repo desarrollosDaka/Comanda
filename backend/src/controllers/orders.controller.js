@@ -73,7 +73,7 @@ const getMasterOrderRetencion = async (req, res) => {
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 --AND T0.ID_sucursal = 4
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
         ORDER BY T0.[ID_order] DESC`
     );
 
@@ -393,44 +393,40 @@ const filterOrderDetails = async (req, res) => {
 
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
+  const data = req.body;
 
-    const data = req.body;
+  try {
+      const orderDetailData = {
+          ID_detalle: data.Id_Comanda,
+          ID_producto: data.id_producto,
+          Producto: data.producto, 
+          Unidades: data.unidades,
+          Precio: data.precio,
+          Subtotal: data.subtotal,
+          Direccion: data.direccion,
+          Zoom: data.zoom
+      };
 
-    try {
-        const orderDetailData = {
-            ID_detalle: data.Id_Comanda,
-            ID_producto: data.id_producto,
-            Producto: data.producto, 
-            Unidades: data.unidades,
-            Precio: data.precio,
-            Subtotal: data.subtotal,
-            Direccion: data.direccion,
-            Zoom: data.zoom
-        };
+      let product = await sequelize.models.modelOrdersdetails.findOne({
+          where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto },
+      });
 
-        let product = await sequelize.models.modelOrdersdetails.findOne({
-            where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto },
-        });
-        // if (product) {
-        //     // Actualiza el cliente existente
-        //     product = await product.update(orderDetailData);
-        // } else {
-            // Crea un nuevo cliente
-            product = await sequelize.models.modelOrdersdetails.create(
-                orderDetailData
-            );
-        //}
+      if (product) {
+          // Elimina el producto existente
+          await product.destroy();
+      }
 
+      // Crea un nuevo producto
+      product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
 
-    if (orderDetailData) {
-      res.status(201);
-      res.json({ product: product });
-    } else {
-      res.status(404);
-      res.json({ msj: "Error en la creación" });
-    }
+      if (product) {
+          res.status(201).json({ product: product });
+      } else {
+          res.status(404).json({ msj: "Error en la creación" });
+      }
   } catch (e) {
-    console.log("Error", e);
+      console.log("Error", e);
+      res.status(500).json({ msj: "Error interno del servidor" });
   }
 };
 
