@@ -8,6 +8,8 @@ interface Document {
     mode: string;
 }
 
+let rta = 0xffff;
+
 const INSERT_METHOD = 'insert'
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 

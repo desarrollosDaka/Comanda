@@ -5,7 +5,7 @@ const { getMasterOrder,
         getMasterOrderRetencion  
     } = require("./controllers/orders.controller.js");
 const { getMasterUser } = require("./controllers/user.controller.js");
-const { findall } = require("./controllers/notifications.controllers.js");
+const { findall, findallv2 } = require("./controllers/notifications.controllers.js");
 
 module.exports = (server) => {
     const io = new Server(server, {
@@ -42,7 +42,7 @@ module.exports = (server) => {
         const emitUserData = async () => {
             try {
                 const rta = await getMasterUser();
-                socket.emit('get-master-notify', rta);
+                socket.emit('get-master-user', rta);
                 //console.log('Datos emitidos:', rta);
             } catch (error) {
                 console.error('Error al obtener los datos:', error);
@@ -51,9 +51,9 @@ module.exports = (server) => {
 
         const emitNotify = async () => {
             try {
-                const rta = await findall();
+                const rta = await findallv2("10");
                 socket.emit('get-master-notify', rta);
-                //console.log('Datos emitidos:', rta);
+                console.log('Datos emitidos:', rta);
             } catch (error) {
                 console.error('Error al obtener los datos:', error);
             }
@@ -70,14 +70,14 @@ module.exports = (server) => {
         //     }
         // };
         // Emitir datos inmediatamente al conectar  
-        emitOrderData();
-        emitUserData();
-        emitOrderDataConRetencion();
+        // emitOrderData();
+        // emitUserData();
+        // emitOrderDataConRetencion();
         emitNotify();
 
         // Configurar un intervalo para emitir datos cada 10 segundos (por ejemplo)
         const intervalIdOrder = setInterval(emitOrderData, 5000);
-        const intervalIdUser = setInterval(emitUserData, 5000);
+        const intervalIdUser = setInterval(emitUserData, 500000);
         const intervalIdOrderRetencion = setInterval(emitOrderDataConRetencion, 5000);
         const intervalNotifications = setInterval(emitNotify, 5000);
 

@@ -3,10 +3,10 @@ import axios from 'axios';
 import { io } from "socket.io-client";
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/finall`;
-
+const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 
 export const useNotifyStore = defineStore('notify', {
-    state: () => ({
+    state: (): { notifications: any[] } => ({
         notifications: [],
     }),
     getters: {
@@ -22,17 +22,18 @@ export const useNotifyStore = defineStore('notify', {
                 throw error;
             }
             // update state
-            console.log(data.data);
+            // console.log(data.data);
             this.notifications = data.data;
         },
-        async socketNotify(userId: string) {
-            const socket = io(`${baseUrl}/${userId}`, {
+        async socketNotify() {
+            const socket = io(`${baseUrlBack}`, {
                 reconnection: false, // Deshabilitar la reconexión automática
             });
 
             // Listen for events from the server
             socket.on('get-master-notify', (rta: any) => {
-                console.log('Datos actualizados:', rta);
+                this.notifications = rta[0];
+                console.log('this.notifications', this.notifications);
             });
         }
     }

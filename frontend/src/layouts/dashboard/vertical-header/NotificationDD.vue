@@ -7,6 +7,8 @@ import { onMounted, ref, watch } from 'vue';
 import { useNotifyStore } from '@/stores/notify';
 import Notify from '@/components/Notify.vue';
 
+const notifyStore = useNotifyStore();
+
 const localNotify = ref([]);
 const localLenNotify = ref('');
 ////////////////////////
@@ -23,6 +25,7 @@ const getNotify = async (state: any, idUser: string) => {
 
 const notification = (state: any) => {
   localNotify.value = state.notifications;
+  console.log("localNotify.value", localNotify.value);
 };
 
 const lenNotify = (state: any) => {
@@ -32,18 +35,12 @@ const lenNotify = (state: any) => {
 
 // socket io
 (async ()=> {
-  const notifyStore = useNotifyStore();
-  await notifyStore.socketNotify("10");
+  // const notifyStore = useNotifyStore();
+  await notifyStore.socketNotify();
 })();
 
-onMounted(async () => {
-  const notifyStore = useNotifyStore();
-  await getNotify(notifyStore, "10");
-  notification(notifyStore);
-  lenNotify(notifyStore);
-
-  console.log(localNotify.value);
-  
+watch(notifyStore.notifications, async () => {
+  console.log("holis");
 });
 
 const isActive = ref(true);
@@ -53,11 +50,9 @@ const info = ref<{ id: number, message: string }[]>([]);
 const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
 const route1: string = `${import.meta.env.VITE_URL}/api`
 
-
 function deactivateItem() {
   isActive.value = false;
 }
-
 
 const handleNewItem = () => {
   //console.log("Nuevo valor agregado:", newItem);
@@ -72,17 +67,15 @@ fetch(route1 + '/notification', {
 };
 
 // Listen for events from the server
-socket.on('get-master-notify', (rta:any) => {
-  console.log('Datos actualizados:', rta);
-  if (Array.isArray(rta)) {
-    info.value = rta[0];
-    console.log(info.value);
-  } else {
-    console.error('La respuesta no es un array:', rta);
-  }
-});
-
-
+// socket.on('get-master-notify', (rta:any) => {
+//   console.log('Datos actualizados:', rta);
+//   if (Array.isArray(rta)) {
+//     info.value = rta[0];
+//     console.log(info.value);
+//   } else {
+//     console.error('La respuesta no es un array:', rta);
+//   }
+// });
 
 let isFirstLoad = true;
 
