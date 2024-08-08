@@ -6,6 +6,7 @@ const { getMasterOrder,
         getMasterOrderRetencionTwo 
     } = require("./controllers/orders.controller.js");
 const { getMasterUser } = require("./controllers/user.controller.js");
+const { findall } = require("./controllers/notifications.controllers.js");
 
 module.exports = (server) => {
     const io = new Server(server, {
@@ -62,7 +63,17 @@ module.exports = (server) => {
         const emitUserData = async () => {
             try {
                 const rta = await getMasterUser();
-                socket.emit('get-master-user', rta);
+                socket.emit('get-master-notify', rta);
+                //console.log('Datos emitidos:', rta);
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
+        };
+
+        const emitNotify = async () => {
+            try {
+                const rta = await findall();
+                socket.emit('get-master-notify', rta);
                 //console.log('Datos emitidos:', rta);
             } catch (error) {
                 console.error('Error al obtener los datos:', error);
@@ -83,7 +94,10 @@ module.exports = (server) => {
         emitOrderData();
         emitUserData();
         emitOrderDataConRetencion();
+
         emitOrderDataConRetencionTwo();
+
+
 
         // Configurar un intervalo para emitir datos cada 10 segundos (por ejemplo)
         const intervalIdOrder = setInterval(emitOrderData, 5000);

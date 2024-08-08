@@ -12,7 +12,7 @@ const io = socketIOInitializer(server);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(cors())
 
 // app.use(cors({
