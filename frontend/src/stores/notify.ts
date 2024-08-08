@@ -22,7 +22,8 @@ export const useNotifyStore = defineStore('notify', {
                 throw error;
             }
             // update state
-            console.log(data.data);
+            //console.log(data.data);
+
             this.notifications = data.data;
         },
         async socketNotify(userId: string) {
