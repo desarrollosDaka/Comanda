@@ -101,6 +101,11 @@ const MainRoutes = {
       path: '/retenciones',
       component: () => import('@/views/pages/retencion.vue')
     }
+    ,{
+      name: 'pickups',
+      path: '/pickups',
+      component: () => import('@/views/pages/comandaPickup.vue')
+    }
   ]
 };
 

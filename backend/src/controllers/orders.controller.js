@@ -9,7 +9,6 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
-const { log } = require("console");
 
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
@@ -74,6 +73,44 @@ const getMasterOrderRetencion = async (req, res) => {
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
+        ORDER BY T0.[ID_order] DESC`
+    );
+
+    if (rta) {
+      return rta;
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+const getMasterOrderRetencionTwo = async (req, res) => {
+  try {
+    // const rta = await sequelize.models.modelOrders.findAll();
+    const rta = await sequelize.query(
+      `SELECT  T0.[ID_order]
+                ,T0.ID_detalle
+                ,T0.Caja_factura
+				        ,T3.Tipo_cedula
+                ,T0.Cedula  
+                ,T3.Nombre Cliente
+                ,T3.Razon_comercial
+                ,T1.Sucursal
+                ,T1.ID_Sucursal
+                ,T0.[User_crea]
+                ,T0.[User_asing] Asesor 
+                ,T2.Status
+                ,T2.ID_status 
+                ,T0.User_asing
+                ,CAST(T0.Create_date AS DATE) Create_date
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
         ORDER BY T0.[ID_order] DESC`
     );
 
@@ -352,14 +389,14 @@ const filterOrderDetailsFiles = async (req, res) => {
 const filterOrderDetailsFilesEnvio = async (req, res) => {
   try {
     const id = req.params.id;
+    const tipoArchivo = req.params.tipoArchivo;
     const rta = await sequelize.query(
       `SELECT * FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
-            WHERE [ID_detalle] = '${id}' AND Type_File = 'DETALLE DE ENVIO'`
+            WHERE [ID_detalle] = '${id}' AND Type_File = '${tipoArchivo}'`
     );
     if (rta) {
       res.status(200);
       res.json(rta);
-      console.log(rta+ 'holaaaaaaaaaaaaaaaaaaaaa');
     } else {
       res.status(404);
       res.json({ msj: "Error en la consulta" });
@@ -439,13 +476,14 @@ const updateOrderDetails = async (req, res) => {
     for (const item of data) {
       const orderDetailData = {
         ID_detalle: id,
+        ID_order: item.id_order,
         ID_producto: item.id_producto,
         Direccion: item.direccionDelivery,
         Zoom: item.guiaZoom,
       };
 
       await sequelize.models.modelOrdersdetails.update(orderDetailData, {
-        where: { ID_detalle: id, ID_producto: item.id_producto },
+        where: {ID_order: item.id_order, ID_detalle: id, ID_producto: item.id_producto },
       });
     }
 
@@ -486,7 +524,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
         const idOrder = data.Id_Comanda;
-        console.log(data);
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -657,7 +694,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Guarda el PDF modificado en disco
     const modifiedPdfBytes = await pdfDoc.save();
-    console.log("modifiedPdfBytes", modifiedPdfBytes);
+    // console.log("modifiedPdfBytes", modifiedPdfBytes);
     fs1.writeFileSync(
       `${destinationDirectory}/${f.filename}`,
       modifiedPdfBytes
@@ -818,7 +855,6 @@ const filterMasterAsesorSucursal = async (req, res) => {
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
     WHERE ID_rol = '1' and Id_sucursal = '${id_sucursal}'`);
 
-    console.log(rta);
     if (rta) {
       res.status(200);
       res.json(rta);
@@ -833,7 +869,6 @@ const filterMasterAsesorSucursal = async (req, res) => {
 
 //AGREGAR CAJA FACTURA COMANDA
 const updateOrderCajaFact = async (req, res) => {
-  console.log(req.body);
   try {
     const data = {
       Caja_factura: req.body.caja_factura,
@@ -900,15 +935,16 @@ const updateStatusOrder = async (req, res) => {
       ID_status: req.body.status_comanda,
     };
 
-    const idUser = req.params.id;
+    const idComanda = req.params.id;
 
     const rta = await sequelize.models.modelOrders.update(data, {
-      where: { ID_detalle: idUser },
+      where: { ID_detalle: idComanda },
     });
 
     if (rta) {
       res.status(200);
       res.json(rta);
+
     } else {
       res.status(404);
       res.json({ msj: "Error en la consulta" });
@@ -1004,5 +1040,6 @@ module.exports = {
   deleteOrderDocument,
   getMasterOrderForStore,
   download,
-  getMasterOrderRetencion
+  getMasterOrderRetencion,
+  getMasterOrderRetencionTwo
 };

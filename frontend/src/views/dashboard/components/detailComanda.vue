@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -27,6 +28,7 @@ interface Item {
   Precio: number;
   Unidades: number;
   Subtotal: number;
+  ID_order: number;
 }
 
 const route = useRoute();
@@ -69,7 +71,6 @@ const guiaZoom = ref();
 const direccionDelivery = ref();
 const Type = ref()
 
-
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
@@ -87,7 +88,7 @@ if (jsonFromLocalStorage !== null) {
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
-const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
+const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 
 const itemDocument = ref<Document[]>([]);
 
@@ -124,12 +125,13 @@ const getOrder = async () => {
 
 const getDocumentsATC = async () => {
   try {
-    const url = `${baseUrl}/filterOrderDetailsfilesEnvio/${id.value}`;
+    const detalle = 'DETALLE DE ENVIO'
+    const url = `${baseUrl}/filterOrderDetailsfilesEnvio/${id.value}/${detalle}`;
     const { data } = await axios.get(url);
     Type.value = data[0][0].Type_File;
-    
+      
   } catch (error) {
-    console.log(error);
+    console.log('No posee detalle de envio');
   }
 };
 
@@ -139,6 +141,7 @@ const getArticulos = async () => {
     const url = `${baseUrl}/filterOrderDetails/${id.value}`;
     const { data } = await axios.get(url);
     info.value = data[0];
+    
   } catch (error) {
     console.log(error);
   }
@@ -149,6 +152,7 @@ const updateEstatus = async () => {
 
   const jsonData = info.value?.map((item) => ({
     id_comanda: id.value,
+    id_order: item.ID_order,
     producto: item.Producto,
     id_producto: item.ID_producto,
     guiaZoom: item.guiaZoom,
@@ -158,7 +162,8 @@ const updateEstatus = async () => {
   
   try {
     //SOLO USUARIOS CON ROL DE CAJERAS
-    if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
+    // if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
+    if (USER_ROL.value === 1 || USER_ROL.value === 6 || USER_ROL.value === 8) {
       useAddDocument(itemDocument.value, id.value, id_orders.value); //Visualizan y agregan  archivos
 
     } else if(ROLEATC.includes(USER_ROL.value)){
@@ -192,13 +197,14 @@ const getAsesores = async () => {
     console.log(error);
   }
 };
+
 const cajaFactura = async () => {
   try {
     if(numFactura.value){
       const url = `${baseUrl}/updateCajaFactura/${id.value}`;
     const { data:respuesta } = await axios.put(url, {caja_factura: numFactura.value});
 
-    if(respuesta){
+    if(respuesta){ 
       dialog.value = false
       return toast.error(`Caja factura asignada a la comanda`, {
       position: toast.POSITION.TOP_CENTER,
@@ -217,7 +223,7 @@ onMounted(async () => {
   await getOrder();
   await getArticulos();
   await getAsesores();
-  await getDocumentsATC();
+  await getDocumentsATC(); 
 });
 
 async function updateData() {
@@ -307,6 +313,38 @@ const getNameAsesor = (id: number) => {
   return null;
 };
 
+const rechazarRetencion = async () => {
+    const statusRechazado = 4
+    const url = `${baseUrl}/updateStatusOrder/${id.value}`;
+    await axios.put(url, {status_comanda: statusRechazado});
+};
+
+const alertaRechazar = () =>{
+  Swal.fire({
+      title: "Vas a Rechazar la comanda",
+      text: "Cuando rechazas la comanda, se devuelve a los asesores online de daka para volver a cargarlo.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Cancelar",
+      confirmButtonText: "Si",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        rechazarRetencion();
+        Swal.fire({
+          title: dataUser.msgButton,
+          text: "la comanda ha cambiado de estatus!",
+          icon: "success",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push(`/retenciones`);
+          }
+        });
+      }
+    });
+}
+
 </script>
 
 <template>
@@ -314,14 +352,14 @@ const getNameAsesor = (id: number) => {
 
     <div class="card">
         <div class="data">
-            <p>
-                COMANDA #{{ id_orders }}
-            </p>
+
+            <p>COMANDA #{{ id_orders }}</p>
 
             <div class="range">
                 <div class="fill">
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -363,11 +401,21 @@ const getNameAsesor = (id: number) => {
     </v-row>
 
     <!-- tabla para los demas usuarios -->
-    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-if="USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 3 || USER_ROL === 4 || USER_ROL === 5 || USER_ROL === 6 || USER_ROL === 7 || USER_ROL === 8 || USER_ROL === 9 || USER_ROL === 99 || Type !== 'DETALLE DE ENVIO'">
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" >
+        <!-- DEMAS USER -->
+        <v-row v-if="Type != 'DETALLE DE ENVIO' 
+                    || USER_ROL === 1 
+                    || USER_ROL === 2 
+                    || USER_ROL === 3 
+                    || USER_ROL === 4 
+                    || USER_ROL === 5 
+                    || USER_ROL === 6 
+                    || USER_ROL === 7 
+                    || USER_ROL === 8 
+                    || USER_ROL === 9 
+                    || USER_ROL === 11 
+                    || USER_ROL === 99">
 
-
-        <!-- productos de la comanda -->
-        <v-row>
             <v-col cols="12" md="12">
                 <v-table class="bordered-table" hover density="comfortable" rounded="lg">
                     <thead class="bg-containerBg">
@@ -395,12 +443,9 @@ const getNameAsesor = (id: number) => {
                 </v-table>
             </v-col>
         </v-row>
-    </UiTitleCard>
 
-    <!-- tabla ATC -->
-    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" v-else="USER_ROL === 10 || Type === 'DETALLE DE ENVIO'">
-        <!-- productos de la comanda -->
-        <v-row>
+        <!-- ATC -->
+        <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10">
             <v-col cols="12" md="12">
                 <v-table class="bordered-table" hover density="comfortable" rounded="lg">
                     <thead class="bg-containerBg">
@@ -412,7 +457,7 @@ const getNameAsesor = (id: number) => {
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                         </tr>
                     </thead>
-
+    
                     <tbody>
                         <tr v-for="(item, index) in info" :key="index">
                             <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
@@ -444,9 +489,9 @@ const getNameAsesor = (id: number) => {
     </UiTitleCard>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10" 
+    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11" 
       @isSelectImages=handleSelectImages 
-      :ID_detalle=id 
+      :ID_detalle=id
       :deleteImageUpdate=false
     />
 
@@ -462,16 +507,41 @@ const getNameAsesor = (id: number) => {
     <v-container>
         <v-row align="center" justify="start">
 
+          <!-- BOTON PARA CAMBIAR DE ESATUS -->
             <v-col cols="auto">
-                <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
-                    @click="USER_ROL === 4 ? asignAsesor() : updateData()">
-                    {{ dataUser.msgButton }}
-
+                <v-btn 
+                  :disabled="ID_status == 2" 
+                  append-icon="mdi-check-all" 
+                  variant="elevated" 
+                  color="primary"
+                  @click="USER_ROL === 4 ? asignAsesor() : updateData()"
+                >
+                  {{ dataUser.msgButton }}
                 </v-btn>
             </v-col>
+
+            <!-- BOTON PARA INGRESAR EL NUMERO DE FACTURA -->
+
             <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
-                <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
-                    INGRESAR NUMERO DE FACTURA
+                <v-btn 
+                  @click="dialog=true" 
+                  append-icon="mdi-check-all" 
+                  variant="elevated" 
+                  color="primary"
+                >
+                  Ingresar Numero de Factura
+                </v-btn>
+            </v-col>
+
+            <!-- BOTON PARA RECHAZAR COMANDA -->
+            <v-col cols="auto" v-if="USER_ROL === 11">
+                <v-btn 
+                  @click="alertaRechazar" 
+                  append-icon="mdi-delete-sweep" 
+                  variant="elevated" 
+                  color="error"
+                >
+                  Rechazar Retencion 
                 </v-btn>
             </v-col>
         </v-row>
