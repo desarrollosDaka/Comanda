@@ -2,7 +2,8 @@ const { Server } = require('socket.io');
 const { getMasterOrder, 
         createMasterOrderAndDetails, 
         updateMasterOrderAndDetails,
-        getMasterOrderRetencion  
+        getMasterOrderRetencion,
+        getMasterOrderRetencionTwo 
     } = require("./controllers/orders.controller.js");
 const { getMasterUser } = require("./controllers/user.controller.js");
 
@@ -38,6 +39,26 @@ module.exports = (server) => {
             }
         };
 
+        const emitOrderDataConRetencionTwo = async () => {
+            try {
+                const rta = await getMasterOrderRetencionTwo();
+                socket.emit('get-master-order-retencion-two', rta);
+                //console.log('Datos emitidos:', rta);
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
+        };
+
+        const emitOrderDataConPickup = async () => {
+            try {
+                const rta = await getMasterOrderRetencionTwo();
+                socket.emit('get-master-order-retencion-two', rta);
+                //console.log('Datos emitidos:', rta);
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
+        };
+
         const emitUserData = async () => {
             try {
                 const rta = await getMasterUser();
@@ -62,16 +83,19 @@ module.exports = (server) => {
         emitOrderData();
         emitUserData();
         emitOrderDataConRetencion();
+        emitOrderDataConRetencionTwo();
 
         // Configurar un intervalo para emitir datos cada 10 segundos (por ejemplo)
         const intervalIdOrder = setInterval(emitOrderData, 5000);
         const intervalIdUser = setInterval(emitUserData, 5000);
         const intervalIdOrderRetencion = setInterval(emitOrderDataConRetencion, 5000);
+        const intervalIdOrderRetencionTwo = setInterval(emitOrderDataConRetencionTwo, 5000);
 
         // Escuchar eventos específicos para emitir datos
         socket.on('request-master-order', emitOrderData);
         socket.on('request-master-user', emitUserData);
         socket.on('request-master-order-retencion', emitOrderDataConRetencion);
+        socket.on('request-master-order-retencion-two', emitOrderDataConRetencionTwo);
 
         
         // Escuchar evento de actualización de orden
@@ -82,6 +106,7 @@ module.exports = (server) => {
            clearInterval(intervalIdOrder); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdUser); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderRetencion); // Limpiar el intervalo cuando el cliente se desconecta
+            clearInterval(intervalIdOrderRetencionTwo); // Limpiar el intervalo cuando el cliente se desconecta
         });
     });
 

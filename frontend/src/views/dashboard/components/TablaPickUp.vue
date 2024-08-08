@@ -1,101 +1,22 @@
 <script setup lang="ts">
 import axios from "axios";
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useUserRol } from "@/composables/users";
 import { useGetStatus } from "@/composables/status";
 import { io } from "socket.io-client";
-import { useRoute } from "vue-router";
-const route = useRoute();
-
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 const search = ref("");
 const info = ref([]);
-const infoLength = ref(0); 
 const loadingInfo = ref(false);
-let isFirstLoad = true;
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
-const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
+const urlSocket = ref();
 const infoAsesores = ref();
 const infogetStatus = ref();
-
 const id_sucursal = ref();
- 
-/////////////////notifications /////////////////////
-const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
-const route1: string = "http://localhost:3002/api"
-
-
-////////////////////////
-const socket = io(`${baseUrlBack}`, {
-  reconnection: false, // Deshabilitar la reconexión automática
-});
-
-// Listen for events from the server
-socket.on("get-master-order", (rta) => {
-  //console.log("Datos actualizados:", rta);
-  if (Array.isArray(rta)) {
-
-  const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
-      if (ROLFILTERUSER.includes(USER_ROL.value)) { 
-
-        //FILTRAMOS POR ASESORES ASIGNADOS
-        return dataUser.status.includes(item.ID_status) && item.User_asing.toString() === USER.value.toString() && item.ID_Sucursal === id_sucursal.value
-
-      } else {
-
-        //FILTRAMOS SOLO POR ESTATUS
-        return (
-
-          dataUser.status.includes(item.ID_status) && item.ID_Sucursal === id_sucursal.value 
-
-        );
-      }
-    });
-    info.value = dataFilterStatus
-
-    const infoArray = info.value;
-
-    infoLength.value = infoArray.length;
-
-  } else {
-    console.error("La respuesta no es un array:", rta);
- } 
-});
-
-
-
-//////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
-
-const handleNewItem = () => {
-  //console.log("Nuevo valor agregado:", newItem);
-
-
-fetch(route1 + '/notification', {
-  method: 'POST',
-  body: JSON.stringify({ message: "NUEVA COMANDA ASIGNADA" }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});  
-
-  // Actualizamos la longitud
-  infoLength.value = info.value.length;
-
-};
-
-
-watch(info, (newValue, oldValue) => {
-//console.log("INFO"+info.value);
-if (isFirstLoad) {
-    // Si es la primera carga, no hagas nada
-    isFirstLoad = false;
-  } else if (newValue.length > oldValue.length) {
-    // Se ha agregado un nuevo valor
-    handleNewItem();
-  }
-});
-
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -112,8 +33,26 @@ if (jsonFromLocalStorage !== null) {
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
-const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
-const STATUSPRINTER = [4]; //ESTE ARREGLO INDICA EN QUE ESTATUS DEBE ESTAR LA COMANDA PARA IMPRIMIR
+
+const socket = io(`${baseUrlBack}`, {
+  reconnection: false, // Deshabilitar la reconexión automática
+});
+
+if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
+  urlSocket.value = 'get-master-order-pickup'
+}else if(USER_ROL.value === 7){
+  urlSocket.value = 'get-master-order-pickup-two'
+}
+
+// Listen for events from the server
+socket.on(`${urlSocket.value}`, (rta) => {
+    try {
+        info.value = rta[0]
+    } catch (error) {
+       console.log(error);
+    }
+});
+
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de ROL DE USUARIO
 
 
@@ -125,11 +64,6 @@ interface getDataComanda {
   Asesor: string;
   Status: number;
   ID_detalle: string;
-}
-
-interface Asesores {
-  Nombre: string;
-  ID_user: number;
 }
 
 interface Table_Orders {
@@ -145,25 +79,6 @@ interface Table_Orders {
   ID_status: number;
   Create_date: Date;
 }
-
-const getAsesores = async () => {
-
-  try {
-    const url = `${baseUrlAsesor}/filterMasterAsesor/`;
-
-    const { data } = await axios.get(url);
-    console.log(data);
-
-    infoAsesores.value = data[0].map((asesor: Asesores) => ({
-      value: asesor.ID_user,
-      title: asesor.Nombre,
-    }));
-    console.log(infoAsesores.value);
-
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const getMessageStatus = (id: number) => {
   if (infogetStatus && infogetStatus.value) {
@@ -187,11 +102,8 @@ const getNameAsesor = (id: number) => {
 
 
 onMounted(async () => {
-  //await getOrders();
-  await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;
-
 });
 
 onUnmounted(() => {
@@ -205,8 +117,6 @@ const headers = ref([
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
-  { title: "ASESOR", key: "Asesor" },
-  { title: "STATUS", key: "Status" },
   { title: "ACCIÓN", sortable: false, key: "action" },
 ] as const);
 
@@ -268,15 +178,6 @@ const COLORSTATUS: any = {
               mdi-eye-check
             </v-icon>
           </router-link>
-
-          <!-- <v-icon
-            v-if="STATUSPRINTER.includes((item as Table_Orders).ID_status)"
-            size="23"
-            class="me-4"
-            color="primary"
-          >
-            mdi-printer
-          </v-icon> -->
         </template>
 
         <!-- status -->
