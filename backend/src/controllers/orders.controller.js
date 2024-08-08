@@ -789,7 +789,7 @@ const filterMasterAsesor = async (req, res) => {
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-    WHERE ID_rol = '1' `
+    WHERE ID_rol = '5' `
     );
 
     if (rta) {
@@ -816,7 +816,7 @@ const filterMasterAsesorSucursal = async (req, res) => {
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-    WHERE ID_rol = '1' and Id_sucursal = '${id_sucursal}'`);
+    WHERE ID_rol = '5' and Id_sucursal = '${id_sucursal}'`);
 
     console.log(rta);
     if (rta) {
@@ -868,7 +868,7 @@ const updateMasterAsesor = async (req, res) => {
     const notify = {     
       ID_detalle: req.params.id,
       Notifications: 'Comanda Asignada',
-      Type_notification: ' ',
+      // Type_notification: ' ',
       ID_user: req.body.User_asing,
     };
 

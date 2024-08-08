@@ -5,7 +5,7 @@ const { getMasterOrder,
         getMasterOrderRetencion  
     } = require("./controllers/orders.controller.js");
 const { getMasterUser } = require("./controllers/user.controller.js");
-const { findall, findallv2 } = require("./controllers/notifications.controllers.js");
+// const { findall, findallv2 } = require("./controllers/notifications.controllers.js");
 
 module.exports = (server) => {
     const io = new Server(server, {
@@ -49,15 +49,15 @@ module.exports = (server) => {
             }
         };
 
-        const emitNotify = async () => {
-            try {
-                const rta = await findallv2("10");
-                socket.emit('get-master-notify', rta);
-                console.log('Datos emitidos:', rta);
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
-            }
-        };
+        // const emitNotify = async () => {
+        //     try {
+        //         const rta = await findallv2("10");
+        //         socket.emit('get-master-notify', rta);
+        //         console.log('Datos emitidos:', rta);
+        //     } catch (error) {
+        //         console.error('Error al obtener los datos:', error);
+        //     }
+        // };
         
         // Emitir evento cuando se actualiza una orden
         // const updateOrderAndEmit = async (orderData) => {
@@ -73,19 +73,19 @@ module.exports = (server) => {
         // emitOrderData();
         // emitUserData();
         // emitOrderDataConRetencion();
-        emitNotify();
+        // emitNotify();
 
         // Configurar un intervalo para emitir datos cada 10 segundos (por ejemplo)
         const intervalIdOrder = setInterval(emitOrderData, 5000);
-        const intervalIdUser = setInterval(emitUserData, 500000);
+        const intervalIdUser = setInterval(emitUserData, 5000);
         const intervalIdOrderRetencion = setInterval(emitOrderDataConRetencion, 5000);
-        const intervalNotifications = setInterval(emitNotify, 5000);
+        // const intervalNotifications = setInterval(emitNotify, 5000);
 
         // Escuchar eventos específicos para emitir datos
         socket.on('request-master-order', emitOrderData);
         socket.on('request-master-user', emitUserData);
         socket.on('request-master-order-retencion', emitOrderDataConRetencion);
-        socket.on('request-master-notifications', emitNotify);
+        // socket.on('request-master-notifications', emitNotify);
 
         
         // Escuchar evento de actualización de orden
@@ -96,7 +96,7 @@ module.exports = (server) => {
            clearInterval(intervalIdOrder); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdUser); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderRetencion); // Limpiar el intervalo cuando el cliente se desconecta
-            clearInterval(intervalNotifications); // Limpiar el intervalo cuando el cliente se desconecta
+            // clearInterval(intervalNotifications); // Limpiar el intervalo cuando el cliente se desconecta
         });
     });
 
