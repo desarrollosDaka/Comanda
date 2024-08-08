@@ -10,9 +10,9 @@ import Notify from '@/components/Notify.vue';
 const localNotify = ref([]);
 const localLenNotify = ref('');
 ////////////////////////
-const socket = io(`${baseUrlBack}`, {
-  reconnection: false, // Deshabilitar la reconexión automática
-});
+// const socket = io(`${baseUrlBack}`, {
+//   reconnection: false, // Deshabilitar la reconexión automática
+// });
 // icons
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
 
@@ -36,7 +36,7 @@ onMounted(async () => {
   notification(notifyStore);
   lenNotify(notifyStore);
 
-  console.log(localNotify.value);
+ // console.log(localNotify.value);
   
 });
 
@@ -53,55 +53,55 @@ function deactivateItem() {
 }
 
 
-const handleNewItem = () => {
-  //console.log("Nuevo valor agregado:", newItem);
-  console.log("handleNewItem called");
-fetch(route1 + '/notification', {
-  method: 'POST',
-  body: JSON.stringify({ message: "NUEVO MENSAJE" }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});  
-};
+// const handleNewItem = () => {
+//   //console.log("Nuevo valor agregado:", newItem);
+//   console.log("handleNewItem called");
+// fetch(route1 + '/notification', {
+//   method: 'POST',
+//   body: JSON.stringify({ message: "NUEVO MENSAJE" }),
+//   headers: {
+//     'Content-Type': 'application/json'
+//   }
+// });  
+// };
 
 // Listen for events from the server
-socket.on('get-master-notify', (rta:any) => {
-  console.log('Datos actualizados:', rta);
-  if (Array.isArray(rta)) {
-    info.value = rta[0];
-    console.log(info.value);
-  } else {
-    console.error('La respuesta no es un array:', rta);
-  }
-});
+// socket.on('get-master-notify', (rta:any) => {
+//   console.log('Datos actualizados:', rta);
+//   if (Array.isArray(rta)) {
+//     info.value = rta[0];
+//     console.log(info.value);
+//   } else {
+//     console.error('La respuesta no es un array:', rta);
+//   }
+// });
 
 
 
-let isFirstLoad = true;
+//let isFirstLoad = true;
 
-watch(info, (newValue, oldValue) => {
-  // if (isFirstLoad) {
-  //   isFirstLoad = false;
-  // } else if (newValue.length > oldValue.length) {
-  //   handleNewItem();
-  // }
-  console.log("watch triggered", newValue, oldValue);
-  if (newValue.length > oldValue.length) {
-    handleNewItem();
-  }
-});
+// watch(info, (newValue, oldValue) => {
+//   // if (isFirstLoad) {
+//   //   isFirstLoad = false;
+//   // } else if (newValue.length > oldValue.length) {
+//   //   handleNewItem();
+//   // }
+//   console.log("watch triggered", newValue, oldValue);
+//   if (newValue.length > oldValue.length) {
+//     handleNewItem();
+//   }
+// });
 
 
 // Watch para localLenNotify
-watch(localLenNotify, (newValue, oldValue) => {
-  //console.log("localLenNotify changed", newValue, oldValue);
-  if (newValue > oldValue) {
-    //console.log("lenNotify ha crecido");
-    //handleNewItem();
-    // Aquí puedes agregar la lógica que necesites cuando lenNotify crezca
-  }
-});
+// watch(localLenNotify, (newValue, oldValue) => {
+//   //console.log("localLenNotify changed", newValue, oldValue);
+//   if (newValue > oldValue) {
+//     //console.log("lenNotify ha crecido");
+//     //handleNewItem();
+//     // Aquí puedes agregar la lógica que necesites cuando lenNotify crezca
+//   }
+// });
 
 
 </script>

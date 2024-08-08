@@ -21,7 +21,7 @@ export const useNotifyStore = defineStore('notify', {
             }
 
             // update state
-            console.log(data.data);
+            //console.log(data.data);
             
             this.notifications = data.data;
         }

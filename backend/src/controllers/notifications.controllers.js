@@ -31,7 +31,9 @@ const findall = async (req, res) => {
     // const response = await sequelize.models.modelNotifications.findAll({
     //   where: { ID_user: id },
     // });
-    const response = await sequelize.query(`SELECT DISTINCT T0.[ID_user]
+    
+    const response = await sequelize.query(`
+      SELECT DISTINCT T0.[ID_user]
       ,[Nombre]
       ,[Email]
       ,[Password]
@@ -66,7 +68,7 @@ const findall = async (req, res) => {
       console.error("Dato no contemplado.");
     }
   } catch (error) {
-    console.error(error.message);
+   // console.error(error.message);
     res.json({ error: true, data: null });
   }
 };

@@ -9,7 +9,7 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
-const { log } = require("console");
+const { create } = require("domain");
 
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
@@ -359,7 +359,6 @@ const filterOrderDetailsFilesEnvio = async (req, res) => {
     if (rta) {
       res.status(200);
       res.json(rta);
-      console.log(rta+ 'holaaaaaaaaaaaaaaaaaaaaa');
     } else {
       res.status(404);
       res.json({ msj: "Error en la consulta" });
@@ -378,6 +377,54 @@ const filterOrderDetails = async (req, res) => {
       `SELECT *
             FROM [COMANDA_TEST].[dbo].[ORDERS_DETAILS]
             WHERE [ID_detalle] = '${id}'`
+    );
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//OBTENER DETALLES DE COMANDA
+const filterOrderATC = async (req, res) => {
+  try {
+  //  const id = req.params.id;
+
+    const rta = await sequelize.query(
+      ` SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 4 AND Retencion = 0 and Tipo_delivery != 2
+          UNION ALL
+        SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery != 2`
+    );
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//OBTENER DETALLES DE COMANDA
+const filterOrderPickUp = async (req, res) => {
+  try {
+  //  const id = req.params.id;
+
+    const rta = await sequelize.query(
+      ` SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 4 AND Retencion = 0 and Tipo_delivery = 2
+          UNION ALL
+        SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery = 2`
     );
     if (rta) {
       res.status(200);
@@ -438,6 +485,7 @@ const updateOrderDetails = async (req, res) => {
 
     for (const item of data) {
       const orderDetailData = {
+        ID_order: item.id_order,
         ID_detalle: id,
         ID_producto: item.id_producto,
         Direccion: item.direccionDelivery,
@@ -445,7 +493,7 @@ const updateOrderDetails = async (req, res) => {
       };
 
       await sequelize.models.modelOrdersdetails.update(orderDetailData, {
-        where: { ID_detalle: id, ID_producto: item.id_producto },
+        where: {ID_order: item.id_order, ID_detalle: id, ID_producto: item.id_producto },
       });
     }
 
@@ -657,7 +705,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Guarda el PDF modificado en disco
     const modifiedPdfBytes = await pdfDoc.save();
-    console.log("modifiedPdfBytes", modifiedPdfBytes);
+    //console.log("modifiedPdfBytes", modifiedPdfBytes);
     fs1.writeFileSync(
       `${destinationDirectory}/${f.filename}`,
       modifiedPdfBytes
@@ -789,7 +837,7 @@ const filterMasterAsesor = async (req, res) => {
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-    WHERE ID_rol = '1' `
+    WHERE ID_rol = '5' `
     );
 
     if (rta) {
@@ -816,9 +864,8 @@ const filterMasterAsesorSucursal = async (req, res) => {
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-    WHERE ID_rol = '1' and Id_sucursal = '${id_sucursal}'`);
+    WHERE ID_rol = '5' and Id_sucursal = '${id_sucursal}'`);
 
-    console.log(rta);
     if (rta) {
       res.status(200);
       res.json(rta);
@@ -833,7 +880,6 @@ const filterMasterAsesorSucursal = async (req, res) => {
 
 //AGREGAR CAJA FACTURA COMANDA
 const updateOrderCajaFact = async (req, res) => {
-  console.log(req.body);
   try {
     const data = {
       Caja_factura: req.body.caja_factura,
@@ -868,7 +914,7 @@ const updateMasterAsesor = async (req, res) => {
     const notify = {     
       ID_detalle: req.params.id,
       Notifications: 'Comanda Asignada',
-      Type_notification: ' ',
+    //  Type_notification: ,
       ID_user: req.body.User_asing,
     };
 
@@ -987,6 +1033,8 @@ module.exports = {
   filterMasterAsesor,  
   filterMasterAsesorSucursal,
   filterOrderDetails,
+  filterOrderATC,
+  filterOrderPickUp,
   createOrderDetails,
   updateOrderDetails,
   deleteOrderDetails,
