@@ -5,6 +5,8 @@ import sidebarItems from './sidebarItemAdministrators';
 import sidebarItemsRol from './sidebarItemGroup_1';
 import sidebarItemsGerente from './sidebartItemManagers';
 import sidebarAsesorOnline from './sibedarItemAsesorOnline';
+import sidebarEspecialistaCaja from './sidebarItemEspecialista';
+import sidebarAlmacenista from './sidebarItemAlmacenista';
 import { ref } from 'vue';
 
 import NavGroup from './NavGroup/NavGroup.vue';
@@ -20,7 +22,7 @@ const sidebarMenuAsesorOnline = shallowRef(sidebarAsesorOnline);
 const User = ref('');
 const Rol = ref<number>(0)
 
-const ADVISORS_STORERS_CASHIER = [5,6,7,8,9,10] //rol asesores, almacenistas, cajeras, atc
+const ADVISORS_STORERS_CASHIER = [5,6,8,9,10] //rol asesores, almacenistas, cajeras, atc
 const MANAGERS = [4] //rol gerentes
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
@@ -53,7 +55,6 @@ if (jsonFromLocalStorage !== null) {
     <perfect-scrollbar class="scrollnavbar">
 
        <!-- ADMINISTRADORES-->
-
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 99">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenu" :key="i">
@@ -73,6 +74,38 @@ if (jsonFromLocalStorage !== null) {
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 1">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenuAsesorOnline" :key="i">
+          <!---Item Sub Header -->
+          <NavGroup :item="item" v-if="item.header" :key="item.title" />
+          <!---Item Divider -->
+          <v-divider class="my-3" v-else-if="item.divider" />
+          <!---If Has Child -->
+          <NavCollapse class="leftPadding" :item="item" :level="0" v-else-if="item.children" />
+          <!---Single Item-->
+          <NavItem :item="item" v-else />
+          <!---End Single Item-->
+        </template>
+      </v-list>
+
+      <!-- ESPECIALISTA CAJERA -->
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 11">
+        <!---Menu Loop -->
+        <template v-for="(item, i) in sidebarEspecialistaCaja" :key="i">
+          <!---Item Sub Header -->
+          <NavGroup :item="item" v-if="item.header" :key="item.title" />
+          <!---Item Divider -->
+          <v-divider class="my-3" v-else-if="item.divider" />
+          <!---If Has Child -->
+          <NavCollapse class="leftPadding" :item="item" :level="0" v-else-if="item.children" />
+          <!---Single Item-->
+          <NavItem :item="item" v-else />
+          <!---End Single Item-->
+        </template>
+      </v-list>
+
+      <!-- ALMACENISTA -->
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 7">
+        <!---Menu Loop -->
+        <template v-for="(item, i) in sidebarAlmacenista" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->

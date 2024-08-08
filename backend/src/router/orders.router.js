@@ -98,7 +98,7 @@ router.get("/filterOrderDetailsfiles/:id", filterOrderDetailsFiles);
 
 
 //FILTRO ORDER FILES Envio
-router.get("/filterOrderDetailsfilesEnvio/:id", filterOrderDetailsFilesEnvio);
+router.get("/filterOrderDetailsfilesEnvio/:id/:tipoArchivo", filterOrderDetailsFilesEnvio);
 
 /////////////////////////////FIN ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////

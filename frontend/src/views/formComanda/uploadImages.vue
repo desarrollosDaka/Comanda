@@ -42,15 +42,20 @@ if (jsonFromLocalStorage !== null) {
 const document = ref<Documento[]>([]);
 
 onMounted(async () => {
-
-
+  
   if(props.ID_detalle != undefined){
 
     route_upload.value=`${import.meta.env.VITE_URL}/public/`
     try {
 
       if(USER_ROL.value === 10){
-        url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}`
+
+        const tipoArchivo = 'DETALLE DE ENVIO'
+        url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
+      } else if(USER_ROL.value === 11){
+
+        const tipoArchivo = 'RETENCIÓN'
+        url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
       } else {
         url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
       }
@@ -60,8 +65,6 @@ onMounted(async () => {
         const extension = data.File.split('.').pop();
         document.value.push({ imagen: data.File, file: null, type: data.Type_File, mode: UPDATE_METHOD, disabled: true, Id: data.ID_File, typefile: extension });
       });
-
-
     } catch (error) {
       console.log(error)
     }
@@ -85,8 +88,6 @@ interface DocumentData {
   ID_File: number,
   Type_File_Document: string
 }
-
-
 
 const emits = defineEmits(['isSelectImages']);
 
@@ -114,7 +115,6 @@ async function viewImages(event: Event) {
 
   emits('isSelectImages', document.value);
 }
-
 
 
 async function encodeFileAsBase64URL(file: File): Promise<string> {
@@ -161,7 +161,6 @@ async function deldata(data: any, index: number) {
 
     document.value.splice(index, 1);
   }
-
 }
 
 
@@ -291,7 +290,7 @@ async function downLoadArchive(param: Documento) {
         required 
         @change="viewImages" 
         accept="image/* application/pdf"
-        :disabled="USER_ROL === 10"
+        :disabled="USER_ROL === 10 || USER_ROL === 11"
         prepend-icon="mdi-camera">
       </v-file-input>
     </v-col>
@@ -314,7 +313,7 @@ async function downLoadArchive(param: Documento) {
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10"
+          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11"
             color="error">
           </v-btn>
 

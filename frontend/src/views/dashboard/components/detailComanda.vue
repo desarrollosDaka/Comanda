@@ -223,7 +223,7 @@ onMounted(async () => {
   await getOrder();
   await getArticulos();
   await getAsesores();
-  await getDocumentsATC();
+  await getDocumentsATC(); 
 });
 
 async function updateData() {
@@ -521,6 +521,8 @@ const alertaRechazar = () =>{
             </v-col>
 
             <!-- BOTON PARA INGRESAR EL NUMERO DE FACTURA -->
+
+
             <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
                 <v-btn 
                   @click="dialog=true" 

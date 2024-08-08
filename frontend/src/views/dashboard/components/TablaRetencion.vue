@@ -12,19 +12,40 @@ const search = ref("");
 const info = ref([]);
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
-const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
+const urlSocket = ref();
 const infoAsesores = ref();
 const infogetStatus = ref();
 const id_sucursal = ref();
+
+let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
+let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
+let user_crea = ref<string>("");
+
+
+// DATA DEL LOCAL STORAGE
+const jsonFromLocalStorage = sessionStorage.getItem("user");
+if (jsonFromLocalStorage !== null) {
+  const parsedData = JSON.parse(jsonFromLocalStorage);
+  user_crea.value = parsedData.data.Nombre;
+  USER_ROL.value = +parsedData.data.ID_rol;
+  USER.value = parsedData.data.ID_user;
+  id_sucursal.value = parsedData.data.Id_sucursal;
+}
 
 
 const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
+if(USER_ROL.value === 1){
+  urlSocket.value = 'get-master-order-retencion'
+}else if(USER_ROL.value === 11){
+  urlSocket.value = 'get-master-order-retencion-two'
+}
+
 // Listen for events from the server
-socket.on("get-master-order-retencion", (rta) => {
+socket.on(`${urlSocket.value}`, (rta) => {
 
 //   if (Array.isArray(rta)) {
 //   const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
@@ -45,23 +66,6 @@ socket.on("get-master-order-retencion", (rta) => {
 // } 
     info.value = rta[0]
 });
-
-//////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
-
-let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
-let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
-let user_crea = ref<string>("");
-
-
-// DATA DEL LOCAL STORAGE
-const jsonFromLocalStorage = sessionStorage.getItem("user");
-if (jsonFromLocalStorage !== null) {
-  const parsedData = JSON.parse(jsonFromLocalStorage);
-  user_crea.value = parsedData.data.Nombre;
-  USER_ROL.value = +parsedData.data.ID_rol;
-  USER.value = parsedData.data.ID_user;
-  id_sucursal.value = parsedData.data.Id_sucursal;
-}
 
 const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de ROL DE USUARIO
