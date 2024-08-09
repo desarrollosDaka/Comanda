@@ -281,7 +281,7 @@ const asignAsesor = async () => {
   const status = dataUser.changeID_status;
   try {
     const response = await axios.put(
-      `${baseUrl}/updateOrderAsesor/${id_orders.value}`,
+      `${baseUrl}/updateOrderAsesor/${id.value}`,
       { User_asing: selectedAsesor.value, ID_status: status }
     );
     if (response) {
