@@ -22,7 +22,6 @@ let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO q
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
 
-
 // DATA DEL LOCAL STORAGE
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
@@ -68,7 +67,7 @@ interface getDataComanda {
 
 interface Table_Orders {
   ID_order: number;
-  ID_detalle: string;
+  ID_detalle: string;   
   Cedula: string;
   Cliente: string;
   Sucursal: string;
@@ -99,7 +98,6 @@ const getNameAsesor = (id: number) => {
   }
   return null;
 };
-
 
 onMounted(async () => {
   const { status } = await useGetStatus();

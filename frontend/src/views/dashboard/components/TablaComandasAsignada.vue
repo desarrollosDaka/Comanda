@@ -188,7 +188,6 @@ onMounted(async () => {
   await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;
-
 });
 
 onUnmounted(() => {
@@ -207,6 +206,7 @@ const headers = ref([
   { title: "ACCIÓN", sortable: false, key: "action" },
 ] as const);
 
+
 // COlor de estatus
 const COLORSTATUS: any = {
   1: "success",
@@ -219,6 +219,7 @@ const COLORSTATUS: any = {
   8: "success",
   9: "error",
 };
+
 </script>
 
 <template>
@@ -289,7 +290,7 @@ const COLORSTATUS: any = {
             <p class="mb-0">{{ getMessageStatus((item as any).ID_status) }}</p>
           </v-chip>
         </template>
-
+  
         <!-- asesor -->
         <template v-slot:item.Asesor="{ item }">
           <v-chip
