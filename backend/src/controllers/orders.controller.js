@@ -745,7 +745,6 @@ const addWaterMarkPDF = async (f, id) => {
     // Guarda el PDF modificado en disco
     const modifiedPdfBytes = await pdfDoc.save();
 
-    // console.log("modifiedPdfBytes", modifiedPdfBytes);
     fs1.writeFileSync(
       `${destinationDirectory}/${f.filename}`,
       modifiedPdfBytes
@@ -920,6 +919,7 @@ const filterMasterAsesorSucursal = async (req, res) => {
 
 //AGREGAR CAJA FACTURA COMANDA
 const updateOrderCajaFact = async (req, res) => {
+
   try {
     const data = {
       Caja_factura: req.body.caja_factura,
@@ -954,7 +954,9 @@ const updateMasterAsesor = async (req, res) => {
     const notify = {     
       ID_detalle: req.params.id,
       Notifications: 'Comanda Asignada',
+
     //  Type_notification: ,
+
       ID_user: req.body.User_asing,
     };
 
