@@ -608,7 +608,7 @@ onMounted(async () => {
   await getEstadosRL();
   await getSelectRL();
   await getSelectTwoRL();
-  alert(`${id.value} y ${idComanda.value}`)
+  
   
 });
 onMounted(async () => {
