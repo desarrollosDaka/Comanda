@@ -830,7 +830,7 @@ const filterMasterAsesor = async (req, res) => {
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-    WHERE ID_rol = '1' `
+    WHERE ID_rol = '5' `
     );
 
     if (rta) {
@@ -857,7 +857,7 @@ const filterMasterAsesorSucursal = async (req, res) => {
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
-    WHERE ID_rol = '1' and Id_sucursal = '${id_sucursal}'`);
+    WHERE ID_rol = '5' and Id_sucursal = '${id_sucursal}'`);
 
     if (rta) {
       res.status(200);
