@@ -14,25 +14,10 @@ const route = useRoute()
 const listProduct = ref<ListProduct[]>([])
 const infoProduct = ref()
 const product = ref([])
+const Status = ref()
+
 
 const loadingProducts = ref(false); 
-
-const notify = () => {
-    toast.info('Hello1!!');
-    toast.error('Hello2!!');
-    toast.success('Hello3!!');
-    toast.success('Hello4!!', {
-        theme: 'colored',
-        position: toast.POSITION.TOP_LEFT,
-    });
-    toast.warn('Hello5!!', {
-        position: toast.POSITION.TOP_LEFT,
-    });
-    toast.warn('Hello6!!', {
-        theme: 'dark',
-        position: toast.POSITION.TOP_LEFT,
-    });
-};
 
 // CAPTURAMOS EL ID DE COMANDA /filterOrderDetails/:id
 const id = ref() // id de la COMANDA
@@ -75,6 +60,7 @@ const getOrders = async () => {
     try {
         const url = `${baseUrlProducts}/filterOrder/${id.value}`
         const { data } = await axios.get(url);
+        Status.value = data[0][0]["ID_status"]
 
         if (data[0].length <= 0) {
 
@@ -300,10 +286,11 @@ async function handleProductUpdate() {
 
 <template>
     <v-row class="mb-0">
+        
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
                 variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
-                :items="infoProduct"  :disabled="loadingProducts"
+                :items="infoProduct"  :disabled="loadingProducts || Status != 1" 
                 >
 
                 <template v-slot:item="{ props, item }">
@@ -315,7 +302,7 @@ async function handleProductUpdate() {
 
         </v-col>
         <v-col cols="12" md="3" class="py-3">
-            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts">
+            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status != 1">
                 AGREGAR
             </v-btn>
         </v-col>
@@ -325,12 +312,12 @@ async function handleProductUpdate() {
         <!-- TABLA -->
         <v-col cols="12" md="9">
             <UiTitleCard title="Articulos" class-name="px-0 pb-0">
-                <v-table class="bordered-table" hover density="comfortable" rounded="lg" variant="flat">
+                <v-table class="bordered-table" hover density="comfortable" rounded="lg" variant="flat" >
                     <thead>
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase" style="min-width: 100px">
+                            <th v-if="Status == 1" class="text-left text-caption font-weight-bold text-uppercase" style="min-width: 100px">
                                 Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Sub Total</th>
@@ -350,7 +337,7 @@ async function handleProductUpdate() {
                                 <span>{{ item.amount }}</span>
                                 <button class="botonCantidad" @click="increment(item)"> +</button>
                             </td> -->
-                            <td>
+                            <td v-if="Status == 1">
                                 <div class="number-control">
                                     <div class="number-left" @click="decrement(item)"></div>
                                     <input type="number" v-model="item.amount" @change="amountInput(item)" name="number"
@@ -362,10 +349,11 @@ async function handleProductUpdate() {
                                 ${{ item.price }}
                             </td>
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item.subtotal }}$</td>
-                            <td class="py-3 text-right" style="min-width: 100px"
+                            <td v-if="Status == 1" class="py-3 text-right" style="min-width: 100px" 
                                 @click="removeProduct(item.code, index)">
-                                <v-icon color="#D11919" style="cursor: pointer" icon="mdi-trash-can"
-                                    title="Eliminar"></v-icon>
+                                    <v-icon  color="#D11919" style="cursor: pointer" icon="mdi-trash-can"
+                                        title="Eliminar" >
+                                    </v-icon>
                             </td>
                         </tr>
                     </tbody>
@@ -379,7 +367,7 @@ async function handleProductUpdate() {
                 <div class="text-h4 pa-2">{{ `Total a pagar:` }}</div>
                 <div class="text-h1 pa-2 text-center ">${{ ` ${totalSubtotal}` }}</div>
                 <v-card-actions class="text-certer">
-                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined">
+                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status != 1">
                         {{ update ? 'ACTUALIZAR COMANDA' : 'CREAR COMANDA' }}
                     </v-btn>
                 </v-card-actions>
