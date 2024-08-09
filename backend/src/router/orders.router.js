@@ -25,8 +25,10 @@ const {
     getMasterOrder,
     filterMasterOrder,
     filterOrderDetails,
+   // filterOrderATC,
+    //filterOrderPickUp,
     createMasterOrderAndDetails,
-    updateMasterOrderDetails,
+    //updateMasterOrderDetails,
     updateMasterOrderAndDetails,
     createOrderDetails,
     updateOrderDetails,
@@ -64,6 +66,10 @@ router.get("/filterOrderForSucursal/:id_sucursal", getMasterOrderForStore);
 //FILTRO DETALLE ORDER
 router.get("/filterOrderDetails/:id", filterOrderDetails);
 
+//CONSULTA DE ATC PARA VER COMANDAS 
+//router.get("/filterOrderATC", filterOrderATC);
+//router.get("/filterOrderPickUp", filterOrderPickUp);
+
 //filtro de asesor
 router.get("/filterMasterAsesor", filterMasterAsesor);///:id_sucursal
 
@@ -83,9 +89,6 @@ router.post("/createOrderDocument/:id/:idComanda", upload.array('doc_file'), cre
 
 //CREATE DETALLE DE ORDEN
 router.get("/download/:id", download);
-
-// Update Order(SOLO CABECERA) (DESACTIVADO)
-//router.put("/updateOrder/:id", updateMasterOrder);
 
 //UPDATE ORDERS + CLIENTS
 router.put("/updateOrder/:id", updateMasterOrderAndDetails);

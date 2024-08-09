@@ -4,7 +4,8 @@ const {
   subscription,
   notification,
   findall,
-  ruta
+  ruta,
+  findallv2
 } = require("../controllers/notifications.controllers");
 
 router.post("/subscription", subscription);

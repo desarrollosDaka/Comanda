@@ -281,7 +281,7 @@ const asignAsesor = async () => {
   const status = dataUser.changeID_status;
   try {
     const response = await axios.put(
-      `${baseUrl}/updateOrderAsesor/${id.value}`,
+      `${baseUrl}/updateOrderAsesor/${id_orders.value}`,
       { User_asing: selectedAsesor.value, ID_status: status }
     );
     if (response) {
@@ -521,7 +521,6 @@ const alertaRechazar = () =>{
             </v-col>
 
             <!-- BOTON PARA INGRESAR EL NUMERO DE FACTURA -->
-
             <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
                 <v-btn 
                   @click="dialog=true" 

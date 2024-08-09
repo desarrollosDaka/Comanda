@@ -10,7 +10,7 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: 'mssql',
-    // logging: false, 
+    logging: false, 
     dialectOptions: {
       options: {
         encrypt: false,

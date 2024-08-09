@@ -369,6 +369,7 @@ async function getSucursal() {
     console.log(error);
   }
 }
+
 interface Delivery {
   Delivery_type: string;
   ID_Delivery: number;

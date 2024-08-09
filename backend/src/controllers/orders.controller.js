@@ -10,6 +10,7 @@ const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
 
+
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
   try {
@@ -428,6 +429,54 @@ const filterOrderDetails = async (req, res) => {
   }
 };
 
+//OBTENER DETALLES DE COMANDA
+const filterOrderATC = async (req, res) => {
+  try {
+  //  const id = req.params.id;
+
+    const rta = await sequelize.query(
+      ` SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 4 AND Retencion = 0 and Tipo_delivery != 2
+          UNION ALL
+        SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery != 2`
+    );
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//OBTENER DETALLES DE COMANDA
+const filterOrderPickUp = async (req, res) => {
+  try {
+  //  const id = req.params.id;
+
+    const rta = await sequelize.query(
+      ` SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 4 AND Retencion = 0 and Tipo_delivery = 2
+          UNION ALL
+        SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery = 2`
+    );
+    if (rta) {
+      res.status(200);
+      res.json(rta);
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
   const data = req.body;
@@ -475,6 +524,7 @@ const updateOrderDetails = async (req, res) => {
 
     for (const item of data) {
       const orderDetailData = {
+        ID_order: item.id_order,
         ID_detalle: id,
         ID_order: item.id_order,
         ID_producto: item.id_producto,
@@ -694,7 +744,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Guarda el PDF modificado en disco
     const modifiedPdfBytes = await pdfDoc.save();
-    // console.log("modifiedPdfBytes", modifiedPdfBytes);
+
     fs1.writeFileSync(
       `${destinationDirectory}/${f.filename}`,
       modifiedPdfBytes
@@ -869,6 +919,7 @@ const filterMasterAsesorSucursal = async (req, res) => {
 
 //AGREGAR CAJA FACTURA COMANDA
 const updateOrderCajaFact = async (req, res) => {
+
   try {
     const data = {
       Caja_factura: req.body.caja_factura,
@@ -903,7 +954,9 @@ const updateMasterAsesor = async (req, res) => {
     const notify = {     
       ID_detalle: req.params.id,
       Notifications: 'Comanda Asignada',
-      Type_notification: ' ',
+
+    //  Type_notification: ,
+
       ID_user: req.body.User_asing,
     };
 
@@ -1023,6 +1076,8 @@ module.exports = {
   filterMasterAsesor,  
   filterMasterAsesorSucursal,
   filterOrderDetails,
+  filterOrderATC,
+  filterOrderPickUp,
   createOrderDetails,
   updateOrderDetails,
   deleteOrderDetails,

@@ -8,19 +8,19 @@ interface Document {
     mode: string;
 }
 
+let rta = 0xffff;
+
 const INSERT_METHOD = 'insert'
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 
 export async function useAddDocument(files: Document[], id:string, idOrder:number) {
-    
-    console.log('mensaje' + files, id)
+
     const formDataDocuments = new FormData();
     let response = false
     // filtramos solos los item tipo insert
     files = files.filter(item => item.mode === INSERT_METHOD)
 
     for (let i = 0; i < files.length; i++) {
-
         const file = files[i].file;
         const type = files[i].type;
         const mode = files[i].mode
@@ -28,10 +28,8 @@ export async function useAddDocument(files: Document[], id:string, idOrder:numbe
         formDataDocuments.append('doc_file', file)
         formDataDocuments.append(`typeDoc_${i}`, type);
         formDataDocuments.append(`user_${i}`, 'Admin');
-
     }
     try {
-        
         await axios.post(`${baseUrl}/createOrderDocument/${id}/${idOrder}`, formDataDocuments)
         response = true
     } catch (error) {

@@ -7,23 +7,17 @@ import { onMounted, ref, watch } from 'vue';
 import { useNotifyStore } from '@/stores/notify';
 import Notify from '@/components/Notify.vue';
 
+const notifyStore = useNotifyStore();
+
 const localNotify = ref([]);
 const localLenNotify = ref('');
 ////////////////////////
-const socket = io(`${baseUrlBack}`, {
-  reconnection: false, // Deshabilitar la reconexión automática
-});
+// const socket = io(`${baseUrlBack}`, {
+//   reconnection: false, // Deshabilitar la reconexión automática
+// });
 // icons
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
 
-
-const getNotify = async (state: any, idUser: string) => {
-  await state.getNotificationsData(idUser);
-};
-
-const notification = (state: any) => {
-  localNotify.value = state.notifications;
-};
 
 const lenNotify = (state: any) => {
   const len: string = state.countNotifications;
@@ -31,20 +25,7 @@ const lenNotify = (state: any) => {
 };
 
 // socket io
-(async ()=> {
-  const notifyStore = useNotifyStore();
-  await notifyStore.socketNotify("10");
-})();
 
-onMounted(async () => {
-  const notifyStore = useNotifyStore();
-  await getNotify(notifyStore, "10");
-  notification(notifyStore);
-  lenNotify(notifyStore);
-
-  console.log(localNotify.value);
-  
-});
 
 const isActive = ref(true);
 const info = ref<{ id: number, message: string }[]>([]);
@@ -53,62 +34,51 @@ const info = ref<{ id: number, message: string }[]>([]);
 const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
 const route1: string = `${import.meta.env.VITE_URL}/api`
 
-
 function deactivateItem() {
   isActive.value = false;
 }
 
 
-const handleNewItem = () => {
-  //console.log("Nuevo valor agregado:", newItem);
-  console.log("handleNewItem called");
-fetch(route1 + '/notification', {
-  method: 'POST',
-  body: JSON.stringify({ message: "NUEVO MENSAJE" }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});  
-};
+
+
+// const handleNewItem = () => {
+//   //console.log("Nuevo valor agregado:", newItem);
+//   console.log("handleNewItem called");
+// fetch(route1 + '/notification', {
+//   method: 'POST',
+//   body: JSON.stringify({ message: "NUEVO MENSAJE" }),
+//   headers: {
+//     'Content-Type': 'application/json'
+//   }
+// });  
+// };
+
 
 // Listen for events from the server
-socket.on('get-master-notify', (rta:any) => {
-  console.log('Datos actualizados:', rta);
-  if (Array.isArray(rta)) {
-    info.value = rta[0];
-    console.log(info.value);
-  } else {
-    console.error('La respuesta no es un array:', rta);
-  }
-});
+// socket.on('get-master-notify', (rta:any) => {
+//   console.log('Datos actualizados:', rta);
+//   if (Array.isArray(rta)) {
+//     info.value = rta[0];
+//     console.log(info.value);
+//   } else {
+//     console.error('La respuesta no es un array:', rta);
+//   }
+// });
 
 
+//let isFirstLoad = true;
 
-let isFirstLoad = true;
-
-watch(info, (newValue, oldValue) => {
-  // if (isFirstLoad) {
-  //   isFirstLoad = false;
-  // } else if (newValue.length > oldValue.length) {
-  //   handleNewItem();
-  // }
-  console.log("watch triggered", newValue, oldValue);
-  if (newValue.length > oldValue.length) {
-    handleNewItem();
-  }
-});
-
-
-// Watch para localLenNotify
-watch(localLenNotify, (newValue, oldValue) => {
-  //console.log("localLenNotify changed", newValue, oldValue);
-  if (newValue > oldValue) {
-    //console.log("lenNotify ha crecido");
-    //handleNewItem();
-    // Aquí puedes agregar la lógica que necesites cuando lenNotify crezca
-  }
-});
-
+// watch(info, (newValue, oldValue) => {
+//   // if (isFirstLoad) {
+//   //   isFirstLoad = false;
+//   // } else if (newValue.length > oldValue.length) {
+//   //   handleNewItem();
+//   // }
+//   console.log("watch triggered", newValue, oldValue);
+//   if (newValue.length > oldValue.length) {
+//     handleNewItem();
+//   }
+// });
 
 </script>
 
@@ -146,7 +116,7 @@ watch(localLenNotify, (newValue, oldValue) => {
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
 
-          <Notify v-for="notify in localNotify" :notifyData="notify" />
+          <Notify v-for="notify in notifyStore.notifications" :notifyData="notify" />
 
           <v-divider></v-divider>
         </v-list>
