@@ -9,7 +9,6 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
-const { log } = require("console");
 
 //CONSULTA DE ORDENES
 const getMasterOrder = async (req, res) => {
@@ -359,7 +358,6 @@ const filterOrderDetailsFilesEnvio = async (req, res) => {
     if (rta) {
       res.status(200);
       res.json(rta);
-      console.log(rta+ 'holaaaaaaaaaaaaaaaaaaaaa');
     } else {
       res.status(404);
       res.json({ msj: "Error en la consulta" });
@@ -486,7 +484,6 @@ const updateMasterOrderAndDetails = async (req, res) => {
     try {
         const data = req.body;
         const idOrder = data.Id_Comanda;
-        console.log(data);
 
         const newClients = {
             Nombre: data.nombreCompleto,
@@ -657,7 +654,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Guarda el PDF modificado en disco
     const modifiedPdfBytes = await pdfDoc.save();
-    console.log("modifiedPdfBytes", modifiedPdfBytes);
+    
     fs1.writeFileSync(
       `${destinationDirectory}/${f.filename}`,
       modifiedPdfBytes
@@ -818,7 +815,7 @@ const filterMasterAsesorSucursal = async (req, res) => {
     FROM [COMANDA_TEST].[dbo].[MASTER_USER]
     WHERE ID_rol = '5' and Id_sucursal = '${id_sucursal}'`);
 
-    console.log(rta);
+ 
     if (rta) {
       res.status(200);
       res.json(rta);
@@ -833,7 +830,7 @@ const filterMasterAsesorSucursal = async (req, res) => {
 
 //AGREGAR CAJA FACTURA COMANDA
 const updateOrderCajaFact = async (req, res) => {
-  console.log(req.body);
+
   try {
     const data = {
       Caja_factura: req.body.caja_factura,

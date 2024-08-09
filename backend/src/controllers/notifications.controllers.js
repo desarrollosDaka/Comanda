@@ -57,6 +57,16 @@ const findall = async (req, res) => {
 };
 const findallv2 = async (id) => {
   const response =
+    await sequelize.query(`select t0.*, t2.User_crea from [dbo].[ORDER_NOTIFICATIONS] t0
+  inner join [dbo].[MASTER_USER] t1 on t0.ID_user = t1.ID_user
+  inner join [dbo].[ORDERS] t2 on t0.ID_detalle = t2.ID_detalle
+    WHERE t0.ID_user = '${id}'`);
+
+  return response;
+};
+
+const latestNoti = async (id) => {
+  const response =
     await sequelize.query(`select t0.* from [dbo].[ORDER_NOTIFICATIONS] t0
   inner join [dbo].[MASTER_USER] t1 on t0.ID_user = t1.ID_user
     WHERE t0.ID_user =  '${id}'`);
@@ -68,4 +78,4 @@ const ruta = (req, res) => {
   res.status(200).json();
 };
 
-module.exports = { subscription, notification, findall, ruta, findallv2 };
+module.exports = { subscription, notification, findall, ruta, findallv2, latestNoti };

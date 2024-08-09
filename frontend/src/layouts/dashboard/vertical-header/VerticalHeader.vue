@@ -10,7 +10,17 @@ import ProfileDD from './ProfileDD.vue';
 import Sucursales from './Sucursales.vue';
 import { onMounted, ref } from 'vue';
 
+import { io } from "socket.io-client";
+const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
+const socket = io('ws://localhost:3003'); // ws
+
+// pinia 
+import { useAuthStore } from '../../../stores/auth';
+import { useNotifyStore } from '../../../stores/notify';
+
 const customizer = useCustomizerStore();
+const auth = useAuthStore();
+const noti = useNotifyStore();
 const User = ref('');
 
 // onMounted(()=> {
@@ -21,32 +31,37 @@ const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User.value = parsedData.data.Nombre;
-} 
+}
 
+// socket io
+// socket.on('lol', () => {
+//   console.log('estoy funcionando...lol');
+// })
+
+// A la escucha 
+// socket.on('nuevaComanda', (datos) => {
+//   console.log('datos recibidos: ', datos);
+// });
+// powerby alice
+
+setInterval(() => {
+  socket.emit('getUser', auth.user.data);
+}, 5000);
+
+socket.on('notifications', (notificaciones) => {
+  noti.update(notificaciones);
+  console.log('noti.notificaciones: ', noti.notifications);
+});
 </script>
 
 <template>
   <v-app-bar elevation="0" height="60">
-    <v-btn
-      class="hidden-md-and-down text-secondary mr-3"
-      color="darkText"
-      icon
-      rounded="sm"
-      variant="text"
-      @click.stop="customizer.SET_MINI_SIDEBAR(!customizer.mini_sidebar)"
-      size="small"
-    >
+    <v-btn class="hidden-md-and-down text-secondary mr-3" color="darkText" icon rounded="sm" variant="text"
+      @click.stop="customizer.SET_MINI_SIDEBAR(!customizer.mini_sidebar)" size="small">
       <MenuFoldOutlined :style="{ fontSize: '16px' }" />
     </v-btn>
-    <v-btn
-      class="hidden-lg-and-up text-secondary ms-3"
-      color="darkText"
-      icon
-      rounded="sm"
-      variant="text"
-      @click.stop="customizer.SET_SIDEBAR_DRAWER"
-      size="small"
-    >
+    <v-btn class="hidden-lg-and-up text-secondary ms-3" color="darkText" icon rounded="sm" variant="text"
+      @click.stop="customizer.SET_SIDEBAR_DRAWER" size="small">
       <MenuFoldOutlined :style="{ fontSize: '16px' }" />
     </v-btn>
 
@@ -54,15 +69,8 @@ if (jsonFromLocalStorage !== null) {
     <v-menu :close-on-content-click="false" class="hidden-lg-and-up" offset="10, 0">
       <template v-slot:activator="{ props }">
 
-        <v-btn
-          class="hidden-lg-and-up text-secondary ml-1"
-          color="lightsecondary"
-          icon
-          rounded="sm"
-          variant="flat"
-          size="small"
-          v-bind="props"
-        >
+        <v-btn class="hidden-lg-and-up text-secondary ml-1" color="lightsecondary" icon rounded="sm" variant="flat"
+          size="small" v-bind="props">
           <SearchOutlined :style="{ fontSize: '17px' }" />
         </v-btn>
 

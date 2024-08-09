@@ -33,7 +33,7 @@ const socket = io(`${baseUrlBack}`, {
 
 // Listen for events from the server
 socket.on("get-master-order", (rta) => {
-  //console.log("Datos actualizados:", rta);
+
   if (Array.isArray(rta)) {
 
   const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
@@ -147,13 +147,12 @@ const getAsesores = async () => {
     const url = `${baseUrlAsesor}/filterMasterAsesor/`;
 
     const { data } = await axios.get(url);
-    console.log(data);
+
 
     infoAsesores.value = data[0].map((asesor: Asesores) => ({
       value: asesor.ID_user,
       title: asesor.Nombre,
     }));
-    console.log(infoAsesores.value);
 
   } catch (error) {
     console.log(error);
@@ -189,10 +188,10 @@ onMounted(async () => {
 
 });
 
-onUnmounted(() => {
-  socket.disconnect();
-  console.log("Socket desconectado");
-});
+// onUnmounted(() => {
+//   socket.disconnect();
+//   console.log("Socket desconectado");
+// });
 
 // Cabezera de la comanda
 const headers = ref([

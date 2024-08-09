@@ -19,29 +19,16 @@ const socket = io(`${baseUrlBack}`, {
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
 
 
-const getNotify = async (state: any, idUser: string) => {
-  await state.getNotificationsData(idUser);
-};
-
-const notification = (state: any) => {
-  localNotify.value = state.notifications;
-  console.log("localNotify.value", localNotify.value);
-};
-
 const lenNotify = (state: any) => {
   const len: string = state.countNotifications;
   localLenNotify.value = len;
 };
 
 // socket io
-(async ()=> {
-  // const notifyStore = useNotifyStore();
-  await notifyStore.socketNotify();
-})();
-
-watch(notifyStore.notifications, async () => {
-  console.log("holis");
-});
+// socket.on('updateState', (serverId)=> {
+//   console.log('serverId',  serverId);
+// })
+// powerby alice
 
 const isActive = ref(true);
 const info = ref<{ id: number, message: string }[]>([]);
@@ -91,18 +78,6 @@ watch(info, (newValue, oldValue) => {
   }
 });
 
-
-// Watch para localLenNotify
-watch(localLenNotify, (newValue, oldValue) => {
-  //console.log("localLenNotify changed", newValue, oldValue);
-  if (newValue > oldValue) {
-    //console.log("lenNotify ha crecido");
-    //handleNewItem();
-    // Aquí puedes agregar la lógica que necesites cuando lenNotify crezca
-  }
-});
-
-
 </script>
 
 <template>
@@ -139,7 +114,7 @@ watch(localLenNotify, (newValue, oldValue) => {
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
 
-          <Notify v-for="notify in localNotify" :notifyData="notify" />
+          <Notify v-for="notify in notifyStore.notifications" :notifyData="notify" />
 
           <v-divider></v-divider>
         </v-list>
