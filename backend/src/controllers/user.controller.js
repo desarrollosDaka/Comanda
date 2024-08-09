@@ -62,8 +62,6 @@ const updateMasterUser = async (req, res) => {
     try {
         const idUser = req.params.id;
         const userUpdate = req.body;
-        console.log(userUpdate)
-        console.log(idUser)
         const rta = await sequelize.models.modelMasterUser.update(userUpdate,{
             where: {
                 ID_user: idUser},
@@ -89,8 +87,6 @@ const deleteMasterUser = async (req, res) => {
         const dataUpdate = {
             Delete: req.body.Delete,
         };
-        console.log(dataUpdate);
-    
     
         const rta = await sequelize.models.modelMasterUser.update(dataUpdate,{where: { ID_user: id }});
         

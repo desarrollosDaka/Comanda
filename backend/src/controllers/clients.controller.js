@@ -44,7 +44,6 @@ const filterMasterClients = async (req, res) => {
 const filterMasterClientsForCI = async (req, res) => {
     try {
         const CI = req.params.cedula; 
-        console.log(CI);
         
         const rta = await sequelize.models.modelMasterClients.findOne({
             where: {
