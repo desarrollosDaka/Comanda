@@ -15,8 +15,10 @@ export const useNotifyStore = defineStore('notify', {
         }
     },
     actions: {
+
         update(data: []) {
             this.notifications = data;
+
         }
     }
 });

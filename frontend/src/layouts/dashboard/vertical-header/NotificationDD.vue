@@ -12,9 +12,9 @@ const notifyStore = useNotifyStore();
 const localNotify = ref([]);
 const localLenNotify = ref('');
 ////////////////////////
-const socket = io(`${baseUrlBack}`, {
-  reconnection: false, // Deshabilitar la reconexión automática
-});
+// const socket = io(`${baseUrlBack}`, {
+//   reconnection: false, // Deshabilitar la reconexión automática
+// });
 // icons
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
 
@@ -25,10 +25,7 @@ const lenNotify = (state: any) => {
 };
 
 // socket io
-// socket.on('updateState', (serverId)=> {
-//   console.log('serverId',  serverId);
-// })
-// powerby alice
+
 
 const isActive = ref(true);
 const info = ref<{ id: number, message: string }[]>([]);
@@ -41,17 +38,21 @@ function deactivateItem() {
   isActive.value = false;
 }
 
-const handleNewItem = () => {
-  //console.log("Nuevo valor agregado:", newItem);
-  console.log("handleNewItem called");
-fetch(route1 + '/notification', {
-  method: 'POST',
-  body: JSON.stringify({ message: "NUEVO MENSAJE" }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});  
-};
+
+
+
+// const handleNewItem = () => {
+//   //console.log("Nuevo valor agregado:", newItem);
+//   console.log("handleNewItem called");
+// fetch(route1 + '/notification', {
+//   method: 'POST',
+//   body: JSON.stringify({ message: "NUEVO MENSAJE" }),
+//   headers: {
+//     'Content-Type': 'application/json'
+//   }
+// });  
+// };
+
 
 // Listen for events from the server
 // socket.on('get-master-notify', (rta:any) => {
@@ -64,19 +65,20 @@ fetch(route1 + '/notification', {
 //   }
 // });
 
-let isFirstLoad = true;
 
-watch(info, (newValue, oldValue) => {
-  // if (isFirstLoad) {
-  //   isFirstLoad = false;
-  // } else if (newValue.length > oldValue.length) {
-  //   handleNewItem();
-  // }
-  console.log("watch triggered", newValue, oldValue);
-  if (newValue.length > oldValue.length) {
-    handleNewItem();
-  }
-});
+//let isFirstLoad = true;
+
+// watch(info, (newValue, oldValue) => {
+//   // if (isFirstLoad) {
+//   //   isFirstLoad = false;
+//   // } else if (newValue.length > oldValue.length) {
+//   //   handleNewItem();
+//   // }
+//   console.log("watch triggered", newValue, oldValue);
+//   if (newValue.length > oldValue.length) {
+//     handleNewItem();
+//   }
+// });
 
 </script>
 

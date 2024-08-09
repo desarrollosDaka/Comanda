@@ -7,7 +7,7 @@ const ARRAYUSER_ROL = [
         "msgButton":'Prefactura Creada', 
         "changeID_status":0,
         "printer":true
-    }, 
+    },
     //ASESOR ONLINE
     {   "userRol": 1 , 
         "status":[4],
@@ -15,12 +15,11 @@ const ARRAYUSER_ROL = [
         "changeID_status":5,
         "printer":false
     }, 
-    
     //COORDINADOR ONLINE
-    {   "userRol": 2 , 
-        "status":[1],
-        "msgButton":'soy un coordinador', 
-        "changeID_status":0,
+    {   "userRol": 11, 
+        "status": 5,
+        "msgButton":'Aceptar Retencion', 
+        "changeID_status": 6,
         "printer":false
     },
     //ESPECIALISTA ONLINE   

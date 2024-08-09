@@ -30,12 +30,14 @@ const findall = async (req, res) => {
     // const response = await sequelize.models.modelNotifications.findAll({
     //   where: { ID_user: id },
     // });
+
     const response =
       await sequelize.query(`select t0.* from [dbo].[ORDER_NOTIFICATIONS] t0
   inner join [dbo].[MASTER_USER] t1 on t0.ID_user = t1.ID_user
     WHERE t0.ID_user =  '${id}'`);
 
     //console.log("respnse[0]",response);
+
 
     if (response[0] === null) {
       res.json({ error: true, data: null });
@@ -51,7 +53,7 @@ const findall = async (req, res) => {
       console.error("Dato no contemplado.");
     }
   } catch (error) {
-    console.error(error.message);
+   // console.error(error.message);
     res.json({ error: true, data: null });
   }
 };
