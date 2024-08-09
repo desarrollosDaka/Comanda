@@ -44,13 +44,15 @@ module.exports = (server) => {
                 const rta = await getMasterOrderRetencionTwo();
                 socket.emit('get-master-order-retencion-two', rta);
                 //console.log('Datos emitidos:', rta);
-            } catch (error) {
+            } catch (error) {    
                 console.error('Error al obtener los datos:', error);
             }
         };
 
         const emitOrderDataConPickup = async () => {
+
             try {
+                
                 const rta = await getMasterOrderRetencionTwo();
                 socket.emit('get-master-order-retencion-two', rta);
                 //console.log('Datos emitidos:', rta);
