@@ -21,11 +21,15 @@ const masterNotificationsSchema = {
     allowNull: false,
     type: DataTypes.STRING(100),
   },
-  Type_notification: {
+  Read: {
     allowNull: true,
-    type: DataTypes.STRING(50),
+    type: DataTypes.BOOLEAN(1),
   },
   ID_user: {
+    allowNull: true,
+    type: DataTypes.STRING(100),
+  },
+  User_crea: {
     allowNull: true,
     type: DataTypes.STRING(100),
   },
