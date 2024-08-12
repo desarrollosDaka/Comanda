@@ -22,8 +22,8 @@ const infogetStatus = ref();
 const id_sucursal = ref();
  
 /////////////////notifications /////////////////////
-const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
-const route1: string = `${import.meta.env.VITE_URL}/api`
+// const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
+// const route1: string = `${import.meta.env.VITE_URL}/api`
 
 
 ////////////////////////
@@ -54,9 +54,9 @@ socket.on("get-master-order", (rta) => {
     });
     info.value = dataFilterStatus
 
-    const infoArray = info.value;
+   // const infoArray = info.value;
 
-    infoLength.value = infoArray.length;
+   // infoLength.value = infoArray.length;
 
   } else {
     console.error("La respuesta no es un array:", rta);
@@ -67,32 +67,32 @@ socket.on("get-master-order", (rta) => {
 
 //////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
 
-const handleNewItem = () => {
-  //console.log("Nuevo valor agregado:", newItem);
+// const handleNewItem = () => {
+//   //console.log("Nuevo valor agregado:", newItem);
 
-fetch(route1 + '/notification', {
-  method: 'POST',
-  body: JSON.stringify({ message: "NUEVA COMANDA ASIGNADA" }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});  
+// fetch(route1 + '/notification', {
+//   method: 'POST',
+//   body: JSON.stringify({ message: "NUEVA COMANDA ASIGNADA" }),
+//   headers: {
+//     'Content-Type': 'application/json'
+//   }
+// });  
 
-  // Actualizamos la longitud
-  infoLength.value = info.value.length;
-};
+//   // Actualizamos la longitud
+//   infoLength.value = info.value.length;
+// };
 
 
-watch(info, (newValue, oldValue) => {
-//console.log("INFO"+info.value);
-if (isFirstLoad) {
-    // Si es la primera carga, no hagas nada
-    isFirstLoad = false;
-  } else if (newValue.length > oldValue.length) {
-    // Se ha agregado un nuevo valor
-    handleNewItem();
-  }
-});
+// watch(info, (newValue, oldValue) => {
+// //console.log("INFO"+info.value);
+// if (isFirstLoad) {
+//     // Si es la primera carga, no hagas nada
+//     isFirstLoad = false;
+//   } else if (newValue.length > oldValue.length) {
+//     // Se ha agregado un nuevo valor
+//     handleNewItem();
+//   }
+// });
 
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
@@ -188,13 +188,12 @@ onMounted(async () => {
   await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;
-
 });
 
-// onUnmounted(() => {
-//   socket.disconnect();
-//   console.log("Socket desconectado");
-// });
+onUnmounted(() => {
+  socket.disconnect();
+  console.log("Socket desconectado");
+});
 
 // Cabezera de la comanda
 const headers = ref([
@@ -206,6 +205,7 @@ const headers = ref([
   { title: "STATUS", key: "Status" },
   { title: "ACCIÓN", sortable: false, key: "action" },
 ] as const);
+
 
 // COlor de estatus
 const COLORSTATUS: any = {
@@ -219,6 +219,7 @@ const COLORSTATUS: any = {
   8: "success",
   9: "error",
 };
+
 </script>
 
 <template>
@@ -289,7 +290,7 @@ const COLORSTATUS: any = {
             <p class="mb-0">{{ getMessageStatus((item as any).ID_status) }}</p>
           </v-chip>
         </template>
-
+  
         <!-- asesor -->
         <template v-slot:item.Asesor="{ item }">
           <v-chip
