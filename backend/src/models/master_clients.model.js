@@ -41,7 +41,7 @@ const masterClientsSchema = {
   },
   Referencia: {
     allowNull: true,
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(150),
   },
   ID_state: {
     allowNull: true,

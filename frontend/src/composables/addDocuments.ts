@@ -14,6 +14,7 @@ const INSERT_METHOD = 'insert'
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 
 export async function useAddDocument(files: Document[], id:string, idOrder:number) {
+
     const formDataDocuments = new FormData();
     let response = false
     // filtramos solos los item tipo insert
