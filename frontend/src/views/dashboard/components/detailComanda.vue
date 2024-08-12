@@ -283,17 +283,17 @@ const asignAsesor = async () => {
       `${baseUrl}/updateOrderAsesor/${id.value}`,
       { User_asing: selectedAsesor.value, ID_status: status }
     );
-    // if (response) {
-    //   Swal.fire({
-    //     title: "Asesor Asignado",
-    //     text: "Se asigno un asesor a la comanda seleccionada!",
-    //     icon: "success",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       router.push(`/maestroComandaAsignada`);
-    //     }
-    //   });
-    // }
+    if (response) {
+      Swal.fire({
+        title: "Asesor Asignado",
+        text: "Se asigno un asesor a la comanda seleccionada!",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push(`/maestroComandaAsignada`);
+        }
+      });
+    } 
 
     // Emitir notificacion 
     let idUser = selectedAsesor.value;
