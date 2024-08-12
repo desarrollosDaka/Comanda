@@ -1,85 +1,26 @@
 <script setup lang="ts">
-
-import { io } from "socket.io-client";
-const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
-
 import { onMounted, ref, watch } from 'vue';
 import { useNotifyStore } from '@/stores/notify';
 import Notify from '@/components/Notify.vue';
 
 const notifyStore = useNotifyStore();
 
-const localNotify = ref([]);
-const localLenNotify = ref('');
-////////////////////////
-// const socket = io(`${baseUrlBack}`, {
-//   reconnection: false, // Deshabilitar la reconexión automática
-// });
-// icons
+const localLenNotify = ref('0');
+
 import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, BellOutlined } from '@ant-design/icons-vue';
 
-
-const lenNotify = (state: any) => {
-  const len: string = state.countNotifications;
-  localLenNotify.value = len;
-};
-
 // socket io
-
-
 const isActive = ref(true);
-const info = ref<{ id: number, message: string }[]>([]);
-
-/////////////////notifications /////////////////////
-const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
-const route1: string = `${import.meta.env.VITE_URL}/api`
 
 function deactivateItem() {
   isActive.value = false;
 }
 
-
-
-
-// const handleNewItem = () => {
-//   //console.log("Nuevo valor agregado:", newItem);
-//   console.log("handleNewItem called");
-// fetch(route1 + '/notification', {
-//   method: 'POST',
-//   body: JSON.stringify({ message: "NUEVO MENSAJE" }),
-//   headers: {
-//     'Content-Type': 'application/json'
-//   }
-// });  
-// };
-
-
-// Listen for events from the server
-// socket.on('get-master-notify', (rta:any) => {
-//   console.log('Datos actualizados:', rta);
-//   if (Array.isArray(rta)) {
-//     info.value = rta[0];
-//     console.log(info.value);
-//   } else {
-//     console.error('La respuesta no es un array:', rta);
-//   }
-// });
-
-
-//let isFirstLoad = true;
-
-// watch(info, (newValue, oldValue) => {
-//   // if (isFirstLoad) {
-//   //   isFirstLoad = false;
-//   // } else if (newValue.length > oldValue.length) {
-//   //   handleNewItem();
-//   // }
-//   console.log("watch triggered", newValue, oldValue);
-//   if (newValue.length > oldValue.length) {
-//     handleNewItem();
-//   }
-// });
-
+watch(() => notifyStore.countNotifications, (newValue) => {
+  localLenNotify.value = newValue;
+}, {
+  immediate: true
+});
 </script>
 
 <template>

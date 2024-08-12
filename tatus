@@ -1,0 +1,261 @@
+[33mcommit ba079a096c68633999d8278411401259fc4c2b73[m[33m ([m[1;36mHEAD -> [m[1;32mdaniel[m[33m)[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Thu Aug 8 15:48:50 2024 -0400
+
+    08 08 2024 parte 1
+
+[33mcommit 5c182249641aadd4a3ffc274b3634a508b1cbb01[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Fri Aug 2 15:57:51 2024 -0400
+
+    02 08 2024
+
+[33mcommit 35636002894fc1e63b8a150b3013f79a9c42f7ff[m
+Merge: b9cb79d 14423e1
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Thu Aug 1 14:31:05 2024 -0400
+
+    Merge pull request #144 from desarrollosDaka/QA_main
+    
+    Merge pull request #143 from desarrollosDaka/daniel
+
+[33mcommit 14423e198eb69d0547f4c74ec5e3b5f0edd4af3a[m
+Merge: 5948f6a b9cb79d
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Thu Aug 1 14:29:30 2024 -0400
+
+    Merge pull request #143 from desarrollosDaka/daniel
+    
+    Daniel
+
+[33mcommit b9cb79d0629a0dd957698e663236852ffae9536c[m
+Merge: 2d6b155 5948f6a
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Thu Aug 1 14:29:15 2024 -0400
+
+    Merge branch 'QA_main' into daniel
+
+[33mcommit 2d6b155f773fcb6d93fc453ceaba087cc6cfb0a3[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Thu Aug 1 14:20:51 2024 -0400
+
+    01 08 2024
+
+[33mcommit 5948f6a00daa5ff8679defbc26a046efa1c6ce56[m
+Merge: 570010b 5e63161
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Thu Aug 1 13:51:35 2024 -0400
+
+    Merge pull request #142 from desarrollosDaka/christianqr
+    
+    agg filterdetallesEnvio
+
+[33mcommit 5e631615332bfc7eb7089935d27e6da6c9141c86[m
+Author: Christianqr <romerochristian12@hotmail.com>
+Date:   Thu Aug 1 13:51:06 2024 -0400
+
+    agg filterdetallesEnvio
+
+[33mcommit 568c2c651eadba5b65ef5e3f09878f8a5dd6b7ae[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Fri Jul 26 16:00:02 2024 -0400
+
+    26 07 2024 parte 1
+
+[33mcommit d304533a1a63b3fedf7f13731b7ed41242d7bb42[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Tue Jul 23 17:01:34 2024 -0400
+
+    parte 4
+
+[33mcommit 4bb0fe42610a643d1779896c0c0e178872509413[m
+Merge: 7435b74 570010b
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Tue Jul 23 11:03:17 2024 -0400
+
+    Merge pull request #141 from desarrollosDaka/QA_main
+    
+    Qa main
+
+[33mcommit 7435b744c2cce60119975dbfd3937c3a2861be73[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Tue Jul 23 11:02:10 2024 -0400
+
+    23 07 2024 parte 2
+
+[33mcommit 570010b6556e634728552ad9e0c2e84bfa4c401e[m
+Merge: 7d6aa03 63e75fa
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Tue Jul 23 11:01:03 2024 -0400
+
+    Merge pull request #140 from desarrollosDaka/christianqr
+    
+    Ajustes ruta caja factura comanda
+
+[33mcommit 63e75fa6d66695c22c3ab5b0610209b48e21a79c[m
+Author: Christianqr <romerochristian12@hotmail.com>
+Date:   Tue Jul 23 11:00:41 2024 -0400
+
+    Ajustes ruta caja factura comanda
+
+[33mcommit 7b1c515a8b722a614452e6be905016c0fe299e8b[m
+Merge: 546fc1d 7d6aa03
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Tue Jul 23 09:51:59 2024 -0400
+
+    Merge pull request #139 from desarrollosDaka/QA_main
+    
+    Qa main
+
+[33mcommit 7d6aa030157a95e88c4ef243b3b52cae93daa8c4[m
+Merge: 9926e2b 546fc1d
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Tue Jul 23 09:51:12 2024 -0400
+
+    Merge pull request #138 from desarrollosDaka/daniel
+    
+    Daniel
+
+[33mcommit 546fc1daa27de142f3b2cf5411ffe54d017d3fbf[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Tue Jul 23 09:48:25 2024 -0400
+
+    23 07 2024 parte 1
+
+[33mcommit 9926e2b0ec943503709fa3079c2a5167b3d2a0fc[m
+Merge: 3f9242e a996798
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Tue Jul 23 08:39:29 2024 -0400
+
+    Merge pull request #137 from desarrollosDaka/christianqr
+    
+    Christianqr
+
+[33mcommit a996798c06056530db4de8fb5689ce6734967671[m
+Author: Christianqr <romerochristian12@hotmail.com>
+Date:   Tue Jul 23 08:38:13 2024 -0400
+
+    Ajustes En Productos y filtros 23/07/24
+
+[33mcommit f7afeaddfe2e286e5c86f71280469b8aab182a40[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Mon Jul 22 17:00:11 2024 -0400
+
+    22 07 2024
+
+[33mcommit 9dabac475620274757068409ee9db6394527f1bc[m
+Merge: 932d379 3f9242e
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Mon Jul 22 12:13:14 2024 -0400
+
+    Merge pull request #136 from desarrollosDaka/QA_main
+    
+    Qa main
+
+[33mcommit 5677f8720874ef9f49b8d52747aede795aa88471[m
+Merge: 6761cda 3f9242e
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 12:03:46 2024 -0400
+
+    Merge pull request #134 from desarrollosDaka/QA_main
+    
+    Qa main
+
+[33mcommit 3f9242e0d6b23fd20ef594588dcf7a650229874c[m
+Merge: 2be8ed7 932d379
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Mon Jul 22 12:03:07 2024 -0400
+
+    Merge pull request #133 from desarrollosDaka/daniel
+    
+    22 07 2024 ahora si aaaaa
+
+[33mcommit 932d3798e84e27d3ab4732c6c3b00e01c5d7f29d[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Mon Jul 22 12:02:19 2024 -0400
+
+    22 07 2024 ahora si aaaaa
+
+[33mcommit 6761cdad95863291f8a727cfd9bdb7ce41698a3f[m
+Merge: 0451e58 2be8ed7
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 11:47:30 2024 -0400
+
+    Merge pull request #132 from desarrollosDaka/QA_main
+    
+    Qa main
+
+[33mcommit 2be8ed7abf768f5f0c676af0080bd703c27b9897[m
+Merge: f5ed860 5536042
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Mon Jul 22 11:46:42 2024 -0400
+
+    Merge pull request #131 from desarrollosDaka/daniel
+    
+    22 07 2024 parte 2
+
+[33mcommit 55360425c9973dd706e658548e155242176b3e5a[m
+Merge: 6e5a96c f5ed860
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Mon Jul 22 11:46:35 2024 -0400
+
+    Merge branch 'QA_main' into daniel
+
+[33mcommit 0451e58b6f60bd8dd82c5eb235ded1878d1e020d[m
+Merge: 0fb865f f5ed860
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 11:26:30 2024 -0400
+
+    Merge pull request #130 from desarrollosDaka/QA_main
+    
+    Merge pull request #129 from desarrollosDaka/christianqr
+
+[33mcommit f5ed86067a4885c6b41518d29997164ffd92ff36[m
+Merge: 9daf8a4 0fb865f
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 11:26:02 2024 -0400
+
+    Merge pull request #129 from desarrollosDaka/christianqr
+    
+    Christianqr
+
+[33mcommit 0fb865fdf50be1af1774fc0f74f24319aa67a0cd[m
+Author: Christianqr <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 11:24:45 2024 -0400
+
+    ajustes url
+
+[33mcommit 6e5a96c9ebaca8f93aa08db087ccf8e4513add01[m
+Author: Daniel Gonzalez <94912412+danielgonzalez57@users.noreply.github.com>
+Date:   Mon Jul 22 10:53:09 2024 -0400
+
+    22 07 2024 parte 2
+
+[33mcommit 31ab5903c1db7895fd628e380ebb9f036ad62c79[m
+Author: Christianqr <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 10:34:44 2024 -0400
+
+    ajustes url
+
+[33mcommit 725b02bbce8b5f1b9574b0f1f007a0abdbbc85dd[m
+Merge: 6c59157 9daf8a4
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 10:05:17 2024 -0400
+
+    Merge pull request #128 from desarrollosDaka/QA_main
+    
+    Merge pull request #127 from desarrollosDaka/christianqr
+
+[33mcommit 9daf8a464cffee399c6ca054d38dc4bb7d24ff3c[m
+Merge: 1f3da7d 6c59157
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Mon Jul 22 09:49:25 2024 -0400
+
+    Merge pull request #127 from desarrollosDaka/christianqr
+    
+    Ajustes filtros y backend
+
+[33mcommit 6c59157bbd76a0a8a59d79d9316893fd0fd1afbb[m
+Merge: 8307f44 1f3da7d
+Author: Christian Quintero <romerochristian12@hotmail.com>
+Date:   Mo

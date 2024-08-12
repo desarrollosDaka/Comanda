@@ -8,7 +8,7 @@ import NotificationDD from './NotificationDD.vue';
 import Searchbar from './SearchBarPanel.vue';
 import ProfileDD from './ProfileDD.vue';
 import Sucursales from './Sucursales.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { io } from "socket.io-client";
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
@@ -22,10 +22,14 @@ const customizer = useCustomizerStore();
 const auth = useAuthStore();
 const noti = useNotifyStore();
 const User = ref('');
+const infoLength = ref(0);
+let isFirstLoad = true;
 
-// onMounted(()=> {
-//   console.log("verticalHeader");
-// })
+/////////////////notifications /////////////////////
+const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
+const route1: string = `${import.meta.env.VITE_URL}/api`
+
+const infoArray = ref<any>([]);
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
@@ -33,25 +37,39 @@ if (jsonFromLocalStorage !== null) {
   User.value = parsedData.data.Nombre;
 }
 
-// socket io
-// socket.on('lol', () => {
-//   console.log('estoy funcionando...lol');
-// })
-
-// A la escucha 
-// socket.on('nuevaComanda', (datos) => {
-//   console.log('datos recibidos: ', datos);
-// });
-// powerby alice
-
 setInterval(() => {
   socket.emit('getUser', auth.user.data);
 }, 5000);
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones);
-  console.log('noti.notificaciones: ', noti.notifications);
+  infoArray.value = noti.notifications;
+  infoLength.value = infoArray.length;
 });
+
+const handleNewItem = () => {
+  fetch(route1 + '/notification', {
+    method: 'POST',
+    body: JSON.stringify({ message: "COMANDA ASIGNADA NUEVA" }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  // Actualizamos la longitud
+  infoLength.value = noti.notifications.length;
+};
+
+watch(infoArray, (newValue, oldValue) => {
+  if (isFirstLoad) {
+    // Si es la primera carga, no hagas nada
+    isFirstLoad = false;
+  } else if (newValue.length > oldValue.length) {
+    // Se ha agregado un nuevo valor
+    handleNewItem();
+  }
+});
+
 </script>
 
 <template>

@@ -12,7 +12,11 @@ const props = defineProps({
     <v-list-item value="1" color="secondary" class="no-spacer py-1">
         <!-- <template v-slot:prepend>
             <v-avatar size="36" variant="flat" color="lightsuccess" class="mr-3 py-2 text-success">
+<<<<<<< HEAD
                 <GiftOutlined /> 
+
+                 <GiftOutlined />
+>>>>>>> 7d76023387e033bc932823f9dd837df91765c43f
             </v-avatar>
 
         </template>  -->

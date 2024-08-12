@@ -64,7 +64,8 @@ const estado_rep = ref();
 const ciudad_rep = ref();
 const municipio_rep = ref();
 const itemDocument = ref<Document[]>([]);
-const idOrder = ref()
+const idOrder = ref();
+const Id_sucursal= ref();
 // URL
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -82,6 +83,8 @@ if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
   ID_rol.value = parsedData.data.ID_rol;
+  Id_sucursal.value = parsedData.data.Id_sucursal;
+
 }
 
 /// validaciones
@@ -267,13 +270,15 @@ interface Destino {
 async function getSucursal() {
   try {
     const { data } = await axios.get(`${baseUrlStore}/masterStores`);
-    info_tiendas.value = data[0].map((destino: Destino) => ({
-      title: destino.Sucursal,
-      value: destino.ID_sucursal,
-    }));
+    info_tiendas.value = data[0]
+      .filter((destino: Destino) => destino.ID_sucursal !== Id_sucursal.value)
+      .map((destino: Destino) => ({
+        title: destino.Sucursal,
+        value: destino.ID_sucursal,
+      }));
   } catch (error) {
     console.log(error);
-  }
+  } 
 }
 interface Delivery {
   Delivery_type: string;
