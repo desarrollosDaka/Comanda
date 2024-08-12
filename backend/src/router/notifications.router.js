@@ -3,14 +3,12 @@ const router = require("express").Router();
 const {
   subscription,
   notification,
-  findall,
-  ruta,
-  findallv2
+  update
 } = require("../controllers/notifications.controllers");
 
 router.post("/subscription", subscription);
 router.post("/notification", notification);
-router.get("/finall/:id", findall);
+router.put("/update/notify/:ID_Notifications", update);
 
 
 module.exports = router;

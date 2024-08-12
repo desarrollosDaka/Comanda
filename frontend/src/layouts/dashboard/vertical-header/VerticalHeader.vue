@@ -38,6 +38,7 @@ if (jsonFromLocalStorage !== null) {
 }
 
 setInterval(() => {
+  // VERIFICAR ESTO
   socket.emit('getUser', auth.user.data);
 }, 5000);
 

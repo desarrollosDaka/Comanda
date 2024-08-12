@@ -57,14 +57,14 @@ watch(() => notifyStore.countNotifications, (newValue) => {
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
 
-          <Notify v-for="notify in notifyStore.notifications" :notifyData="notify" />
-
+          <Notify v-for="notify in notifyStore.notifications" :notifyData="notify" :key="notify.ID_Notifications" />
+          
           <v-divider></v-divider>
         </v-list>
       </perfect-scrollbar>
       <v-divider></v-divider>
       <div class="pa-2 text-center">
-        <v-btn color="primary" variant="text">View All</v-btn>
+        <v-btn color="primary" variant="text">Ver todo</v-btn>
       </div>
     </v-sheet>
   </v-menu>
