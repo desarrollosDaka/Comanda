@@ -546,6 +546,7 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
     console.log("Error", e);
   }
 };
+
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
   const data = req.body;
