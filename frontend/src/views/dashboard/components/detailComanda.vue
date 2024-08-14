@@ -63,7 +63,6 @@ const referencia = ref("");
 const autorizado = ref(false);
 const cedulaDos = ref("");
 const telefonoUno = ref("");
-const telefonoDos = ref("");
 const ID_pago = ref();
 const ID_status = ref();
 const porcentaje = ref();
@@ -74,7 +73,6 @@ const id_sucursal = ref();
 const guiaZoom = ref();
 const direccionDelivery = ref();
 const Type = ref()
-const razonComercial = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -83,7 +81,7 @@ let user_crea = ref<string>("");
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
-  const parsedData = JSON.parse(jsonFromLocalStorage); 
+  const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;
@@ -94,7 +92,6 @@ const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el t
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
-const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 
 const itemDocument = ref<Document[]>([]);
 
@@ -121,10 +118,8 @@ const getOrder = async () => {
       autorizado.value = data[0][0]["Autoriza"];
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
-      telefonoDos.value = data[0][0]["Telefono"];
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
-      razonComercial.value = data[0][0]["Razon_comercial"];
     }
   } catch (error) {
     console.log(error);
@@ -358,63 +353,98 @@ const alertaRechazar = () => {
 </script>
 
 <template>
+  <!-- informacion de la comanda -->
 
-    <!-- informacion de la comanda -->
+  <div class="card">
+    <div class="data">
 
-    <div class="card">
-        <div class="data">
-            <p>COMANDA #{{ id_orders }}</p>
-            <div class="range">
-                <div class="fill">
-                </div>
-            </div>
-
+      <p>COMANDA #{{ id_orders }}</p>
 
       <div class="range">
         <div class="fill">
         </div>
       </div>
 
+    </div>
+  </div>
 
-    <v-row class="mb-0">
-        <v-col cols="12" md="4" class="px-10 py-5">
-            <h2>Datos del Cliente</h2>
-            <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p>
-            <p v-else><b>Cedula:</b> {{ cedulaUno }}</p>
-            <p><b>Tipo:</b> {{ tipo }}</p>
-            <p><b>Email:</b> {{ email }}</p>
-            <p v-if="tipo === 'JURIDICO'"><b>Razon Social:</b> {{ nombreCompleto }}</p>
-            <p v-else><b>Cliente:</b> {{ nombreCompleto }}</p>
-            <p v-if="tipo === 'JURIDICO'"><b>Razon Comercial:</b> {{ razonComercial }}</p>
-            <p><b>Estados:</b> {{ estado }}</p>
-            <p><b>Ciudad:</b> {{ ciudad }}</p>
-            <p><b>Municipio:</b> {{ municipio }}</p>
-            <p v-if="ROLESTELEFONO.includes(USER_ROL)"><b>Telefono:</b> {{ telefonoDos }}</p>
-        </v-col>
-        <v-col cols="12" md="4" class="px-10 py-5">
-            <h2>Datos de la comanda</h2>
-            <p><b>Origen:</b> {{ origen }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Direccion Completa:</b> {{ direccion }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Referencia:</b> {{ referencia }}</p>
-            <p><b>Delivery:</b> {{ ID_delivery }}</p>
-            <p><b>Autorizado para recibir:</b>
-                <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
-                    v-if="autorizado === true">
-                    <p class="mb-0">Si</p>
-                </v-chip>
+  <v-row class="mb-0">
+    <v-col cols="12" md="4" class="px-10 py-5">
+      <h2>Datos del Cliente</h2>
+      <p><b>Cedula:</b> {{ cedulaUno }}</p>
+      <p><b>Tipo:</b> {{ tipo }}</p>
+      <p><b>Email:</b> {{ email }}</p>
+      <p><b>Cliente:</b> {{ nombreCompleto }}</p>
+      <p><b>Estados:</b> {{ estado }}</p>
+      <p><b>Ciudad:</b> {{ ciudad }}</p>
+      <p><b>Municipio:</b> {{ municipio }}</p>
+    </v-col>
+    <v-col cols="12" md="4" class="px-10 py-5">
+      <h2>Datos de la comanda</h2>
+      <p><b>Origen:</b> {{ origen }}</p>
+      <p><b>Direccion Completa:</b> {{ direccion }}</p>
+      <p><b>Referencia:</b> {{ referencia }}</p>
+      <p><b>Delivery:</b> {{ ID_delivery }}</p>
+      <p><b>Autorizado para recibir:</b>
+        <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand" v-if="autorizado === true">
+          <p class="mb-0">Si</p>
+        </v-chip>
 
-                <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>
-                    <p class="mb-0">No</p>
-                </v-chip>
-            </p>
-            <p v-if="cedulaDos"><b>Cedula/Rif Autorizado:</b> {{ cedulaDos }}</p>
-            <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
-        </v-col>
-        <v-col cols="12" md="4" class="px-10 py-5">
-            <h2>Estatus</h2>
-            <p><b>Status de comanda:</b> {{ ID_status }}</p>
-            <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
-        </v-col>
+        <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>
+          <p class="mb-0">No</p>
+        </v-chip>
+      </p>
+      <p><b>Cedula/Rif:</b> {{ cedulaDos }}</p>
+      <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
+    </v-col>
+    <v-col cols="12" md="4" class="px-10 py-5">
+      <h2>Estatus</h2>
+      <p><b>Status de comanda:</b> {{ ID_status }}</p>
+      <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
+    </v-col>
+  </v-row>
+
+  <!-- tabla para los demas usuarios -->
+  <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0">
+    <!-- DEMAS USER -->
+    <v-row v-if="Type != 'DETALLE DE ENVIO'
+      || USER_ROL === 1
+      || USER_ROL === 2
+      || USER_ROL === 3
+      || USER_ROL === 4
+      || USER_ROL === 5
+      || USER_ROL === 6
+      || USER_ROL === 7
+      || USER_ROL === 8
+      || USER_ROL === 9
+      || USER_ROL === 11
+      || USER_ROL === 99">
+
+      <v-col cols="12" md="12">
+        <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+          <thead class="bg-containerBg">
+            <tr class="bg-containerBg">
+              <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+              <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+
+              <th class="text-right text-caption font-weight-bold text-uppercase" style="min-width: 100px">Cantidad</th>
+              <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+              <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="(item, index) in info" :key="index">
+              <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+              <td class="py-3">{{ item['ID_producto'] }} </td>
+              <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
+              </td>
+              <td class="py-3">{{ item['Precio'] }}$</td>
+              <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-col>
     </v-row>
 
     <!-- ATC -->
