@@ -7,6 +7,8 @@ import sidebarItemsGerente from './sidebartItemManagers';
 import sidebarAsesorOnline from './sibedarItemAsesorOnline';
 import sidebarEspecialistaCaja from './sidebarItemEspecialista';
 import sidebarAlmacenista from './sidebarItemAlmacenista';
+import sidebarATC from './sidebarItemATC';
+import sidebarCDD from './sidebarItemCDD';
 import { ref } from 'vue';
 
 import NavGroup from './NavGroup/NavGroup.vue';
@@ -22,7 +24,7 @@ const sidebarMenuAsesorOnline = shallowRef(sidebarAsesorOnline);
 const User = ref('');
 const Rol = ref<number>(0)
 
-const ADVISORS_STORERS_CASHIER = [5,6,8,9,10] //rol asesores, almacenistas, cajeras, atc
+const ADVISORS_STORERS_CASHIER = [5,6,9] //rol asesores, almacenistas, cajeras
 const MANAGERS = [4] //rol gerentes
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
@@ -86,6 +88,38 @@ if (jsonFromLocalStorage !== null) {
         </template>
       </v-list>
 
+      <!-- ATC -->
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 10">
+        <!---Menu Loop -->
+        <template v-for="(item, i) in sidebarATC" :key="i">
+          <!---Item Sub Header -->
+          <NavGroup :item="item" v-if="item.header" :key="item.title" />
+          <!---Item Divider -->
+          <v-divider class="my-3" v-else-if="item.divider" />
+          <!---If Has Child -->
+          <NavCollapse class="leftPadding" :item="item" :level="0" v-else-if="item.children" />
+          <!---Single Item-->
+          <NavItem :item="item" v-else />
+          <!---End Single Item-->
+        </template>
+      </v-list>
+
+      <!-- CDD -->
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 8">
+        <!---Menu Loop -->
+        <template v-for="(item, i) in sidebarCDD" :key="i">
+          <!---Item Sub Header -->
+          <NavGroup :item="item" v-if="item.header" :key="item.title" />
+          <!---Item Divider -->
+          <v-divider class="my-3" v-else-if="item.divider" />
+          <!---If Has Child -->
+          <NavCollapse class="leftPadding" :item="item" :level="0" v-else-if="item.children" />
+          <!---Single Item-->
+          <NavItem :item="item" v-else />
+          <!---End Single Item-->
+        </template>
+      </v-list>
+
       <!-- ESPECIALISTA CAJERA -->
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 11">
         <!---Menu Loop -->
@@ -119,7 +153,7 @@ if (jsonFromLocalStorage !== null) {
       </v-list>
 
       <!-- ASESORES ALMACENISTAS Y CAJERAS-->
-        <v-list aria-busy="true" aria-label="menu list" v-if="ADVISORS_STORERS_CASHIER.includes(Rol)">
+      <v-list aria-busy="true" aria-label="menu list" v-if="ADVISORS_STORERS_CASHIER.includes(Rol)">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenuUSer" :key="i">
           <!---Item Sub Header -->
@@ -134,8 +168,8 @@ if (jsonFromLocalStorage !== null) {
         </template>
       </v-list>
 
-    <!-- GERENTES-->
-        <v-list aria-busy="true" aria-label="menu list" v-if="MANAGERS.includes(Rol)">
+      <!-- GERENTES-->
+      <v-list aria-busy="true" aria-label="menu list" v-if="MANAGERS.includes(Rol)">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarItemsGerente" :key="i">
           <!---Item Sub Header -->
@@ -149,7 +183,6 @@ if (jsonFromLocalStorage !== null) {
           <!---End Single Item-->
         </template>
       </v-list>
-
 
     </perfect-scrollbar>
   </v-navigation-drawer>

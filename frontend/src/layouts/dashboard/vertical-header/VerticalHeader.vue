@@ -50,7 +50,6 @@ setInterval(() => {
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones);
-  console.log('noti.notificaciones: ', noti.notifications);
 });
 </script>
 

@@ -5,7 +5,10 @@ const {
   createMasterOrderAndDetails,
   updateMasterOrderAndDetails,
   getMasterOrderRetencion,
-  getMasterOrderRetencionTwo 
+  getMasterOrderRetencionTwo,
+  filterOrderPickUp,
+  filterOrderPickUpTwo,
+  filterOrderATC
 } = require("./controllers/orders.controller.js");
 const { getMasterUser } = require("./controllers/user.controller.js");
 const { latestNoti, findallv2 } = require("./controllers/notifications.controllers.js");
@@ -37,7 +40,6 @@ module.exports = (server) => {
         console.error("Error fetching notifications:", error);
       }
     });
-
 
         console.log('Nuevo cliente conectado');
 
@@ -72,15 +74,31 @@ module.exports = (server) => {
         };
 
         const emitOrderDataConPickup = async () => {
-
             try {
-                
-                const rta = await getMasterOrderRetencionTwo();
-                socket.emit('get-master-order-retencion-two', rta);
-                //console.log('Datos emitidos:', rta);
+                const rta = await filterOrderPickUp();
+                socket.emit('get-master-order-pickup', rta);
+              
             } catch (error) {
                 console.error('Error al obtener los datos:', error);
             }
+        };
+
+        const emitOrderDataConPickupTwo = async () => {
+          try {
+              const rta = await filterOrderPickUpTwo();
+              socket.emit('get-master-order-pickup-two', rta);
+          } catch (error) {
+              console.error('Error al obtener los datos:', error);
+          }
+        };
+
+        const emitOrderDataATC = async () => {
+          try {
+              const rta = await filterOrderATC();
+              socket.emit('get-master-order-atc', rta);
+          } catch (error) {
+              console.error('Error al obtener los datos:', error);
+          }
         };
 
         const emitUserData = async () => {
@@ -119,8 +137,9 @@ module.exports = (server) => {
         emitOrderDataConRetencion();
        // emitNotify();
         emitOrderDataConRetencionTwo();
-
-
+        emitOrderDataConPickup();
+        emitOrderDataConPickupTwo();
+        emitOrderDataATC();
 
 
         // Configurar un intervalo para emitir datos cada 10 segundos (por ejemplo)
@@ -129,6 +148,9 @@ module.exports = (server) => {
         const intervalIdOrderRetencion = setInterval(emitOrderDataConRetencion, 5000);
         //const intervalNotifications = setInterval(emitNotify, 5000);
         const intervalIdOrderRetencionTwo = setInterval(emitOrderDataConRetencionTwo, 5000);
+        const intervalIdOrderPickup = setInterval(emitOrderDataConPickup, 5000);
+        const intervalIdOrderPickupTwo = setInterval(emitOrderDataConPickupTwo, 5000);
+        const intervalIdOrderATC = setInterval(emitOrderDataATC, 5000);
 
         // Escuchar eventos específicos para emitir datos
         socket.on('request-master-order', emitOrderData);
@@ -136,6 +158,9 @@ module.exports = (server) => {
         socket.on('request-master-order-retencion', emitOrderDataConRetencion);
       //  socket.on('request-master-notifications', emitNotify);
         socket.on('request-master-order-retencion-two', emitOrderDataConRetencionTwo);
+        socket.on('request-master-order-pickup', emitOrderDataConPickup);
+        socket.on('request-master-order-pickup', emitOrderDataConPickupTwo);
+        socket.on('request-master-order-pickup', emitOrderDataATC);
 
 
         
@@ -149,6 +174,9 @@ module.exports = (server) => {
             clearInterval(intervalIdOrderRetencion); // Limpiar el intervalo cuando el cliente se desconecta
           //  clearInterval(intervalNotifications); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderRetencionTwo); // Limpiar el intervalo cuando el cliente se desconecta
+            clearInterval(intervalIdOrderPickup); // Limpiar el intervalo cuando el cliente se desconecta
+            clearInterval(intervalIdOrderPickupTwo); // Limpiar el intervalo cuando el cliente se desconecta
+            clearInterval(intervalIdOrderATC); // Limpiar el intervalo cuando el cliente se desconecta
         });
 
     });
