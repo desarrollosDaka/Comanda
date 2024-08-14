@@ -106,6 +106,21 @@ const MainRoutes = {
       path: '/pickups',
       component: () => import('@/views/pages/comandaPickup.vue')
     }
+    ,{
+      name: 'pickupsDetails',
+      path: '/pickupsDetails/:id1/:id2',
+      component: () => import('@/views/pages/detallesPickup.vue')
+    }
+    ,{
+      name: 'ComandasAtc',
+      path: '/ComandasAtc',
+      component: () => import('@/views/pages/comandaATC.vue')
+    }
+    ,{
+      name: 'ComandasCDD',
+      path: '/ComandasCDD',
+      component: () => import('@/views/pages/comandaCDD.vue')
+    }
   ]
 };
 
