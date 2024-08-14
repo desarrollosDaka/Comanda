@@ -45,11 +45,40 @@ const filterMasterClientsForCI = async (req, res) => {
     try {
         const CI = req.params.cedula; 
         
-        const rta = await sequelize.models.modelMasterClients.findOne({
-            where: {
-                Cedula : CI,
-            },
-        });
+    const rta = await sequelize.query(
+        `SELECT DISTINCT T0.[ID_cliente]
+            ,T0.[Nombre]
+            ,T0.[Razon_comercial]
+            ,T0.[Tipo_cedula]
+            ,T0.[Cedula]
+            ,T0.[Email]
+            ,T0.[Telefono]
+            ,T0.[Direccion]
+            ,T0.[Referencia]
+            ,T0.[ID_state]
+            ,T2.Nombre AS ID_city
+            ,T1.Nombre AS [ID_municipio]
+            ,T0.[Tipo_cliente]
+            ,T0.[Retencion]
+            ,T0.[Porc_retencion]
+            ,T0.[Tipo_cedula_rep]
+            ,T0.[Cedula_rep]
+            ,T0.[Nombre_rep]
+            ,T0.[Email_rep]
+            ,T0.[Telefono_rep]
+            ,T0.[Direccion_rep]
+            ,T0.[Referencia_rep]
+            ,T0.[ID_state_rep]
+            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_CITIES] T1 ON T0.ID_city_rep = T1.ID_city WHERE T0.Cedula = '${CI}') as ID_city_rep
+            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.[ID_state_rep] = T1.ID_municipio WHERE T0.Cedula = '${CI}') as ID_municipio_rep
+            ,T0.[Delete]
+            ,T0.[Create_date]
+            ,T0.[Update_date]
+        FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0
+        INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.ID_municipio = T1.ID_municipio
+        INNER JOIN  [dbo].[MASTER_CITIES] T2 ON T0.ID_city = T2.ID_city 
+        WHERE T0.Cedula = '${CI}'`
+    );
 
         if(rta){
             res.status(200)

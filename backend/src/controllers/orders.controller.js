@@ -237,6 +237,8 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.ID_city_rep
                     ,T3.ID_municipio_rep
                     ,T3.[Telefono]
+                    ,T0.Direccion_envio
+                    ,T0.Referencia_envio
                     ,t0.[Retencion]
                     ,T3.Referencia
                     ,t0.[Porc_retencion]
@@ -263,7 +265,7 @@ const filterMasterOrder = async (req, res) => {
             ,T4.Nombre  ,T5.ID_city  ,T5.Nombre ,T6.ID_municipio ,T6.NOMBRE ,t0.[User_crea]  ,t0.[User_mod]  ,t0.[User_asing] ,t0.[ID_rol]   ,t0.[ID_status]  ,t0.[Tipo_delivery]  ,t0.[SucursalZoom] ,t0.[Autoriza]
             ,t0.[Cedula_autoriza] ,t0.[Telefono_autoriza],t0.Nombre_autoriza ,T3.Tipo_cedula_rep  ,T3.Cedula_rep  ,T3.Nombre_rep    ,T3.Email_rep    ,T3.Telefono_rep    ,T3.Direccion_rep   ,T3.Referencia_rep, T3.ID_state_rep
             ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,CAST(T0.Create_date AS DATE) 
-            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type`
+            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio`
         );
         if (rta) {
             res.status(200);
@@ -309,6 +311,7 @@ const createMasterOrderAndDetails = async (req, res) => {
       ID_state_rep: data.estado_rep,
       ID_city_rep: data.ciudad_rep,
       ID_municipio_rep: data.municipio_rep,
+
     };
     // Crear un objeto con los datos del pedido
     const newOrder = {
@@ -327,7 +330,9 @@ const createMasterOrderAndDetails = async (req, res) => {
         Telefono_autoriza: data.telefonoDos,
         Retencion: data.retencion,
         Porc_retencion: data.porcentaje,
-        ID_ticket: data.ID_ticket
+        ID_ticket: data.ID_ticket,
+        Direccion_envio: data.direccionEnvio,
+        Referencia_envio: data.referenciaEnvio,
     };
         
     //Comprobar si la cédula ya existe en la base de datos
@@ -435,11 +440,15 @@ const filterOrderATC = async (req, res) => {
   //  const id = req.params.id;
 
     const rta = await sequelize.query(
-      ` SELECT * FROM [dbo].[ORDERS]
-        WHERE ID_status = 4 AND Retencion = 0 and Tipo_delivery != 2
-          UNION ALL
-        SELECT * FROM [dbo].[ORDERS]
-        WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery != 2`
+      ` SELECT T1 .Nombre, T2.[Status] ,T0.* FROM [dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+        INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+        WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2
+            UNION ALL
+        SELECT  T1 .Nombre, T2.[Status] ,T0.* FROM [dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+        INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+        WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2`
     );
     if (rta) {
       res.status(200);
@@ -477,6 +486,22 @@ const filterOrderPickUp = async (req, res) => {
   }
 };
 
+const filterOrderPickUpTwo = async (req, res) => {
+  try {
+    const rta = await sequelize.query(
+        `SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 7 AND Retencion = 0 and Tipo_delivery = 2
+        UNION ALL
+        SELECT * FROM [dbo].[ORDERS]
+        WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery = 2`
+    );
+    return rta;
+ 
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
   const data = req.body;
@@ -493,20 +518,19 @@ const createOrderDetails = async (req, res) => {
           Zoom: data.zoom
       };
 
-      let product = await sequelize.models.modelOrdersdetails.findOne({
-          where: { ID_detalle: data.Id_Comanda, ID_producto: data.id_producto },
+      let products = await sequelize.models.modelOrdersdetails.findAll({
+          where: { ID_detalle: data.Id_Comanda},
       });
 
-      if (product) {
-          // Elimina el producto existente
-          await product.destroy();
-      }
+      if (products.length > 0) {
+        await Promise.all(products.map(product => product.destroy()));
+    }
 
       // Crea un nuevo producto
-      product = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+      products = await sequelize.models.modelOrdersdetails.create(orderDetailData);
 
-      if (product) {
-          res.status(201).json({ product: product });
+      if (products) {
+          res.status(201).json({ products: products });
       } else {
           res.status(404).json({ msj: "Error en la creación" });
       }
@@ -617,7 +641,9 @@ const updateMasterOrderAndDetails = async (req, res) => {
             Telefono_autoriza: data.telefonoDos,
             Retencion: data.retencion,
             Porc_retencion: data.porcentaje,
-            ID_ticket: data.ID_ticket
+            ID_ticket: data.ID_ticket,
+            Direccion_envio: data.direccionEnvio,
+            Referencia_envio: data.referenciaEnvio,
         };
 
         // Comprueba si la cédula ya existe en la base de datos
@@ -871,7 +897,6 @@ const filterMasterAsesor = async (req, res) => {
   try {
     const rta = await sequelize.query(
       `SELECT [ID_user]   
-
             ,[Nombre] as [Name]
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
@@ -1076,6 +1101,7 @@ module.exports = {
   filterOrderDetails,
   filterOrderATC,
   filterOrderPickUp,
+  filterOrderPickUpTwo,
   createOrderDetails,
   updateOrderDetails,
   deleteOrderDetails,
