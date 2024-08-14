@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
-import tablaPickUp from '../dashboard/components/TablaPickUp.vue';
+import detallePickUp from '../dashboard/components/detailPickup.vue';
 
-// component content
+// component content pickupsDetails
 const page = ref({ title: 'Comandas con Delivery Pick-Up' });
 const breadcrumbs = ref([
   {
-    title: 'Comandas Pick-up',
+    title: 'Detalles Pick-up',
     disabled: true,
     to: '#'
   }
@@ -19,8 +19,10 @@ const breadcrumbs = ref([
   <v-row>
     <!-- TABLA -->
     <v-col cols="12" md="12">
-        <!-- tabla comanda con retencion -->
-        <tablaPickUp />
+
+        <!-- detalle de comandas con pickup -->
+        <detallePickUp />
+
     </v-col>
   </v-row>
 </template>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
-import tablaPickUp from '../dashboard/components/TablaPickUp.vue';
+import tablaCDD from '../dashboard/components/TablaCDD.vue';
 
 // component content
-const page = ref({ title: 'Comandas con Delivery Pick-Up' });
+const page = ref({ title: 'Comandas CDD' });
 const breadcrumbs = ref([
   {
-    title: 'Comandas Pick-up',
+    title: 'Comandas Asignadas en CDD',
     disabled: true,
     to: '#'
   }
@@ -19,8 +19,8 @@ const breadcrumbs = ref([
   <v-row>
     <!-- TABLA -->
     <v-col cols="12" md="12">
-        <!-- tabla comanda con retencion -->
-        <tablaPickUp />
+        <!-- tabla comanda CDD-->
+        <tablaCDD />
     </v-col>
   </v-row>
 </template>
