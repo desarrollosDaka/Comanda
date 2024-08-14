@@ -5,9 +5,9 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import detailComanda from '../dashboard/components/detailComanda.vue';
 
-import { io } from "socket.io-client";
+//import { io } from "socket.io-client";
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
-const socket = io('ws://localhost:3003'); // ws
+//const socket = io('ws://localhost:3003'); // ws
 
 
 // setInterval(()=> {
@@ -15,9 +15,9 @@ const socket = io('ws://localhost:3003'); // ws
 // socket.emit('nuevaComanda', '100');
 // }, 1000)
 
-socket.on('nuevaComanda', (datos) => {
-  console.log('datos recibidos: ', datos);
-});
+// socket.on('nuevaComanda', (datos) => {
+//   console.log('datos recibidos: ', datos);
+// });
 
 // component content
 const page = ref({ title: 'Comanda Asignadas' });

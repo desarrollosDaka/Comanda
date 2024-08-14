@@ -8,7 +8,7 @@ import NotificationDD from './NotificationDD.vue';
 import Searchbar from './SearchBarPanel.vue';
 import ProfileDD from './ProfileDD.vue';
 import Sucursales from './Sucursales.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { io } from "socket.io-client";
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
@@ -22,6 +22,15 @@ const customizer = useCustomizerStore();
 const auth = useAuthStore();
 const noti = useNotifyStore();
 const User = ref('');
+const infoLength = ref(0); 
+let isFirstLoad = true;
+
+/////////////////notifications /////////////////////
+const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
+const route1: string = `${import.meta.env.VITE_URL}/api`
+
+ const infoArray = ref<any>([]);
+
 
 // onMounted(()=> {
 //   console.log("verticalHeader");
@@ -50,7 +59,45 @@ setInterval(() => {
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones);
+
+  console.log('noti.notificaciones: ', noti.notifications);
+
+
+  infoArray.value = noti.notifications;
+  //console.log(infoArray.value);
+  
+  infoLength.value = infoArray.length;
 });
+
+const handleNewItem = () => {
+  //console.log("Nuevo valor agregado:", newItem);
+console.log("Nuevo valor agregado:");
+
+fetch(route1 + '/notification', {
+  method: 'POST',
+  body: JSON.stringify({ message: "COMANDA ASIGNADA NUEVA" }),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});  
+
+  // Actualizamos la longitud
+  infoLength.value = noti.notifications.length;
+};
+
+watch(infoArray, (newValue, oldValue) => {
+//console.log("INFO "+ newValue);
+//infoLength.value = noti.notifications.length;
+if (isFirstLoad) {
+    // Si es la primera carga, no hagas nada
+    isFirstLoad = false;
+  } else if (newValue.length > oldValue.length) {
+    // Se ha agregado un nuevo valor
+    handleNewItem();
+  }
+
+});
+
 </script>
 
 <template>

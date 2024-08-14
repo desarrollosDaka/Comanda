@@ -58,13 +58,13 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray;
 }
 
-fetch(route + '/notification', {
-  method: 'POST',
-  body: JSON.stringify({ message: `Bienvenido ${usuario.value}` }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+// fetch(route + '/notification', {
+//   method: 'POST',
+//   body: JSON.stringify({ message: `Bienvenido ${usuario.value}` }),
+//   headers: {
+//     'Content-Type': 'application/json'
+//   }
+// });
 
 // Service Worker Support
 if ("serviceWorker" in navigator) {

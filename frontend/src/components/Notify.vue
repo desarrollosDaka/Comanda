@@ -12,7 +12,7 @@ const props = defineProps({
     <v-list-item value="1" color="secondary" class="no-spacer py-1">
         <template v-slot:prepend>
             <v-avatar size="36" variant="flat" color="lightsuccess" class="mr-3 py-2 text-success">
-                <GiftOutlined />
+                <!-- <GiftOutlined /> -->
             </v-avatar>
 
         </template>
