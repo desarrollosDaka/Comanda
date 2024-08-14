@@ -22,8 +22,10 @@ const estado = ref();
 const ciudad = ref();
 const municipio = ref();
 const direccion = ref("");
+const direccionEnvio = ref("");
 const direccionZoom = ref();
 const referencia = ref("");
+const referenciaEnvio = ref("");
 const autorizado = ref(false);
 const nombreDos = ref("");
 const cedulaDos = ref("");
@@ -126,28 +128,31 @@ async function searchModel() {
     const { data } = await axios.get(
       `${baseUrlClients}/searchClient/${cedulaUno.value}`
     );
+console.log(data[0][0]);
 
     if (data) {
-      tipo.value = data.Tipo_cliente;
-      tipoDocumento.value = data.Tipo_cedula;
-      email.value = data.Email;
-      telefonoUno.value = data.Telefono;
-      nombreCompleto.value = data.Nombre;
-      nombreCompleto.value = data.Nombre;
-      estado.value = data.ID_state;
-      ciudad.value = data.ID_city;
-      municipio.value = data.ID_municipio;
-      retencion.value = data.Retencion;
-      razonComercial.value = data.Razon_comercial;
-      porcentaje.value = data.Porc_retencion;
-      estado_rep.value = data.ID_state_rep;
-      ciudad_rep.value = data.ID_city_rep;
-      municipio_rep.value = data.ID_municipio_rep;
-      Nombre_rep.value = data.Nombre_rep;
-      email_rep.value = data.Email_rep;
-      tipoDocumentoRL.value = data.Tipo_cedula_rep;
-      cedula_rep.value = data.Cedula_rep;
-      telefono_rep.value = data.Telefono_rep;
+      tipo.value = data[0][0].Tipo_cliente;
+      tipoDocumento.value = data[0][0].Tipo_cedula;
+      email.value = data[0][0].Email;
+      telefonoUno.value = data[0][0].Telefono;
+      nombreCompleto.value = data[0][0].Nombre;
+      nombreCompleto.value = data[0][0].Nombre;
+      estado.value = data[0][0].ID_state;
+      ciudad.value = data[0][0].ID_city;
+      municipio.value = data[0][0].ID_municipio;
+      direccion.value = data[0][0].Direccion;
+      referencia.value = data[0][0].Referencia;
+      retencion.value = data[0][0].Retencion;
+      razonComercial.value = data[0][0].Razon_comercial;
+      porcentaje.value = data[0][0].Porc_retencion;
+      estado_rep.value = data[0][0].ID_state_rep;
+      ciudad_rep.value = data[0][0].ID_city_rep;
+      municipio_rep.value = data[0][0].ID_municipio_rep;
+      Nombre_rep.value = data[0][0].Nombre_rep;
+      email_rep.value = data[0][0].Email_rep;
+      tipoDocumentoRL.value = data[0][0].Tipo_cedula_rep;
+      cedula_rep.value = data[0][0].Cedula_rep;
+      telefono_rep.value = data[0][0].Telefono_rep;
     }
   } catch (error) {
     Swal.fire({
@@ -355,8 +360,10 @@ async function handleFormComanda() {
     ciudad: ciudad.value,
     municipio: municipio.value,
     ID_delivery: ID_Delivery.value,
-    direccion: ID_Delivery.value === 3 ? null : direccion.value,
-    referencia: ID_Delivery.value === 3 ? null : referencia.value,
+    direccion:  direccion.value,
+    referencia: referencia.value,
+    direccionEnvio: ID_Delivery.value === 3 ? null : direccionEnvio.value,
+    referenciaEnvio: ID_Delivery.value === 3 ? null : referenciaEnvio.value,
     sucursalZoom:
       ID_Delivery.value === 1 ||
       ID_Delivery.value === 2 ||
@@ -674,6 +681,35 @@ function handleSelectImages(items: any) {
         >
         </v-autocomplete>
       </v-col>
+      <v-col cols="12" md="6">
+        <v-label for="direccion">Direccion completa del cliente</v-label>
+        <v-text-field
+          id="direccion"
+          type="text"
+          placeholder="Direccion Completa"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          v-model="direccion"
+          :rules="direccionRules"
+          color="primary"
+        ></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-label for="referencia">Referencia</v-label>
+        <v-text-field
+          id="referencia"
+          type="text"
+          placeholder="Referencia del delivery"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          :rules="referenciaRules"
+          v-model="referencia"
+          color="primary"
+        ></v-text-field>
+      </v-col>
     </v-row>
     <br />
 
@@ -865,7 +901,7 @@ function handleSelectImages(items: any) {
     </v-row>
     <v-row v-if="ID_Delivery === 1 || ID_Delivery === 4">
       <v-col cols="12" md="6">
-        <v-label for="direccion">Direccion completa</v-label>
+        <v-label for="direccion">Direccion completa de envio</v-label>
         <v-text-field
           id="direccion"
           type="text"
@@ -873,14 +909,14 @@ function handleSelectImages(items: any) {
           variant="outlined"
           aria-label="Name Documents"
           class="mt-2 my-input"
-          v-model="direccion"
+          v-model="direccionEnvio"
           :rules="direccionRules"
           color="primary"
         ></v-text-field>
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-label for="referencia">Referencia</v-label>
+        <v-label for="referencia">Referencia de envio</v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -889,7 +925,7 @@ function handleSelectImages(items: any) {
           aria-label="Name Documents"
           class="mt-2 my-input"
           :rules="referenciaRules"
-          v-model="referencia"
+          v-model="referenciaEnvio"
           color="primary"
         ></v-text-field>
       </v-col>
