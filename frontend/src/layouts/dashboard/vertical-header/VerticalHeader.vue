@@ -22,19 +22,14 @@ const customizer = useCustomizerStore();
 const auth = useAuthStore();
 const noti = useNotifyStore();
 const User = ref('');
-const infoLength = ref(0); 
+const infoLength = ref(0);
 let isFirstLoad = true;
 
 /////////////////notifications /////////////////////
 const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
 const route1: string = `${import.meta.env.VITE_URL}/api`
 
- const infoArray = ref<any>([]);
-
-
-// onMounted(()=> {
-//   console.log("verticalHeader");
-// })
+const infoArray = ref<any>([]);
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
@@ -42,53 +37,33 @@ if (jsonFromLocalStorage !== null) {
   User.value = parsedData.data.Nombre;
 }
 
-// socket io
-// socket.on('lol', () => {
-//   console.log('estoy funcionando...lol');
-// })
-
-// A la escucha 
-// socket.on('nuevaComanda', (datos) => {
-//   console.log('datos recibidos: ', datos);
-// });
-// powerby alice
-
 setInterval(() => {
+  // VERIFICAR ESTO
   socket.emit('getUser', auth.user.data);
 }, 5000);
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones);
 
-  console.log('noti.notificaciones: ', noti.notifications);
-
-
   infoArray.value = noti.notifications;
-  //console.log(infoArray.value);
-  
   infoLength.value = infoArray.length;
 });
 
 const handleNewItem = () => {
-  //console.log("Nuevo valor agregado:", newItem);
-console.log("Nuevo valor agregado:");
-
-fetch(route1 + '/notification', {
-  method: 'POST',
-  body: JSON.stringify({ message: "COMANDA ASIGNADA NUEVA" }),
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});  
+  fetch(route1 + '/notification', {
+    method: 'POST',
+    body: JSON.stringify({ message: "COMANDA ASIGNADA NUEVA" }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
 
   // Actualizamos la longitud
   infoLength.value = noti.notifications.length;
 };
 
 watch(infoArray, (newValue, oldValue) => {
-//console.log("INFO "+ newValue);
-//infoLength.value = noti.notifications.length;
-if (isFirstLoad) {
+  if (isFirstLoad) {
     // Si es la primera carga, no hagas nada
     isFirstLoad = false;
   } else if (newValue.length > oldValue.length) {

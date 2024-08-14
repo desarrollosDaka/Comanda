@@ -9,16 +9,6 @@ import detailComanda from '../dashboard/components/detailComanda.vue';
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 //const socket = io('ws://localhost:3003'); // ws
 
-
-// setInterval(()=> {
-//   console.log("funcionando ");
-// socket.emit('nuevaComanda', '100');
-// }, 1000)
-
-// socket.on('nuevaComanda', (datos) => {
-//   console.log('datos recibidos: ', datos);
-// });
-
 // component content
 const page = ref({ title: 'Comanda Asignadas' });
 
