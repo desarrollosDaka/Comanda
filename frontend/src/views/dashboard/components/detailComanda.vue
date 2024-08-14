@@ -80,7 +80,7 @@ let user_crea = ref<string>("");
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
-  const parsedData = JSON.parse(jsonFromLocalStorage);
+  const parsedData = JSON.parse(jsonFromLocalStorage); 
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;

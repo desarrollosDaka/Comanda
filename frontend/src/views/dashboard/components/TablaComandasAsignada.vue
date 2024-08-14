@@ -42,13 +42,10 @@ socket.on("get-master-order", (rta) => {
         //FILTRAMOS POR ASESORES ASIGNADOS
         return dataUser.status.includes(item.ID_status) && item.User_asing.toString() === USER.value.toString() && item.ID_Sucursal === id_sucursal.value
 
-      } else {
-
+      }else {
         //FILTRAMOS SOLO POR ESTATUS
-        return (
-
+        return(
           dataUser.status.includes(item.ID_status) && item.ID_Sucursal === id_sucursal.value 
-
         );
       }
     });
@@ -201,7 +198,6 @@ const headers = ref([
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
-  { title: "ASESOR", key: "Asesor" },
   { title: "STATUS", key: "Status" },
   { title: "ACCIÓN", sortable: false, key: "action" },
 ] as const);

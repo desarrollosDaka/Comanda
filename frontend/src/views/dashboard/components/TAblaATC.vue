@@ -32,15 +32,14 @@ if (jsonFromLocalStorage !== null) {
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
-
 const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
-if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
-  urlSocket.value = 'get-master-order-pickup'
-}else if(USER_ROL.value === 7){
-  urlSocket.value = 'get-master-order-pickup-two'
+if(USER_ROL.value === 10){
+  urlSocket.value = 'get-master-order-atc'
+}else{
+    alert('error');
 }
 
 // Listen for events from the server
@@ -76,7 +75,7 @@ interface Table_Orders {
   User_asing: number;
   Status: string;
   ID_status: number;
-  Create_date: Date;
+  C: Date;
 }
 
 const getMessageStatus = (id: number) => {
@@ -85,16 +84,6 @@ const getMessageStatus = (id: number) => {
       (item: any) => item.ID_status === id
     )?.Status;
     return status;
-  }
-  return null;
-};
-
-const getNameAsesor = (id: number) => {
-  if (infoAsesores && infoAsesores.value) {
-    const asesor = infoAsesores.value.find(
-      (item: any) => item.value == id
-    )?.title;
-    return asesor;
   }
   return null;
 };
@@ -113,10 +102,12 @@ onUnmounted(() => {
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
-  { title: "CLIENTE", key: "Cliente" },
+  { title: "CLIENTE", key: "Nombre" },
   { title: "FECHA", key: "Create_date" },
+  { title: "STATUS", key: "Status" },
   { title: "ACCIÓN", sortable: false, key: "action" },
 ] as const);
+
 
 // COlor de estatus
 const COLORSTATUS: any = {
@@ -169,13 +160,22 @@ const COLORSTATUS: any = {
         <template v-slot:item.action="{ item }">
           <router-link
             :to="{
-              path: `/pickupsDetails/${item['ID_detalle']}/${item['ID_order']}`,
+              path: `/viewProcessComandas/${item['ID_detalle']}/${item['ID_order']}`,
             }"
           >
             <v-icon size="23" class="me-4" color="primary">
               mdi-eye-check
             </v-icon>
           </router-link>
+
+          <!-- <v-icon
+            v-if="STATUSPRINTER.includes((item as Table_Orders).ID_status)"
+            size="23"
+            class="me-4"
+            color="primary"
+          >
+            mdi-printer
+          </v-icon> -->
         </template>
 
         <!-- status -->
@@ -188,32 +188,10 @@ const COLORSTATUS: any = {
               (item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'
             "
           >
-            <p class="mb-0">{{ getMessageStatus((item as any).ID_status) }}</p>
+            <p class="mb-0">{{ item.Status }}</p>
           </v-chip>
         </template>
 
-        <!-- asesor -->
-        <template v-slot:item.Asesor="{ item }">
-          <v-chip
-            variant="tonal"
-            :color="COLORSTATUS[(item as Table_Orders).ID_status]"
-            size="x-small"
-            prepend-icon="mdi-check"
-            v-if="(item as any).Asesor"
-          >
-            <p class="mb-0">{{ getNameAsesor((item as any).Asesor) }}</p>
-          </v-chip>
-
-          <v-chip
-            variant="elevated"
-            color="error"
-            size="x-small"
-            prepend-icon="mdi-timer-sand"
-            v-else
-          >
-            <p class="mb-0">No asignado</p>
-          </v-chip>
-        </template>
       </v-data-table>
     </v-card>
   </UiTitleCard>
