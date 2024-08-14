@@ -510,21 +510,6 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
   }
 };
 
-const filterOrderPickUpTwo = async (req, res) => {
-  try {
-    const rta = await sequelize.query(
-        `SELECT * FROM [dbo].[ORDERS]
-        WHERE ID_status = 7 AND Retencion = 0 and Tipo_delivery = 2
-        UNION ALL
-        SELECT * FROM [dbo].[ORDERS]
-        WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery = 2`
-    );
-    return rta;
- 
-  } catch (e) {
-    console.log("Error", e);
-  }
-};
 
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {

@@ -14,7 +14,6 @@ const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const urlSocket = ref();
-const infoAsesores = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
 
