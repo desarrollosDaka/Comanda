@@ -989,6 +989,7 @@ const updateMasterAsesor = async (req, res) => {
       ID_detalle: req.params.id,
       Notifications: 'Comanda Asignada',
       Read:'0' ,
+      User_crea: req.body.User_crea,
       ID_user: req.body.User_asing,
     };
 
