@@ -410,50 +410,7 @@ const alertaRechazar = () => {
       <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
     </v-col>
   </v-row>
-
-  <!-- tabla para los demas usuarios -->
-  <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0">
-    <!-- DEMAS USER -->
-    <v-row v-if="Type != 'DETALLE DE ENVIO'
-      || USER_ROL === 1
-      || USER_ROL === 2
-      || USER_ROL === 3
-      || USER_ROL === 4
-      || USER_ROL === 5
-      || USER_ROL === 6
-      || USER_ROL === 7
-      || USER_ROL === 8
-      || USER_ROL === 9
-      || USER_ROL === 11
-      || USER_ROL === 99">
-
-      <v-col cols="12" md="12">
-        <v-table class="bordered-table" hover density="comfortable" rounded="lg">
-          <thead class="bg-containerBg">
-            <tr class="bg-containerBg">
-              <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-
-              <th class="text-right text-caption font-weight-bold text-uppercase" style="min-width: 100px">Cantidad</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
-              <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="(item, index) in info" :key="index">
-              <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
-              <td class="py-3">{{ item['ID_producto'] }} </td>
-              <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
-              </td>
-              <td class="py-3">{{ item['Precio'] }}$</td>
-              <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-col>
-    </v-row>
-
+  
     <!-- tabla para los demas usuarios -->
     <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" >
         <!-- DEMAS USER -->
