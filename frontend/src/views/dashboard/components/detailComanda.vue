@@ -24,6 +24,7 @@ interface Item {
   Producto: string;
   ID_producto: number;
   guiaZoom: string;
+  guiaZoom2: string;
   direccionDelivery: string;
   Precio: number;
   Unidades: number;
@@ -69,6 +70,7 @@ const ID_delivery = ref();
 const User_asing = ref();
 const id_sucursal = ref();
 const guiaZoom = ref();
+const guiaZoom2 = ref();
 const direccionDelivery = ref();
 const Type = ref()
 const razonComercial = ref();
@@ -161,6 +163,7 @@ const updateEstatus = async () => {
     producto: item.Producto,
     id_producto: item.ID_producto,
     guiaZoom: item.guiaZoom,
+    guiaZoom2: guiaZoom2.value,
     direccionDelivery: item.direccionDelivery,
     precio: item.Precio,
   }));
@@ -177,6 +180,7 @@ const updateEstatus = async () => {
 
     await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
       status_comanda: dataUser.changeID_status,
+      user_mod: user_crea.value
     });
   } catch (error) {
     console.log(error);
@@ -262,9 +266,12 @@ async function updateData() {
           text: "la comanda ha cambiado de estatus!",
           icon: "success",
         }).then((result) => {
-          if (result.isConfirmed) {
-            router.push(`/maestroComandaAsignada`);
+          if (result.isConfirmed && USER_ROL.value === 10) {
+            router.push(`/ComandasAtc`);
           }
+          else {
+          router.push(`/maestroComandaAsignada`);
+        }
         });
       }
     });
@@ -295,7 +302,7 @@ const asignAsesor = async () => {
         text: "Se asigno un asesor a la comanda seleccionada!",
         icon: "success",
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)  {
           router.push(`/maestroComandaAsignada`);
         }
       });
@@ -436,7 +443,7 @@ const alertaRechazar = () =>{
                             <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
                         </tr>
                     </thead>
-
+                    
                     <tbody>
                         <tr v-for="(item, index) in info" :key="index">
                             <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
@@ -447,6 +454,9 @@ const alertaRechazar = () =>{
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
                         </tr>
                     </tbody>
+                    <thead class="bg-containerBg">
+                      
+                    </thead>
                 </v-table>
             </v-col>
         </v-row>
@@ -455,7 +465,7 @@ const alertaRechazar = () =>{
         <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10">
             <v-col cols="12" md="12">
                 <v-table class="bordered-table" hover density="comfortable" rounded="lg">
-                    <thead class="bg-containerBg">
+                  <thead class="bg-containerBg">
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
@@ -463,6 +473,7 @@ const alertaRechazar = () =>{
                             <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                         </tr>
+                 
                     </thead>
     
                     <tbody>
@@ -489,12 +500,25 @@ const alertaRechazar = () =>{
                             </td>
                             <td class="py-3">{{ item['Precio'] }}$</td>
                         </tr>
-                    </tbody>
-                </v-table>
-            </v-col>
-        </v-row>
+                     
+                   </tbody>                    
+                </v-table>            
+            </v-col>            
+        </v-row>    
+       
     </UiTitleCard>
 
+   <tr v-if="Type != 'DETALLE DE ENVIO' && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
+      <td colspan="5" class="py-3">
+          <v-text-field 
+              variant="solo-inverted"
+              v-model="guiaZoom2"
+              placeholder="ingresa Guia Zoom"
+              class="inputDelivery3"
+          >
+          </v-text-field>
+      </td>
+  </tr>     
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
     <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11" 
       @isSelectImages=handleSelectImages 
@@ -622,5 +646,8 @@ thead {
 }
 .inputDelivery2{
   width: 200px;
+}
+.inputDelivery3{
+  width: 600px;
 }
 </style>

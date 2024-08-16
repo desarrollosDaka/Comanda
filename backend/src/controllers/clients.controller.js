@@ -56,8 +56,10 @@ const filterMasterClientsForCI = async (req, res) => {
             ,T0.[Direccion]
             ,T0.[Referencia]
             ,T0.[ID_state]
-            ,T2.Nombre AS ID_city
-            ,T1.Nombre AS [ID_municipio]
+			,T0.ID_city
+			,T0.[ID_municipio]
+            ,T2.Nombre AS Nombre_city
+            ,T1.Nombre AS Nombre_municipio
             ,T0.[Tipo_cliente]
             ,T0.[Retencion]
             ,T0.[Porc_retencion]
@@ -69,8 +71,10 @@ const filterMasterClientsForCI = async (req, res) => {
             ,T0.[Direccion_rep]
             ,T0.[Referencia_rep]
             ,T0.[ID_state_rep]
-            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_CITIES] T1 ON T0.ID_city_rep = T1.ID_city WHERE T0.Cedula = '${CI}') as ID_city_rep
-            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.[ID_state_rep] = T1.ID_municipio WHERE T0.Cedula = '${CI}') as ID_municipio_rep
+			,ID_city_rep
+			,ID_municipio_rep
+            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_CITIES] T1 ON T0.ID_city_rep = T1.ID_city WHERE T0.Cedula = '${CI}') as Nombre_city_rep
+            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.[ID_state_rep] = T1.ID_municipio WHERE T0.Cedula = '${CI}') as Nombre_municipio_rep
             ,T0.[Delete]
             ,T0.[Create_date]
             ,T0.[Update_date]
