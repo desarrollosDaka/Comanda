@@ -292,34 +292,15 @@ const headers = ref([
 
         <!-- estado -->
         <template v-slot:item.Status="{ item }">
-          <v-chip
+                  <v-chip
             variant="tonal"
-            color="warning"
+            :color="COLORSTATUS[(item as Table_Orders).ID_status]"
             size="x-small"
-            prepend-icon="mdi-timer-sand"
-            v-if="(item as any).Status === 'Creada'"
+            :prepend-icon="
+              (item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'
+            "
           >
-            <p class="mb-0">Creada</p>
-          </v-chip>
-
-          <v-chip
-            variant="tonal"
-            color="success"
-            size="x-small"
-            prepend-icon="mdi-check"
-            v-else-if="(item as any).Status === 'Asignada'"
-          >
-            <p class="mb-0">Asignada</p>
-          </v-chip>
-
-          <v-chip
-            variant="tonal"
-            color="warning"
-            size="x-small"
-            prepend-icon="mdi-timer-sand"
-            v-else
-          >
-            <p class="mb-0">Pendiente</p>
+            <p class="mb-0">{{ item['Status'] }}</p>
           </v-chip>
         </template>
       </v-data-table>
