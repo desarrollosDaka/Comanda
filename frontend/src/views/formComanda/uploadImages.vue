@@ -56,8 +56,10 @@ onMounted(async () => {
 
         const tipoArchivo = 'RETENCIÓN'
         url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
+
       } else {
         url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
+        
       }
       const { data } = await axios.get(url.value);
 

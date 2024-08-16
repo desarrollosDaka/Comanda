@@ -17,20 +17,20 @@ const getMasterOrder = async (req, res) => {
     // const rta = await sequelize.models.modelOrders.findAll();
     const rta = await sequelize.query(
       `SELECT  T0.[ID_order]
-                ,T0.ID_detalle
-                ,T0.Caja_factura
-				        ,T3.Tipo_cedula
-                ,T0.Cedula  
-                ,T3.Nombre Cliente
-                ,T3.Razon_comercial
-                ,T1.Sucursal
-                ,T1.ID_Sucursal
-                ,T0.[User_crea]
-                ,T0.[User_asing] Asesor 
-                ,T2.Status
-                ,T2.ID_status 
-                ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
+          ,T0.ID_detalle
+          ,T0.Caja_factura
+          ,T3.Tipo_cedula
+          ,T0.Cedula  
+          ,T3.Nombre Cliente
+          ,T3.Razon_comercial
+          ,T1.Sucursal
+          ,T1.ID_Sucursal
+          ,T0.[User_crea]
+          ,T0.[User_asing] Asesor 
+          ,T2.Status
+          ,T2.ID_status 
+          ,T0.User_asing 
+          ,CAST(T0.Create_date AS DATE) Create_date
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status

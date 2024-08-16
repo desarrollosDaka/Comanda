@@ -66,8 +66,8 @@ const ARRAYUSER_ROL = [
     },
     //ALMACENIST ONLINE
     {   "userRol": 9 , 
-        "status":[10,4], //validar para que muestre solo los que tiene pick up
-        "msgButton":'Comanda Revisada por Almacen', 
+        "status":[4, 6], //validar para que muestre solo los que tiene pick up
+        "msgButton":'Despachar', 
         "changeID_status":3, 
         "printer":true
     }, 

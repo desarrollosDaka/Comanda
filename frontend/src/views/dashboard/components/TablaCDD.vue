@@ -88,11 +88,11 @@ onUnmounted(() => {
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
-  { title: "CLIENTE", key: "Nombre" },
+  { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },
   { title: "ACCIÓN", sortable: false, key: "action" },
-] as const);
+]as const);
 
 
 // COlor de estatus
@@ -146,9 +146,7 @@ const COLORSTATUS: any = {
         <!-- process -->
         <template v-slot:item.action="{ item }">
           <router-link
-            :to="{
-              path: `/viewProcessComandas/${item['ID_detalle']}/${item['ID_order']}`,
-            }"
+            :to="{path: `/DetalleCDD/${item['ID_detalle']}/${item['ID_order']}`,}"
           >
             <v-icon size="23" class="me-4" color="primary">
               mdi-eye-check
