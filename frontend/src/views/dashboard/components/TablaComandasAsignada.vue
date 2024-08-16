@@ -61,37 +61,6 @@ socket.on("get-master-order", (rta) => {
 });
 
 
-
-//////////////////////////////////////////////////DATOS INCIO SESION/////////////////////////////////
-
-// const handleNewItem = () => {
-//   //console.log("Nuevo valor agregado:", newItem);
-
-// fetch(route1 + '/notification', {
-//   method: 'POST',
-//   body: JSON.stringify({ message: "NUEVA COMANDA ASIGNADA" }),
-//   headers: {
-//     'Content-Type': 'application/json'
-//   }
-// });  
-
-//   // Actualizamos la longitud
-//   infoLength.value = info.value.length;
-// };
-
-
-// watch(info, (newValue, oldValue) => {
-// //console.log("INFO"+info.value);
-// if (isFirstLoad) {
-//     // Si es la primera carga, no hagas nada
-//     isFirstLoad = false;
-//   } else if (newValue.length > oldValue.length) {
-//     // Se ha agregado un nuevo valor
-//     handleNewItem();
-//   }
-// });
-
-
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");

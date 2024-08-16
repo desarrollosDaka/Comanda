@@ -547,6 +547,7 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
     console.log("Error", e);
   }
 };
+
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
   const data = req.body;
@@ -1025,6 +1026,7 @@ const updateMasterAsesor = async (req, res) => {
       ID_detalle: req.params.id,
       Notifications: 'Comanda Asignada',
       Read:'0' ,
+      User_crea: req.body.User_crea,
       ID_user: req.body.User_asing,
     };
 

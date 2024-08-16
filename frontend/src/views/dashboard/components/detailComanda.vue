@@ -13,6 +13,9 @@ import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
 import { useUploadFiles } from "@/composables/file";
 
+// Pinia
+import { useAuthStore } from "@/stores/auth";
+const user = useAuthStore()
 
 interface Document {
   file: File;
@@ -61,7 +64,6 @@ const referencia = ref("");
 const autorizado = ref(false);
 const cedulaDos = ref("");
 const telefonoUno = ref("");
-const telefonoDos = ref("");
 const ID_pago = ref();
 const ID_status = ref();
 const porcentaje = ref();
@@ -73,7 +75,6 @@ const guiaZoom = ref();
 const guiaZoom2 = ref();
 const direccionDelivery = ref();
 const Type = ref()
-const razonComercial = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -82,7 +83,7 @@ let user_crea = ref<string>("");
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
-  const parsedData = JSON.parse(jsonFromLocalStorage); 
+  const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;
@@ -93,7 +94,6 @@ const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el t
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
-const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 
 const itemDocument = ref<Document[]>([]);
 
@@ -102,7 +102,7 @@ const getOrder = async () => {
     const url = `${baseUrl}/filterOrder/${id.value}`;
     const { data } = await axios.get(url);
 
-    if(data){
+    if (data) {
       cedulaUno.value = data[0][0]["Cedula"];
       tipo.value = data[0][0]["Tipo_cliente"];
       retencion.value = data[0][0]["Retencion"];
@@ -120,10 +120,8 @@ const getOrder = async () => {
       autorizado.value = data[0][0]["Autoriza"];
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
-      telefonoDos.value = data[0][0]["Telefono"];
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
-      razonComercial.value = data[0][0]["Razon_comercial"];
     }
   } catch (error) {
     console.log(error);
@@ -136,7 +134,7 @@ const getDocumentsATC = async () => {
     const url = `${baseUrl}/filterOrderDetailsfilesEnvio/${id.value}/${detalle}`;
     const { data } = await axios.get(url);
     Type.value = data[0][0].Type_File;
-      
+
   } catch (error) {
     console.log('No posee detalle de envio');
   }
@@ -148,7 +146,7 @@ const getArticulos = async () => {
     const url = `${baseUrl}/filterOrderDetails/${id.value}`;
     const { data } = await axios.get(url);
     info.value = data[0];
-    
+
   } catch (error) {
     console.log(error);
   }
@@ -167,14 +165,14 @@ const updateEstatus = async () => {
     direccionDelivery: item.direccionDelivery,
     precio: item.Precio,
   }));
-  
+
   try {
     //SOLO USUARIOS CON ROL DE CAJERAS
     // if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
     if (USER_ROL.value === 1 || USER_ROL.value === 6 || USER_ROL.value === 8) {
       useAddDocument(itemDocument.value, id.value, id_orders.value); //Visualizan y agregan  archivos
 
-    } else if(ROLEATC.includes(USER_ROL.value)){
+    } else if (ROLEATC.includes(USER_ROL.value)) {
       await axios.put(`${baseUrl}/updateOrderDetails/${id.value}`, jsonData);
     }
 
@@ -209,18 +207,18 @@ const getAsesores = async () => {
 
 const cajaFactura = async () => {
   try {
-    if(numFactura.value){
+    if (numFactura.value) {
       const url = `${baseUrl}/updateCajaFactura/${id.value}`;
-    const { data:respuesta } = await axios.put(url, {caja_factura: numFactura.value});
+      const { data: respuesta } = await axios.put(url, { caja_factura: numFactura.value });
 
-    if(respuesta){ 
-      dialog.value = false
-      return toast.error(`Caja factura asignada a la comanda`, {
-      position: toast.POSITION.TOP_CENTER,
-      transition: toast.TRANSITIONS.ZOOM,
-      autoClose: 4000,
-    });
-    }
+      if (respuesta) {
+        dialog.value = false
+        return toast.error(`Caja factura asignada a la comanda`, {
+          position: toast.POSITION.TOP_CENTER,
+          transition: toast.TRANSITIONS.ZOOM,
+          autoClose: 4000,
+        });
+      }
     }
 
   } catch (error) {
@@ -232,7 +230,7 @@ onMounted(async () => {
   await getOrder();
   await getArticulos();
   await getAsesores();
-  await getDocumentsATC(); 
+  await getDocumentsATC();
 });
 
 async function updateData() {
@@ -292,9 +290,11 @@ const asignAsesor = async () => {
 
   const status = dataUser.changeID_status;
   try {
+    // state user
+    let { data } = user.user;
     const response = await axios.put(
       `${baseUrl}/updateOrderAsesor/${id.value}`,
-      { User_asing: selectedAsesor.value, ID_status: status }
+      { User_asing: selectedAsesor.value, ID_status: status, User_crea: data.Nombre }
     );
     if (response) {
       Swal.fire({
@@ -306,15 +306,15 @@ const asignAsesor = async () => {
           router.push(`/maestroComandaAsignada`);
         }
       });
-    }
 
-  } catch (error) {
-        toast.error(`Error, al momento de guardar el asesor ${error}`, {
-            position: toast.POSITION.TOP_CENTER,
-            transition: toast.TRANSITIONS.ZOOM,
-            autoClose: 4000
-        });
     }
+  } catch (error) {
+    toast.error(`Error, al momento de guardar el asesor ${error}`, {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000
+    });
+  }
 }
 
 const getNameAsesor = (id: number) => {
@@ -326,92 +326,132 @@ const getNameAsesor = (id: number) => {
 };
 
 const rechazarRetencion = async () => {
-    const statusRechazado = 4
-    const url = `${baseUrl}/updateStatusOrder/${id.value}`;
-    await axios.put(url, {status_comanda: statusRechazado});
+  const statusRechazado = 4
+  const url = `${baseUrl}/updateStatusOrder/${id.value}`;
+  await axios.put(url, { status_comanda: statusRechazado });
 };
 
-const alertaRechazar = () =>{
+const alertaRechazar = () => {
   Swal.fire({
-      title: "Vas a Rechazar la comanda",
-      text: "Cuando rechazas la comanda, se devuelve a los asesores online de daka para volver a cargarlo.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "Cancelar",
-      confirmButtonText: "Si",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        rechazarRetencion();
-        Swal.fire({
-          title: dataUser.msgButton,
-          text: "la comanda ha cambiado de estatus!",
-          icon: "success",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            router.push(`/retenciones`);
-          }
-        });
-      }
-    });
+    title: "Vas a Rechazar la comanda",
+    text: "Cuando rechazas la comanda, se devuelve a los asesores online de daka para volver a cargarlo.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "Cancelar",
+    confirmButtonText: "Si",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      rechazarRetencion();
+      Swal.fire({
+        title: dataUser.msgButton,
+        text: "la comanda ha cambiado de estatus!",
+        icon: "success",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push(`/retenciones`);
+        }
+      });
+    }
+  });
 }
 
 </script>
 
 <template>
-    <!-- informacion de la comanda -->
+  <!-- informacion de la comanda -->
 
-    <div class="card">
-        <div class="data">
-            <p>COMANDA #{{ id_orders }}</p>
-            <div class="range">
-                <div class="fill">
-                </div>
-            </div>
+  <div class="card">
+    <div class="data">
 
+      <p>COMANDA #{{ id_orders }}</p>
+
+      <div class="range">
+        <div class="fill">
         </div>
+      </div>
+
     </div>
+  </div>
 
-    <v-row class="mb-0">
-        <v-col cols="12" md="4" class="px-10 py-5">
-            <h2>Datos del Cliente</h2>
-            <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p>
-            <p v-else><b>Cedula:</b> {{ cedulaUno }}</p>
-            <p><b>Tipo:</b> {{ tipo }}</p>
-            <p><b>Email:</b> {{ email }}</p>
-            <p v-if="tipo === 'JURIDICO'"><b>Razon Social:</b> {{ nombreCompleto }}</p>
-            <p v-else><b>Cliente:</b> {{ nombreCompleto }}</p>
-            <p v-if="tipo === 'JURIDICO'"><b>Razon Comercial:</b> {{ razonComercial }}</p>
-            <p><b>Estados:</b> {{ estado }}</p>
-            <p><b>Ciudad:</b> {{ ciudad }}</p>
-            <p><b>Municipio:</b> {{ municipio }}</p>
-            <p v-if="ROLESTELEFONO.includes(USER_ROL)"><b>Telefono:</b> {{ telefonoDos }}</p>
-        </v-col>
-        <v-col cols="12" md="4" class="px-10 py-5">
-            <h2>Datos de la comanda</h2>
-            <p><b>Origen:</b> {{ origen }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Direccion Completa:</b> {{ direccion }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Referencia:</b> {{ referencia }}</p>
-            <p><b>Delivery:</b> {{ ID_delivery }}</p>
-            <p><b>Autorizado para recibir:</b>
-                <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
-                    v-if="autorizado === true">
-                    <p class="mb-0">Si</p>
-                </v-chip>
+  <v-row class="mb-0">
+    <v-col cols="12" md="4" class="px-10 py-5">
+      <h2>Datos del Cliente</h2>
+      <p><b>Cedula:</b> {{ cedulaUno }}</p>
+      <p><b>Tipo:</b> {{ tipo }}</p>
+      <p><b>Email:</b> {{ email }}</p>
+      <p><b>Cliente:</b> {{ nombreCompleto }}</p>
+      <p><b>Estados:</b> {{ estado }}</p>
+      <p><b>Ciudad:</b> {{ ciudad }}</p>
+      <p><b>Municipio:</b> {{ municipio }}</p>
+    </v-col>
+    <v-col cols="12" md="4" class="px-10 py-5">
+      <h2>Datos de la comanda</h2>
+      <p><b>Origen:</b> {{ origen }}</p>
+      <p><b>Direccion Completa:</b> {{ direccion }}</p>
+      <p><b>Referencia:</b> {{ referencia }}</p>
+      <p><b>Delivery:</b> {{ ID_delivery }}</p>
+      <p><b>Autorizado para recibir:</b>
+        <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand" v-if="autorizado === true">
+          <p class="mb-0">Si</p>
+        </v-chip>
 
-                <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>
-                    <p class="mb-0">No</p>
-                </v-chip>
-            </p>
-            <p v-if="cedulaDos"><b>Cedula/Rif Autorizado:</b> {{ cedulaDos }}</p>
-            <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
-        </v-col>
-        <v-col cols="12" md="4" class="px-10 py-5">
-            <h2>Estatus</h2>
-            <p><b>Status de comanda:</b> {{ ID_status }}</p>
-            <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
-        </v-col>
+        <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>
+          <p class="mb-0">No</p>
+        </v-chip>
+      </p>
+      <p><b>Cedula/Rif:</b> {{ cedulaDos }}</p>
+      <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
+    </v-col>
+    <v-col cols="12" md="4" class="px-10 py-5">
+      <h2>Estatus</h2>
+      <p><b>Status de comanda:</b> {{ ID_status }}</p>
+      <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
+    </v-col>
+  </v-row>
+
+  <!-- tabla para los demas usuarios -->
+  <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0">
+    <!-- DEMAS USER -->
+    <v-row v-if="Type != 'DETALLE DE ENVIO'
+      || USER_ROL === 1
+      || USER_ROL === 2
+      || USER_ROL === 3
+      || USER_ROL === 4
+      || USER_ROL === 5
+      || USER_ROL === 6
+      || USER_ROL === 7
+      || USER_ROL === 8
+      || USER_ROL === 9
+      || USER_ROL === 11
+      || USER_ROL === 99">
+
+      <v-col cols="12" md="12">
+        <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+          <thead class="bg-containerBg">
+            <tr class="bg-containerBg">
+              <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+              <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+
+              <th class="text-right text-caption font-weight-bold text-uppercase" style="min-width: 100px">Cantidad</th>
+              <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+              <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="(item, index) in info" :key="index">
+              <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+              <td class="py-3">{{ item['ID_producto'] }} </td>
+              <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
+              </td>
+              <td class="py-3">{{ item['Precio'] }}$</td>
+              <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-col>
     </v-row>
 
     <!-- tabla para los demas usuarios -->
@@ -519,132 +559,116 @@ const alertaRechazar = () =>{
           </v-text-field>
       </td>
   </tr>     
-    <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11" 
-      @isSelectImages=handleSelectImages 
-      :ID_detalle=id
-      :deleteImageUpdate=false
-    />
+  
+  <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
+  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11"
+    @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
 
-    <v-row class="mb-0 mt-5">
-        <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
-            <v-label text="Asignar Asesor"></v-label>
-            <br>
-            <v-autocomplete id="tipo" placeholder="Asesores de ventas" clearable chips :items="infoAsesores"
-                variant="outlined" class="mt-2" color="primary" v-model="selectedAsesor"></v-autocomplete>
-        </v-col>
+  <v-row class="mb-0 mt-5">
+    <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
+      <v-label text="Asignar Asesor"></v-label>
+      <br>
+      <v-autocomplete id="tipo" placeholder="Asesores de ventas" clearable chips :items="infoAsesores"
+        variant="outlined" class="mt-2" color="primary" v-model="selectedAsesor"></v-autocomplete>
+    </v-col>
+  </v-row>
+
+  <v-container>
+    <v-row align="center" justify="start">
+
+      <!-- BOTON PARA CAMBIAR DE ESATUS -->
+      <v-col cols="auto">
+        <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
+          @click="USER_ROL === 4 ? asignAsesor() : updateData()">
+          {{ dataUser.msgButton }}
+        </v-btn>
+      </v-col>
+
+      <!-- BOTON PARA INGRESAR EL NUMERO DE FACTURA -->
+      <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
+        <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
+          Ingresar Numero de Factura
+        </v-btn>
+      </v-col>
+
+      <!-- BOTON PARA RECHAZAR COMANDA -->
+      <v-col cols="auto" v-if="USER_ROL === 11">
+        <v-btn @click="alertaRechazar" append-icon="mdi-delete-sweep" variant="elevated" color="error">
+          Rechazar Retencion
+        </v-btn>
+      </v-col>
+
     </v-row>
+  </v-container>
 
-    <v-container>
-        <v-row align="center" justify="start">
+  <v-dialog v-model="dialog" width="auto">
+    <v-card max-width="600" prepend-icon="mdi-counter" title="Numero de Factura">
 
-          <!-- BOTON PARA CAMBIAR DE ESATUS -->
-            <v-col cols="auto">
-                <v-btn 
-                  :disabled="ID_status == 2" 
-                  append-icon="mdi-check-all" 
-                  variant="elevated" 
-                  color="primary"
-                  @click="USER_ROL === 4 ? asignAsesor() : updateData()"
-                >
-                  {{ dataUser.msgButton }}
-                </v-btn>
-            </v-col>
+      <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Numero factura es requerido']"
+        placeholder="23-734" required></v-text-field>
 
-            <!-- BOTON PARA INGRESAR EL NUMERO DE FACTURA -->
-            <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
-                <v-btn 
-                  @click="dialog=true" 
-                  append-icon="mdi-check-all" 
-                  variant="elevated" 
-                  color="primary"
-                >
-                  Ingresar Numero de Factura
-                </v-btn>
-            </v-col>
 
-            <!-- BOTON PARA RECHAZAR COMANDA -->
-            <v-col cols="auto" v-if="USER_ROL === 11">
-                <v-btn 
-                  @click="alertaRechazar" 
-                  append-icon="mdi-delete-sweep" 
-                  variant="elevated" 
-                  color="error"
-                >
-                  Rechazar Retencion 
-                </v-btn>
-            </v-col>
-        </v-row>
-    </v-container>
+      <template v-slot:actions>
+        <v-btn class="ms-auto" text="Ok" @click="cajaFactura"></v-btn>
+      </template>
+    </v-card>
 
-    <v-dialog v-model="dialog" width="auto">
-        <v-card max-width="600" prepend-icon="mdi-counter" title="Numero de Factura">
-
-            <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Numero factura es requerido']"
-                placeholder="23-734" required></v-text-field>
-           
-
-            <template v-slot:actions>
-                <v-btn class="ms-auto" text="Ok" @click="cajaFactura"></v-btn>
-            </template>
-        </v-card>
-
-    </v-dialog>
+  </v-dialog>
 </template>
 
 <style>
-
 thead {
-    background-color: rgb(250, 250, 250);
+  background-color: rgb(250, 250, 250);
 }
 
 .card {
-    padding: 1rem;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 5px 5px #323232;
-    border: 2px solid #323232;
-    margin-bottom: 50px;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 5px 5px #323232;
+  border: 2px solid #323232;
+  margin-bottom: 50px;
 }
 
 .data {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .data p {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    color: #1F2937;
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-    font-weight: 700;
-    text-align: left;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #1F2937;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  text-align: left;
 }
 
 .data .range {
-    position: relative;
-    background-color: #E5E7EB;
-    width: 100%;
-    height: 0.5rem;
-    border-radius: 0.25rem;
+  position: relative;
+  background-color: #E5E7EB;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 0.25rem;
 }
 
 .data .range .fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #143E90;
-    width: 76%;
-    height: 100%;
-    border-radius: 0.25rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #143E90;
+  width: 76%;
+  height: 100%;
+  border-radius: 0.25rem;
 }
 
-.inputDelivery{
+.inputDelivery {
   width: 200px;
 }
-.inputDelivery2{
+
+.inputDelivery2 {
   width: 200px;
 }
 .inputDelivery3{
