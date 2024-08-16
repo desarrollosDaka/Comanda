@@ -27,6 +27,7 @@ interface Item {
   Producto: string;
   ID_producto: number;
   guiaZoom: string;
+  guiaZoom2: string;
   direccionDelivery: string;
   Precio: number;
   Unidades: number;
@@ -71,6 +72,7 @@ const ID_delivery = ref();
 const User_asing = ref();
 const id_sucursal = ref();
 const guiaZoom = ref();
+const guiaZoom2 = ref();
 const direccionDelivery = ref();
 const Type = ref()
 
@@ -159,6 +161,7 @@ const updateEstatus = async () => {
     producto: item.Producto,
     id_producto: item.ID_producto,
     guiaZoom: item.guiaZoom,
+    guiaZoom2: guiaZoom2.value,
     direccionDelivery: item.direccionDelivery,
     precio: item.Precio,
   }));
@@ -175,6 +178,7 @@ const updateEstatus = async () => {
 
     await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
       status_comanda: dataUser.changeID_status,
+      user_mod: user_crea.value
     });
   } catch (error) {
     console.log(error);
@@ -260,9 +264,12 @@ async function updateData() {
           text: "la comanda ha cambiado de estatus!",
           icon: "success",
         }).then((result) => {
-          if (result.isConfirmed) {
-            router.push(`/maestroComandaAsignada`);
+          if (result.isConfirmed && USER_ROL.value === 10) {
+            router.push(`/ComandasAtc`);
           }
+          else {
+          router.push(`/maestroComandaAsignada`);
+        }
         });
       }
     });
@@ -295,7 +302,7 @@ const asignAsesor = async () => {
         text: "Se asigno un asesor a la comanda seleccionada!",
         icon: "success",
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)  {
           router.push(`/maestroComandaAsignada`);
         }
       });
@@ -403,87 +410,113 @@ const alertaRechazar = () => {
       <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
     </v-col>
   </v-row>
+  
+    <!-- tabla para los demas usuarios -->
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" >
+        <!-- DEMAS USER -->
+        <v-row v-if="Type != 'DETALLE DE ENVIO' 
+                    || USER_ROL === 1 
+                    || USER_ROL === 2 
+                    || USER_ROL === 3 
+                    || USER_ROL === 4 
+                    || USER_ROL === 5 
+                    || USER_ROL === 6 
+                    || USER_ROL === 7 
+                    || USER_ROL === 8 
+                    || USER_ROL === 9 
+                    || USER_ROL === 11 
+                    || USER_ROL === 99">
 
-  <!-- tabla para los demas usuarios -->
-  <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0">
-    <!-- DEMAS USER -->
-    <v-row v-if="Type != 'DETALLE DE ENVIO'
-      || USER_ROL === 1
-      || USER_ROL === 2
-      || USER_ROL === 3
-      || USER_ROL === 4
-      || USER_ROL === 5
-      || USER_ROL === 6
-      || USER_ROL === 7
-      || USER_ROL === 8
-      || USER_ROL === 9
-      || USER_ROL === 11
-      || USER_ROL === 99">
+            <v-col cols="12" md="12">
+                <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+                    <thead class="bg-containerBg">
+                        <tr class="bg-containerBg">
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
 
-      <v-col cols="12" md="12">
-        <v-table class="bordered-table" hover density="comfortable" rounded="lg">
-          <thead class="bg-containerBg">
-            <tr class="bg-containerBg">
-              <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+                            <th class="text-right text-caption font-weight-bold text-uppercase"
+                                style="min-width: 100px">Cantidad</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+                            <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr v-for="(item, index) in info" :key="index">
+                            <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+                            <td class="py-3">{{ item['ID_producto'] }} </td>
+                            <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
+                            </td>
+                            <td class="py-3">{{ item['Precio'] }}$</td>
+                            <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
+                        </tr>
+                    </tbody>
+                    <thead class="bg-containerBg">
+                      
+                    </thead>
+                </v-table>
+            </v-col>
+        </v-row>
 
-              <th class="text-right text-caption font-weight-bold text-uppercase" style="min-width: 100px">Cantidad</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
-              <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
-            </tr>
-          </thead>
+        <!-- ATC -->
+        <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10">
+            <v-col cols="12" md="12">
+                <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+                  <thead class="bg-containerBg">
+                        <tr class="bg-containerBg">
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'DELIVERY TIENDA'">Direccion</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+                        </tr>
+                 
+                    </thead>
+    
+                    <tbody>
+                        <tr v-for="(item, index) in info" :key="index">
+                            <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+                            <td class="py-3">{{ item['ID_producto'] }} </td>
+                            <td class="py-3"  v-if="ID_delivery == 'DELIVERY TIENDA'">
+                              <v-text-field 
+                                variant="solo-inverted"
+                                v-model="item.direccionDelivery"
+                                placeholder="Direccion"
+                                class="inputDelivery"
+                              >
+                              </v-text-field>
+                            </td>
+                            <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
+                              <v-text-field 
+                                variant="solo-inverted"
+                                v-model="item.guiaZoom"
+                                placeholder="Guia"
+                                class="inputDelivery2"
+                              >
+                              </v-text-field>
+                            </td>
+                            <td class="py-3">{{ item['Precio'] }}$</td>
+                        </tr>
+                     
+                   </tbody>                    
+                </v-table>            
+            </v-col>            
+        </v-row>    
+       
+    </UiTitleCard>
 
-          <tbody>
-            <tr v-for="(item, index) in info" :key="index">
-              <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
-              <td class="py-3">{{ item['ID_producto'] }} </td>
-              <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
-              </td>
-              <td class="py-3">{{ item['Precio'] }}$</td>
-              <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-col>
-    </v-row>
-
-    <!-- ATC -->
-    <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10">
-      <v-col cols="12" md="12">
-        <v-table class="bordered-table" hover density="comfortable" rounded="lg">
-          <thead class="bg-containerBg">
-            <tr class="bg-containerBg">
-              <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase"
-                v-if="ID_delivery == 'DELIVERY TIENDA'">Direccion</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase"
-                v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="(item, index) in info" :key="index">
-              <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
-              <td class="py-3">{{ item['ID_producto'] }} </td>
-              <td class="py-3" v-if="ID_delivery == 'DELIVERY TIENDA'">
-                <v-text-field variant="solo-inverted" v-model="item.direccionDelivery" placeholder="Direccion"
-                  class="inputDelivery">
-                </v-text-field>
-              </td>
-              <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
-                <v-text-field variant="solo-inverted" v-model="item.guiaZoom" placeholder="Guia" class="inputDelivery2">
-                </v-text-field>
-              </td>
-              <td class="py-3">{{ item['Precio'] }}$</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-col>
-    </v-row>
-  </UiTitleCard>
-
+   <tr v-if="Type != 'DETALLE DE ENVIO' && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
+      <td colspan="5" class="py-3">
+          <v-text-field 
+              variant="solo-inverted"
+              v-model="guiaZoom2"
+              placeholder="ingresa Guia Zoom"
+              class="inputDelivery3"
+          >
+          </v-text-field>
+      </td>
+  </tr>     
+  
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
   <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11"
     @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
@@ -521,6 +554,7 @@ const alertaRechazar = () => {
           Rechazar Retencion
         </v-btn>
       </v-col>
+
     </v-row>
   </v-container>
 
@@ -593,5 +627,8 @@ thead {
 
 .inputDelivery2 {
   width: 200px;
+}
+.inputDelivery3{
+  width: 600px;
 }
 </style>

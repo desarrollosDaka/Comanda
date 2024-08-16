@@ -9,6 +9,7 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
+const { log } = require("console");
 
 
 //CONSULTA DE ORDENES
@@ -598,7 +599,7 @@ const updateOrderDetails = async (req, res) => {
         ID_order: item.id_order,
         ID_producto: item.id_producto,
         Direccion: item.direccionDelivery,
-        Zoom: item.guiaZoom,
+        Zoom: item.guiaZoom ? item.guiaZoom : item.guiaZoom2,
       };
 
       await sequelize.models.modelOrdersdetails.update(orderDetailData, {
@@ -1053,8 +1054,11 @@ const updateMasterAsesor = async (req, res) => {
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateStatusOrder = async (req, res) => {
   try {
+    console.log(req.body);
+    
     const data = {
       ID_status: req.body.status_comanda,
+      User_mod: req.body.user_mod
     };
 
     const idComanda = req.params.id;
