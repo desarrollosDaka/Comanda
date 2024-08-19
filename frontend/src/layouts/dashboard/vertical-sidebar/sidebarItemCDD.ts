@@ -26,28 +26,17 @@ import {
   }
   
   const sidebarItem: menu[] = [
-    { header: 'Comanda' },
+    { header: 'Comanda CDD' },
     {
       title: 'Panel de control',
       icon: DashboardOutlined,
       to: '/dashboard'
     },
     {
-        title: 'Pedidos Online',
-        icon: BarcodeOutlined, 
-        to: '/maestroPedidos'
-      },
-    {
-      title: 'Comandas',
+      title: 'Comandas CDD',
       icon: ClusterOutlined, 
-      to: '/maestroComandaAsignada'
-    },
-    {
-      title: 'Pick-Up',
-      icon: CarOutlined, 
-      to: '/pickups'
-    },
+      to: '/ComandasCDD'
+    }
   ];
   
   export default sidebarItem;
-  

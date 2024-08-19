@@ -44,6 +44,7 @@ setInterval(() => {
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones);
+
   infoArray.value = noti.notifications;
   infoLength.value = infoArray.length;
 });
@@ -69,6 +70,7 @@ watch(infoArray, (newValue, oldValue) => {
     // Se ha agregado un nuevo valor
     handleNewItem();
   }
+
 });
 
 </script>

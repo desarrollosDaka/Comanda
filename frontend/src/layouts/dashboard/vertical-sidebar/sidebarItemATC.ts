@@ -33,21 +33,10 @@ import {
       to: '/dashboard'
     },
     {
-        title: 'Pedidos Online',
-        icon: BarcodeOutlined, 
-        to: '/maestroPedidos'
-      },
-    {
       title: 'Comandas',
       icon: ClusterOutlined, 
-      to: '/maestroComandaAsignada'
-    },
-    {
-      title: 'Pick-Up',
-      icon: CarOutlined, 
-      to: '/pickups'
-    },
+      to: '/ComandasAtc'
+    }
   ];
   
   export default sidebarItem;
-  

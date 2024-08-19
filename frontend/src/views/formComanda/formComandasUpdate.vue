@@ -30,8 +30,10 @@ const estado = ref();
 const ciudad = ref();
 const municipio = ref();
 const direccion = ref("");
+const direccionEnvio = ref("");
 const direccionZoom = ref();
 const referencia = ref("");
+const referenciaEnvio = ref("");
 const autorizado = ref(false);
 const nombreDos = ref("");
 const cedulaDos = ref("");
@@ -154,7 +156,9 @@ const getOrder = async () => {
       municipio.value = data[0][0]["ID_municipio"];
       origen.value = data[0][0]["ID_sucursal"];
       direccion.value = data[0][0]["Direccion"];
+      direccionEnvio.value = data[0][0]["Direccion_envio"];
       referencia.value = data[0][0]["Referencia"];
+      referenciaEnvio.value = data[0][0]["Referencia_envio"];
       ID_Delivery.value = +data[0][0]["Tipo_delivery"];
       direccionZoom.value = data[0][0]["SucursalZoom"];
       autorizado.value = data[0][0]["Autoriza"];
@@ -442,8 +446,10 @@ async function handleFormComanda() {
     ciudad: ciudad.value,
     municipio: municipio.value,
     ID_delivery: ID_Delivery.value,
-    direccion: ID_Delivery.value === 3 ? null : direccion.value,
-    referencia: ID_Delivery.value === 3 ? null : referencia.value,
+    direccion: direccion.value,
+    referencia: referencia.value,
+    direccionEnvio: ID_Delivery.value === 3 ? null : direccionEnvio.value,
+    referenciaEnvio: ID_Delivery.value === 3 ? null : referenciaEnvio.value,
     sucursalZoom: ID_Delivery.value === 1 || ID_Delivery.value === 2 || ID_Delivery.value === 4 ? null : direccionZoom.value,
     autorizado: autorizado.value.toString(),
     cedulaDos: autorizado.value === false ? null : cedulaDos.value,
@@ -857,6 +863,37 @@ onMounted(async () => {
         >
         </v-autocomplete>
       </v-col>
+      <v-col cols="12" md="6">
+        <v-label for="direccion">Direccion completa del cliente</v-label>
+        <v-text-field
+          id="direccion"
+          type="text"
+          placeholder="Direccion Completa"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          v-model="direccion"
+          :rules="direccionRules"
+          color="primary"
+          :disabled="Status == 2"
+        ></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-label for="referencia">Referencia</v-label>
+        <v-text-field
+          id="referencia"
+          type="text"
+          placeholder="Referencia del delivery"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          :rules="referenciaRules"
+          v-model="referencia"
+          color="primary"
+          :disabled="Status == 2"
+        ></v-text-field>
+      </v-col>
     </v-row>
     <br />
 
@@ -1059,7 +1096,7 @@ onMounted(async () => {
     </v-row>
     <v-row v-if="ID_Delivery === 1 || ID_Delivery === 4">
       <v-col cols="12" md="6">
-        <v-label for="direccion">Direccion completa</v-label>
+        <v-label for="direccion">Direccion completa del envio</v-label>
         <v-text-field
           id="direccion"
           type="text"
@@ -1067,7 +1104,7 @@ onMounted(async () => {
           variant="outlined"
           aria-label="Name Documents"
           class="mt-2 my-input"
-          v-model="direccion"
+          v-model="direccionEnvio"
           :rules="direccionRules"
           color="primary"
           :disabled="Status == 2"
@@ -1084,7 +1121,7 @@ onMounted(async () => {
           aria-label="Name Documents"
           class="mt-2 my-input"
           :rules="referenciaRules"
-          v-model="referencia"
+          v-model="referenciaEnvio"
           color="primary"
           :disabled="Status == 2"
         ></v-text-field>

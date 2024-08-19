@@ -82,14 +82,14 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.INTEGER,
   },
-  // Direccion_envio: {
-  //   allowNull: true,
-  //   type: DataTypes.STRING(150),
-  // },
-  // Referencia_envio: {
-  //   allowNull: true,
-  //   type: DataTypes.STRING(150),
-  // },
+  Direccion_envio: {
+    allowNull: true,
+    type: DataTypes.STRING(150),
+  },
+  Referencia_envio: {
+    allowNull: true,
+    type: DataTypes.STRING(150),
+  },
   ID_ticket: {
     allowNull: true,
     type: DataTypes.STRING(30),
