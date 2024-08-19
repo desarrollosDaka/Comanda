@@ -109,7 +109,7 @@ const headers = ref([
   { title: 'FECHA', key: 'Create_date' },
   { title: 'ASESOR', key: 'Asesor' },
   { title: 'STATUS', key: 'Status' },
-  { title: 'ACCIÓN', sortable: false, key: 'action' },
+  { title: '', sortable: false, key: 'action' },
 ] as const);
 
 

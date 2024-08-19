@@ -56,8 +56,10 @@ onMounted(async () => {
 
         const tipoArchivo = 'RETENCIÓN'
         url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
+
       } else {
         url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
+        
       }
       const { data } = await axios.get(url.value);
 
@@ -278,7 +280,7 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row>
+  <v-row v-if="USER_ROL != 99 && USER_ROL != 10 && USER_ROL != 11">
     <v-col cols="12">
       <br>
       <v-file-input 
@@ -290,7 +292,6 @@ async function downLoadArchive(param: Documento) {
         required 
         @change="viewImages" 
         accept="image/* application/pdf"
-        :disabled="USER_ROL === 10 || USER_ROL === 11"
         prepend-icon="mdi-camera">
       </v-file-input>
     </v-col>
