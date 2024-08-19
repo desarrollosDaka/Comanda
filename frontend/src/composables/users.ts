@@ -31,7 +31,7 @@ const ARRAYUSER_ROL = [
     }, 
      // GERENTE DE TIENDA   
     {   "userRol": 4 , 
-        "status":[1],
+        "status":[1, 10],
         "msgButton":'Asignar Asesor', 
         "changeID_status":2,
         "printer":false
