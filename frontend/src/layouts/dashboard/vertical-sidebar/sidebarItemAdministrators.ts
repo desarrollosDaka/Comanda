@@ -47,35 +47,11 @@ const sidebarItem: menu[] = [
     to: '/maestroPedidos'
   },
   {
-    title: 'Retencion',
-    icon: BarcodeOutlined, 
-    to: '/retenciones'
-  },
-  {
-    title: 'Comandas',
-    icon: ClusterOutlined, 
-    to: '/maestroComandaAsignada'
-  },
-  {
     title: 'Reportes',
     icon: ContainerOutlined, 
-    to: '/comanda'
+    to: '/ReporteComanda'
   },
   { header: 'Configuración' },
-  {
-    title: 'Auth',
-    icon: LoginOutlined,
-    children:  [ 
-      {
-        title: ' Login',
-        to: '/auth/login'
-      },
-      {
-        title: 'Register',
-        to: '/auth/register'
-      },
-    ]
-  },
   {
     title: 'Usuarios',
     icon: UserOutlined,
@@ -95,20 +71,8 @@ const sidebarItem: menu[] = [
     icon: FontSizeOutlined,
     children:  [ 
       {
-        title: 'Typography',
-        to: '/typography'
-      },
-      {
         title: 'Color',
         to: '/colors'
-      },
-      {
-        title: 'Shadow',
-        to: '/shadow'
-      },
-      {
-        title: 'Ant Icons',
-        to: '/icon/ant'
       }
     ]
   },

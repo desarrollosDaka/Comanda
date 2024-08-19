@@ -126,6 +126,16 @@ const MainRoutes = {
       path: '/DetalleCDD/:id1/:id2',
       component: () => import('@/views/pages/detalleCDD.vue')
     }
+    ,{
+      name: 'ReporteComanda',
+      path: '/ReporteComanda',
+      component: () => import('@/views/pages/reportComanda.vue')
+    }
+    ,{
+      name: 'DetalleComandaReporte',
+      path: '/DetalleComandaReporte/:id1/:id2',
+      component: () => import('@/views/pages/detalleReporte.vue')
+    }
   ]
 };
 
