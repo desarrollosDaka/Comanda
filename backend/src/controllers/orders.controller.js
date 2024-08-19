@@ -18,27 +18,31 @@ const getMasterOrder = async (req, res) => {
     // const rta = await sequelize.models.modelOrders.findAll();
     const rta = await sequelize.query(
       `SELECT  T0.[ID_order]
-                ,T0.ID_detalle
-                ,T0.Caja_factura
-				        ,T3.Tipo_cedula
-                ,T0.Cedula  
-                ,T3.Nombre Cliente
-                ,T3.Razon_comercial
-                ,T1.Sucursal
-                ,T1.ID_Sucursal
-                ,T0.[User_crea]
-                ,T0.[User_asing] Asesor 
-                ,T2.Status
-                ,T2.ID_status 
-                ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
+              ,T0.ID_detalle
+              ,T2.Status
+              ,T2.ID_status 
+              ,T3.Tipo_cedula
+              ,T0.Cedula  
+              ,T5.Delivery_type
+              ,T3.Nombre Cliente
+              ,T1.Sucursal
+              ,T1.ID_Sucursal
+              ,T0.[User_crea]
+              ,T0.User_mod
+              ,T4.Nombre AS NombreAsesor
+              ,T0.User_asing 
+              ,CAST(T0.Create_date AS DATE) Create_date
+              ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+              ,CAST(T0.update_date AS DATE) Update_date
+              ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
+        LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL 
-        ORDER BY T0.[ID_order] DESC`
-    );
+        ORDER BY T0.[ID_order] DESC` );
 
     if (rta) {
       return rta;
@@ -473,23 +477,21 @@ const filterOrderDetails = async (req, res) => {
 };
 
 //OBTENER DETALLES DE COMANDA
-const filterOrderATC = async (req, res) => {
+const filterOrderATC = async (id) => {
   try {
-  //  const id = req.params.id;
-
     const rta = await sequelize.query(
-      ` SELECT T1 .Nombre, T2.[Status] ,T0.*,
+      `SELECT T1 .Nombre, T2.[Status] ,T0.*,
 CAST(T0.create_date as DATE) as Create_date
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2
+WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
  UNION ALL
 SELECT  T1 .Nombre, T2.[Status] ,T0.*, CAST(T0.create_date as DATE) as Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2`
+WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal = '${id}'`
     );
     return rta;
   } catch (e) {

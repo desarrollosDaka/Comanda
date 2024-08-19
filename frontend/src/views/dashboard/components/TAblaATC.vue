@@ -6,6 +6,7 @@ import { useGetStatus } from "@/composables/status";
 import { io } from "socket.io-client";
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 import { useRoute } from "vue-router";
+import { useAuthStore } from '../../../stores/auth';
 
 const route = useRoute();
 const search = ref("");
@@ -17,6 +18,7 @@ const urlSocket = ref();
 const infoAsesores = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
+const auth = useAuthStore();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -36,6 +38,13 @@ const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
+setInterval(() => {
+  // VERIFICAR ESTO
+  socket.emit('getSucursal', id_sucursal.value);
+
+}, 5000);
+
+
 if(USER_ROL.value === 10){
   urlSocket.value = 'get-master-order-atc'
 }else{
@@ -45,9 +54,12 @@ if(USER_ROL.value === 10){
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
     try {
-        info.value = rta[0]
+    
+        info.value = rta;
     } catch (error) { 
        console.log(error);
+    } finally {
+        loadingInfo.value = false; // Ocultar animación de carga
     }
 });
 
@@ -88,7 +100,9 @@ const getMessageStatus = (id: number) => {
   return null;
 };
 
-onMounted(async () => {
+onMounted(async () => { 
+  loadingInfo.value = true; 
+  socket.emit('getSucursal', id_sucursal.value);
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });
@@ -193,6 +207,11 @@ const COLORSTATUS: any = {
         </template>
 
       </v-data-table>
+
+       <!-- Indicador de carga -->
+       <v-overlay :value="loadingInfo">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
     </v-card>
   </UiTitleCard>
 </template>

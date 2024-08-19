@@ -64,6 +64,7 @@ const referencia = ref("");
 const autorizado = ref(false);
 const cedulaDos = ref("");
 const telefonoUno = ref("");
+const telefonoDos = ref("");
 const ID_pago = ref();
 const ID_status = ref();
 const porcentaje = ref();
@@ -72,10 +73,12 @@ const ID_delivery = ref();
 const User_asing = ref();
 const id_sucursal = ref();
 const guiaZoom = ref();
-const guiaZoom2 = ref();
 const direccionDelivery = ref();
 const Type = ref()
+const razonComercial = ref();
+const guiaZoom2 = ref();
 
+const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
@@ -120,8 +123,10 @@ const getOrder = async () => {
       autorizado.value = data[0][0]["Autoriza"];
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
+      telefonoDos.value = data[0][0]["Telefono"];
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
+      razonComercial.value = data[0][0]["Razon_comercial"];
     }
   } catch (error) {
     console.log(error);
@@ -376,40 +381,46 @@ const alertaRechazar = () => {
   </div>
 
   <v-row class="mb-0">
-    <v-col cols="12" md="4" class="px-10 py-5">
-      <h2>Datos del Cliente</h2>
-      <p><b>Cedula:</b> {{ cedulaUno }}</p>
-      <p><b>Tipo:</b> {{ tipo }}</p>
-      <p><b>Email:</b> {{ email }}</p>
-      <p><b>Cliente:</b> {{ nombreCompleto }}</p>
-      <p><b>Estados:</b> {{ estado }}</p>
-      <p><b>Ciudad:</b> {{ ciudad }}</p>
-      <p><b>Municipio:</b> {{ municipio }}</p>
-    </v-col>
-    <v-col cols="12" md="4" class="px-10 py-5">
-      <h2>Datos de la comanda</h2>
-      <p><b>Origen:</b> {{ origen }}</p>
-      <p><b>Direccion Completa:</b> {{ direccion }}</p>
-      <p><b>Referencia:</b> {{ referencia }}</p>
-      <p><b>Delivery:</b> {{ ID_delivery }}</p>
-      <p><b>Autorizado para recibir:</b>
-        <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand" v-if="autorizado === true">
-          <p class="mb-0">Si</p>
-        </v-chip>
+        <v-col cols="12" md="4" class="px-10 py-5">
+            <h2>Datos del Cliente</h2>
+            <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p>
+            <p v-else><b>Cedula:</b> {{ cedulaUno }}</p>
+            <p><b>Tipo:</b> {{ tipo }}</p>
+            <p><b>Email:</b> {{ email }}</p>
+            <p v-if="tipo === 'JURIDICO'"><b>Razon Social:</b> {{ nombreCompleto }}</p>
+            <p v-else><b>Cliente:</b> {{ nombreCompleto }}</p>
+            <p v-if="tipo === 'JURIDICO'"><b>Razon Comercial:</b> {{ razonComercial }}</p>
+            <p><b>Estados:</b> {{ estado }}</p>
+            <p><b>Ciudad:</b> {{ ciudad }}</p>
+            <p><b>Municipio:</b> {{ municipio }}</p>
+            <p v-if="ROLESTELEFONO.includes(USER_ROL)"><b>Telefono:</b> {{ telefonoDos }}</p>
+        </v-col>
+        <v-col cols="12" md="4" class="px-10 py-5">
+            <h2>Datos de la comanda</h2>
+            <p><b>Origen:</b> {{ origen }}</p>
+            <p v-if="ID_delivery !== 'PICK UP'"><b>Direccion Completa:</b> {{ direccion }}</p>
+            <p v-if="ID_delivery !== 'PICK UP'"><b>Referencia:</b> {{ referencia }}</p>
+            <p><b>Delivery:</b> {{ ID_delivery }}</p>
+            <p><b>Autorizado para recibir:</b>
+                <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
+                    v-if="autorizado === true">
+                    <p class="mb-0">Si</p>
+                </v-chip>
 
-        <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>
-          <p class="mb-0">No</p>
-        </v-chip>
-      </p>
-      <p><b>Cedula/Rif:</b> {{ cedulaDos }}</p>
-      <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
-    </v-col>
-    <v-col cols="12" md="4" class="px-10 py-5">
-      <h2>Estatus</h2>
-      <p><b>Status de comanda:</b> {{ ID_status }}</p>
-      <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
-    </v-col>
-  </v-row>
+                <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-timer-sand" v-else>
+                    <p class="mb-0">No</p>
+                </v-chip>
+            </p>
+            <p v-if="cedulaDos"><b>Cedula/Rif Autorizado:</b> {{ cedulaDos }}</p>
+            <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
+        </v-col>
+        <v-col cols="12" md="4" class="px-10 py-5">
+            <h2>Estatus</h2>
+            <p><b>Status de comanda:</b> {{ ID_status }}</p>
+            <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
+        </v-col>
+    </v-row>
+
   
     <!-- tabla para los demas usuarios -->
     <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" >
@@ -423,7 +434,6 @@ const alertaRechazar = () => {
                     || USER_ROL === 6 
                     || USER_ROL === 7 
                     || USER_ROL === 8 
-                    || USER_ROL === 9 
                     || USER_ROL === 11 
                     || USER_ROL === 99">
 
@@ -459,7 +469,7 @@ const alertaRechazar = () => {
         </v-row>
 
         <!-- ATC -->
-        <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10">
+        <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10 || USER_ROL === 9">
             <v-col cols="12" md="12">
                 <v-table class="bordered-table" hover density="comfortable" rounded="lg">
                   <thead class="bg-containerBg">
@@ -512,13 +522,13 @@ const alertaRechazar = () => {
               v-model="guiaZoom2"
               placeholder="ingresa Guia Zoom"
               class="inputDelivery3"
-          >
+          > 
           </v-text-field>
       </td>
   </tr>     
   
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11"
+  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 "
     @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
 
   <v-row class="mb-0 mt-5">
