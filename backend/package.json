@@ -1,6 +1,6 @@
 {
   "name": "api_sql_server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Api rest con node.js, JSon Web Token, Autenticacion, Rutas en Sql Ser",
   "main": "index.js",
   "scripts": {
