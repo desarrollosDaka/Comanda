@@ -13,8 +13,12 @@ import { CheckCircleOutlined, GiftOutlined, MessageOutlined, SettingOutlined, Be
 const isActive = ref(true);
 
 function deactivateItem() {
-  isActive.value = false;
+  isActive.value = true;
 }
+
+const viewAll = () => {
+  alert('En desarrollo.');
+};
 
 watch(() => notifyStore.countNotifications, (newValue) => {
   localLenNotify.value = newValue;
@@ -64,13 +68,11 @@ watch(() => notifyStore.countNotifications, (newValue) => {
       </perfect-scrollbar>
       <v-divider></v-divider>
       <div class="pa-2 text-center">
-        <v-btn color="primary" variant="text">Ver todo</v-btn>
+        <v-btn @click="viewAll()" color="primary" variant="text">Ver todo</v-btn>
       </div>
     </v-sheet>
   </v-menu>
 </template>
-
-
 
 <style lang="scss">
 .v-tooltip {
