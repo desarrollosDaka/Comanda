@@ -56,8 +56,10 @@ onMounted(async () => {
 
         const tipoArchivo = 'RETENCIÓN'
         url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
+
       } else {
         url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
+        
       }
       const { data } = await axios.get(url.value);
 
@@ -278,7 +280,7 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row>
+  <v-row v-if="USER_ROL != 99 && USER_ROL != 10 && USER_ROL != 11">
     <v-col cols="12">
       <br>
       <v-file-input 
@@ -290,7 +292,6 @@ async function downLoadArchive(param: Documento) {
         required 
         @change="viewImages" 
         accept="image/* application/pdf"
-        :disabled="USER_ROL === 10 || USER_ROL === 11"
         prepend-icon="mdi-camera">
       </v-file-input>
     </v-col>
@@ -313,7 +314,7 @@ async function downLoadArchive(param: Documento) {
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11"
+          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11 "
             color="error">
           </v-btn>
 

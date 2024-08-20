@@ -14,12 +14,12 @@ const valid = ref(false);
 const show1 = ref(false);
 const Email = ref();
 const Nombre = ref();
-const Password = ref('123456');
+const Password = ref();
 const ID_rol = ref();
 const Id_sucursal = ref();
 const Dpto_ventas = ref(false);
 const Linea_ventas = ref();
-const User_crea = ref();
+// const User_crea = ref();
 const User_mod = ref();
 const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
 const infoFilter = ref();
@@ -44,8 +44,7 @@ console.log(id.value);
 
 // validaciones
 const passwordRules = ref([
-  (v: string) => !!v || 'La contraseña es requerida',
-  (v: string) => (v && v.length <= 10) || 'La contraseña debe tener menos de 10 caracteres.'
+  (v: string) => (v && v.length <= 20) || 'La contraseña debe tener menos de 20 caracteres.'
 ]);
 
 const emailRules = ref([
@@ -128,6 +127,7 @@ function validate(values: any, { setErrors }: any) {
     const jsonUser = {
         Nombre:Nombre.value, 
         Email:Email.value, 
+        Password: Password.value,
         Id_sucursal:Id_sucursal.value,
         ID_rol:ID_rol.value ,
         Dpto_ventas:Dpto_ventas.value.toString() ,
@@ -175,7 +175,7 @@ onMounted( async () => {
     ID_rol.value = +infoFilter.value.ID_rol
     Dpto_ventas.value = infoFilter.value.Dpto_ventas
     Linea_ventas.value = infoFilter.value.Linea_ventas
-    User_crea.value = User_crea.value 
+    User_mod.value = User_mod.value 
 })
 </script>
 
@@ -204,7 +204,6 @@ onMounted( async () => {
                 <v-text-field
                     id="password"
                     aria-label="password"
-                    disabled
                     v-model="Password"
                     :rules="passwordRules"
                     required
@@ -327,7 +326,7 @@ onMounted( async () => {
             class="mt-6" 
             variant="flat" 
             size="large" 
-            :disabled="!Email || !Password  || !ID_rol || !Id_sucursal || !Nombre" 
+            :disabled="!Email  || !ID_rol || !Id_sucursal || !Nombre" 
             type="submit"
         >
         Guardar 

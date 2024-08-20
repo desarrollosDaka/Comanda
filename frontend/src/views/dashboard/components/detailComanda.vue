@@ -27,6 +27,7 @@ interface Item {
   Producto: string;
   ID_producto: number;
   guiaZoom: string;
+  guiaZoom2: string;
   direccionDelivery: string;
   Precio: number;
   Unidades: number;
@@ -75,7 +76,9 @@ const guiaZoom = ref();
 const direccionDelivery = ref();
 const Type = ref()
 const razonComercial = ref();
+const guiaZoom2 = ref();
 
+const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
@@ -83,7 +86,7 @@ let user_crea = ref<string>("");
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
-  const parsedData = JSON.parse(jsonFromLocalStorage); 
+  const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
   USER_ROL.value = +parsedData.data.ID_rol;
   USER.value = parsedData.data.ID_user;
@@ -94,12 +97,12 @@ const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el t
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
-const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 
 const itemDocument = ref<Document[]>([]);
 
 const getOrder = async () => {
   try {
+    
     const url = `${baseUrl}/filterOrder/${id.value}`;
     const { data } = await axios.get(url);
 
@@ -126,6 +129,7 @@ const getOrder = async () => {
       User_asing.value = data[0][0]["User_asing"];
       razonComercial.value = data[0][0]["Razon_comercial"];
     }
+    
   } catch (error) {
     console.log(error);
   }
@@ -164,6 +168,7 @@ const updateEstatus = async () => {
     producto: item.Producto,
     id_producto: item.ID_producto,
     guiaZoom: item.guiaZoom,
+    guiaZoom2: guiaZoom2.value,
     direccionDelivery: item.direccionDelivery,
     precio: item.Precio,
   }));
@@ -180,6 +185,7 @@ const updateEstatus = async () => {
 
     await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
       status_comanda: dataUser.changeID_status,
+      user_mod: user_crea.value
     });
   } catch (error) {
     console.log(error);
@@ -228,10 +234,24 @@ const cajaFactura = async () => {
 };
 
 onMounted(async () => {
+
+  const toastLoading = toast.loading("Cargando Comanada...", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        theme: 'colored',
+        type: 'warning',
+        icon: 'info',
+        toastStyle: {
+            border: '1px solid #0209c6',
+            fontSize: '16px',
+            opacity: '1',
+            background: '#1778ff'
+        },        
+      });
   await getOrder();
-  await getArticulos();
+  await getArticulos(); 
   await getAsesores();
-  await getDocumentsATC();
+  await getDocumentsATC();  
+  toast.remove(toastLoading)
 });
 
 async function updateData() {
@@ -265,9 +285,12 @@ async function updateData() {
           text: "la comanda ha cambiado de estatus!",
           icon: "success",
         }).then((result) => {
-          if (result.isConfirmed) {
-            router.push(`/maestroComandaAsignada`);
+          if (result.isConfirmed && USER_ROL.value === 10) {
+            router.push(`/ComandasAtc`);
           }
+          else {
+          router.push(`/maestroComandaAsignada`);
+        }
         });
       }
     });
@@ -300,7 +323,7 @@ const asignAsesor = async () => {
         text: "Se asigno un asesor a la comanda seleccionada!",
         icon: "success",
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed)  {
           router.push(`/maestroComandaAsignada`);
         }
       });
@@ -358,25 +381,22 @@ const alertaRechazar = () => {
 </script>
 
 <template>
+  <!-- informacion de la comanda -->
 
-    <!-- informacion de la comanda -->
+  <div class="card">
+    <div class="data">
 
-    <div class="card">
-        <div class="data">
-            <p>COMANDA #{{ id_orders }}</p>
-            <div class="range">
-                <div class="fill">
-                </div>
-            </div>
-
+      <p>COMANDA #{{ id_orders }}</p>
 
       <div class="range">
         <div class="fill">
         </div>
       </div>
 
+    </div>
+  </div>
 
-    <v-row class="mb-0">
+  <v-row class="mb-0">
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos del Cliente</h2>
             <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p>
@@ -394,8 +414,8 @@ const alertaRechazar = () => {
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos de la comanda</h2>
             <p><b>Origen:</b> {{ origen }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Direccion Completa:</b> {{ direccion }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Referencia:</b> {{ referencia }}</p>
+            <p v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'"><b>Direccion Completa:</b> {{ direccion }}</p>
+            <p v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'"><b>Referencia:</b> {{ referencia }}</p>
             <p><b>Delivery:</b> {{ ID_delivery }}</p>
             <p><b>Autorizado para recibir:</b>
                 <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
@@ -417,45 +437,114 @@ const alertaRechazar = () => {
         </v-col>
     </v-row>
 
-    <!-- ATC -->
-    <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10">
-      <v-col cols="12" md="12">
-        <v-table class="bordered-table" hover density="comfortable" rounded="lg">
-          <thead class="bg-containerBg">
-            <tr class="bg-containerBg">
-              <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase"
-                v-if="ID_delivery == 'DELIVERY TIENDA'">Direccion</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase"
-                v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
-              <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
-            </tr>
-          </thead>
+  
+    <!-- tabla para los demas usuarios -->
+    <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" >
+        <!-- DEMAS USER -->
+        <v-row v-if="Type != 'DETALLE DE ENVIO' 
+                    || USER_ROL === 1 
+                    || USER_ROL === 2 
+                    || USER_ROL === 3 
+                    || USER_ROL === 4 
+                    || USER_ROL === 5 
+                    || USER_ROL === 6 
+                    || USER_ROL === 7 
+                    || USER_ROL === 8 
+                    || USER_ROL === 11 
+                    || USER_ROL === 99">
 
-          <tbody>
-            <tr v-for="(item, index) in info" :key="index">
-              <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
-              <td class="py-3">{{ item['ID_producto'] }} </td>
-              <td class="py-3" v-if="ID_delivery == 'DELIVERY TIENDA'">
-                <v-text-field variant="solo-inverted" v-model="item.direccionDelivery" placeholder="Direccion"
-                  class="inputDelivery">
-                </v-text-field>
-              </td>
-              <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
-                <v-text-field variant="solo-inverted" v-model="item.guiaZoom" placeholder="Guia" class="inputDelivery2">
-                </v-text-field>
-              </td>
-              <td class="py-3">{{ item['Precio'] }}$</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-col>
-    </v-row>
-  </UiTitleCard>
+            <v-col cols="12" md="12">
+                <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+                    <thead class="bg-containerBg">
+                        <tr class="bg-containerBg">
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
 
+                            <th class="text-right text-caption font-weight-bold text-uppercase"
+                                style="min-width: 100px">Cantidad</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+                            <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr v-for="(item, index) in info" :key="index">
+                            <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+                            <td class="py-3">{{ item['ID_producto'] }} </td>
+                            <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
+                            </td>
+                            <td class="py-3">{{ item['Precio'] }}$</td>
+                            <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
+                        </tr>
+                    </tbody>
+                    <thead class="bg-containerBg">
+                      
+                    </thead>
+                </v-table>
+            </v-col>
+        </v-row>
+
+        <!-- ATC -->
+        <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10 || USER_ROL === 9">
+            <v-col cols="12" md="12">
+                <v-table class="bordered-table" hover density="comfortable" rounded="lg">
+                  <thead class="bg-containerBg">
+                        <tr class="bg-containerBg">
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'DELIVERY TIENDA'">Direccion</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+                        </tr>
+                 
+                    </thead>
+    
+                    <tbody>
+                        <tr v-for="(item, index) in info" :key="index">
+                            <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+                            <td class="py-3">{{ item['ID_producto'] }} </td>
+                            <td class="py-3"  v-if="ID_delivery == 'DELIVERY TIENDA'">
+                              <v-text-field 
+                                variant="solo-inverted"
+                                v-model="item.direccionDelivery"
+                                placeholder="Direccion"
+                                class="inputDelivery"
+                              >
+                              </v-text-field>
+                            </td>
+                            <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
+                              <v-text-field 
+                                variant="solo-inverted"
+                                v-model="item.guiaZoom"
+                                placeholder="Guia"
+                                class="inputDelivery2"
+                              >
+                              </v-text-field>
+                            </td>
+                            <td class="py-3">{{ item['Precio'] }}$</td>
+                        </tr>
+                     
+                   </tbody>                    
+                </v-table>            
+            </v-col>            
+        </v-row>    
+       
+    </UiTitleCard>
+
+   <tr v-if="Type != 'DETALLE DE ENVIO'  && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA' && USER_ROL === 10">
+      <td colspan="5" class="py-3">
+          <v-text-field 
+              variant="solo-filled"
+              v-model="guiaZoom2"
+              placeholder="Ingresa Guia ZOOM"
+              class="inputDelivery3"
+          > 
+          </v-text-field>
+      </td>
+  </tr>     
+  
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11"
+  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 "
     @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
 
   <v-row class="mb-0 mt-5">
@@ -491,6 +580,7 @@ const alertaRechazar = () => {
           Rechazar Retencion
         </v-btn>
       </v-col>
+
     </v-row>
   </v-container>
 
@@ -563,5 +653,8 @@ thead {
 
 .inputDelivery2 {
   width: 200px;
+}
+.inputDelivery3{
+  width: 600px;
 }
 </style>

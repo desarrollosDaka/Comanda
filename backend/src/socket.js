@@ -2,6 +2,7 @@
 const { Server } = require("socket.io");
 const {
   getMasterOrder,
+  getMasterOrderCDD,
   createMasterOrderAndDetails,
   updateMasterOrderAndDetails,
   getMasterOrderRetencion,
@@ -29,7 +30,6 @@ module.exports = (server) => {
       const rta = await findallv2(userId.ID_user);
       socket.emit("notifications", rta[0]);
     });
-
     // Notificaciones
 
     socket.on("newCommand", (idUser) => {
@@ -47,6 +47,16 @@ module.exports = (server) => {
             try {
                 const rta = await getMasterOrder();
                 socket.emit('get-master-order', rta);
+                //console.log('Datos emitidos:', rta);
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
+        };
+
+        const emitOrderCDDData = async () => {
+            try {
+                const rta = await getMasterOrderCDD();
+                socket.emit('get-master-order-cdd', rta);
                 //console.log('Datos emitidos:', rta);
             } catch (error) {
                 console.error('Error al obtener los datos:', error);
@@ -93,13 +103,22 @@ module.exports = (server) => {
           }
         };
 
+        
+        socket.on("getSucursal",async  (userId) => {
+       //   console.log("userId "+ userId);
+          
+          const rta = await filterOrderATC(userId);
+          socket.emit("get-master-order-atc", rta[0]);
+        });
+
+
         const emitOrderDataATC = async () => {
-          try {
-              const rta = await filterOrderATC();
-              socket.emit('get-master-order-atc', rta);
-          } catch (error) {
-              console.error('Error al obtener los datos:', error);
-          }
+          // try {
+          //     const rta = await filterOrderATC(userId.ID_sucursal);
+          //     socket.emit('get-master-order-atc', rta);
+          // } catch (error) {
+          //     console.error('Error al obtener los datos:', error);
+          // }
         };
 
         const emitUserData = async () => {
@@ -134,6 +153,7 @@ module.exports = (server) => {
         // };
         // Emitir datos inmediatamente al conectar  
         emitOrderData();
+        emitOrderCDDData();
         emitUserData();
         emitOrderDataConRetencion();
        // emitNotify();
@@ -145,6 +165,7 @@ module.exports = (server) => {
 
         // Configurar un intervalo para emitir datos cada 10 segundos (por ejemplo)
         const intervalIdOrder = setInterval(emitOrderData, 5000);
+        const intervalIdOrdercdd = setInterval(emitOrderCDDData, 5000);
         const intervalIdUser = setInterval(emitUserData, 5000);
         const intervalIdOrderRetencion = setInterval(emitOrderDataConRetencion, 5000);
         //const intervalNotifications = setInterval(emitNotify, 5000);
@@ -160,8 +181,9 @@ module.exports = (server) => {
       //  socket.on('request-master-notifications', emitNotify);
         socket.on('request-master-order-retencion-two', emitOrderDataConRetencionTwo);
         socket.on('request-master-order-pickup', emitOrderDataConPickup);
-        socket.on('request-master-order-pickup', emitOrderDataConPickupTwo);
-        socket.on('request-master-order-pickup', emitOrderDataATC);
+        socket.on('request-master-order-pickupTwo', emitOrderDataConPickupTwo);
+        socket.on('request-master-order-ATC', emitOrderDataATC);
+        socket.on('request-master-order-cdd', emitOrderCDDData);
 
 
         
@@ -170,7 +192,7 @@ module.exports = (server) => {
 
         socket.on('disconnect', () => {
             console.log('Cliente desconectado');
-           clearInterval(intervalIdOrder); // Limpiar el intervalo cuando el cliente se desconecta
+            clearInterval(intervalIdOrder); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdUser); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderRetencion); // Limpiar el intervalo cuando el cliente se desconecta
           //  clearInterval(intervalNotifications); // Limpiar el intervalo cuando el cliente se desconecta
@@ -178,6 +200,7 @@ module.exports = (server) => {
             clearInterval(intervalIdOrderPickup); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderPickupTwo); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderATC); // Limpiar el intervalo cuando el cliente se desconecta
+            clearInterval(intervalIdOrdercdd); // Limpiar el intervalo cuando el cliente se desconecta
         });
 
     });

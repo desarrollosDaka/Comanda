@@ -1,17 +1,19 @@
 const sequelize = require("../config/conexion");
+const { encrypt, compare } = require("../helpers/handleBcrypt");
 
 // get user
 const getMasterUser = async (req, res) => {
     try {
        // const rta = await sequelize.models.modelMasterUser.findAll();
         const rta = await sequelize.query(
-            `SELECT T0.[ID_user]
+            `  SELECT T0.[ID_user]
               ,T0.[Nombre]
               ,T0.[Email]
               ,T0.[Password]
               ,T0.[Id_sucursal]
               ,T1.Sucursal
 			  ,T0.ID_rol
+			  ,T2.Nombre_rol
               ,T0.[Dpto_ventas]
               ,T0.[Linea_ventas]
               ,T0.[User_crea]
@@ -21,6 +23,7 @@ const getMasterUser = async (req, res) => {
               ,T0.[Update_date]
           FROM [COMANDA_TEST].[dbo].[MASTER_USER] T0
           INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.Id_sucursal = T1.ID_sucursal
+		  INNER JOIN [dbo].[MASTER_ROLS] T2 ON T0.ID_rol = T2.ID_rol
           WHERE [Delete] = 0 OR [Delete] IS NULL`);
         if(rta){
            return rta;
@@ -62,7 +65,32 @@ const updateMasterUser = async (req, res) => {
     try {
         const idUser = req.params.id;
         const userUpdate = req.body;
-        const rta = await sequelize.models.modelMasterUser.update(userUpdate,{
+        const {
+            Nombre,
+            Email,
+            Password,
+            Id_sucursal, 
+            ID_rol,
+            Dpto_ventas,
+            Linea_ventas,
+            User_mod,
+        } = req.body
+
+            // Encryptar el Password
+            const PasswordHash = await encrypt(Password);
+
+            const updateUser = {
+                Nombre,
+                Email,
+                Password: PasswordHash,
+                Id_sucursal,
+                ID_rol,
+                Dpto_ventas,
+                Linea_ventas,
+                User_mod,
+            }
+
+        const rta = await sequelize.models.modelMasterUser.update(updateUser,{
             where: {
                 ID_user: idUser},
           });
