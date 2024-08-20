@@ -314,7 +314,7 @@ async function downLoadArchive(param: Documento) {
           aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11"
+          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11 "
             color="error">
           </v-btn>
 

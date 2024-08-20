@@ -664,7 +664,7 @@ onMounted(async () => {
           aria-label="Name Documents"
           color="primary"
           v-model="tipo"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-autocomplete>
       </v-col>
@@ -681,7 +681,7 @@ onMounted(async () => {
           placeholder="V"
           :rules="TipoDocumentoRules"
           class="mt-2 my-input"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-autocomplete>
       </v-col>
@@ -698,7 +698,7 @@ onMounted(async () => {
           v-model="cedulaUno"
           :rules="CedulaUnoRules"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-text-field>
       </v-col>
@@ -717,7 +717,7 @@ onMounted(async () => {
           :rules="emailRules"
           v-model="email"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-text-field>
       </v-col>
@@ -736,7 +736,7 @@ onMounted(async () => {
           :rules="nombreCompletoRules"
           v-model="nombreCompleto"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-text-field>
       </v-col>
@@ -752,7 +752,7 @@ onMounted(async () => {
           :rules="telefonoRules"
           v-model="telefonoUno"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-text-field>
       </v-col>
@@ -766,7 +766,7 @@ onMounted(async () => {
           class="mt-3 my-input"
           v-model="retencion"
           color="warning"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-switch>
       </v-col>
 
@@ -782,7 +782,7 @@ onMounted(async () => {
           required
           color="primary"
           class="mt-2 my-input"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-autocomplete>
       </v-col>
@@ -798,7 +798,7 @@ onMounted(async () => {
           class="mt-2 my-input"
           v-model="razonComercial"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-text-field>
       </v-col>
@@ -820,7 +820,7 @@ onMounted(async () => {
           color="primary"
           v-model="estado"
           @update:modelValue="getSelect"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-autocomplete>
       </v-col>
@@ -840,7 +840,7 @@ onMounted(async () => {
           color="primary"
           v-model="municipio"
           @update:modelValue="getSelectTwo"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-autocomplete>
       </v-col>
@@ -859,7 +859,7 @@ onMounted(async () => {
           aria-label="Name Documents"
           color="primary"
           v-model="ciudad"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-autocomplete>
       </v-col>
@@ -875,7 +875,7 @@ onMounted(async () => {
           v-model="direccion"
           :rules="direccionRules"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-text-field>
       </v-col>
 
@@ -891,7 +891,7 @@ onMounted(async () => {
           :rules="referenciaRules"
           v-model="referencia"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -914,7 +914,7 @@ onMounted(async () => {
             color="primary"
             placeholder="V"
             class="mt-2 my-input"
-            :disabled="Status == 2"
+            :disabled="Status != 1 && Status != 10"
           >
           </v-autocomplete>
         </v-col>
@@ -931,7 +931,7 @@ onMounted(async () => {
             v-model="cedula_rep"
             :rules="CedulaUnoRules"
             color="primary"
-            :disabled="Status == 2"
+            :disabled="Status != 1 && Status != 10"
           >
           </v-text-field>
         </v-col>
@@ -948,7 +948,7 @@ onMounted(async () => {
             :rules="emailRules"
             v-model="email_rep"
             color="primary"
-            :disabled="Status == 2"
+            :disabled="Status != 1 && Status != 10"
           >
           </v-text-field>
         </v-col>
@@ -965,7 +965,7 @@ onMounted(async () => {
             :rules="nombreCompletoRules"
             v-model="Nombre_rep"
             color="primary"
-            :disabled="Status == 2"
+            :disabled="Status != 1 && Status != 10"
           >
           </v-text-field>
         </v-col>
@@ -981,7 +981,7 @@ onMounted(async () => {
             :rules="telefonoRules"
             v-model="telefono_rep"
             color="primary"
-            :disabled="Status == 2"
+            :disabled="Status != 1 && Status != 10"
           >
           </v-text-field>
         </v-col>
@@ -1001,7 +1001,7 @@ onMounted(async () => {
               color="primary"
               v-model="estado_rep"
               @update:modelValue="getSelectRL"
-              :disabled="Status == 2"
+              :disabled="Status != 1 && Status != 10"
             >
             </v-autocomplete>
           </v-col>
@@ -1021,7 +1021,7 @@ onMounted(async () => {
               color="primary"
               v-model="municipio_rep"
               @update:modelValue="getSelectTwoRL"
-              :disabled="Status == 2"
+              :disabled="Status != 1 && Status != 10"
             >
             </v-autocomplete>
           </v-col>
@@ -1040,7 +1040,7 @@ onMounted(async () => {
               aria-label="Name Documents"
               color="primary"
               v-model="ciudad_rep"
-              :disabled="Status == 2"
+              :disabled="Status != 1 && Status != 10"
             >
             </v-autocomplete>
           </v-col>
@@ -1068,7 +1068,7 @@ onMounted(async () => {
           aria-label="Name Documents"
           color="primary"
           v-model="origen"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         </v-autocomplete>
       </v-col>
@@ -1088,7 +1088,7 @@ onMounted(async () => {
           aria-label="delivery"
           color="primary"
           v-model="ID_Delivery"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         >
         
         </v-autocomplete>
@@ -1107,7 +1107,7 @@ onMounted(async () => {
           v-model="direccionEnvio"
           :rules="direccionRules"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-text-field>
       </v-col>
 
@@ -1123,7 +1123,7 @@ onMounted(async () => {
           :rules="referenciaRules"
           v-model="referenciaEnvio"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -1141,7 +1141,7 @@ onMounted(async () => {
           aria-label="delivery"
           color="primary"
           v-model="direccionZoom"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-autocomplete>
       </v-col>
     </v-row>
@@ -1149,7 +1149,7 @@ onMounted(async () => {
       
       <v-col cols="12" md="3">
         <v-label for="autorizado">Autorizado para recibir el envio</v-label>
-        <v-switch v-model="autorizado" color="primary" :disabled="Status == 2"></v-switch>
+        <v-switch v-model="autorizado" color="primary" :disabled="Status != 1 && Status != 10"></v-switch>
       </v-col>
 
       <v-col cols="12" md="4" v-if="autorizado == true">
@@ -1164,7 +1164,7 @@ onMounted(async () => {
           v-model="nombreDos"
           :rules="autorizadoRules"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-text-field>
       </v-col>
 
@@ -1180,7 +1180,7 @@ onMounted(async () => {
           v-model="cedulaDos"
           :rules="cedulaDosRules"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-text-field>
       </v-col>
 
@@ -1195,7 +1195,7 @@ onMounted(async () => {
           :rules="telefonoRules"
           v-model="telefonoDos"
           color="primary"
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -1215,7 +1215,7 @@ onMounted(async () => {
           color="primary"
           v-model="pagosArray"
           multiple
-          :disabled="Status == 2"
+          :disabled="Status != 1 && Status != 10"
         ></v-autocomplete>
       </v-col>
 

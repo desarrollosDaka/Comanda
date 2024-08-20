@@ -113,7 +113,7 @@ onUnmounted(() => {
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
-  { title: "CLIENTE", key: "Cliente" },
+  { title: "CLIENTE", key: "Nombre" },
   { title: "FECHA", key: "Create_date" },
   { title: "", sortable: false, key: "action" },
 ] as const);
@@ -121,7 +121,7 @@ const headers = ref([
 // COlor de estatus
 const COLORSTATUS: any = {
   1: "success",
-  2: "warning",
+  2: "warning",  
   3: "success",
   4: "info",
   5: "warning",
@@ -132,7 +132,8 @@ const COLORSTATUS: any = {
 };
 </script>
 
-<template>
+<template>  
+
   <!-- TABLA -->
   <UiTitleCard title="" class-name="px-0 pb-0 rounded-md">
     <v-card flat>
