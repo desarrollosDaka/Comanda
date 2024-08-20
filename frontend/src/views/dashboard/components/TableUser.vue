@@ -21,10 +21,11 @@ const info = ref([]) ;
 
 // Listen for events from the server
 socket.on('get-master-user', (rta:any) => {
-  console.log('Datos actualizados:', rta);
+  //console.log('Datos actualizados:', rta);
   if (Array.isArray(rta)) {
     info.value = rta[0];
-    console.log(info.value);
+   // console.log(info.value);
+   loadingInfo.value = false;
   } else {
     console.error('La respuesta no es un array:', rta);
   }
@@ -67,9 +68,10 @@ const headers = ref([
   {title: 'ACCIÓN',  sortable: false, key: 'action'},
 ] as const);
 
-// onMounted( async () => {
-//     await getUser();
-// });
+onMounted( async () => {
+  loadingInfo.value = true;
+    //await getUser();
+});
 
 onUnmounted(() => {
   socket.disconnect();

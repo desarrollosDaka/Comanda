@@ -47,6 +47,7 @@ if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
 socket.on(`get-master-order`, (rta) => {
     try {
         info.value = rta[0]
+        loadingInfo.value = false;
     } catch (error) { 
        console.log(error);
     }
@@ -100,6 +101,7 @@ const getNameAsesor = (id: number) => {
 };
 
 onMounted(async () => {
+  loadingInfo.value = true;
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });

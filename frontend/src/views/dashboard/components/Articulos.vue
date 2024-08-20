@@ -96,9 +96,11 @@ onMounted(async () => {
         type: 'success',
         icon: 'info',
         toastStyle: {
+            border: '1px solid #0209c6',
             fontSize: '16px',
             opacity: '1',
-        },
+            background: '#1778ff'
+        },        
     });
 
 
