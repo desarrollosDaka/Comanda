@@ -47,6 +47,7 @@ if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
 socket.on(`${urlSocket.value}`, (rta) => {
     try {
         info.value = rta[0]
+        loadingInfo.value = false; 
     } catch (error) { 
        console.log(error);
     }
@@ -100,8 +101,11 @@ const getNameAsesor = (id: number) => {
 };
 
 onMounted(async () => {
-  const { status } = await useGetStatus();
+  
+  loadingInfo.value = true; 
+  const { status } = await useGetStatus();  
   infogetStatus.value = status;
+ 
 });
 
 onUnmounted(() => {
@@ -113,7 +117,7 @@ onUnmounted(() => {
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
-  { title: "CLIENTE", key: "Cliente" },
+  { title: "CLIENTE", key: "Nombre" },
   { title: "FECHA", key: "Create_date" },
   { title: "", sortable: false, key: "action" },
 ] as const);

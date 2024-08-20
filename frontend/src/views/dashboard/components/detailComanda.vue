@@ -102,6 +102,7 @@ const itemDocument = ref<Document[]>([]);
 
 const getOrder = async () => {
   try {
+    
     const url = `${baseUrl}/filterOrder/${id.value}`;
     const { data } = await axios.get(url);
 
@@ -128,6 +129,7 @@ const getOrder = async () => {
       User_asing.value = data[0][0]["User_asing"];
       razonComercial.value = data[0][0]["Razon_comercial"];
     }
+    
   } catch (error) {
     console.log(error);
   }
@@ -232,10 +234,24 @@ const cajaFactura = async () => {
 };
 
 onMounted(async () => {
+
+  const toastLoading = toast.loading("Cargando Comanada...", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        theme: 'colored',
+        type: 'warning',
+        icon: 'info',
+        toastStyle: {
+            border: '1px solid #0209c6',
+            fontSize: '16px',
+            opacity: '1',
+            background: '#1778ff'
+        },        
+      });
   await getOrder();
-  await getArticulos();
+  await getArticulos(); 
   await getAsesores();
-  await getDocumentsATC();
+  await getDocumentsATC();  
+  toast.remove(toastLoading)
 });
 
 async function updateData() {
@@ -398,8 +414,8 @@ const alertaRechazar = () => {
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos de la comanda</h2>
             <p><b>Origen:</b> {{ origen }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Direccion Completa:</b> {{ direccion }}</p>
-            <p v-if="ID_delivery !== 'PICK UP'"><b>Referencia:</b> {{ referencia }}</p>
+            <p v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'"><b>Direccion Completa:</b> {{ direccion }}</p>
+            <p v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'"><b>Referencia:</b> {{ referencia }}</p>
             <p><b>Delivery:</b> {{ ID_delivery }}</p>
             <p><b>Autorizado para recibir:</b>
                 <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
@@ -518,9 +534,9 @@ const alertaRechazar = () => {
    <tr v-if="Type != 'DETALLE DE ENVIO' && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
       <td colspan="5" class="py-3">
           <v-text-field 
-              variant="solo-inverted"
+              variant="solo-filled"
               v-model="guiaZoom2"
-              placeholder="ingresa Guia Zoom"
+              placeholder="Ingresa Guia ZOOM"
               class="inputDelivery3"
           > 
           </v-text-field>

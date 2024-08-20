@@ -50,7 +50,7 @@ socket.on("get-master-order", (rta) => {
       }
     });
     info.value = dataFilterStatus
-
+    loadingInfo.value = false;
    // const infoArray = info.value;
 
    // infoLength.value = infoArray.length;
@@ -151,6 +151,7 @@ const getNameAsesor = (id: number) => {
 
 onMounted(async () => {
   //await getOrders();
+  loadingInfo.value = true; 
   await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;

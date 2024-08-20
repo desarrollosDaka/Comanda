@@ -65,6 +65,7 @@ socket.on(`${urlSocket.value}`, (rta) => {
 //     console.error("La respuesta no es un array:", rta);
 // } 
     info.value = rta[0]
+    loadingInfo.value = false;
 });
 
 const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
@@ -118,6 +119,7 @@ const getNameAsesor = (id: number) => {
 
 onMounted(async () => {
   //await getOrders();
+  loadingInfo.value = true;
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });
