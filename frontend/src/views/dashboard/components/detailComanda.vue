@@ -531,7 +531,7 @@ const alertaRechazar = () => {
        
     </UiTitleCard>
 
-   <tr v-if="Type != 'DETALLE DE ENVIO' && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
+   <tr v-if="Type != 'DETALLE DE ENVIO'  && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA' && USER_ROL === 10">
       <td colspan="5" class="py-3">
           <v-text-field 
               variant="solo-filled"
