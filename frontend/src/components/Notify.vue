@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { router } from '@/router';
 import axios from 'axios';
+// import { mdiAccount } from '@mdi/js';
+import Swal from 'sweetalert2';
+
+const url = `${import.meta.env.VITE_URL}`;
 
 
 const props = defineProps({
@@ -11,19 +15,38 @@ const props = defineProps({
 });
 
 const deletee = async (ID_Notifications: string) => {
-    const res = await axios.put(`http://localhost:3002/api/update/notify/${ID_Notifications}`);
+    const res = await axios.put(`${url}/api/update/notify/${ID_Notifications}`);
     return res;
 }
 
+// const confirmDelete = async (ID_Notifications: string) => {
+//     if (confirm('¿Estás seguro de que deseas eliminar esta notificación?')) {
+//         const res = await deletee(ID_Notifications);
+//         console.log(res);
+//     }
+// }
+
+
 const confirmDelete = async (ID_Notifications: string) => {
-    if (confirm('¿Estás seguro de que deseas eliminar esta notificación?')) {
+    const result = await Swal.fire({
+        position: "top-start",
+        title: '¿Estás seguro de que deseas eliminar esta notificación?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
         const res = await deletee(ID_Notifications);
         console.log(res);
     }
-}
+};
 
-const redirectToCommnd = () => {
-    router.push('/')
+const redirectToCommnd = async () => {
+    console.log("props.notifyData.ID_detalle", props.notifyData.ID_detalle);
+    const res = await axios.get(`${url}/api/id-comanda/${props.notifyData.ID_detalle}`);
+    router.push(`/viewProcessComandas/${props.notifyData.ID_detalle}/${res.data[0].ID}`)
 }
 </script>
 
@@ -38,7 +61,8 @@ const redirectToCommnd = () => {
                 <!-- <span class="text-caption">3:00 PM</span> -->
             </div>
 
-            <button class="delete" @click="confirmDelete(props.notifyData.ID_Notifications)">x</button>
+            <button class="delete" @click="confirmDelete(props.notifyData.ID_Notifications)"> <v-icon
+                    icon="$delete"></v-icon></button>
             <!-- 
         <p class="text-caption text-medium-emphasis my-0">Hace 2 min</p> -->
         </div>
@@ -48,19 +72,15 @@ const redirectToCommnd = () => {
 
 <style scoped>
 .delete {
-    background-color: #e4605e;
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 0.5rem;
     font-weight: bold;
-    color: #b489ac;
-
 }
 
 .delete:hover {
     scale: 110%;
     transition: 0.4s;
-    background-color: #df0000;
-    color: #000000;
 }
+
 </style>
