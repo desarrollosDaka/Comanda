@@ -1,6 +1,6 @@
 {
   "name": "api_sql_server",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Api rest con node.js, JSon Web Token, Autenticacion, Rutas en Sql Ser",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "sequelize": "^6.33.0",
     "sharp": "^0.30.3",
     "socket.io": "^4.7.5",
+    "standard-version": "^9.5.0",
     "tedious": "^17.0.0",
     "web-push": "^3.6.7"
   }

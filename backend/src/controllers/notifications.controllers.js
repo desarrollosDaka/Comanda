@@ -42,12 +42,15 @@ const latestNoti = async (id) => {
 };
 
 const update = async (req, res) => {
-  console.log("ssa", req.params.ID_Notifications);
-  
   const { ID_Notifications } = req.params;
-  const response = await sequelize.models.modelNotifications.update({ Read: true}, { where: {
-    ID_Notifications: ID_Notifications
-  }});
+  const response = await sequelize.models.modelNotifications.update(
+    { Read: true },
+    {
+      where: {
+        ID_Notifications: ID_Notifications,
+      },
+    }
+  );
   res.json(JSON.parse(response));
 };
 
@@ -55,4 +58,23 @@ const ruta = (req, res) => {
   res.status(200).json();
 };
 
-module.exports = { subscription, notification, ruta, findallv2, latestNoti, update };
+const idUsers = async (req, res) => {
+  const hasdUser = req.params.hasd;
+  const response = await sequelize.query(`
+    SELECT TOP (1) [ID_order] ID
+    ,[ID_detalle] ID_INTERNO
+    FROM [COMANDA_TEST].[dbo].[ORDERS]
+    WHERE ID_detalle = '${hasdUser}'`);
+
+  res.json(response[0]);
+};
+
+module.exports = {
+  subscription,
+  notification,
+  ruta,
+  findallv2,
+  latestNoti,
+  update,
+  idUsers,
+};
