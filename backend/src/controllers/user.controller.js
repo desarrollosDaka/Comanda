@@ -1,4 +1,5 @@
 const sequelize = require("../config/conexion");
+const { encrypt, compare } = require("../helpers/handleBcrypt");
 
 // get user
 const getMasterUser = async (req, res) => {
@@ -64,7 +65,32 @@ const updateMasterUser = async (req, res) => {
     try {
         const idUser = req.params.id;
         const userUpdate = req.body;
-        const rta = await sequelize.models.modelMasterUser.update(userUpdate,{
+        const {
+            Nombre,
+            Email,
+            Password,
+            Id_sucursal, 
+            ID_rol,
+            Dpto_ventas,
+            Linea_ventas,
+            User_mod,
+        } = req.body
+
+            // Encryptar el Password
+            const PasswordHash = await encrypt(Password);
+
+            const updateUser = {
+                Nombre,
+                Email,
+                Password: PasswordHash,
+                Id_sucursal,
+                ID_rol,
+                Dpto_ventas,
+                Linea_ventas,
+                User_mod,
+            }
+
+        const rta = await sequelize.models.modelMasterUser.update(updateUser,{
             where: {
                 ID_user: idUser},
           });

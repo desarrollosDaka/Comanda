@@ -126,15 +126,16 @@ const headers = ref([
 
 // COlor de estatus
 const COLORSTATUS: any = {
-  1: "success",
-  2: "warning",
-  3: "success",
-  4: "info",
-  5: "warning",
-  6: "success",
-  7: "warning",
-  8: "success",
-  9: "error",
+  1: "#ffca3a", //creada
+  10: "#fb5607", //prefactura Cargada
+  2: "#0466c8", //Asignada
+  3: "#965745", //Revisada
+  4: "#006400", //facturada
+  5: "#6c757d", //retencion
+  6: "#5aa9e6", //ret. aceptada
+  7: "#a663cc", //pre-despacho
+  8: "#38b000", //Despacho
+  9: "#6a040f", //Eliminar
 };
 </script>
 
@@ -187,9 +188,9 @@ const COLORSTATUS: any = {
         <!-- status -->
         <template v-slot:item.Status="{ item }">
           <v-chip
-            variant="tonal"
+            variant="elevated"
             :color="COLORSTATUS[(item as Table_Orders).ID_status]"
-            size="x-small"
+            size="small"
             :prepend-icon="
               (item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'
             "
@@ -198,28 +199,6 @@ const COLORSTATUS: any = {
           </v-chip>
         </template>
 
-        <!-- asesor -->
-        <template v-slot:item.Asesor="{ item }">
-          <v-chip
-            variant="tonal"
-            :color="COLORSTATUS[(item as Table_Orders).ID_status]"
-            size="x-small"
-            prepend-icon="mdi-check"
-            v-if="(item as any).Asesor"
-          >
-            <p class="mb-0">{{ getNameAsesor((item as any).Asesor) }}</p>
-          </v-chip>
-
-          <v-chip
-            variant="elevated"
-            color="error"
-            size="x-small"
-            prepend-icon="mdi-timer-sand"
-            v-else
-          >
-            <p class="mb-0">No asignado</p>
-          </v-chip>
-        </template>
       </v-data-table>
     </v-card>
   </UiTitleCard>
