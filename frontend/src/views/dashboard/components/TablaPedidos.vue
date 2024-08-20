@@ -141,6 +141,7 @@ const deleteDocuments = async (id: string) => {
 
 // Emitir evento al montar el componente
 onMounted(() => {
+  loadingInfo.value = true; 
   requestMasterOrder();
 
 });

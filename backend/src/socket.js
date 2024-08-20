@@ -30,7 +30,6 @@ module.exports = (server) => {
       const rta = await findallv2(userId.ID_user);
       socket.emit("notifications", rta[0]);
     });
-
     // Notificaciones
 
     socket.on("newCommand", (idUser) => {
@@ -104,13 +103,22 @@ module.exports = (server) => {
           }
         };
 
+        
+        socket.on("getSucursal",async  (userId) => {
+       //   console.log("userId "+ userId);
+          
+          const rta = await filterOrderATC(userId);
+          socket.emit("get-master-order-atc", rta[0]);
+        });
+
+
         const emitOrderDataATC = async () => {
-          try {
-              const rta = await filterOrderATC();
-              socket.emit('get-master-order-atc', rta);
-          } catch (error) {
-              console.error('Error al obtener los datos:', error);
-          }
+          // try {
+          //     const rta = await filterOrderATC(userId.ID_sucursal);
+          //     socket.emit('get-master-order-atc', rta);
+          // } catch (error) {
+          //     console.error('Error al obtener los datos:', error);
+          // }
         };
 
         const emitUserData = async () => {

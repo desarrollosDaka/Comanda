@@ -179,8 +179,21 @@ const changeStatusComanda = () =>{
 }
 
 onMounted(async () => {
+  const toastLoading = toast.loading("Cargando Comanada...", {
+        position: toast.POSITION.BOTTOM_CENTER,
+        theme: 'colored',
+        type: 'warning',
+        icon: 'info',
+        toastStyle: {
+            border: '1px solid #0209c6',
+            fontSize: '16px',
+            opacity: '1',
+            background: '#1778ff'
+        },        
+      });
   await getOrder();
   await getArticulos();
+  toast.remove(toastLoading);
 });
 
 </script>
