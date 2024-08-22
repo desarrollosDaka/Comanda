@@ -3,7 +3,6 @@ import { ref } from "vue";
 import WidgetFive from './components/WidgetFive.vue';
 import UniqueVisitor from './components/UniqueVisitor.vue';
 import IncomeOverview from './components/IncomeOverview.vue';
-import RecentOrder from './components/RecentOrder.vue';
 import AnalyticsReport from './components/AnalyticsReport.vue';
 import HelpSupport from './components/HelpSupport.vue';
 import TransactionHistory from './components/TransactionHistory.vue';

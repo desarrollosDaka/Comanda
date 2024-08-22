@@ -4,12 +4,19 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import detailReporte from '../dashboard/components/ViewDetailReporte.vue';
 
 const page = ref({ title: 'Detalles de comadas' });
+
 const breadcrumbs = ref([
+  {
+    title: 'Tabla comandas',
+    disabled: false,
+    to: '/ReporteComanda'
+  },
   {
     title: 'Detalles Comadas',
     disabled: true,
     to: '#'
   }
+
 ]);
 </script>
 

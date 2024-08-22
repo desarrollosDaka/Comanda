@@ -36,11 +36,10 @@ interface Item {
 }
 
 const route = useRoute();
-const search = ref("");
+// const search = ref("");
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
-const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const id = ref();
 const id_orders = ref();
 const infoAsesores = ref();

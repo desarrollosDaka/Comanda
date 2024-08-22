@@ -31,7 +31,7 @@ const ARRAYUSER_ROL = [
     }, 
      // GERENTE DE TIENDA   
     {   "userRol": 4 , 
-        "status":[1, 10],
+        "status":[1, 2],
         "msgButton":'Asignar Asesor', 
         "changeID_status":2,
         "printer":false
@@ -68,7 +68,7 @@ const ARRAYUSER_ROL = [
     {   "userRol": 9 , 
         "status":[4, 6], //validar para que muestre solo los que tiene pick up
         "msgButton":'Despachar', 
-        "changeID_status":3, 
+        "changeID_status":8, 
         "printer":true
     }, 
       //ATC TIENDA  

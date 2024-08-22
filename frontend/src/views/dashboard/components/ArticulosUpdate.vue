@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 import Swal from 'sweetalert2'
 import axios from 'axios';

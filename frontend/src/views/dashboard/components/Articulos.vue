@@ -292,7 +292,7 @@ async function handleProductUpdate() {
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
                 variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
-                :items="infoProduct"  :disabled="loadingProducts || Status != 1" 
+                :items="infoProduct"  :disabled="loadingProducts || Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" 
                 >
 
                 <template v-slot:item="{ props, item }">
@@ -304,7 +304,7 @@ async function handleProductUpdate() {
 
         </v-col>
         <v-col cols="12" md="3" class="py-3">
-            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status != 1">
+            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" >
                 AGREGAR
             </v-btn>
         </v-col>
@@ -369,7 +369,7 @@ async function handleProductUpdate() {
                 <div class="text-h4 pa-2">{{ `Total a pagar:` }}</div>
                 <div class="text-h1 pa-2 text-center ">${{ ` ${totalSubtotal}` }}</div>
                 <v-card-actions class="text-certer">
-                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status != 1">
+                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" >
                         {{ update ? 'ACTUALIZAR COMANDA' : 'CREAR COMANDA' }}
                     </v-btn>
                 </v-card-actions>
@@ -441,7 +441,6 @@ async function handleProductUpdate() {
     padding: 0.25rem;
     border: 0;
     width: 50px;
-    -moz-appearance: textfield;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
 }

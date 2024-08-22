@@ -290,7 +290,6 @@ onMounted( async () => {
             </v-col>
         </v-row>
 
-        
         <v-row>
             <v-col cols="12" md="2">
                 <v-label for="roles">Asesor de ventas</v-label>
@@ -317,7 +316,6 @@ onMounted( async () => {
                 ></v-autocomplete>
             </v-col>
         </v-row>
-
 
         <v-btn 
             color="primary" 

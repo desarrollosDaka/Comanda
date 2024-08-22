@@ -5,10 +5,6 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import detailComanda from '../dashboard/components/detailComanda.vue';
 
-//import { io } from "socket.io-client";
-const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
-//const socket = io('ws://localhost:3003'); // ws
-
 // component content
 const page = ref({ title: 'Comanda Asignadas' });
 

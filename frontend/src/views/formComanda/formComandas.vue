@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Form } from "vee-validate";
-import { ref, watch, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { router } from "@/router";
 import UploadImages from "./uploadImages.vue";
-import { toast } from "vue3-toastify";
+// import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
 import { useUploadFiles } from "@/composables/file";
@@ -292,6 +292,7 @@ interface Destino {
   Sucursal: string;
   ID_sucursal: number;
 }
+
 async function getSucursal() {
   try {
     const { data } = await axios.get(`${baseUrlStore}/masterStores`);
@@ -326,6 +327,7 @@ interface Payment {
   Pago: string;
   ID_pago: number;
 }
+
 async function getPayment() {
   try {
     const { data } = await axios.get(`${baseUrlPayment}/masterPayment`);
@@ -520,7 +522,7 @@ function handleSelectImages(items: any) {
         <v-label for="tipoDocumento"></v-label>
         <v-autocomplete
           id="tipoDocumento"
-          :items="['V', 'J', 'G', 'E']"
+          :items="['V', 'J', 'G', 'E', 'C', 'P']"
           variant="outlined"
           v-model="tipoDocumento"
           required
@@ -743,10 +745,10 @@ function handleSelectImages(items: any) {
             <v-label for="tipoDocumento"></v-label>
             <v-autocomplete
               id="tipoDocumento"
-              :items="['V', 'J', 'F', 'E']"
+              :items="['V', 'J', 'G', 'E', 'C', 'P']"
               variant="outlined"
-              v-model="tipoDocumentoRL"
-              required
+              v-model="tipoDocumentoRL" 
+              required 
               color="primary"
               placeholder="V"
               class="mt-2 my-input"
