@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { getIdCommad } from '@/composables/getCommadId';
 import { router } from '@/router';
 import axios from 'axios';
-// import { mdiAccount } from '@mdi/js';
 import Swal from 'sweetalert2';
+import { onMounted, ref } from 'vue';
 
 const url = `${import.meta.env.VITE_URL}`;
-
+const idCommnd = ref('')
 
 const props = defineProps({
     notifyData: {
@@ -18,14 +19,6 @@ const deletee = async (ID_Notifications: string) => {
     const res = await axios.put(`${url}/api/update/notify/${ID_Notifications}`);
     return res;
 }
-
-// const confirmDelete = async (ID_Notifications: string) => {
-//     if (confirm('¿Estás seguro de que deseas eliminar esta notificación?')) {
-//         const res = await deletee(ID_Notifications);
-//         console.log(res);
-//     }
-// }
-
 
 const confirmDelete = async (ID_Notifications: string) => {
     const result = await Swal.fire({
@@ -43,11 +36,15 @@ const confirmDelete = async (ID_Notifications: string) => {
     }
 };
 
+
 const redirectToCommnd = async () => {
-    console.log("props.notifyData.ID_detalle", props.notifyData.ID_detalle);
-    const res = await axios.get(`${url}/api/id-comanda/${props.notifyData.ID_detalle}`);
-    router.push(`/viewProcessComandas/${props.notifyData.ID_detalle}/${res.data[0].ID}`)
-}
+    router.push('/dashboard');
+    router.push(`/viewProcessComandas/${props.notifyData.ID_detalle}/${await getIdCommad(url, props)}`)
+};
+
+onMounted(async()=> {
+    idCommnd.value = await getIdCommad(url, props);
+})
 </script>
 
 <template>
@@ -56,7 +53,7 @@ const redirectToCommnd = async () => {
         <div class="d-inline-flex justify-space-between w-100">
             <div @click="redirectToCommnd()">
                 <h6 class="text-subtitle-1 font-weight-regular mb-0">
-                    <span style="font-weight: 600">{{ props.notifyData.User_crea }}</span> Ha creado un nuevo documento.
+                    <span style="font-weight: 600">{{ props.notifyData.User_crea }}</span> te ha asignado la comanda número: {{ idCommnd }}
                 </h6>
                 <!-- <span class="text-caption">3:00 PM</span> -->
             </div>
@@ -82,5 +79,4 @@ const redirectToCommnd = async () => {
     scale: 110%;
     transition: 0.4s;
 }
-
 </style>

@@ -39,7 +39,9 @@ if (jsonFromLocalStorage !== null) {
 
 setInterval(() => {
   // VERIFICAR ESTO
-  socket.emit('getUser', auth.user.data);
+  if (auth.user !== null) {
+    socket.emit('getUser', auth.user.data);
+  }
 }, 5000);
 
 socket.on('notifications', (notificaciones) => {
