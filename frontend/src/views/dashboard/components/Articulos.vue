@@ -133,7 +133,6 @@ function addProduct(cod_product: any): void {
         price: product[0].precio,
         subtotal: product[0].precio
     }
-
     // VERIFICO QUE NO SE DUPLIQUE EL PRODUCTO
     // const found = listProduct.value.find((product) => product.code === cod_product)
 

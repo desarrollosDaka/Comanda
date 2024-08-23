@@ -441,8 +441,7 @@ const alertaRechazar = () => {
     <!-- tabla para los demas usuarios -->
     <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" >
         <!-- DEMAS USER -->
-        <v-row v-if="Type != 'DETALLE DE ENVIO' 
-                    || USER_ROL === 1 
+        <v-row v-if=" USER_ROL === 1 
                     || USER_ROL === 2 
                     || USER_ROL === 3 
                     || USER_ROL === 4 
@@ -485,7 +484,7 @@ const alertaRechazar = () => {
         </v-row>
 
         <!-- ATC -->
-        <v-row v-else="Type === 'DETALLE DE ENVIO' || USER_ROL === 10 || USER_ROL === 9">
+        <v-row v-else=" USER_ROL === 10 || USER_ROL === 9">
             <v-col cols="12" md="12">
                 <v-table class="bordered-table" hover density="comfortable" rounded="lg">
                   <thead class="bg-containerBg">
@@ -496,7 +495,7 @@ const alertaRechazar = () => {
                             <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                         </tr>
-                 
+                
                     </thead>
     
                     <tbody>
@@ -531,7 +530,7 @@ const alertaRechazar = () => {
        
     </UiTitleCard>
 
-   <tr v-if="Type != 'DETALLE DE ENVIO'  && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA' && USER_ROL === 10">
+   <!-- <tr v-if="Type != 'DETALLE DE ENVIO'  && ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA' && USER_ROL === 10">
       <td colspan="5" class="py-3">
           <v-text-field 
               variant="solo-filled"
@@ -541,7 +540,7 @@ const alertaRechazar = () => {
           > 
           </v-text-field>
       </td>
-  </tr>     
+  </tr>      -->
   
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
   <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 "
