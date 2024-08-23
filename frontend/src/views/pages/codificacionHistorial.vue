@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-// import maestroHistorial from '../dashboard/components/TablaHistorial.vue';
 
 // component content
 const page = ref({ title: 'Historial' });

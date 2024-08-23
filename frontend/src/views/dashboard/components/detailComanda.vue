@@ -36,11 +36,10 @@ interface Item {
 }
 
 const route = useRoute();
-const search = ref("");
+// const search = ref("");
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
-const baseUrlProducts = `${import.meta.env.VITE_URL}/api/orders`;
 const id = ref();
 const id_orders = ref();
 const infoAsesores = ref();
@@ -77,6 +76,7 @@ const direccionDelivery = ref();
 const Type = ref()
 const razonComercial = ref();
 const guiaZoom2 = ref();
+const boxFactura = ref();
 
 const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
@@ -128,6 +128,7 @@ const getOrder = async () => {
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
       razonComercial.value = data[0][0]["Razon_comercial"];
+      boxFactura.value = data[0][0]["Caja_factura"];
     }
     
   } catch (error) {
@@ -433,7 +434,8 @@ const alertaRechazar = () => {
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Estatus</h2>
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
-            <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>
+            <!-- <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p> -->
+            <p v-if="boxFactura"><b>Documento POS:</b> {{ boxFactura }}</p>
         </v-col>
     </v-row>
 
@@ -570,7 +572,7 @@ const alertaRechazar = () => {
       <!-- BOTON PARA INGRESAR EL NUMERO DE FACTURA -->
       <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL)">
         <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
-          Ingresar Numero de Factura
+          Ingresar Documento POS
         </v-btn>
       </v-col>
 
@@ -585,10 +587,10 @@ const alertaRechazar = () => {
   </v-container>
 
   <v-dialog v-model="dialog" width="auto">
-    <v-card max-width="600" prepend-icon="mdi-counter" title="Numero de Factura">
+    <v-card max-width="600" prepend-icon="mdi-counter" title="Documento POS">
 
-      <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Numero factura es requerido']"
-        placeholder="23-734" required></v-text-field>
+      <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Documento POS es requerido']"
+        placeholder="Documento POS" required></v-text-field>
 
 
       <template v-slot:actions>

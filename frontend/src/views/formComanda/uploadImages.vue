@@ -4,8 +4,8 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import imgUrl from '@/assets/images/archivoPdf.png'
-import { useRouter, useRoute } from 'vue-router'
+import imgUrl from '@/assets/images/pdf.png'
+import { useRoute } from 'vue-router'
 
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const INSERT_METHOD = 'insert'
@@ -37,7 +37,6 @@ if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   USER_ROL.value = +parsedData.data.ID_rol;
 }
-
 
 const document = ref<Documento[]>([]);
 
@@ -263,7 +262,6 @@ async function downLoadArchive(param: Documento) {
         cancelButtonAriaLabel: "Thumbs down"
       });
     } catch (error) {
-
       toast.warn(`Error: No se pudo descargar el archivo`, {
         delay: 1000,
         position: toast.POSITION.BOTTOM_CENTER,
@@ -280,7 +278,7 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row v-if="USER_ROL != 99 && USER_ROL != 10 && USER_ROL != 11">
+  <v-row v-if="USER_ROL != 10 && USER_ROL != 11">
     <v-col cols="12">
       <br>
       <v-file-input 
@@ -296,7 +294,6 @@ async function downLoadArchive(param: Documento) {
       </v-file-input>
     </v-col>
   </v-row>
-
 
   <v-row>
     <v-col cols="12" md="12">

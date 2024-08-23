@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
-
 import { io } from 'socket.io-client';
 import Swal from 'sweetalert2'
 import axios from 'axios';
-import { shallowRef, ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const search = ref('') 
 const loadingInfo = ref(false);
@@ -21,11 +19,9 @@ const info = ref([]) ;
 
 // Listen for events from the server
 socket.on('get-master-user', (rta:any) => {
-  //console.log('Datos actualizados:', rta);
   if (Array.isArray(rta)) {
     info.value = rta[0];
-   // console.log(info.value);
-   loadingInfo.value = false;
+    loadingInfo.value = false;
   } else {
     console.error('La respuesta no es un array:', rta);
   }
@@ -65,7 +61,7 @@ const headers = ref([
   {title: 'SUCURSAL', key: 'Sucursal'},
   {title: 'ASESOR', key: 'Dpto_ventas'},
   {title: 'ROL', key:'Nombre_rol'},
-  {title: 'ACCIÓN',  sortable: false, key: 'action'},
+  {title: '',  sortable: false, key: 'action'},
 ] as const);
 
 onMounted( async () => {
@@ -158,17 +154,17 @@ function eliminardata(id:string){
 
         <!-- asesor -->
         <template v-slot:item.Dpto_ventas="{item}">
-          <v-chip variant="tonal" color="success" size="x-small" prepend-icon="mdi-check" v-if="(item as any).Dpto_ventas == true">
+          <v-chip variant="elevated" color="#38b000" size="x-small" prepend-icon="mdi-check" v-if="(item as any).Dpto_ventas == true">
               <p class="mb-0">Si</p>
             </v-chip>
-            <v-chip variant="tonal" color="error" size="x-small" prepend-icon="mdi-alert-decagram-outline" v-else>
+            <v-chip variant="elevated" color="error" size="x-small" prepend-icon="mdi-alert-decagram-outline" v-else>
               <p class="mb-0">No</p>
             </v-chip>
         </template>
 
         <!-- roles -->
         <template v-slot:item.Nombre_rol="{item}">
-          <v-chip color="primary" size="x-small" prepend-icon="mdi-account-outline">
+          <v-chip color="primary" size="x-small" prepend-icon="mdi-account-outline" variant="elevated">
             {{ item['Nombre_rol'] }}
           </v-chip>
         </template>

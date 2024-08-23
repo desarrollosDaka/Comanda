@@ -244,7 +244,7 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.Email
                     ,T3.Nombre AS Cliente
                     ,T3.Razon_comercial
-                    ,T3.Direccion
+                    ,T3.Direccion 
                     ,T1.ID_sucursal 
                     ,T1.Sucursal 
                     ,T4.ID_states 
@@ -479,18 +479,29 @@ const filterOrderDetails = async (req, res) => {
 const filterOrderATC = async (id) => {
   try {
     const rta = await sequelize.query(
-      `SELECT T1 .Nombre, T2.[Status] ,T0.*,
-CAST(T0.create_date as DATE) as Create_date
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
- UNION ALL
-SELECT  T1 .Nombre, T2.[Status] ,T0.*, CAST(T0.create_date as DATE) as Create_date 
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal = '${id}'`
+      `SELECT 
+		T1.Nombre, 
+		T2.[Status] ,
+		T0.*,
+		CAST(T0.create_date as DATE) as Create_date,
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
+	UNION ALL
+	SELECT  
+		T1.Nombre,
+		T2.[Status],
+		T0.*, 
+		CAST(T0.create_date as DATE) as Create_date, 
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal = '${id}'`
     );
     return rta;
   } catch (e) {
@@ -568,42 +579,45 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
 
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
-  const data = req.body;
-
   try {
-      const orderDetailData = {
-          ID_detalle: data.Id_Comanda,
-          ID_producto: data.id_producto,
-          Producto: data.producto, 
-          Unidades: data.unidades,
-          Precio: data.precio,
-          Subtotal: data.subtotal,
-          Direccion: data.direccion,
-          Zoom: data.zoom
-      };
+    const data = Array.isArray(req.body) ? req.body : [req.body];
 
-      let products = await sequelize.models.modelOrdersdetails.findAll({
-          where: { ID_detalle: data.Id_Comanda},
-      });
+    // Crear un array de objetos con los datos de los detalles del pedido
+    const orderDetailDataArray = data.map(item => ({
+      ID_detalle: item.Id_Comanda,
+      ID_producto: item.id_producto,
+      Producto: item.producto, 
+      Unidades: item.unidades,
+      Precio: item.precio,
+      Subtotal: item.subtotal,
+      Direccion: item.direccion,
+      Zoom: item.zoom
+    }));
 
-      if (products.length > 0) {
-        await Promise.all(products.map(product => product.destroy()));
+    console.log(orderDetailDataArray)
+
+    // Encuentra todos los productos con el ID de detalle especificado
+    let products = await sequelize.models.modelOrdersdetails.findAll({
+      where: { ID_detalle: data[0].Id_Comanda , ID_producto: data[0].id_producto}
+    });
+
+        
+//console.log(products);
+    // Elimina cada producto uno por uno
+    for (let product of products) {
+      await product.destroy();
     }
 
-      // Crea un nuevo producto
-      products = await sequelize.models.modelOrdersdetails.create(orderDetailData);
+//console.log(orderDetailDataArray);
 
-      if (products) {
-          res.status(201).json({ products: products });
-      } else {
-          res.status(404).json({ msj: "Error en la creación" });
-      }
+    await sequelize.models.modelOrdersdetails.bulkCreate(orderDetailDataArray);
+
+    res.status(201).json({ msj: "Productos creados exitosamente" });
   } catch (e) {
-      console.log("Error", e);
-      res.status(500).json({ msj: "Error interno del servidor" });
+    console.log("Error", e);
+    res.status(500).json({ msj: "Error interno del servidor" });
   }
 };
-
 //ACTUALIZA DETALLES DE LA ORDER 
 const updateOrderDetails = async (req, res) => {
   try {
@@ -751,8 +765,8 @@ const updateMasterOrderAndDetails = async (req, res) => {
 
 const addwatermark = async (f, id) => {
   try {
-    const width = 400;
-    const height = 400;
+    const width = 720;
+    const height = 1000;
     const text = `DAKA ONLINE # ${id}`;
 
     const svgImage = `
@@ -849,8 +863,8 @@ const resizeImage = async (f) => {
     const outputPath = path.join(__dirname, "../../resizeImages", f.filename);
     await sharp(f.path) //agarramos la imagen original
       .resize({
-        width: 400,
-        height: 400,
+        width: 720,
+        height: 1000,
       })
       .toFile(outputPath); // la almacenamos en la ruta establecida
   } catch (error) {

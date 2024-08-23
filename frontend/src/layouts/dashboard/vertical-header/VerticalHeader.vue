@@ -43,8 +43,7 @@ setInterval(() => {
 }, 5000);
 
 socket.on('notifications', (notificaciones) => {
-  noti.update(notificaciones);
-
+  noti.update(notificaciones); 
   infoArray.value = noti.notifications;
   infoLength.value = infoArray.length;
 });

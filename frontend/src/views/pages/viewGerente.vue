@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-// import detallesComandaAsesor from '../dashboard/components/detallesComandaAsesor.vue';
 
 // component content
 const page = ref({ title: 'Comanda Asignadas' });

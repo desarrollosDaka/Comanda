@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
-import UiParentCard from '@/components/shared/UiParentCard.vue';
 import tabla from '../dashboard/components/TablaComandasAsignada.vue';
 
 // component content

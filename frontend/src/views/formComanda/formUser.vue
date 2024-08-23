@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import axios from 'axios'
 import { router } from '@/router';
 
-// variables d
+// variables 
 const valid = ref(false);
 const show1 = ref(false);
 const Email = ref();

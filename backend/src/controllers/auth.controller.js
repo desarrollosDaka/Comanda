@@ -100,9 +100,13 @@ const signUp = async (req, res) => {
             res.json({ msj: 'Usuario creado' })
         }
 
-    } catch (e) {
+    } catch (error) {
 
-        console.log('Error', e);
+        if (error.response && error.response.status === 409) {
+            console.error('Error de conflicto:', error.response.data.message);
+          } else {
+            console.error('Error en el login:', error.message);
+          }
     }
 }
 
