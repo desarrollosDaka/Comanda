@@ -576,11 +576,35 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
 //     console.log("Error", e);
 //   }
 // };
+/////////////////////////////////////////////////////////////////////*****************************//////////////////////////// */
+
+const mapAndFindOrderDetails = async (data) => {
+
+  const orderDetailDataArray = data.map(item => ({
+    ID_detalle: item.Id_Comanda,
+    ID_producto: item.id_producto,
+    Producto: item.producto, 
+    Unidades: item.unidades,
+    Precio: item.precio,
+    Subtotal: item.subtotal,
+    Direccion: item.direccion,
+    Zoom: item.zoom
+  }));
+
+  // Encuentra todos los productos con el ID de detalle especificado
+  let products = await sequelize.models.modelOrdersdetails.findAll({
+    where: { ID_detalle: data[0].Id_Comanda ,  ID_producto:data[0].id_producto }
+  });
+
+  return { orderDetailDataArray, products };
+};
+
 
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
   try {
     const data = Array.isArray(req.body) ? req.body : [req.body];
+
 
     // Crear un array de objetos con los datos de los detalles del pedido
     const orderDetailDataArray = data.map(item => ({
@@ -603,13 +627,14 @@ const createOrderDetails = async (req, res) => {
 
         
 //console.log(products);
+
     // Elimina cada producto uno por uno
     for (let product of products) {
       await product.destroy();
     }
 
-//console.log(orderDetailDataArray);
 
+//console.log(orderDetailDataArray);
     await sequelize.models.modelOrdersdetails.bulkCreate(orderDetailDataArray);
 
     res.status(201).json({ msj: "Productos creados exitosamente" });
@@ -618,6 +643,7 @@ const createOrderDetails = async (req, res) => {
     res.status(500).json({ msj: "Error interno del servidor" });
   }
 };
+
 //ACTUALIZA DETALLES DE LA ORDER 
 const updateOrderDetails = async (req, res) => {
   try {
