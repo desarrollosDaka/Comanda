@@ -175,7 +175,7 @@ async function addProducts(json: any) {
 
     }).then((result) => {
         if (result.isConfirmed) {
-            Created()
+            update.value ? updateComanda() : Created();
             Swal.fire({
                 title: "Guardado!",
                 text: update.value ? "Datos actualizados con exito!" : "Datos guardados con exito!",
@@ -202,25 +202,64 @@ async function addProducts(json: any) {
 }
 
 async function Created() {
-    for (const element of listProduct.value) {
 
-        const json = {
+    let articuloPorDefecto = {
+        Id_Comanda: id.value,
+        id_producto: 'LS-00000023',
+        producto: 'VENTA ONLINE',
+        unidades: 0,
+        precio: 0,
+        subtotal: 0,
+        name: 'VENTA ONLINE', // Añadir propiedades necesarias
+        code: 'LS-00000023',
+        amount: 0,
+        price: 0
+    }
+
+    listProduct.value.push(articuloPorDefecto);
+
+    for (const element of listProduct.value) {
+            
+        let jsonProductos = {
             Id_Comanda: id.value,
             id_producto: element.code,
             producto: element.name,
             unidades: element.amount,
             precio: element.price,
-            subtotal: element.subtotal
+            subtotal: element.subtotal,
         }
-
+        
         try {
-            await axios.post(`${baseUrlProducts}/createOrderDetails`, json)
+            await axios.post(`${baseUrlProducts}/createOrderDetails`, jsonProductos)
         } catch (error) {
             console.error(error)
         }
 
     };
     back()
+}
+
+async function updateComanda() {
+
+for (const element of listProduct.value) {
+        
+    let jsonProductos = {
+        Id_Comanda: id.value,
+        id_producto: element.code,
+        producto: element.name,
+        unidades: element.amount,
+        precio: element.price,
+        subtotal: element.subtotal,
+    }
+    
+    try {
+        await axios.post(`${baseUrlProducts}/UpdateOrderDetails/${id.value}`, jsonProductos)
+    } catch (error) {
+        console.error(error)
+    }
+
+};
+back()
 }
 
 const amountInput = (item: any) => {
@@ -291,7 +330,7 @@ async function handleProductUpdate() {
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
                 variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
-                :items="infoProduct"  :disabled="loadingProducts || Status != 1" 
+                :items="infoProduct"  :disabled="loadingProducts || Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" 
                 >
 
                 <template v-slot:item="{ props, item }">
@@ -303,7 +342,7 @@ async function handleProductUpdate() {
 
         </v-col>
         <v-col cols="12" md="3" class="py-3">
-            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status != 1">
+            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" >
                 AGREGAR
             </v-btn>
         </v-col>
@@ -368,7 +407,7 @@ async function handleProductUpdate() {
                 <div class="text-h4 pa-2">{{ `Total a pagar:` }}</div>
                 <div class="text-h1 pa-2 text-center ">${{ ` ${totalSubtotal}` }}</div>
                 <v-card-actions class="text-certer">
-                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status != 1">
+                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" >
                         {{ update ? 'ACTUALIZAR COMANDA' : 'CREAR COMANDA' }}
                     </v-btn>
                 </v-card-actions>
@@ -440,7 +479,6 @@ async function handleProductUpdate() {
     padding: 0.25rem;
     border: 0;
     width: 50px;
-    -moz-appearance: textfield;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
 }

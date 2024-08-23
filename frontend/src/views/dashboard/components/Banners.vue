@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed, shallowRef, ref } from 'vue';
+import { ref } from 'vue';
 import { useTheme } from 'vuetify';
-import { getLightBorder } from './UpdateColors';
-import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 
 const theme = useTheme();
-const WarningColor = theme.current.value.colors.warning;
+// const WarningColor = theme.current.value.colors.warning;
 
 const user = ref()
 

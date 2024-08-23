@@ -19,7 +19,6 @@ const breadcrumbs = ref([
   }
 ]);
 
-const colorShadow = ref(['primary', 'secondary', 'info', 'success', 'warning', 'error']);
 </script>
 
 <template>

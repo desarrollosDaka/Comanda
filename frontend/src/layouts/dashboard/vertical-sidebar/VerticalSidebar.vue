@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue';
 import { useCustomizerStore } from '../../../stores/customizer';
+
 import sidebarItems from './sidebarItemAdministrators';
 import sidebarItemsRol from './sidebarItemGroup_1';
-import sidebarItemsGerente from './sidebartItemManagers';
 import sidebarAsesorOnline from './sibedarItemAsesorOnline';
+
+import sidebarItemsGerente from './sidebartItemManagers';
 import sidebarEspecialistaCaja from './sidebarItemEspecialista';
 import sidebarAlmacenista from './sidebarItemAlmacenista';
 import sidebarATC from './sidebarItemATC';
 import sidebarCDD from './sidebarItemCDD';
+import sidebarCajeros from './sidebarItemCajero';
 import { ref } from 'vue';
 
 import NavGroup from './NavGroup/NavGroup.vue';
@@ -18,13 +21,18 @@ import Logo from '../logo/LogoDark.vue';
 
 const customizer = useCustomizerStore();
 const sidebarMenu = shallowRef(sidebarItems);
-const sidebarMenuUSer = shallowRef(sidebarItemsRol);
 const sidebarMenuAsesorOnline = shallowRef(sidebarAsesorOnline);
+const sidebarMenuGerente = shallowRef(sidebarItemsGerente);
+const sidebarMenuEspecialistaCaja = shallowRef(sidebarEspecialistaCaja);
+const sidebarMenuAlmacenista = shallowRef(sidebarAlmacenista);
+const sidebarMenuATC = shallowRef(sidebarATC);
+const sidebarMenuCDD = shallowRef(sidebarCDD);
+const sidebarMenuCajero = shallowRef(sidebarCajeros);
 
 const User = ref('');
 const Rol = ref<number>(0)
 
-const ADVISORS_STORERS_CASHIER = [5,6,9] //rol asesores, almacenistas, cajeras
+const ADVISORS_STORERS_CASHIER = [5,9] //rol asesores, almacenistas, cajeras
 const MANAGERS = [4] //rol gerentes
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
@@ -72,6 +80,22 @@ if (jsonFromLocalStorage !== null) {
         </template>
       </v-list>
 
+      <!-- CAJERO -->
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 6">
+        <!---Menu Loop -->
+        <template v-for="(item, i) in sidebarMenuCajero" :key="i">
+          <!---Item Sub Header -->
+          <NavGroup :item="item" v-if="item.header" :key="item.title" />
+          <!---Item Divider -->
+          <v-divider class="my-3" v-else-if="item.divider" />
+          <!---If Has Child -->
+          <NavCollapse class="leftPadding" :item="item" :level="0" v-else-if="item.children" />
+          <!---Single Item-->
+          <NavItem :item="item" v-else />
+          <!---End Single Item-->
+        </template>
+      </v-list>
+
       <!-- ASESOR ONLINE -->
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 1">
         <!---Menu Loop -->
@@ -91,7 +115,7 @@ if (jsonFromLocalStorage !== null) {
       <!-- ATC -->
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 10">
         <!---Menu Loop -->
-        <template v-for="(item, i) in sidebarATC" :key="i">
+        <template v-for="(item, i) in sidebarMenuATC" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->
@@ -107,7 +131,7 @@ if (jsonFromLocalStorage !== null) {
       <!-- CDD -->
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 8">
         <!---Menu Loop -->
-        <template v-for="(item, i) in sidebarCDD" :key="i">
+        <template v-for="(item, i) in sidebarMenuCDD" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->
@@ -123,7 +147,7 @@ if (jsonFromLocalStorage !== null) {
       <!-- ESPECIALISTA CAJERA -->
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 11">
         <!---Menu Loop -->
-        <template v-for="(item, i) in sidebarEspecialistaCaja" :key="i">
+        <template v-for="(item, i) in sidebarMenuEspecialistaCaja" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->
@@ -139,7 +163,7 @@ if (jsonFromLocalStorage !== null) {
       <!-- ALMACENISTA -->
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 7">
         <!---Menu Loop -->
-        <template v-for="(item, i) in sidebarAlmacenista" :key="i">
+        <template v-for="(item, i) in sidebarMenuAlmacenista" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->
@@ -155,7 +179,7 @@ if (jsonFromLocalStorage !== null) {
       <!-- ASESORES ALMACENISTAS Y CAJERAS-->
       <v-list aria-busy="true" aria-label="menu list" v-if="ADVISORS_STORERS_CASHIER.includes(Rol)">
         <!---Menu Loop -->
-        <template v-for="(item, i) in sidebarMenuUSer" :key="i">
+        <template v-for="(item, i) in sidebarMenu" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->
@@ -171,7 +195,7 @@ if (jsonFromLocalStorage !== null) {
       <!-- GERENTES-->
       <v-list aria-busy="true" aria-label="menu list" v-if="MANAGERS.includes(Rol)">
         <!---Menu Loop -->
-        <template v-for="(item, i) in sidebarItemsGerente" :key="i">
+        <template v-for="(item, i) in sidebarMenuGerente" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->

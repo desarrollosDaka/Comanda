@@ -77,7 +77,12 @@ const updateMasterUser = async (req, res) => {
         } = req.body
 
             // Encryptar el Password
-            const PasswordHash = await encrypt(Password);
+            let PasswordHash;
+            if(Password){
+                PasswordHash = await encrypt(Password);
+            }else{
+                PasswordHash = Password
+            }
 
             const updateUser = {
                 Nombre,

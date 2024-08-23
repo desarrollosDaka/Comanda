@@ -152,31 +152,31 @@ if(USER_ROL.value === 7){
     
 }
 
-const changeStatusComanda = () =>{
-  Swal.fire({
-      title: USER_ROL.value === 7 ? `Deseas Cambiar el Estatus a Despacho` : `Deseas Cambiar el Estatus a Pre-Despacho`,
-      text: "La comanda va a cambiar de estatus",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "Cancelar",
-      confirmButtonText: "Si",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        updateEstatus();
-        Swal.fire({
-          title: "alo",
-          text: "la comanda ha cambiado de estatus!",
-          icon: "success",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            router.push(`/pickups`);
-          }
-        });
-      }
-    });
-}
+// const changeStatusComanda = () =>{
+//   Swal.fire({
+//       title: USER_ROL.value === 7 ? `Deseas Cambiar el Estatus a Despacho` : `Deseas Cambiar el Estatus a Pre-Despacho`,
+//       text: "La comanda va a cambiar de estatus",
+//       icon: "warning",
+//       showCancelButton: true,
+//       confirmButtonColor: "#3085d6",
+//       cancelButtonColor: "#d33",
+//       cancelButtonText: "Cancelar",
+//       confirmButtonText: "Si",
+//     }).then((result) => {
+//       if (result.isConfirmed) {
+//         updateEstatus();
+//         Swal.fire({
+//           title: "alo",
+//           text: "la comanda ha cambiado de estatus!",
+//           icon: "success",
+//         }).then((result) => {
+//           if (result.isConfirmed) {
+//             router.push(`/pickups`);
+//           }
+//         });
+//       }
+//     });
+// }
 
 onMounted(async () => {
   const toastLoading = toast.loading("Cargando Comanada...", {

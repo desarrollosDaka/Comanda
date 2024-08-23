@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import axios from "axios";
+// import axios from "axios";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useUserRol } from "@/composables/users";
 import { useGetStatus } from "@/composables/status";
 import { io } from "socket.io-client";
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 import { useRoute } from "vue-router";
-import { useAuthStore } from '../../../stores/auth';
 
 const route = useRoute();
 const search = ref("");
@@ -15,10 +14,9 @@ const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const urlSocket = ref();
-const infoAsesores = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
-const auth = useAuthStore();
+
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -54,7 +52,6 @@ if(USER_ROL.value === 10){
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
     try {
-    
         info.value = rta;
     } catch (error) { 
        console.log(error);
@@ -90,15 +87,15 @@ interface Table_Orders {
   C: Date;
 }
 
-const getMessageStatus = (id: number) => {
-  if (infogetStatus && infogetStatus.value) {
-    const status = infogetStatus.value.find(
-      (item: any) => item.ID_status === id
-    )?.Status;
-    return status;
-  }
-  return null;
-};
+// const getMessageStatus = (id: number) => {
+//   if (infogetStatus && infogetStatus.value) {
+//     const status = infogetStatus.value.find(
+//       (item: any) => item.ID_status === id
+//     )?.Status;
+//     return status;
+//   }
+//   return null;
+// };
 
 onMounted(async () => { 
   loadingInfo.value = true; 
@@ -117,23 +114,24 @@ const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Nombre" },
+  { title: "DELIVERY", key: "Delivery_nombre" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },
   { title: "", sortable: false, key: "action" },
 ] as const);
 
 
-// COlor de estatus
 const COLORSTATUS: any = {
-  1: "success",
-  2: "warning",
-  3: "success",
-  4: "info",
-  5: "warning",
-  6: "success",
-  7: "warning",
-  8: "success",
-  9: "error",
+  1: "#ffca3a", //creada
+  10: "#fb5607", //prefactura Cargada
+  2: "#0466c8", //Asignada
+  3: "#965745", //Revisada
+  4: "#006400", //facturada
+  5: "#6c757d", //retencion
+  6: "#5aa9e6", //ret. aceptada
+  7: "#a663cc", //pre-despacho
+  8: "#38b000", //Despacho
+  9: "#6a040f", //Eliminar
 };
 </script>
 
@@ -195,9 +193,9 @@ const COLORSTATUS: any = {
         <!-- status -->
         <template v-slot:item.Status="{ item }">
           <v-chip
-            variant="tonal"
+            variant="elevated"
             :color="COLORSTATUS[(item as Table_Orders).ID_status]"
-            size="x-small"
+            size="small"
             :prepend-icon="
               (item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'
             "

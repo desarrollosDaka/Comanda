@@ -65,17 +65,7 @@ const sidebarItem: menu[] = [
         to: '/formCreatedUser'
       },
     ]
-  },
-  {
-    title: 'Utils',
-    icon: FontSizeOutlined,
-    children:  [ 
-      {
-        title: 'Color',
-        to: '/colors'
-      }
-    ]
-  },
+  }
   
 ];
 

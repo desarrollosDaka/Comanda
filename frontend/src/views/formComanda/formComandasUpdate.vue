@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { Form } from "vee-validate";
-import { ref, reactive, computed, onMounted , watch} from "vue";
+import { ref, onMounted , watch} from "vue";
 import Swal from "sweetalert2";
 import axios from "axios";
-// import { router } from '../../../router';
 import { useRoute } from "vue-router";
 import { router } from "@/router";
 import UploadImages from "./uploadImages.vue";
@@ -48,8 +47,8 @@ const info_ciudad = ref();
 const info_estadoRl = ref();
 const info_muniRl = ref();
 const info_ciudadRl = ref();
-const ID_status = ref("1");
-const idComandaRandom = ref();
+// const ID_status = ref("1");
+// const idComandaRandom = ref();
 const Status = ref();
 const info_Zoom = ref();
 const porcentaje = ref();
@@ -58,10 +57,10 @@ const ID_Delivery = ref();
 const info_tiendas = ref();
 const info_Delivery = ref();
 const info_Payment = ref();
-const valorSeleccionado = ref();
-const valorSeleccionadoTwo = ref();
-const valorSeleccionadoRl = ref();
-const valorSeleccionadoTwoRl = ref();
+// const valorSeleccionado = ref();
+// const valorSeleccionadoTwo = ref();
+// const valorSeleccionadoRl = ref();
+// const valorSeleccionadoTwoRl = ref();
 const ID_rol = ref();
 const tipoDocumento = ref();
 const tipoDocumentoRL = ref();
@@ -260,7 +259,12 @@ interface Muni {
   ID_municipio: number;
 }
 
-
+const deliveryCDD = ref([
+  {
+    title: 'ZOOM',
+    value: 1
+  }
+]) 
 
 const getSelect = async () => {
 
@@ -386,7 +390,6 @@ async function getDelivery() {
       title: delivery.Delivery_type,
       value: delivery.ID_Delivery,
     }));
-    console.log(info_Delivery);
     
   } catch (error) {
     console.log(error);
@@ -1082,7 +1085,7 @@ onMounted(async () => {
           class="mt-2 my-input"
           clearable
           chips
-          :items="info_Delivery"
+          :items="origen == 99 ? deliveryCDD : info_Delivery"
           variant="outlined"
           :rules="metodoRules"
           aria-label="delivery"
