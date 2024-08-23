@@ -52,7 +52,6 @@ if(USER_ROL.value === 10){
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
     try {
-    
         info.value = rta;
     } catch (error) { 
        console.log(error);
@@ -88,15 +87,15 @@ interface Table_Orders {
   C: Date;
 }
 
-const getMessageStatus = (id: number) => {
-  if (infogetStatus && infogetStatus.value) {
-    const status = infogetStatus.value.find(
-      (item: any) => item.ID_status === id
-    )?.Status;
-    return status;
-  }
-  return null;
-};
+// const getMessageStatus = (id: number) => {
+//   if (infogetStatus && infogetStatus.value) {
+//     const status = infogetStatus.value.find(
+//       (item: any) => item.ID_status === id
+//     )?.Status;
+//     return status;
+//   }
+//   return null;
+// };
 
 onMounted(async () => { 
   loadingInfo.value = true; 
@@ -115,6 +114,7 @@ const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Nombre" },
+  { title: "DELIVERY", key: "Delivery_nombre" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },
   { title: "", sortable: false, key: "action" },

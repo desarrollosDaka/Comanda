@@ -176,7 +176,7 @@ async function addProducts(json: any) {
 
     }).then((result) => {
         if (result.isConfirmed) {
-            Created()
+            update.value ? updateComanda() : Created();
             Swal.fire({
                 title: "Guardado!",
                 text: update.value ? "Datos actualizados con exito!" : "Datos guardados con exito!",
@@ -203,25 +203,64 @@ async function addProducts(json: any) {
 }
 
 async function Created() {
-    for (const element of listProduct.value) {
 
-        const json = {
+    let articuloPorDefecto = {
+        Id_Comanda: id.value,
+        id_producto: 'LS-00000023',
+        producto: 'VENTA ONLINE',
+        unidades: 0,
+        precio: 0,
+        subtotal: 0,
+        name: 'VENTA ONLINE', // Añadir propiedades necesarias
+        code: 'LS-00000023',
+        amount: 0,
+        price: 0
+    }
+
+    listProduct.value.push(articuloPorDefecto);
+
+    for (const element of listProduct.value) {
+            
+        let jsonProductos = {
             Id_Comanda: id.value,
             id_producto: element.code,
             producto: element.name,
             unidades: element.amount,
             precio: element.price,
-            subtotal: element.subtotal
+            subtotal: element.subtotal,
         }
-
+        
         try {
-            await axios.post(`${baseUrlProducts}/createOrderDetails`, json)
+            await axios.post(`${baseUrlProducts}/createOrderDetails`, jsonProductos)
         } catch (error) {
             console.error(error)
         }
 
     };
     back()
+}
+
+async function updateComanda() {
+
+for (const element of listProduct.value) {
+        
+    let jsonProductos = {
+        Id_Comanda: id.value,
+        id_producto: element.code,
+        producto: element.name,
+        unidades: element.amount,
+        precio: element.price,
+        subtotal: element.subtotal,
+    }
+    
+    try {
+        await axios.post(`${baseUrlProducts}/UpdateOrderDetails/${id.value}`, jsonProductos)
+    } catch (error) {
+        console.error(error)
+    }
+
+};
+back()
 }
 
 const amountInput = (item: any) => {

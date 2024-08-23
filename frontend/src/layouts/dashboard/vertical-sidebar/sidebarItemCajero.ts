@@ -6,7 +6,7 @@ import {
     ClusterOutlined,
     SnippetsOutlined,
     UserOutlined,
-    BarcodeOutlined
+    CarOutlined
   } from '@ant-design/icons-vue';
   
   export interface menu {
@@ -33,11 +33,16 @@ import {
       to: '/dashboard'
     },
     {
-      title: 'Retencion',
-      icon: BarcodeOutlined, 
-      to: '/retenciones'
+      title: 'Comandas',
+      icon: ClusterOutlined, 
+      to: '/maestroComandaAsignada'
+    },
+    {
+        title: 'Pick-Up',
+        icon: CarOutlined, 
+        to: '/pickups'
     },
   ];
   
   export default sidebarItem;
-   
+  

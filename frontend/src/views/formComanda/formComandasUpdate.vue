@@ -259,7 +259,12 @@ interface Muni {
   ID_municipio: number;
 }
 
-
+const deliveryCDD = ref([
+  {
+    title: 'ZOOM',
+    value: 1
+  }
+]) 
 
 const getSelect = async () => {
 
@@ -1080,7 +1085,7 @@ onMounted(async () => {
           class="mt-2 my-input"
           clearable
           chips
-          :items="info_Delivery"
+          :items="origen == 99 ? deliveryCDD : info_Delivery"
           variant="outlined"
           :rules="metodoRules"
           aria-label="delivery"

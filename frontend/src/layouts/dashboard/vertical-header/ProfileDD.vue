@@ -49,7 +49,7 @@ if (jsonFromLocalStorage !== null) {
       <v-tab value="111"> <SettingOutlined class="v-icon--start" /></v-tab>
     </v-tabs>
 
-    <perfect-scrollbar style="height: calc(48vh - 300px); max-height: 240px">
+    <perfect-scrollbar style="height: calc(68vh - 300px); max-height: 240px">
       <v-window v-model="tab">
         <v-window-item value="111">
 

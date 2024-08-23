@@ -244,7 +244,7 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.Email
                     ,T3.Nombre AS Cliente
                     ,T3.Razon_comercial
-                    ,T3.Direccion
+                    ,T3.Direccion 
                     ,T1.ID_sucursal 
                     ,T1.Sucursal 
                     ,T4.ID_states 
@@ -479,18 +479,29 @@ const filterOrderDetails = async (req, res) => {
 const filterOrderATC = async (id) => {
   try {
     const rta = await sequelize.query(
-      `SELECT T1 .Nombre, T2.[Status] ,T0.*,
-CAST(T0.create_date as DATE) as Create_date
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
- UNION ALL
-SELECT  T1 .Nombre, T2.[Status] ,T0.*, CAST(T0.create_date as DATE) as Create_date 
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal = '${id}'`
+      `SELECT 
+		T1.Nombre, 
+		T2.[Status] ,
+		T0.*,
+		CAST(T0.create_date as DATE) as Create_date,
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
+	UNION ALL
+	SELECT  
+		T1.Nombre,
+		T2.[Status],
+		T0.*, 
+		CAST(T0.create_date as DATE) as Create_date, 
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal = '${id}'`
     );
     return rta;
   } catch (e) {
@@ -582,6 +593,8 @@ const createOrderDetails = async (req, res) => {
       Direccion: item.direccion,
       Zoom: item.zoom
     }));
+
+    console.log(orderDetailDataArray)
 
     // Encuentra todos los productos con el ID de detalle especificado
     let products = await sequelize.models.modelOrdersdetails.findAll({
