@@ -44,7 +44,7 @@ setInterval(() => {
   if (auth.user !== null) {
     socket.emit('getUser', auth.user.data, limit.top);
   }
-}, 5000);
+}, 1000);
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones);

@@ -32,7 +32,7 @@ const confirmDelete = async (ID_Notifications: string) => {
 
     if (result.isConfirmed) {
         const res = await deletee(ID_Notifications);
-        console.log(res);
+        return res;
     }
 };
 
