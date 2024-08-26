@@ -17,6 +17,17 @@ const urlSocket = ref();
 const infoAsesores = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
+const dateNow = ref()
+const desde = ref()
+const hasta = ref()
+
+const today = new Date();
+const day = String(today.getDate()).padStart(2, '0');
+const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan desde 0
+const year = today.getFullYear();
+dateNow.value = `${year}-${month}-${day}` // Ejemplo de salida: 26/8/2024
+desde.value = dateNow.value
+hasta.value = dateNow.value
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -37,11 +48,12 @@ const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
-if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
-  urlSocket.value = 'get-master-order-pickup'
-}else if(USER_ROL.value === 7){
-  urlSocket.value = 'get-master-order-pickup-two'
-}
+// const desdeHasta = () =>{
+//   // alert(`${desde.value} And ${hasta.value}`)
+//   setInterval(() =>{
+//     socket.emit('getOrderFecha', desde.value, hasta.value);
+//   }, 1000);
+// }
 
 // Listen for events from the server
 socket.on(`get-master-order`, (rta) => {
@@ -102,6 +114,7 @@ const getNameAsesor = (id: number) => {
 
 onMounted(async () => {
   loadingInfo.value = true;
+  // socket.emit('getOrderFecha', desde.value, hasta.value);
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });
@@ -116,7 +129,7 @@ const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
   { title: "SUCURSAL", key: "Sucursal" },
-  { title: "DELIVERY", key: "Delivery_type" },
+  { title: "DELIVERY", key: "Delivery_type"},
   { title: "CREADOR", key: "User_crea" },
   { title: "FECHA", key: "Create_date"},
   { title: "HORA", key: "Hora" },
@@ -141,6 +154,38 @@ const COLORSTATUS: any = {
 
 <template>
   <!-- TABLA -->
+  <!-- <v-row>
+      <v-col cols="12" md="4">
+        <v-text-field
+          type="date"
+          label="Desde"
+          prepend-icon="mdi-filter-outline"
+          variant="outlined"
+          v-model="desde"
+        ></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="4">
+        <v-text-field
+        type="date"
+          label="Hasta"
+          variant="outlined"
+          v-model="hasta"
+        ></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="4">
+        <v-btn 
+          prepend-icon="mdi-filter" 
+          variant="tonal"
+          color="primary"
+          @click="desdeHasta"
+        >
+          Filtrar
+        </v-btn>
+      </v-col>
+    </v-row> -->
+
   <UiTitleCard title="" class-name="px-0 pb-0 rounded-md">
     <v-card flat>
       <!-- filter and buttons -->
@@ -149,7 +194,7 @@ const COLORSTATUS: any = {
           <v-text-field
             v-model="search"
             density="compact"
-            label="Buscar comanda"
+            label="Filtrar comanda"
             prepend-inner-icon="mdi-magnify"
             variant="outlined"
             color="primary"

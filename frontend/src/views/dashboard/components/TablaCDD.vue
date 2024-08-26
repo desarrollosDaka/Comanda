@@ -173,7 +173,7 @@ const COLORSTATUS: any = {
               (item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'
             "
           >
-            <p class="mb-0">{{ item.Status }}</p>
+            <p class="mb-0">{{ item['Status'] }}</p>
           </v-chip>
         </template>
 

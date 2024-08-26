@@ -57,10 +57,13 @@ const getMasterOrder = async (req, res) => {
 };
 
 //CONSULTA DE ORDENES
-const getMasterOrderFecha = async (req, res) => {
+const getMasterOrderFecha = async (jsonDesdeHasta) => {
 
-  desde = req.body.desde
-  hasta = req.body.hasta 
+  const desde = jsonDesdeHasta.desde
+  const hasta = jsonDesdeHasta.hasta
+  console.log(jsonDesdeHasta);
+  
+
 
   try {
     // const rta = await sequelize.models.modelOrders.findAll();

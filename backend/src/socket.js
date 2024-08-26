@@ -47,9 +47,16 @@ module.exports = (server) => {
       socket.emit("get-master-user-suc", rta);
     });
 
-    socket.on("getOrderFecha",async  () => {
-     // console.log(sucId);
-      const rta = await getMasterOrderFecha();
+
+    socket.on("getOrderFecha",async  (desde, hasta) => {
+      //console.log(desde, hasta);
+      jsonDesdeHasta = {
+        desde: desde,
+        hasta: hasta
+      }
+      
+      const rta = await getMasterOrderFecha(jsonDesdeHasta);
+
       socket.emit("get-master-order-fecha", rta);
     });
     
