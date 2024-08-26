@@ -20,7 +20,7 @@ const idDocuments = ref("");
 const estatus = ref();
 const infogetStatus = ref();
 const infoMotivo = ref();
-
+let urlSocket = ref();
 
 const COLORSTATUS: any = {
   1: "#ffca3a", //creada
@@ -74,13 +74,18 @@ const requestMasterOrder = () => {
 }, 5000);
 
 };
+if(id_sucursal.value === 1){
+  urlSocket.value = 'get-master-order'
+}else {
+  urlSocket.value = 'get-master-order-suc'
+}
 
 // Listen for events from the server
-socket.on("get-master-order-suc", (rta: any) => {
+socket.on(`${urlSocket.value}`, (rta: any) => {
  // console.log("Datos actualizados:", rta);
   loadingInfo.value = true;
   if (Array.isArray(rta)) {
-    info.value = rta;
+    info.value = rta[0];
  } else {
    console.error("La respuesta no es un array:", rta);
  }
