@@ -17,10 +17,12 @@ const socket = io('ws://localhost:3003'); // ws
 // pinia 
 import { useAuthStore } from '../../../stores/auth';
 import { useNotifyStore } from '../../../stores/notify';
+import { useLimitStore } from '@/stores/Limit';
 
 const customizer = useCustomizerStore();
 const auth = useAuthStore();
 const noti = useNotifyStore();
+const limit = useLimitStore();
 const User = ref('');
 const infoLength = ref(0);
 let isFirstLoad = true;
@@ -39,8 +41,10 @@ if (jsonFromLocalStorage !== null) {
 
 setInterval(() => {
   // VERIFICAR ESTO
-  socket.emit('getUser', auth.user.data);
-}, 5000);
+  if (auth.user !== null) {
+    socket.emit('getUser', auth.user.data, limit.top);
+  }
+}, 1000);
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones); 

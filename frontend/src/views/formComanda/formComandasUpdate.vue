@@ -555,16 +555,13 @@ async function validate() {
       confirmButtonText: "Si, Guardar!",
     }).then((result) => {
       if (result.isConfirmed) {
-        const respuesta = handleFormComanda();
+        handleFormComanda();
         Swal.fire({
           title: "Guardado!",
           text: "Datos actualizados con exito!",
           icon: "success",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            handleProductUpdate();
-          }
-        });
+        })
+        handleProductUpdate();
       }
     });
 }

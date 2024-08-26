@@ -105,26 +105,5 @@ if ("serviceWorker" in navigator) {
   </v-row>
 </template>
 
-<style>
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background-color: #838282;
-  color: #777;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #f2f2f2;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: rgb(122, 122, 122);
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(87, 85, 85);
-    border-radius: 4px; 
-}
-</style>
 
 

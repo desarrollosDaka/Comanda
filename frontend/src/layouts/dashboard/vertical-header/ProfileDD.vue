@@ -34,7 +34,7 @@ if (jsonFromLocalStorage !== null) {
 
       <div>
         <h6 class="text-h6 mb-0">{{ User }}</h6>
-        <p class="text-caption mb-0">{{ Email }}</p>
+        <p :style="{ fontSize: '9px' }" class="mb-0">{{ Email }}</p>
       </div>
 
       <div class="ml-auto">

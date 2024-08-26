@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, defineEmits, defineProps } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { toast } from 'vue3-toastify';

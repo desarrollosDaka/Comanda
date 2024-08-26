@@ -152,12 +152,8 @@ function validate(values: any, { setErrors }: any) {
             title: "Guardado!",
             text: "Datos editados con exito!",
             icon: "success"
-            }).then((result) => {
-            if (result.isConfirmed) {
-                    router.push('/masterUser');
-                }
-            });
-    
+            })
+            router.push('/masterUser');
         }
     });
 }
