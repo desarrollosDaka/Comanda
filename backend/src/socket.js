@@ -52,6 +52,18 @@ module.exports = (server) => {
       const rta = await getMasterOrderFecha();
       socket.emit("get-master-order-fecha", rta);
     });
+
+    socket.on("getOrderPickup",async  (id) => {
+     // console.log(sucId);
+      const rta = await filterOrderPickUp(id);
+      socket.emit("get-master-order-pickup", rta);
+    });
+    
+    socket.on("getOrderPickupTwo",async  (id) => {
+     // console.log(sucId);
+      const rta = await filterOrderPickUpTwo(id);
+      socket.emit("get-master-order-pickup-two", rta);
+    });
     
 
         console.log('Nuevo cliente conectado');
@@ -98,22 +110,22 @@ module.exports = (server) => {
 
 
         const emitOrderDataConPickup = async () => {
-            try {
-                const rta = await filterOrderPickUp();
-                socket.emit('get-master-order-pickup', rta);
+        //     try {
+        //         const rta = await filterOrderPickUp();
+        //         socket.emit('get-master-order-pickup', rta);
               
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
-            }
-        };
+        //     } catch (error) {
+        //         console.error('Error al obtener los datos:', error);
+        //     }
+         };
 
         const emitOrderDataConPickupTwo = async () => {
-          try {
-              const rta = await filterOrderPickUpTwo();
-              socket.emit('get-master-order-pickup-two', rta);
-          } catch (error) {
-              console.error('Error al obtener los datos:', error);
-          }
+          // try {
+          //     const rta = await filterOrderPickUpTwo();
+          //     socket.emit('get-master-order-pickup-two', rta);
+          // } catch (error) {
+          //     console.error('Error al obtener los datos:', error);
+          // }
         };
 
         

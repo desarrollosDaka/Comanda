@@ -563,24 +563,33 @@ const filterOrderATC = async (id) => {
 };
 
 //OBTENER DETALLES DE COMANDA
-const filterOrderPickUp = async (req, res) => {
+const filterOrderPickUp = async (id) => {
   try {
   //  const id = req.params.id;
 
     const rta = await sequelize.query(
-      `SELECT T1 .Nombre, T2.[Status] ,T0.*,
-CAST(T0.create_date as DATE) as Create_date
+      `
+SELECT T1 .Nombre,
+        T3.Sucursal,
+        T2.[Status] ,
+        T0.*,
+        CAST(T0.create_date as DATE) as Create_date
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 4 AND T0.Retencion = 0 and Tipo_delivery = 2
+LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+WHERE T0.ID_status = 4 AND T0.Retencion = 0 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
     UNION ALL
-SELECT  T1 .Nombre, T2.[Status] ,T0.*, 
-CAST(T0.create_date as DATE) as Create_date 
+SELECT  T1 .Nombre, 
+        T3.Sucursal, 
+        T2.[Status] ,
+        T0.*, 
+        CAST(T0.create_date as DATE) as Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
+LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
     );
     return rta;
 
@@ -589,22 +598,31 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
   }
 };
 
-const filterOrderPickUpTwo = async (req, res) => {
+const filterOrderPickUpTwo = async (id) => {
   try {
     const rta = await sequelize.query(
-        `SELECT T1 .Nombre, T2.[Status] ,T0.*,
-CAST(T0.create_date as DATE) as Create_date
+        `
+SELECT T1.Nombre, 
+        T3.Sucursal, 
+        T2.[Status] ,
+        T0.*,
+        CAST(T0.create_date as DATE) as Create_date
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 7 AND T0.Retencion = 0 and Tipo_delivery = 2
-    UNION ALL
-SELECT  T1 .Nombre, T2.[Status] ,T0.*, 
+LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+WHERE T0.ID_status = 7 AND T0.Retencion = 0 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
+  UNION ALL
+SELECT  T1.Nombre,
+        T3.Sucursal,
+        T2.[Status] ,
+        T0.*, 
 CAST(T0.create_date as DATE) as Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
+LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
     );
     return rta;
  

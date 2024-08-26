@@ -37,6 +37,10 @@ const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
+setInterval(() => {
+  socket.emit('getOrderPickup', id_sucursal.value);
+}, 5000);
+
 if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
   urlSocket.value = 'get-master-order-pickup'
 }else if(USER_ROL.value === 7){
@@ -103,7 +107,8 @@ const getNameAsesor = (id: number) => {
 onMounted(async () => {
   
   loadingInfo.value = true; 
-  const { status } = await useGetStatus();  
+  const { status } = await useGetStatus();
+  socket.emit('getOrderPickup', id_sucursal.value);  
   infogetStatus.value = status;
  
 });
@@ -117,6 +122,7 @@ onUnmounted(() => {
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
+  { title: "SUCURSAL", key: "Sucursal" },
   { title: "CLIENTE", key: "Nombre" },
   { title: "FECHA", key: "Create_date" },
   { title: "", sortable: false, key: "action" },
