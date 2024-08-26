@@ -2,16 +2,18 @@
 const { Server } = require("socket.io");
 const {
   getMasterOrder,
+  getMasterOrderFecha,
   getMasterOrderCDD,
-  createMasterOrderAndDetails,
-  updateMasterOrderAndDetails,
+  //createMasterOrderAndDetails,
+  //pdateMasterOrderAndDetails,
+  getMasterOrderForStore,
   getMasterOrderRetencion,
   getMasterOrderRetencionTwo,
   filterOrderPickUp,
   filterOrderPickUpTwo,
   filterOrderATC
 } = require("./controllers/orders.controller.js");
-const { getMasterUser } = require("./controllers/user.controller.js");
+const { getMasterUser,getMasterUserBySuc } = require("./controllers/user.controller.js");
 const { latestNoti, findallv2 } = require("./controllers/notifications.controllers.js");
 
 
@@ -30,16 +32,27 @@ module.exports = (server) => {
       const rta = await findallv2(userId.ID_user, limit);
       socket.emit("notifications", rta[0]);
     });
-    // Notificaciones
 
-    socket.on("newCommand", (idUser) => {
-      try {
-        // const notifications = await latestNoti(idUser);
-        socket.emit("lol", "rta");
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
+    // filter Order Comandas con ID SUC
+    socket.on("getComanda",async  (sucId) => {
+     // console.log(sucId);
+      const rta = await getMasterOrderForStore(sucId);
+      socket.emit("get-master-order-suc", rta[0]);
+    });0
+    
+    // filter User con ID SUC
+    socket.on("getUsuario",async  (sucId) => {
+     // console.log(sucId);
+      const rta = await getMasterUserBySuc(sucId);
+      socket.emit("get-master-user-suc", rta);
     });
+
+    socket.on("getOrderFecha",async  () => {
+     // console.log(sucId);
+      const rta = await getMasterOrderFecha();
+      socket.emit("get-master-order-fecha", rta);
+    });
+    
 
         console.log('Nuevo cliente conectado');
 

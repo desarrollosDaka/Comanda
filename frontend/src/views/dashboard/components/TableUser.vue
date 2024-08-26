@@ -9,39 +9,48 @@ const search = ref('')
 const loadingInfo = ref(false);
 const Delete = ref(true);
 const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
+const id_sucursal = ref();
+let urlSocket = ref();
 
 const socket = io(import.meta.env.VITE_BACK_URL, {
   reconnection: false // Deshabilitar la reconexión automática
 });
 
-const info = ref([]) ;
+let info = ref<any[]>([]);
+
+// DATA DEL LOCAL STORAGE
+const jsonFromLocalStorage = sessionStorage.getItem("user");
+if (jsonFromLocalStorage !== null) {
+  const parsedData = JSON.parse(jsonFromLocalStorage);
+  id_sucursal.value = parsedData.data.Id_sucursal;
+}
+if(id_sucursal.value === 1){
+urlSocket.value = 'get-master-user' 
+}else{
+     urlSocket.value = 'get-master-user-suc'
+}
 
 
-// Listen for events from the server
-socket.on('get-master-user', (rta:any) => {
+setInterval(() => {
+  socket.emit('getUsuario', id_sucursal.value);
+}, 5000);
+
+ 
+
+// Listen for events from the server 
+//get-master-user-suc
+socket.on( `${urlSocket.value}`, (rta:string) => {
+  //console.log(rta);
+  
   if (Array.isArray(rta)) {
     info.value = rta[0];
+    console.log(rta);
     loadingInfo.value = false;
   } else {
     console.error('La respuesta no es un array:', rta);
   }
 });
 
-const getUser = async () => {
-  /*loadingInfo.value = true
-  try{
-
-    const url = `${baseUrl}/masterUser`
-    const {data} = await axios.get(url);
-      info.value =  data[0]
-      console.log(info.value);
-      
-
-  } catch(error){
-      console.log(error)
-  }
-  loadingInfo.value = false*/
-}
 
 const deleteUser = async (id:string) => {
   try{
@@ -66,6 +75,7 @@ const headers = ref([
 
 onMounted( async () => {
   loadingInfo.value = true;
+  socket.emit('getUsuario', id_sucursal.value);
     //await getUser();
 });
 
@@ -96,6 +106,21 @@ function eliminardata(id:string){
     });
 }
 
+// const getUser = async () => {
+//   /*loadingInfo.value = true
+//   try{
+
+//     const url = `${baseUrl}/masterUser`
+//     const {data} = await axios.get(url);
+//       info.value =  data[0]
+//       console.log(info.value);
+      
+
+//   } catch(error){
+//       console.log(error)
+//   }
+//   loadingInfo.value = false*/
+// }
 </script>
 
 <template>

@@ -35,6 +35,36 @@ const getMasterUser = async (req, res) => {
         console.log('Error', e);
     }
 };
+// get user by idf
+const getMasterUserBySuc = async (id) => {
+    try {
+       // const rta = await sequelize.models.modelMasterUser.findAll();
+        const rta = await sequelize.query(
+            `SELECT T0.[ID_user]
+              ,T0.[Nombre]
+              ,T0.[Email]
+              ,T0.[Password]
+              ,T0.[Id_sucursal]
+              ,T1.Sucursal
+			  ,T0.ID_rol
+			  ,T2.Nombre_rol
+              ,T0.[Dpto_ventas]
+              ,T0.[Linea_ventas]
+              ,T0.[User_crea]
+              ,T0.[User_mod]
+              ,T0.[Delete]
+              ,T0.[Create_date]
+              ,T0.[Update_date]
+          FROM [COMANDA_TEST].[dbo].[MASTER_USER] T0
+          INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.Id_sucursal = T1.ID_sucursal
+		  INNER JOIN [dbo].[MASTER_ROLS] T2 ON T0.ID_rol = T2.ID_rol
+          WHERE [Delete] = 0 AND  T0.ID_sucursal = '${id}'`);
+    
+          return rta;
+    } catch (e) {
+        console.log('Error', e);
+    }
+};
 
 // get filter user
 const filterMasterUser = async (req, res) => {
@@ -137,6 +167,7 @@ const deleteMasterUser = async (req, res) => {
 module.exports = {
     getMasterUser,
     filterMasterUser,
+    getMasterUserBySuc,
     updateMasterUser,
     deleteMasterUser
 }; 

@@ -20,7 +20,8 @@ import NavCollapse from './NavCollapse/NavCollapse.vue';
 import Logo from '../logo/LogoDark.vue';
 
 const customizer = useCustomizerStore();
-const sidebarMenu = shallowRef(sidebarItems);
+const sidebarMenuAdmin = shallowRef(sidebarItems);
+const sidebarMenu = shallowRef(sidebarItemsRol);
 const sidebarMenuAsesorOnline = shallowRef(sidebarAsesorOnline);
 const sidebarMenuGerente = shallowRef(sidebarItemsGerente);
 const sidebarMenuEspecialistaCaja = shallowRef(sidebarEspecialistaCaja);
@@ -32,7 +33,7 @@ const sidebarMenuCajero = shallowRef(sidebarCajeros);
 const User = ref('');
 const Rol = ref<number>(0)
 
-const ADVISORS_STORERS_CASHIER = [5,9] //rol asesores, almacenistas, cajeras
+const ADVISORS_STORERS_CASHIER = [5, 9] //rol asesores, almacenistas, cajeras
 const MANAGERS = [4] //rol gerentes
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
@@ -67,7 +68,7 @@ if (jsonFromLocalStorage !== null) {
        <!-- ADMINISTRADORES-->
       <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 99">
         <!---Menu Loop -->
-        <template v-for="(item, i) in sidebarMenu" :key="i">
+        <template v-for="(item, i) in sidebarMenuAdmin" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->
