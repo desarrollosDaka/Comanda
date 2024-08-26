@@ -25,8 +25,8 @@ module.exports = (server) => {
 
   io.on('connection', (socket) => {
           // Notificaciones
-    socket.on("getUser",async  (userId) => {
-      const rta = await findallv2(userId.ID_user);
+    socket.on("getUser",async  (userId, limit) => {
+      const rta = await findallv2(userId.ID_user, limit);
       socket.emit("notifications", rta[0]);
     });
 

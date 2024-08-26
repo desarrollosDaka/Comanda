@@ -24,9 +24,9 @@ const notification = async (req, res) => {
   }
 };
 
-const findallv2 = async (id) => {
+const findallv2 = async (id, limit) => {
   const response =
-    await sequelize.query(`select top 5 t0.* from [dbo].[ORDER_NOTIFICATIONS] t0
+    await sequelize.query(`select top ${limit} t0.* from [dbo].[ORDER_NOTIFICATIONS] t0
   inner join [dbo].[MASTER_USER] t1 on t0.ID_user = t1.ID_user
     WHERE t0.ID_user = '${id}' and t0."Read" = '0'`);
   return response;
