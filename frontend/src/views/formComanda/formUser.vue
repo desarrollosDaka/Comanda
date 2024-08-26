@@ -129,17 +129,13 @@ function validate(values: any, { setErrors }: any) {
         confirmButtonText: "Si, Guardar!",
     }).then((result) => {
         if (result.isConfirmed) {
-            const respuesta = userCreated(jsonUser);
+            userCreated(jsonUser);
             Swal.fire({
             title: "Guardado!",
             text: "Datos guardados con exito!",
             icon: "success"
-            }).then((result) => {
-            if (result.isConfirmed) {
-                    router.push('/masterUser');
-                }
-            });
-    
+            })
+            router.push('/masterUser');
         }
     });
 }

@@ -33,7 +33,7 @@ import {
       to: '/dashboard'
     },
     {
-      title: 'Comandas CDD',
+      title: 'Comandas',
       icon: ClusterOutlined, 
       to: '/ComandasCDD'
     }

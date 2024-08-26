@@ -36,6 +36,20 @@ import {
       icon: ClusterOutlined, 
       to: '/maestroComandaAsignada'
     },
+    {
+      title: 'Usuarios',
+      icon: UserOutlined,
+      children:  [ 
+        {
+          title: ' Maestro de Usuarios',
+          to: '/masterUser'
+        },
+        {
+          title: ' Crear Usuario',
+          to: '/formCreatedUser'
+        },
+      ]
+    }
   ];
   
   export default sidebarItem;

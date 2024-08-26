@@ -433,17 +433,13 @@ async function validate() {
       confirmButtonText: "Si, Guardar!",
     }).then((result) => {
       if (result.isConfirmed) {
-        // const respuesta = Created(formData);
-        const respuesta = handleFormComanda();
+        handleFormComanda();
         Swal.fire({
           title: "Guardado!",
           text: "Datos guardados con exito!",
           icon: "success",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            router.push(`/addArticulos/${idComandaRandom.value}`);
-          }
-        }); 
+        })
+        router.push(`/addArticulos/${idComandaRandom.value}`);
       }
     });
 }
