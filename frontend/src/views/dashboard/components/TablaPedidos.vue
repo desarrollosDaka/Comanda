@@ -8,11 +8,12 @@ import { shallowRef, ref, onMounted, onUnmounted } from "vue";
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 
 const search = ref("");
-const info = ref([]);
+let info = ref<any[]>([]);
 const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlMotivo = `${import.meta.env.VITE_URL}/api/motivo`;
 const dialog = ref(false);
+const id_sucursal = ref();
 
 const selectedMotivo = ref();
 const idDocuments = ref("");
@@ -52,6 +53,14 @@ interface Table_Orders {
   ID_status: number;
   Create_date: Date;
 }
+// DATA DEL LOCAL STORAGE
+const jsonFromLocalStorage = sessionStorage.getItem("user");
+if (jsonFromLocalStorage !== null) {
+  const parsedData = JSON.parse(jsonFromLocalStorage);
+
+  id_sucursal.value = parsedData.data.Id_sucursal;
+}
+
 
 const socket = io(import.meta.env.VITE_BACK_URL, {
   reconnection: false, // Deshabilitar la reconexión automática
@@ -59,18 +68,22 @@ const socket = io(import.meta.env.VITE_BACK_URL, {
 
 // Emitir evento para solicitar datos del servidor
 const requestMasterOrder = () => {
-  socket.emit("request-master-order");
+
+  setInterval(() => {
+  socket.emit('getComanda', id_sucursal.value);
+}, 5000);
+
 };
 
 // Listen for events from the server
-socket.on("get-master-order", (rta: any) => {
-  //console.log("Datos actualizados:", rta);
+socket.on("get-master-order-suc", (rta: any) => {
+ // console.log("Datos actualizados:", rta);
   loadingInfo.value = true;
   if (Array.isArray(rta)) {
-    info.value = rta[0];
-  } else {
-    console.error("La respuesta no es un array:", rta);
-  }
+    info.value = rta;
+ } else {
+   console.error("La respuesta no es un array:", rta);
+ }
   loadingInfo.value = false;
 });
 
@@ -142,6 +155,8 @@ const deleteDocuments = async (id: string) => {
 // Emitir evento al montar el componente
 onMounted(() => {
   loadingInfo.value = true; 
+  socket.connect();
+  socket.emit('getComanda', id_sucursal.value);
   requestMasterOrder();
 
 });

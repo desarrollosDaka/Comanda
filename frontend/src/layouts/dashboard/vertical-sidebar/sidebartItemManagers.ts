@@ -4,6 +4,7 @@ import {
     LoginOutlined,
     FontSizeOutlined,
     ClusterOutlined,
+    SnippetsOutlined,
     UserOutlined,
     CarOutlined,
     BarcodeOutlined,

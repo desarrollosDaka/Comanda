@@ -117,6 +117,7 @@ interface Product {
 
 interface ListProduct {
     name: string;
+    id_order?: number;
     code: string;
     amount: number;
     price: number;
@@ -133,7 +134,6 @@ function addProduct(cod_product: any): void {
         price: product[0].precio,
         subtotal: product[0].precio
     }
-
     // VERIFICO QUE NO SE DUPLIQUE EL PRODUCTO
     // const found = listProduct.value.find((product) => product.code === cod_product)
 
@@ -229,7 +229,7 @@ async function Created() {
             precio: element.price,
             subtotal: element.subtotal,
         }
-        
+
         try {
             await axios.post(`${baseUrlProducts}/createOrderDetails`, jsonProductos)
         } catch (error) {
@@ -242,19 +242,25 @@ async function Created() {
 
 async function updateComanda() {
 
+   // console.log(listProduct.value);
+
+  
+    
 for (const element of listProduct.value) {
         
     let jsonProductos = {
         Id_Comanda: id.value,
+        id_order: element.id_order,
         id_producto: element.code,
         producto: element.name,
         unidades: element.amount,
         precio: element.price,
         subtotal: element.subtotal,
     }
+    //console.log(jsonProductos);
     
     try {
-        await axios.post(`${baseUrlProducts}/UpdateOrderDetails/${id.value}`, jsonProductos)
+        await axios.put(`${baseUrlProducts}/updateOrderDetails2/${id.value}`, jsonProductos)
     } catch (error) {
         console.error(error)
     }
@@ -296,6 +302,8 @@ async function handleProductUpdate() {
     try {
         const url = `${baseUrlProducts}/filterOrderDetails/${id.value}`
         const { data } = await axios.get(url);
+        console.log(data);
+        
         articles = data[0]
 
     } catch (error) {
@@ -315,6 +323,7 @@ async function handleProductUpdate() {
 
         const newProduct: ListProduct = {
             name: element.Producto,
+            id_order: element.ID_order,
             code: element.ID_producto,
             amount: element.Unidades,
             price: element.Precio,

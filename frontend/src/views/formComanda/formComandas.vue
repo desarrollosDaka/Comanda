@@ -132,7 +132,7 @@ async function searchModel() {
     const { data } = await axios.get(
       `${baseUrlClients}/searchClient/${cedulaUno.value}`
     );
-console.log(data[0][0]);
+//console.log(data[0][0]);
 
     if (data) {
       tipo.value = data[0][0].Tipo_cliente;
@@ -292,7 +292,7 @@ async function getSucursal() {
   try {
     const { data } = await axios.get(`${baseUrlStore}/masterStores`);
     info_tiendas.value = data[0]
-      .filter((destino: Destino) => destino.ID_sucursal !== Id_sucursal.value)
+      .filter((destino: Destino) => destino.ID_sucursal !== 1 && destino.ID_sucursal !== Id_sucursal.value)
       .map((destino: Destino) => ({
         title: destino.Sucursal,
         value: destino.ID_sucursal,
