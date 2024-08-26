@@ -36,7 +36,6 @@ const confirmDelete = async (ID_Notifications: string) => {
     }
 };
 
-
 const redirectToCommnd = async () => {
     router.push('/dashboard');
     router.push(`/viewProcessComandas/${props.notifyData.ID_detalle}/${await getIdCommad(url, props)}`)

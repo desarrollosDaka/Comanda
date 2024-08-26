@@ -17,10 +17,12 @@ function deactivateItem() {
 }
 
 const viewAll = () => {
-  if (notifyStore.limit === 5) {
-    notifyStore.updateLimit(10);
+  if (notifyStore.limit === 4) {
+    notifyStore.updateLimit(15);
+    notifyStore.updateBtnText('Ver menos');
   } else {
-    notifyStore.updateLimit(5);
+    notifyStore.updateLimit(4);
+    notifyStore.updateBtnText('Ver Todo');
   }
 };
 
@@ -64,15 +66,13 @@ watch(() => notifyStore.countNotifications, (newValue) => {
       <v-divider></v-divider>
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
-
           <Notify v-for="notify in notifyStore.showNoti" :notifyData="notify" :key="notify.ID_Notifications" />
-          
           <v-divider></v-divider>
         </v-list>
       </perfect-scrollbar>
       <v-divider></v-divider>
       <div class="pa-2 text-center">
-        <v-btn @click="viewAll()" color="primary" variant="text">Ver todo</v-btn>
+        <v-btn @click="viewAll()" color="primary" variant="text">{{ notifyStore.btnText }}</v-btn>
       </div>
     </v-sheet>
   </v-menu>
