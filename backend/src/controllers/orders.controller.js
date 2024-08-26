@@ -9,6 +9,8 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
+const { log } = require("console");
+const internal = require("stream");
 
 
 //CONSULTA DE ORDENES
@@ -42,6 +44,53 @@ const getMasterOrder = async (req, res) => {
         LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL 
         ORDER BY T0.[ID_order] DESC` );
+
+    if (rta) {
+      return rta;
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//CONSULTA DE ORDENES
+const getMasterOrderFecha = async (req, res) => {
+
+  desde = req.body.desde
+  hasta = req.body.hasta 
+
+  try {
+    // const rta = await sequelize.models.modelOrders.findAll();
+    const rta = await sequelize.query(
+      `SELECT  T0.[ID_order]
+        ,T0.ID_detalle
+        ,T2.Status
+        ,T2.ID_status 
+        ,T3.Tipo_cedula
+        ,T0.Cedula  
+        ,T5.Delivery_type
+        ,T3.Nombre Cliente
+        ,T1.Sucursal
+        ,T1.ID_Sucursal
+        ,T0.[User_crea]
+        ,T0.User_mod
+        ,T4.Nombre AS NombreAsesor
+        ,T0.User_asing 
+        ,CAST(T0.Create_date AS DATE) Create_date
+        ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+        ,CAST(T0.update_date AS DATE) Update_date
+        ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
+LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
+WHERE  T0.[Delete] IS NULL AND CAST(T0.Create_date AS DATE) BETWEEN '${desde}' AND '${hasta}'
+ORDER BY T0.[ID_order] DESC` );
 
     if (rta) {
       return rta;
@@ -168,39 +217,43 @@ const getMasterOrderRetencionTwo = async (req, res) => {
 };
 
 // New
-const getMasterOrderForStore = async (req, res) => {
+const getMasterOrderForStore = async (id) => {
   try {
-    const id_sucursal = req.params.id_sucursal;
+    //const id_sucursal = req.params.id_sucursal;
+//console.log(id);
+
     const rta = await sequelize.query(
-      `	SELECT T0.[ID_order]
-                ,T0.ID_detalle
-                ,T0.Caja_factura
-				        ,T3.Tipo_cedula
-                ,T0.Cedula
-                ,T3.Nombre Cliente
-                ,T3.Razon_comercial
-                ,T1.Sucursal
-                ,T0.[User_crea]
-                ,T0.[User_asing] Asesor 
-                ,T2.Status
-                ,T2.ID_status 
-                ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
+      `  SELECT  T0.[ID_order]
+              ,T0.ID_detalle
+              ,T2.Status
+              ,T2.ID_status 
+              ,T3.Tipo_cedula
+              ,T0.Cedula  
+              ,T5.Delivery_type
+              ,T3.Nombre Cliente
+              ,T1.Sucursal
+              ,T1.ID_Sucursal
+              ,T0.[User_crea]
+              ,T0.User_mod
+              ,T4.Nombre AS NombreAsesor
+              ,T0.User_asing 
+              ,CAST(T0.Create_date AS DATE) Create_date
+              ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+              ,CAST(T0.update_date AS DATE) Update_date
+              ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.ID_sucursal = '${id_sucursal}'
+        LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
+        LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
+        WHERE T0.ID_sucursal = '${id}' AND T0.[Delete] IS NULL 
         ORDER BY T0.[ID_order] DESC`
     );
+//console.log(rta);
 
-    if (rta) {
-      res.status(201);
-      res.json(rta);
-    } else {
-      res.status(404);
-      res.json({ msj: "Error en la consulta" });
-    }
+    return rta;
+
   } catch (e) {
     console.log("Error", e);
   }
@@ -578,26 +631,26 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2`
 // };
 /////////////////////////////////////////////////////////////////////*****************************//////////////////////////// */
 
-const mapAndFindOrderDetails = async (data) => {
+// const mapAndFindOrderDetails = async (data) => {
 
-  const orderDetailDataArray = data.map(item => ({
-    ID_detalle: item.Id_Comanda,
-    ID_producto: item.id_producto,
-    Producto: item.producto, 
-    Unidades: item.unidades,
-    Precio: item.precio,
-    Subtotal: item.subtotal,
-    Direccion: item.direccion,
-    Zoom: item.zoom
-  }));
+//   const orderDetailDataArray = data.map(item => ({
+//     ID_detalle: item.Id_Comanda,
+//     ID_producto: item.id_producto,
+//     Producto: item.producto, 
+//     Unidades: item.unidades,
+//     Precio: item.precio,
+//     Subtotal: item.subtotal,
+//     Direccion: item.direccion,
+//     Zoom: item.zoom
+//   }));
 
-  // Encuentra todos los productos con el ID de detalle especificado
-  let products = await sequelize.models.modelOrdersdetails.findAll({
-    where: { ID_detalle: data[0].Id_Comanda ,  ID_producto:data[0].id_producto }
-  });
+//   // Encuentra todos los productos con el ID de detalle especificado
+//   let products = await sequelize.models.modelOrdersdetails.findAll({
+//     where: { ID_detalle: data[0].Id_Comanda ,  ID_producto:data[0].id_producto }
+//   });
 
-  return { orderDetailDataArray, products };
-};
+//   return { orderDetailDataArray, products };
+// };
 
 
 //CREAR DETALLES DE ORDENES
@@ -618,20 +671,20 @@ const createOrderDetails = async (req, res) => {
       Zoom: item.zoom
     }));
 
-    console.log(orderDetailDataArray)
+    //console.log(orderDetailDataArray)
 
     // Encuentra todos los productos con el ID de detalle especificado
-    let products = await sequelize.models.modelOrdersdetails.findAll({
-      where: { ID_detalle: data[0].Id_Comanda , ID_producto: data[0].id_producto}
-    });
+//     let products = await sequelize.models.modelOrdersdetails.findAll({
+//       where: { ID_detalle: data[0].Id_Comanda , ID_producto: data[0].id_producto}
+//     });
 
         
-//console.log(products);
+// //console.log(products);
 
-    // Elimina cada producto uno por uno
-    for (let product of products) {
-      await product.destroy();
-    }
+//     // Elimina cada producto uno por uno
+//     for (let product of products) {
+//       await product.destroy();
+//     }
 
 
 //console.log(orderDetailDataArray);
@@ -649,6 +702,7 @@ const updateOrderDetails = async (req, res) => {
   try {
     const id = req.params.id;
     const data = await req.body;
+
 
     for (const item of data) {
       const orderDetailData = {
@@ -671,6 +725,75 @@ const updateOrderDetails = async (req, res) => {
     res.status(500).json({ error: "Error en el servidor" });
   }
 };
+
+
+//ACTUALIZA DETALLES DE LA ORDER  
+const updateOrderDetails2 = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = Array.isArray(req.body) ? req.body : [req.body];
+
+    // Crear un array de promesas para manejar las operaciones asincrónicas
+    const promises = data.map(async (item) => {
+
+  
+     if(item.id_order == undefined){
+      console.log("ENTRO EN UNDEFINEED");
+      
+      item.id_order = 0 
+      
+    }else{
+
+      item.id_order
+     } 
+
+      const orderDetailData = {
+        ID_detalle: item.Id_Comanda,
+        ID_order: item.id_order,
+        ID_producto: item.id_producto,
+        Producto: item.producto, 
+        Unidades: item.unidades,
+        Precio: item.precio,
+        Subtotal: item.subtotal,
+        Direccion: item.direccion,
+        Zoom: item.zoom
+      };
+
+      //console.log(orderDetailData);
+
+      // Verificar si el artículo existe
+      const existingItem = await sequelize.models.modelOrdersdetails.findOne({
+        where: {  ID_order: item.id_order, ID_detalle: item.Id_Comanda },
+      });
+
+      if (existingItem) {
+        // Si existe, hacer update
+        return sequelize.models.modelOrdersdetails.update(orderDetailData, {
+          where: {  ID_order: item.id_order, ID_detalle: item.Id_Comanda },
+        });
+      } else {
+        // Si no existe, hacer create
+        delete orderDetailData.ID_order
+     //   console.log("ORDER DETAIL TEST");
+     //   console.log(orderDetailData);
+
+        
+        return sequelize.models.modelOrdersdetails.create(orderDetailData);
+     }
+    });
+
+    // Esperar a que todas las promesas se resuelvan
+    await Promise.all(promises);
+
+
+
+    res.status(201).json({ message: "Detalles de la orden actualizados correctamente" });
+  } catch (e) {
+    console.log("Error", e);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
 
 const deleteOrderDetails = async (req, res) => {
   const data = req.body;
@@ -1203,6 +1326,7 @@ const deleteMasterOrder = async (req, res) => {
 // Export controllers
 module.exports = {
   getMasterOrder,
+  getMasterOrderFecha,
   getMasterOrderCDD,
   filterMasterOrder,
   filterMasterAsesor,  
@@ -1212,6 +1336,7 @@ module.exports = {
   filterOrderPickUp,
   createOrderDetails,
   updateOrderDetails,
+  updateOrderDetails2,
   deleteOrderDetails,
   createMasterOrderAndDetails,
   updateMasterOrderAndDetails,

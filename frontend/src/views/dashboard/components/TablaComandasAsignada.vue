@@ -43,7 +43,7 @@ socket.on("get-master-order", (rta) => {
         return dataUser.status.includes(item.ID_status) && item.User_asing.toString() === USER.value.toString() && item.ID_Sucursal === id_sucursal.value
 
       }else {
-        //FILTRAMOS SOLO POR ESTATUS
+        //FILTRAMOS SOLO POR ESTATUS y SUCURSAL
         return(
           dataUser.status.includes(item.ID_status) && item.ID_Sucursal === id_sucursal.value 
         );
@@ -250,7 +250,7 @@ const COLORSTATUS: any = {
             :color="COLORSTATUS[(item as Table_Orders).ID_status]"
             size="small"
             :prepend-icon="
-              (item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'
+              (item as any).ID_status === 1 || (item as any).ID_status === 10  ? 'mdi-check' : 'mdi-timer-sand'
             "
           >
             <p class="mb-0">{{ getMessageStatus((item as any).ID_status) }}</p>

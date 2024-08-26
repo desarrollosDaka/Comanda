@@ -5,6 +5,7 @@ import {
     FontSizeOutlined,
     ClusterOutlined,
     SnippetsOutlined,
+    UserOutlined,
     CarOutlined,
     BarcodeOutlined,
   } from '@ant-design/icons-vue';
@@ -47,6 +48,21 @@ import {
       icon: CarOutlined, 
       to: '/pickups'
     },
+    { header: 'Configuración' },
+    {
+      title: 'Usuarios',
+      icon: UserOutlined,
+      children:  [ 
+        {
+          title: ' Maestro de Usuarios',
+          to: '/masterUser'
+        },
+        {
+          title: ' Crear Usuario',
+          to: '/formCreatedUser'
+        },
+      ]
+    }
   ];
   
   export default sidebarItem;
