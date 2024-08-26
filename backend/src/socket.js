@@ -53,12 +53,11 @@ module.exports = (server) => {
         desde: desde,
         hasta: hasta
       }
-      
+
       const rta = await getMasterOrderFecha(jsonDesdeHasta);
       socket.emit("get-master-order-fecha", rta);
-    });
+      });
     
-
         console.log('Nuevo cliente conectado');
 
         const emitOrderData = async () => {
