@@ -17,7 +17,11 @@ function deactivateItem() {
 }
 
 const viewAll = () => {
-  alert('En desarrollo.');
+  if (notifyStore.limit === 5) {
+    notifyStore.updateLimit(10);
+  } else {
+    notifyStore.updateLimit(5);
+  }
 };
 
 watch(() => notifyStore.countNotifications, (newValue) => {
@@ -61,7 +65,7 @@ watch(() => notifyStore.countNotifications, (newValue) => {
       <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 265px">
         <v-list class="py-0" lines="two" aria-label="notification list" aria-busy="true">
 
-          <Notify v-for="notify in notifyStore.notifications" :notifyData="notify" :key="notify.ID_Notifications" />
+          <Notify v-for="notify in notifyStore.showNoti" :notifyData="notify" :key="notify.ID_Notifications" />
           
           <v-divider></v-divider>
         </v-list>
