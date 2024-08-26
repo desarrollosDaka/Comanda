@@ -64,6 +64,7 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
   console.log(jsonDesdeHasta);
   
 
+
   try {
     // const rta = await sequelize.models.modelOrders.findAll();
     const rta = await sequelize.query(

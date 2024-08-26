@@ -369,7 +369,10 @@ interface Destino {
 async function getSucursal() {
   try {
     const { data } = await axios.get(`${baseUrlStore}/masterStores`);
-    info_tiendas.value = data[0].map((destino: Destino) => ({
+   
+    info_tiendas.value = data[0]
+    .filter((destino: Destino) => destino.ID_sucursal !== 1) 
+    .map((destino: Destino) => ({
       title: destino.Sucursal,
       value: destino.ID_sucursal,
     }));
