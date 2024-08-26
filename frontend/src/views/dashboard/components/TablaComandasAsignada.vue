@@ -50,7 +50,7 @@ socket.on("get-master-order", (rta) => {
       }
     });
     info.value = dataFilterStatus
-
+    loadingInfo.value = false;
    // const infoArray = info.value;
 
    // infoLength.value = infoArray.length;
@@ -151,6 +151,7 @@ const getNameAsesor = (id: number) => {
 
 onMounted(async () => {
   //await getOrders();
+  loadingInfo.value = true; 
   await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;
@@ -168,7 +169,7 @@ const headers = ref([
   { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },
-  { title: "ACCIÓN", sortable: false, key: "action" },
+  { title: "", sortable: false, key: "action" },
 ] as const);
 
 

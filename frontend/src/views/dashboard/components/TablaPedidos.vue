@@ -22,15 +22,16 @@ const infoMotivo = ref();
 
 
 const COLORSTATUS: any = {
-  1: "success",
-  2: "warning",
-  3: "success",
-  4: "info",
-  5: "warning",
-  6: "success",
-  7: "warning",
-  8: "success",
-  9: "error",
+  1: "#ffca3a", //creada
+  10: "#fb5607", //prefactura Cargada
+  2: "#0466c8", //Asignada
+  3: "#965745", //Revisada
+  4: "#006400", //facturada
+  5: "#6c757d", //retencion
+  6: "#5aa9e6", //ret. aceptada
+  7: "#a663cc", //pre-despacho
+  8: "#38b000", //Despacho
+  9: "#6a040f", //Eliminar
 };
 
 
@@ -140,6 +141,7 @@ const deleteDocuments = async (id: string) => {
 
 // Emitir evento al montar el componente
 onMounted(() => {
+  loadingInfo.value = true; 
   requestMasterOrder();
 
 });
@@ -162,7 +164,7 @@ const headers = ref([
   { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },
-  { title: "ACCIÓN", sortable: false, key: "action" },
+  { title: "", sortable: false, key: "action" },
 ] as const);
 </script>
 
@@ -292,34 +294,15 @@ const headers = ref([
 
         <!-- estado -->
         <template v-slot:item.Status="{ item }">
-          <v-chip
-            variant="tonal"
-            color="warning"
-            size="x-small"
-            prepend-icon="mdi-timer-sand"
-            v-if="(item as any).Status === 'Creada'"
+                  <v-chip
+            variant="elevated"
+            :color="COLORSTATUS[(item as Table_Orders).ID_status]"
+            size="small"
+            :prepend-icon="
+              (item as any).ID_status === 1 ? 'mdi-check' : 'mdi-timer-sand'
+            "
           >
-            <p class="mb-0">Creada</p>
-          </v-chip>
-
-          <v-chip
-            variant="tonal"
-            color="success"
-            size="x-small"
-            prepend-icon="mdi-check"
-            v-else-if="(item as any).Status === 'Asignada'"
-          >
-            <p class="mb-0">Asignada</p>
-          </v-chip>
-
-          <v-chip
-            variant="tonal"
-            color="warning"
-            size="x-small"
-            prepend-icon="mdi-timer-sand"
-            v-else
-          >
-            <p class="mb-0">Pendiente</p>
+            <p class="mb-0">{{ item['Status'] }}</p>
           </v-chip>
         </template>
       </v-data-table>

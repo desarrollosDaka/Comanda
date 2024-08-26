@@ -5,10 +5,12 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { router } from "@/router";
-import { useUserRol } from "@/composables/users";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
+import UploadImages from "@/views/formComanda/uploadImages.vue";
+import { HttpHeadIcon } from "vue-tabler-icons";
+
 
 interface Document {
   file: File;
@@ -60,7 +62,6 @@ const id_sucursal = ref();
 const messageStatus = ref();
 const itemDocument = ref<Document[]>([]);
 
-
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
@@ -75,6 +76,10 @@ if (jsonFromLocalStorage !== null) {
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
+function handleSelectImages(items: any) {
+  itemDocument.value = items;
+}
+
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 
 const getOrder = async () => {
@@ -83,6 +88,7 @@ const getOrder = async () => {
     const { data } = await axios.get(url);
 
     if(data){
+
       cedulaUno.value = data[0][0]["Cedula"];
       tipo.value = data[0][0]["Tipo_cliente"];
       retencion.value = data[0][0]["Retencion"];
@@ -91,7 +97,7 @@ const getOrder = async () => {
       nombreCompleto.value = data[0][0]["Cliente"];
       estado.value = data[0][0]["Estado"];
       ciudad.value = data[0][0]["Ciudad"];
-      municipio.value = data[0][0]["Municipio"];
+      municipio.value = data[0][0]["Municipio"]; 
       origen.value = data[0][0]["Sucursal"];
       direccion.value = data[0][0]["Direccion"];
       referencia.value = data[0][0]["Referencia"];
@@ -101,9 +107,18 @@ const getOrder = async () => {
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
       ID_pago.value = data[0][0]["Pago"];
-      User_asing.value = data[0][0]["User_asing"];
+      User_asing.value = data[0][0]["User_asing"]; 
+
     }
-  } catch (error) {
+
+    if(ID_status.value === 'Creada'){
+      messageStatus.value = 'Asignar comanda'
+
+    }else{
+      messageStatus.value = 'Facturar comanda'
+
+    }
+  } catch (error) { 
     console.log(error);
   }
 };
@@ -119,20 +134,24 @@ const getArticulos = async () => {
     console.log(error);
   }
   loadingInfo.value = false;
-
 };
 
 const updateEstatus = async () => {
   try {
     let changeStatus; 
-    if(USER_ROL.value === 7){
-        changeStatus = 8;
-    }else if(USER_ROL.value === 4 || USER_ROL.value === 11 || USER_ROL.value === 6){
-        changeStatus = 7;
+
+    if(ID_status.value === 'Creada'){   
+      changeStatus = 2; 
+
     }
+    else if(ID_status.value === 'Asignada'){
+      changeStatus = 4;
+    } 
+
+    useAddDocument(itemDocument.value, id.value, id_orders.value); //Visualizan y agregan  archivos
 
     await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
-        status_comanda: changeStatus,
+      status_comanda: changeStatus
     });
    
   } catch (error) {
@@ -140,16 +159,9 @@ const updateEstatus = async () => {
   }
 };
 
-if(USER_ROL.value === 7){
-    messageStatus.value = 'Despachadar'
-}else if(USER_ROL.value === 4 || USER_ROL.value === 11 || USER_ROL.value === 6){
-    messageStatus.value = 'Pre-Despachadar'
-    
-}
-
 const changeStatusComanda = () =>{
   Swal.fire({
-      title: USER_ROL.value === 7 ? `Deseas Cambiar el Estatus a Despacho` : `Deseas Cambiar el Estatus a Pre-Despacho`,
+      title: ID_status.value === 'Creada' ? `Comanda Asignada correctamente` : `Comanda Facturada correctamente`,
       text: "La comanda va a cambiar de estatus",
       icon: "warning",
       showCancelButton: true,
@@ -166,7 +178,7 @@ const changeStatusComanda = () =>{
           icon: "success",
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push(`/pickups`);
+            router.push(`/ComandasCDD`);
           }
         });
       }
@@ -265,6 +277,10 @@ onMounted(async () => {
         </v-row>
     </UiTitleCard>
 
+    <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
+  <UploadImages v-if="USER_ROL === 8 || USER_ROL === 9"
+  @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
+ 
     <v-container>
         <br>
         <v-row align="center" justify="start">

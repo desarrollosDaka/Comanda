@@ -14,7 +14,6 @@ const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const urlSocket = ref();
-const infoAsesores = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
 
@@ -36,21 +35,20 @@ const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
-if(USER_ROL.value === 10){
-  urlSocket.value = 'get-master-order-cdd'
+if(USER_ROL.value === 8){
+  urlSocket.value = 'get-master-order-cdd' 
 }
 
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
-    try {
+    try{
         info.value = rta[0]
-    } catch (error) { 
+    }catch (error){
        console.log(error);
     }
 });
 
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de ROL DE USUARIO
-
 
 interface getDataComanda {
   ID_order: string;
@@ -90,11 +88,11 @@ onUnmounted(() => {
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
-  { title: "CLIENTE", key: "Nombre" },
+  { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },
-  { title: "ACCIÓN", sortable: false, key: "action" },
-] as const);
+  { title: "", sortable: false, key: "action" },
+]as const);
 
 
 // COlor de estatus
@@ -148,9 +146,7 @@ const COLORSTATUS: any = {
         <!-- process -->
         <template v-slot:item.action="{ item }">
           <router-link
-            :to="{
-              path: `/viewProcessComandas/${item['ID_detalle']}/${item['ID_order']}`,
-            }"
+            :to="{path: `/DetalleCDD/${item['ID_detalle']}/${item['ID_order']}`,}"
           >
             <v-icon size="23" class="me-4" color="primary">
               mdi-eye-check

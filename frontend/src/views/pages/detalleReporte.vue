@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
-import detallePickUp from '../dashboard/components/viewDetailPickup.vue';
+import detailReporte from '../dashboard/components/ViewDetailReporte.vue';
 
-// component content pickupsDetails
-const page = ref({ title: 'Comandas con Delivery Pick-Up' });
+const page = ref({ title: 'Detalles de comadas' });
 const breadcrumbs = ref([
   {
-    title: 'Detalles Pick-up',
+    title: 'Detalles Comadas',
     disabled: true,
     to: '#'
   }
@@ -19,10 +18,8 @@ const breadcrumbs = ref([
   <v-row>
     <!-- TABLA -->
     <v-col cols="12" md="12">
-
-        <!-- detalle de comandas con pickup -->
-        <detallePickUp />
-
+        <!-- detalle de comanda -->
+        <detailReporte />
     </v-col>
   </v-row>
 </template>

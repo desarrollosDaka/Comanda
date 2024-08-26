@@ -58,14 +58,6 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray;
 }
 
-// fetch(route + '/notification', {
-//   method: 'POST',
-//   body: JSON.stringify({ message: `Bienvenido ${usuario.value}` }),
-//   headers: {
-//     'Content-Type': 'application/json'
-//   }
-// });
-
 // Service Worker Support
 if ("serviceWorker" in navigator) {
   subscription().catch((err: any) => console.log(err));
@@ -77,7 +69,7 @@ if ("serviceWorker" in navigator) {
   <Banner />
   <!-- BALDOSAS -->
   <WidgetFive />
-
+  
   <!-- CHART1 -->
   <!-- <v-row class="mb-0">
   
@@ -90,38 +82,21 @@ if ("serviceWorker" in navigator) {
     </v-col>
   </v-row> -->
 
-
-  <!-- TABLA y GRAFICO -->
-  <v-row class="mb-0">
-
-    <!-- TABLA -->
-    <v-col cols="12" md="8">
-      <RecentOrder />
-    </v-col>
-
-    <!-- ANALITICA -->
-    <v-col cols="12" md="4">
-      <AnalyticsReport />
-    </v-col>
-
-
-  </v-row>
-
   <!-- REPORTES y OPCIONES -->
   <v-row>
     <!-- Chart3 -->
-    <v-col cols="12" md="7">
+    <!-- <v-col cols="12" md="7">
       <SalesReport />
-    </v-col>
+    </v-col> -->
 
     <v-col cols="12" md="5">
       <v-row>
         <!-- NUEVA PLANTILLAS -->
-        <v-col cols="12">
+        <!-- <v-col cols="12">
           <TransactionHistory />
-        </v-col>
+        </v-col> -->
 
-        <!-- HISTORIAL -->
+       
         <v-col cols="12">
           <HelpSupport />
         </v-col>
