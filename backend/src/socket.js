@@ -35,9 +35,9 @@ module.exports = (server) => {
 
     // filter Order Comandas con ID SUC
     socket.on("getComanda",async  (sucId) => {
-     // console.log(sucId);
+      //console.log(sucId);
       const rta = await getMasterOrderForStore(sucId);
-      socket.emit("get-master-order-suc", rta[0]);
+      socket.emit("get-master-order-suc", rta);
     });0
     
     // filter User con ID SUC
