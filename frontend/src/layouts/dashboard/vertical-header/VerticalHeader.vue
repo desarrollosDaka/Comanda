@@ -12,17 +12,15 @@ import { onMounted, ref, watch } from 'vue';
 
 import { io } from "socket.io-client";
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
-const socket = io('ws://localhost:3003'); // ws
+const socket = io('ws://192.168.161.25:3003'); // ws
 
 // pinia 
 import { useAuthStore } from '../../../stores/auth';
 import { useNotifyStore } from '../../../stores/notify';
-import { useLimitStore } from '@/stores/Limit';
 
 const customizer = useCustomizerStore();
 const auth = useAuthStore();
 const noti = useNotifyStore();
-const limit = useLimitStore();
 const User = ref('');
 const infoLength = ref(0);
 let isFirstLoad = true;
@@ -41,10 +39,8 @@ if (jsonFromLocalStorage !== null) {
 
 setInterval(() => {
   // VERIFICAR ESTO
-  if (auth.user !== null) {
-    socket.emit('getUser', auth.user.data, limit.top);
-  }
-}, 1000);
+  socket.emit('getUser', auth.user.data);
+}, 5000);
 
 socket.on('notifications', (notificaciones) => {
   noti.update(notificaciones); 

@@ -7,31 +7,55 @@ const singIn = async (req, res) => {
     try {
 
         const { Email, Password } = req.body
-        const user = await sequelize.models.modelMasterUser.findOne({
-            where: {
-                Email: Email,
-                Delete: 0,
-            },
-        });
+         // await sequelize.models.modelMasterUser.findOne({
+        //     where: {
+        //         Email: Email,
+        //         Delete: 0,
+        //     },
+        // });
+       const user = await sequelize.query(
+            `SELECT T0.[ID_user]
+              ,T0.[Nombre]
+              ,T0.[Email]
+              ,T0.[Password]
+              ,T0.[Id_sucursal]
+              ,T1.Sucursal
+			  ,T0.ID_rol
+			  ,T2.Nombre_rol
+              ,T0.[Dpto_ventas]
+              ,T0.[Linea_ventas]
+              ,T0.[User_crea]
+              ,T0.[User_mod]
+              ,T0.[Delete]
+              ,T0.[Create_date]
+              ,T0.[Update_date]
+          FROM [COMANDA_TEST].[dbo].[MASTER_USER] T0
+          INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.Id_sucursal = T1.ID_sucursal
+		  INNER JOIN [dbo].[MASTER_ROLS] T2 ON T0.ID_rol = T2.ID_rol
+          WHERE [Delete] = 0 AND T0.[Email] = '${Email}'`);
 
-        if (!user) {
+
+        if (!user[0][0]) {
             res.status(404)
             res.send({ error: 'El usuario no existe.' })
         }
         //console.log(user);
         // Comparar Password
-        const checkPassword = await compare(Password, user.Password);
+    
+
+        const checkPassword = await compare(Password, user[0][0].Password);
 
         // JWT
-        const tokenSession = await tokenSign(user);
+        const tokenSession = await tokenSign(user[0][0]);
 
         if (checkPassword) {
             res.json({
-                ID_user: user.ID_user,
-                Nombre: user.Nombre,
-                Email: user.Email,
-                ID_rol: user.ID_rol,
-                Id_sucursal: user.Id_sucursal,
+                ID_user: user[0][0].ID_user,
+                Nombre: user[0][0].Nombre,
+                Email: user[0][0].Email,
+                ID_rol: user[0][0].ID_rol,
+                Nombre_rol: user[0][0].Nombre_rol,
+                Id_sucursal: user[0][0].Id_sucursal,
                 Delete: 0,
                 id: tokenSession,
                 token: tokenSession

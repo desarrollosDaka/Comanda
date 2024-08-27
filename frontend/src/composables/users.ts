@@ -38,7 +38,7 @@ const ARRAYUSER_ROL = [
     },
      //ASESOR    
     {   "userRol": 5 , 
-        "status":[2, 10],
+        "status":[2, 10, 3, 4],
         "msgButton":'Cargar prefactura y enviar a almacen', 
         "changeID_status":10,
         "printer":false 

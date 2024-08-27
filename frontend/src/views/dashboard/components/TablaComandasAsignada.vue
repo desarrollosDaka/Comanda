@@ -228,7 +228,8 @@ const COLORSTATUS: any = {
               path: `/viewProcessComandas/${item['ID_detalle']}/${item['ID_order']}`,
             }"
           >
-            <v-icon size="23" class="me-4" color="primary">
+          <v-icon size="23" class="me-4" color="primary" v-if="USER_ROL ===  5 && (item as any).ID_status === 2 || (item as any).ID_status === 3 && USER_ROL ===  6  
+          || (item as any).ID_status === 10 && USER_ROL ===  7   || (item as any).ID_status === 4 && USER_ROL ===  7 || (item as any).ID_status === 1 && USER_ROL ===  4"    >
               mdi-eye-check
             </v-icon>
           </router-link>
