@@ -14,6 +14,7 @@ const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const urlSocket = ref();
+const urlSocketEmit = ref();
 const infoAsesores = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
@@ -37,19 +38,23 @@ const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
-setInterval(() => {
-  socket.emit('getOrderPickup', id_sucursal.value);
-}, 5000);
-
 if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
   urlSocket.value = 'get-master-order-pickup'
+  urlSocketEmit.value = 'getOrderPickup'
 }else if(USER_ROL.value === 7){
   urlSocket.value = 'get-master-order-pickup-two'
+  urlSocketEmit.value = 'getOrderPickupTwo'
 }
+//id_sucursal.value
+setInterval(() => {
+  socket.emit(`${urlSocketEmit.value}`, '4');
+}, 5000);
 
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
+
     try {
+      
         info.value = rta[0]
         loadingInfo.value = false; 
     } catch (error) { 
@@ -108,7 +113,7 @@ onMounted(async () => {
   
   loadingInfo.value = true; 
   const { status } = await useGetStatus();
-  socket.emit('getOrderPickup', id_sucursal.value);  
+  socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
   infogetStatus.value = status;
  
 });
