@@ -11,12 +11,16 @@ const tab = ref(null);
 const authStore = useAuthStore();
 const User = ref('');
 const Email = ref('');
+const Nombre_rol = ref('');
+
 
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User.value = parsedData.data.Nombre;
   Email.value = parsedData.data.Email;
+  Nombre_rol.value = parsedData.data.Nombre_rol;
+
 } 
 
 </script>
@@ -34,6 +38,7 @@ if (jsonFromLocalStorage !== null) {
 
       <div>
         <h6 class="text-h6 mb-0">{{ User }}</h6>
+        <p :style="{ fontSize: '12px' }" class="mb-0">{{ Nombre_rol }}</p>
         <p :style="{ fontSize: '9px' }" class="mb-0">{{ Email }}</p>
       </div>
 

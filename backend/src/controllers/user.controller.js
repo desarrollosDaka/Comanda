@@ -6,7 +6,7 @@ const getMasterUser = async (req, res) => {
     try {
        // const rta = await sequelize.models.modelMasterUser.findAll();
         const rta = await sequelize.query(
-            `  SELECT T0.[ID_user]
+            `SELECT T0.[ID_user]
               ,T0.[Nombre]
               ,T0.[Email]
               ,T0.[Password]
