@@ -49,6 +49,7 @@ const direccion = ref("");
 const referencia = ref("");
 const autorizado = ref(false);
 const cedulaDos = ref("");
+const nombreDos = ref("");
 const telefonoUno = ref("");
 const ID_pago = ref();
 const ID_status = ref();
@@ -99,6 +100,7 @@ const getOrder = async () => {
       ID_status.value = data[0][0]["Status"];
       autorizado.value = data[0][0]["Autoriza"];
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
+      nombreDos.value = data[0][0]["Nombre_autoriza"];
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
@@ -141,9 +143,9 @@ const updateEstatus = async () => {
 };
 
 if(USER_ROL.value === 7){
-    messageStatus.value = 'Despachadar'
+    messageStatus.value = 'Despachar'
 }else if(USER_ROL.value === 4 || USER_ROL.value === 11 || USER_ROL.value === 6){
-    messageStatus.value = 'Pre-Despachadar'
+    messageStatus.value = 'Pre-Despachar'
     
 }
 
@@ -159,7 +161,7 @@ const changeStatusComanda = () =>{
       confirmButtonText: "Si",
     }).then((result) => {
       if (result.isConfirmed) {
-        updateEstatus();
+        updateEstatus(); 
         Swal.fire({
           title: "la comanda ha cambiado de estatus!",
           text: "!",
@@ -239,6 +241,9 @@ onMounted(async () => {
                 </v-chip>
             </p> -->
             <!-- <p><b>Cedula/Rif:</b> {{ cedulaDos }}</p> -->
+            <p v-if="cedulaDos"><b>Cedula/Rif Autorizado:</b> {{ cedulaDos }}</p>
+            <p v-if="nombreDos"><b>Nombre Autorizado:</b> {{ nombreDos }}</p>
+            <p v-if="telefonoUno"><b>Telefono Autorizado:</b> {{ telefonoUno }}</p>
             <p v-if="!ROLESNOTMEDIOPAGO.includes(USER_ROL)"><b>medio de pago:</b> {{ ID_pago }}</p>
         </v-col>
         <v-col cols="12" md="4" class="px-10 py-5">

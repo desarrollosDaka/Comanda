@@ -38,7 +38,7 @@ const socket = io(`${baseUrlBack}`, {
 
 setInterval(() => {
   // VERIFICAR ESTO
-  socket.emit('getSucursal', id_sucursal.value);
+  socket.emit('getSucursalATC', id_sucursal.value);
 
 }, 5000);
 
