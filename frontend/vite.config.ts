@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 import fs from 'fs'
 
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -37,10 +38,10 @@ export default defineConfig({
     entries: ['./src/**/*.vue']
   },
   server: {
-    host: true
-    // https: {
-    //   key: fs.readFileSync('ssl/teelspay.com.key'),
-    //   cert: fs.readFileSync('ssl/teelspay.com.crt')
-    // }
+    host: true,
+    https: {
+      key: fs.readFileSync('ssl/code.key'),
+      cert: fs.readFileSync('ssl/code.crt')
+    }
   }
 });
