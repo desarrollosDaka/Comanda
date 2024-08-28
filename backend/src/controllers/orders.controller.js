@@ -615,7 +615,7 @@ INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
 WHERE T0.ID_status = 7 AND T0.Retencion = 0 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
-  UNION ALL
+UNION ALL
 SELECT  T1.Nombre,
         T3.Sucursal,
         T2.[Status] ,
