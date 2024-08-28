@@ -162,7 +162,7 @@ const changeStatusComanda = () =>{
         updateEstatus();
         Swal.fire({
           title: "la comanda ha cambiado de estatus!",
-          text: "!",
+          text: "No podras revertir esto",
           icon: "success",
         }).then((result) => {
           if (result.isConfirmed) {
