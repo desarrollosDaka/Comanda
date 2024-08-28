@@ -136,8 +136,8 @@ module.exports = (server) => {
         };
 
         
-        socket.on("getSucursal",async  (userId) => {
-       //   console.log("userId "+ userId);
+        socket.on("getSucursalATC",async  (userId) => {
+         // console.log("userId ", userId);
           
           const rta = await filterOrderATC(userId);
           socket.emit("get-master-order-atc", rta[0]);
