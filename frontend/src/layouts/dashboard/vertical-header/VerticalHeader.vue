@@ -12,7 +12,7 @@ import { onMounted, ref, watch } from 'vue';
 
 import { io } from "socket.io-client";
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
-const socket = io('ws://192.168.161.25:3003'); // ws
+const socket = io('https://localhost:3003'); // ws
 
 // pinia 
 import { useAuthStore } from '../../../stores/auth';

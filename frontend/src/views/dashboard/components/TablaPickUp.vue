@@ -33,7 +33,6 @@ if (jsonFromLocalStorage !== null) {
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
-
 const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });

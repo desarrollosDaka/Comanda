@@ -20,7 +20,6 @@ if (jsonFromLocalStorage !== null) {
   User.value = parsedData.data.Nombre;
   Email.value = parsedData.data.Email;
   Nombre_rol.value = parsedData.data.Nombre_rol;
-
 } 
 
 </script>
