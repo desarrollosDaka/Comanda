@@ -36,7 +36,7 @@ if (jsonFromLocalStorage !== null) {
                     </router-link>
                 </div>
                 <div class="imgBanner">
-                    <img src="../../../assets/images/daki.png" alt="Banner Image">
+                    <img src="@/assets/images/daki.png" alt="Banner Image">
                 </div>
             </div>
         </aside>
@@ -44,7 +44,8 @@ if (jsonFromLocalStorage !== null) {
 </template>
 
 <style scoped>
-    .responsive-banner {
+
+.responsive-banner {
     margin: 15px auto;
     width: 100%;
     position: relative;
@@ -56,6 +57,19 @@ if (jsonFromLocalStorage !== null) {
     background-image: linear-gradient(to right, #001fac, #eee8e8);
 }
 
+@media (max-width: 768px) {
+    .responsive-banner {
+    margin: 15px auto;
+    width: 100%;
+    position: relative;
+    height: auto;
+    min-height: 300px;
+    max-height: 500px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-image: linear-gradient(to right, #001fac, #506be4);
+}
+}
 .container-envelope {
     display: grid;
     grid-template-columns: 1fr 1fr;

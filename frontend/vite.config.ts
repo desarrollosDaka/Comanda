@@ -40,8 +40,8 @@ export default defineConfig({
   server: {
     host: true,
     https: {
-      key: fs.readFileSync('ssl/code.key'),
-      cert: fs.readFileSync('ssl/code.crt')
+      key: fs.readFileSync('ssl/comandadaka.com.key'),
+      cert: fs.readFileSync('ssl/comandadaka.com.crt')
     }
   }
 });
