@@ -132,7 +132,7 @@ async function searchModel() {
     const { data } = await axios.get(
       `${baseUrlClients}/searchClient/${cedulaUno.value}`
     );
-//console.log(data[0][0]);
+
 
     if (data) {
       tipo.value = data[0][0].Tipo_cliente;

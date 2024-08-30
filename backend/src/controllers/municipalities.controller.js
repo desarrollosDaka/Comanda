@@ -48,6 +48,4 @@ const filterMasterMunicipality = async (req, res) => {
 module.exports = {
     getMasterMunicipality,
     filterMasterMunicipality,
-    // updateMasterUser,
-    // deleteMasterUser
 };

@@ -4,8 +4,6 @@ const {
   getMasterOrder,
   getMasterOrderFecha,
   getMasterOrderCDD,
-  //createMasterOrderAndDetails,
-  //pdateMasterOrderAndDetails,
   getMasterOrderForStore,
   getMasterOrderRetencion,
   getMasterOrderRetencionTwo,
@@ -163,26 +161,6 @@ module.exports = (server) => {
             }
         };
 
-        // const emitNotify = async () => {
-        //     try {
-        //         const rta = await findall();
-        //         socket.emit('get-master-notify', rta);
-        //         //console.log('Datos emitidos:', rta);
-        //     } catch (error) {
-        //         console.error('Error al obtener los datos:', error);
-        //     }
-        // };
-        
-        // Emitir evento cuando se actualiza una orden
-        // const updateOrderAndEmit = async (orderData) => {
-        //     try {
-        //         await updateMasterOrderAndDetails(orderData);
-        //         const updatedOrders = await getMasterOrder();
-        //         io.emit('update-master-order', updatedOrders);
-        //     } catch (error) {
-        //         console.error('Error al actualizar la orden:', error);
-        //     }
-        // };
         // Emitir datos inmediatamente al conectar  
         emitOrderData();
         emitOrderCDDData();

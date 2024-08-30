@@ -255,7 +255,7 @@ for (const element of listProduct.value) {
         precio: element.price,
         subtotal: element.subtotal,
     }
-    //console.log(jsonProductos);
+
     
     try {
         await axios.put(`${baseUrlProducts}/updateOrderDetails2/${id.value}`, jsonProductos)

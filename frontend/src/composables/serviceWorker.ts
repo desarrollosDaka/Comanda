@@ -7,7 +7,7 @@ const subscription = async (): Promise<void> => {
   const register = await navigator.serviceWorker.register("/worker.js", {
     scope: "/"
   });
- // console.log("New Service Worker");
+  console.log("New Service Worker");
 
   // Listen Push Notifications
   console.log("Listening Push Notifications");
