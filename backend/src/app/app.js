@@ -9,8 +9,8 @@ const app = express();
 const path = require('path');
 // const server = http.createServer(app);
 const server = https.createServer({
-    key: fs.readFileSync("././ssl/code.key"),
-    cert: fs.readFileSync("././ssl/code.crt"),
+    key: fs.readFileSync("././ssl/comandadaka.com.key"),
+    cert: fs.readFileSync("././ssl/comandadaka.com.crt"),
 },app);
 const io = socketIOInitializer(server);
 
