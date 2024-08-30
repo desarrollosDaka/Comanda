@@ -290,6 +290,8 @@ async function updateData() {
         }).then((result) => {
           if (result.isConfirmed && USER_ROL.value === 10) {
             router.push(`/ComandasAtc`);
+          } else if(result.isConfirmed && USER_ROL.value === 1){
+            router.push(`/retenciones`);
           }
           else {
           router.push(`/maestroComandaAsignada`);
