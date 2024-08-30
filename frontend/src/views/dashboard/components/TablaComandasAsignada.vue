@@ -159,7 +159,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log("Socket desconectado");
+  //console.log("Socket desconectado");
 });
 
 // Cabezera de la comanda

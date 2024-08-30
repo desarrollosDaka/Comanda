@@ -73,7 +73,7 @@ module.exports = (server) => {
       socket.emit("get-master-order-pickup-two", rta);
     });
     
-        console.log('Nuevo cliente conectado');
+        //console.log('Nuevo cliente conectado');
 
         const emitOrderData = async () => {
             try {
@@ -137,7 +137,7 @@ module.exports = (server) => {
 
         
         socket.on("getSucursalATC",async  (userId) => {
-         // console.log("userId ", userId);
+
           
           const rta = await filterOrderATC(userId);
           socket.emit("get-master-order-atc", rta[0]);
@@ -223,7 +223,7 @@ module.exports = (server) => {
        // socket.on('update-master-order', updateOrderAndEmit);
 
         socket.on('disconnect', () => {
-            console.log('Cliente desconectado');
+            //console.log('Cliente desconectado');
             clearInterval(intervalIdOrder); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdUser); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderRetencion); // Limpiar el intervalo cuando el cliente se desconecta

@@ -635,7 +635,6 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucu
 };
 
 
-// const filterOrderPickUpTwo = async (req, res) => {
 //   try {
 //     const rta = await sequelize.query(
 //         `SELECT * FROM [dbo].[ORDERS]
@@ -692,23 +691,6 @@ const createOrderDetails = async (req, res) => {
       Zoom: item.zoom
     }));
 
-    //console.log(orderDetailDataArray)
-
-    // Encuentra todos los productos con el ID de detalle especificado
-//     let products = await sequelize.models.modelOrdersdetails.findAll({
-//       where: { ID_detalle: data[0].Id_Comanda , ID_producto: data[0].id_producto}
-//     });
-
-        
-// //console.log(products);
-
-//     // Elimina cada producto uno por uno
-//     for (let product of products) {
-//       await product.destroy();
-//     }
-
-
-//console.log(orderDetailDataArray);
     await sequelize.models.modelOrdersdetails.bulkCreate(orderDetailDataArray);
 
     res.status(201).json({ msj: "Productos creados exitosamente" });
@@ -795,8 +777,6 @@ const updateOrderDetails2 = async (req, res) => {
       } else {
         // Si no existe, hacer create
         delete orderDetailData.ID_order
-     //   console.log("ORDER DETAIL TEST");
-     //   console.log(orderDetailData);
 
         
         return sequelize.models.modelOrdersdetails.create(orderDetailData);

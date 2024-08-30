@@ -242,8 +242,6 @@ async function Created() {
 
 async function updateComanda() {
 
-   // console.log(listProduct.value);
-
   
     
 for (const element of listProduct.value) {

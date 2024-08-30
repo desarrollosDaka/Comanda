@@ -38,7 +38,7 @@ const filterMasterMunicipality = async (req, res) => {
         } 
 
     } catch (e) {
-      //  console.log('Error', e);
+        console.log('Error', e);
     }
 }
 
