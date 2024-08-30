@@ -7,12 +7,12 @@ import { useUIStore } from '@/stores/ui';
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    MainRoutes,
+    AuthRoutes,
     {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/pages/maintenance/error/Error404Page.vue')
-    },
-    MainRoutes,
-    AuthRoutes
+    }
   ]
 });
 
@@ -33,14 +33,14 @@ interface AuthStore {
 
 router.beforeEach(async (to, from, next) => {
   // redirigir a la página de inicio de sesión si no ha iniciado sesión e intenta acceder a una página restringida
-  const publicPages = ['/auth/login'];
+  const publicPages = ['/'];
   const authRequired = !publicPages.includes(to.path);
   const auth: AuthStore = useAuthStore();
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (authRequired && !auth.user) {
       auth.returnUrl = to.fullPath;
-      return next('/auth/login');
+      return next('/');
     } else next();
   } else {
     next();

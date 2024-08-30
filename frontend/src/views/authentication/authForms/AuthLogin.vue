@@ -31,7 +31,7 @@ function validate(values: any, { setErrors }: any) {
 
 <template>
   <div class="d-flex justify-space-between align-center">
-    <div class="logoDakaLogin ">
+    <div class="logoDakaLogin">
         <Logo />
       </div>
     <!-- <router-link to="/auth/register" class="text-primary text-decoration-none">Don't Have an account?</router-link> -->
@@ -104,7 +104,8 @@ function validate(values: any, { setErrors }: any) {
 }
 
 .logoDakaLogin{
-  margin-left: 95px;
+  margin: 0 auto;
+  // margin-left: 0 auto;
   
 }
  

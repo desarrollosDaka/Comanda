@@ -3,8 +3,8 @@ const https = require("https");
 const fs = require("fs");
 
 var options = {
-  key: fs.readFileSync("./ssl/code.key"),
-  cert: fs.readFileSync("./ssl/code.crt"),
+  key: fs.readFileSync('ssl/comandadaka.com.key'),
+  cert: fs.readFileSync('ssl/comandadaka.com.crt')
 };
 
 const port = process.env.PORT || 3002
