@@ -22,7 +22,7 @@
     "@tiptap/vue-3": "2.1.7",
     "ant-design-vue": "^4.0.3",
     "apexcharts": "^3.44.2",
-    "axios": "^1.6.7",
+    "axios": "^1.7.7",
     "pinia": "2.1.6",
     "socket.io-client": "^4.7.5",
     "standard-version": "^9.5.0",
