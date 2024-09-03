@@ -9,7 +9,7 @@ const route = useRoute();
 
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 const search = ref("");
-const info = ref([]);
+const info = ref<Table_Orders[]>([]);
 const infoLength = ref(0); 
 const loadingInfo = ref(false);
 let isFirstLoad = true;
@@ -18,53 +18,11 @@ const baseUrlAsesor = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const infoAsesores = ref();
 const infogetStatus = ref();
-
 const id_sucursal = ref();
- 
-/////////////////notifications /////////////////////
-// const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
-// const route1: string = `${import.meta.env.VITE_URL}/api`
-
-
-////////////////////////
-const socket = io(`${baseUrlBack}`, {
-  reconnection: false, // Deshabilitar la reconexión automática
-});
-
-// Listen for events from the server
-socket.on("get-master-order", (rta) => {
-
-  if (Array.isArray(rta)) {
-
-  const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
-      if (ROLFILTERUSER.includes(USER_ROL.value)) { 
-
-        //FILTRAMOS POR ASESORES ASIGNADOS
-        return dataUser.status.includes(item.ID_status) && item.User_asing.toString() === USER.value.toString() && item.ID_Sucursal === id_sucursal.value
-
-      }else {
-        //FILTRAMOS SOLO POR ESTATUS y SUCURSAL
-        return(
-          dataUser.status.includes(item.ID_status) && item.ID_Sucursal === id_sucursal.value 
-        );
-      }
-    });
-    info.value = dataFilterStatus
-    loadingInfo.value = false;
-   // const infoArray = info.value;
-
-   // infoLength.value = infoArray.length;
-
-  } else {
-    console.error("La respuesta no es un array:", rta);
- } 
-});
-
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
-
 
 // DATA DEL LOCAL STORAGE
 const jsonFromLocalStorage = sessionStorage.getItem("user");
@@ -77,9 +35,11 @@ if (jsonFromLocalStorage !== null) {
 }
 
 const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
-const STATUSPRINTER = [4]; //ESTE ARREGLO INDICA EN QUE ESTATUS DEBE ESTAR LA COMANDA PARA IMPRIMIR
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de ROL DE USUARIO
 
+const socket = io(`${baseUrlBack}`, {
+  reconnection: false, // Deshabilitar la reconexión automática
+});
 
 interface getDataComanda {
   ID_order: string;
@@ -109,6 +69,36 @@ interface Table_Orders {
   ID_status: number;
   Create_date: Date;
 }
+
+// Listen for events from the server
+socket.on("get-master-order", (rta) => {
+
+  if (Array.isArray(rta)) {
+  const dataFilterStatus: Table_Orders[] = rta[0].filter((item: Table_Orders) => {
+      if (ROLFILTERUSER.includes(USER_ROL.value)) { 
+
+        //FILTRAMOS POR ASESORES ASIGNADOS
+        return dataUser.status.includes(item.ID_status) && item.User_asing?.toString() === USER.value?.toString() && item.ID_Sucursal === id_sucursal.value
+
+      }else {
+        //FILTRAMOS SOLO POR ESTATUS y SUCURSAL
+        return(
+          dataUser.status.includes(item.ID_status) && item.ID_Sucursal === id_sucursal.value 
+        );
+      }
+    });
+
+    info.value = dataFilterStatus
+    loadingInfo.value = false;
+
+  } else {
+    console.error("La respuesta no es un array:", rta);
+ } 
+});
+
+
+
+
 
 const getAsesores = async () => {
 
@@ -233,15 +223,6 @@ const COLORSTATUS: any = {
               mdi-eye-check
             </v-icon>
           </router-link>
-
-          <!-- <v-icon
-            v-if="STATUSPRINTER.includes((item as Table_Orders).ID_status)"
-            size="23"
-            class="me-4"
-            color="primary"
-          >
-            mdi-printer
-          </v-icon> -->
         </template>
 
         <!-- status -->
