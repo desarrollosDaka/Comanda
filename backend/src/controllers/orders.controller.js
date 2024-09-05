@@ -61,8 +61,7 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
 
   const desde = jsonDesdeHasta.desde
   const hasta = jsonDesdeHasta.hasta
-  console.log(jsonDesdeHasta);
-  
+
 
 
   try {
@@ -223,7 +222,6 @@ const getMasterOrderRetencionTwo = async (req, res) => {
 const getMasterOrderForStore = async (id) => {
   try {
     //const id_sucursal = req.params.id_sucursal;
-//console.log(id);
 
     const rta = await sequelize.query(
       `  SELECT  T0.[ID_order]
@@ -253,7 +251,6 @@ const getMasterOrderForStore = async (id) => {
         WHERE T0.ID_sucursal = '${id}' AND T0.[Delete] IS NULL 
         ORDER BY T0.[ID_order] DESC`
     );
-//console.log(rta);
 
     return rta;
 
@@ -635,44 +632,6 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucu
 };
 
 
-// const filterOrderPickUpTwo = async (req, res) => {
-//   try {
-//     const rta = await sequelize.query(
-//         `SELECT * FROM [dbo].[ORDERS]
-//         WHERE ID_status = 7 AND Retencion = 0 and Tipo_delivery = 2
-//         UNION ALL
-//         SELECT * FROM [dbo].[ORDERS]
-//         WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery = 2`
-//     );
-//     return rta;
- 
-//   } catch (e) {
-//     console.log("Error", e);
-//   }
-// };
-/////////////////////////////////////////////////////////////////////*****************************//////////////////////////// */
-
-// const mapAndFindOrderDetails = async (data) => {
-
-//   const orderDetailDataArray = data.map(item => ({
-//     ID_detalle: item.Id_Comanda,
-//     ID_producto: item.id_producto,
-//     Producto: item.producto, 
-//     Unidades: item.unidades,
-//     Precio: item.precio,
-//     Subtotal: item.subtotal,
-//     Direccion: item.direccion,
-//     Zoom: item.zoom
-//   }));
-
-//   // Encuentra todos los productos con el ID de detalle especificado
-//   let products = await sequelize.models.modelOrdersdetails.findAll({
-//     where: { ID_detalle: data[0].Id_Comanda ,  ID_producto:data[0].id_producto }
-//   });
-
-//   return { orderDetailDataArray, products };
-// };
-
 
 //CREAR DETALLES DE ORDENES
 const createOrderDetails = async (req, res) => {
@@ -692,23 +651,6 @@ const createOrderDetails = async (req, res) => {
       Zoom: item.zoom
     }));
 
-    //console.log(orderDetailDataArray)
-
-    // Encuentra todos los productos con el ID de detalle especificado
-//     let products = await sequelize.models.modelOrdersdetails.findAll({
-//       where: { ID_detalle: data[0].Id_Comanda , ID_producto: data[0].id_producto}
-//     });
-
-        
-// //console.log(products);
-
-//     // Elimina cada producto uno por uno
-//     for (let product of products) {
-//       await product.destroy();
-//     }
-
-
-//console.log(orderDetailDataArray);
     await sequelize.models.modelOrdersdetails.bulkCreate(orderDetailDataArray);
 
     res.status(201).json({ msj: "Productos creados exitosamente" });
@@ -780,7 +722,6 @@ const updateOrderDetails2 = async (req, res) => {
         Zoom: item.zoom
       };
 
-      //console.log(orderDetailData);
 
       // Verificar si el artículo existe
       const existingItem = await sequelize.models.modelOrdersdetails.findOne({
@@ -795,8 +736,6 @@ const updateOrderDetails2 = async (req, res) => {
       } else {
         // Si no existe, hacer create
         delete orderDetailData.ID_order
-     //   console.log("ORDER DETAIL TEST");
-     //   console.log(orderDetailData);
 
         
         return sequelize.models.modelOrdersdetails.create(orderDetailData);
@@ -1109,7 +1048,6 @@ const createOrderDocument = async (req, res) => {
 
 //BORRAR ARCHVIOS DE LA TABLA ARCHIVOS
 const deleteOrderDocument = async (req, res) => {
-  //const { id } = req.params;
   const Id = req.params.id;
   const imagen = req.body.imagen;
 

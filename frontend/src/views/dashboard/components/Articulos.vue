@@ -242,8 +242,6 @@ async function Created() {
 
 async function updateComanda() {
 
-   // console.log(listProduct.value);
-
   
     
 for (const element of listProduct.value) {
@@ -257,7 +255,7 @@ for (const element of listProduct.value) {
         precio: element.price,
         subtotal: element.subtotal,
     }
-    //console.log(jsonProductos);
+
     
     try {
         await axios.put(`${baseUrlProducts}/updateOrderDetails2/${id.value}`, jsonProductos)

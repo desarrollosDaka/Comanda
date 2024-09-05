@@ -81,7 +81,7 @@ onMounted( async () => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log('Socket desconectado');
+  //console.log('Socket desconectado');
 });
 
 function eliminardata(id:string){
@@ -106,21 +106,6 @@ function eliminardata(id:string){
     });
 }
 
-// const getUser = async () => {
-//   /*loadingInfo.value = true
-//   try{
-
-//     const url = `${baseUrl}/masterUser`
-//     const {data} = await axios.get(url);
-//       info.value =  data[0]
-//       console.log(info.value);
-      
-
-//   } catch(error){
-//       console.log(error)
-//   }
-//   loadingInfo.value = false*/
-// }
 </script>
 
 <template>
