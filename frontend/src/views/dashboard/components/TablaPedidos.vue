@@ -168,7 +168,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log("Socket desconectado");
+  //console.log("Socket desconectado");
 });
 
 onMounted(async () => {
