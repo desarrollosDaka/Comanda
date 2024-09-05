@@ -57,7 +57,7 @@ if (jsonFromLocalStorage !== null) {
     :rail="customizer.mini_sidebar"
     expand-on-hover
   >
-    <div class="pa-5">
+    <div class="logo-daka">
       <Logo />
     </div>
     <!-- ---------------------------------------------- -->
@@ -213,3 +213,10 @@ if (jsonFromLocalStorage !== null) {
   </v-navigation-drawer>
   
 </template>
+
+<style scope>
+.logo-daka{
+  margin-left: 28px;
+  padding: 25px;
+}
+</style>

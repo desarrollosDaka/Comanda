@@ -7,13 +7,8 @@ const AuthRoutes = {
   children: [
     {
       name: 'Login',
-      path: '/auth/login',
+      path: '/',
       component: () => import('@/views/authentication/auth/LoginPage.vue')
-    },
-    {
-      name: 'Register',
-      path: '/auth/register',
-      component: () => import('@/views/authentication/auth/RegisterPage.vue')
     },
     {
       name: 'Error 404',

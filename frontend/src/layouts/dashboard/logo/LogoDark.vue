@@ -16,6 +16,5 @@ import { RouterLink } from 'vue-router';
 <style scoped>
 .logoDaka{
   border-radius: 5px;
-  margin-left: 27px;
 }
 </style>
