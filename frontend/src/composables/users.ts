@@ -78,6 +78,13 @@ const ARRAYUSER_ROL = [
         "changeID_status":8,
         "printer":false
     },
+      //ATC ONLINE
+    {   "userRol": 2,
+        "status":[4, 6], 
+        "msgButton":'Cargar guia zoom',
+        "changeID_status":11,
+        "printer":false
+    },
     ];
 
     //BUSCAMOS los datos del usuario

@@ -12,6 +12,7 @@ import sidebarAlmacenista from './sidebarItemAlmacenista';
 import sidebarATC from './sidebarItemATC';
 import sidebarCDD from './sidebarItemCDD';
 import sidebarCajeros from './sidebarItemCajero';
+import sidebarATCOnline from './sidebarItemATCOnline';
 import { ref } from 'vue';
 
 import NavGroup from './NavGroup/NavGroup.vue';
@@ -29,6 +30,7 @@ const sidebarMenuAlmacenista = shallowRef(sidebarAlmacenista);
 const sidebarMenuATC = shallowRef(sidebarATC);
 const sidebarMenuCDD = shallowRef(sidebarCDD);
 const sidebarMenuCajero = shallowRef(sidebarCajeros);
+const sidebarMenuATCOnline = shallowRef(sidebarATCOnline);
 
 const User = ref('');
 const Rol = ref<number>(0)
@@ -197,6 +199,24 @@ if (jsonFromLocalStorage !== null) {
       <v-list aria-busy="true" aria-label="menu list" v-if="MANAGERS.includes(Rol)">
         <!---Menu Loop -->
         <template v-for="(item, i) in sidebarMenuGerente" :key="i">
+          <!---Item Sub Header -->
+          <NavGroup :item="item" v-if="item.header" :key="item.title" />
+          <!---Item Divider -->
+          <v-divider class="my-3" v-else-if="item.divider" />
+          <!---If Has Child -->
+          <NavCollapse class="leftPadding" :item="item" :level="0" v-else-if="item.children" />
+          <!---Single Item-->
+          <NavItem :item="item" v-else />
+          <!---End Single Item-->
+        </template>
+      </v-list>
+
+      
+
+      <!-- ATC ONLINE-->
+      <v-list aria-busy="true" aria-label="menu list" v-if="Rol === 2">
+        <!---Menu Loop -->
+        <template v-for="(item, i) in sidebarMenuATCOnline" :key="i">
           <!---Item Sub Header -->
           <NavGroup :item="item" v-if="item.header" :key="item.title" />
           <!---Item Divider -->

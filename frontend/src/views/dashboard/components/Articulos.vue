@@ -208,7 +208,7 @@ async function Created() {
         Id_Comanda: id.value,
         id_producto: 'LS-00000023',
         producto: 'VENTA ONLINE',
-        unidades: 1,
+        unidades: 0,
         precio: 0.01,
         subtotal: 0,
         name: 'VENTA ONLINE', // Añadir propiedades necesarias
@@ -401,6 +401,7 @@ interface ItemRaw {
                                 ${{ item.price }}
                             </td>
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item.subtotal }}$</td>
+
                             <td v-if="Status == 1 && item.code !== 'LS-00000023'" class="py-3 text-right" style="min-width: 100px">
                                 <v-icon
                                     color="#D11919"
