@@ -40,7 +40,7 @@ setInterval(() => {
   // VERIFICAR ESTO
   socket.emit('getSucursal', id_sucursal.value);
 
-}, 5000);
+}, 1000);
 
 
 if(USER_ROL.value === 10){
@@ -53,7 +53,8 @@ if(USER_ROL.value === 10){
 socket.on(`${urlSocket.value}`, (rta) => {
     try {
         info.value = rta;
-    } catch (error) { 
+        console.log(info.value)
+    } catch (error) {  
        console.log(error);
     } finally {
         loadingInfo.value = false; // Ocultar animación de carga
@@ -124,6 +125,7 @@ const headers = ref([
 const COLORSTATUS: any = {
   1: "#ffca3a", //creada
   10: "#fb5607", //prefactura Cargada
+  11: "#fb5608", //Guia Cargada
   2: "#0466c8", //Asignada
   3: "#965745", //Revisada
   4: "#006400", //facturada

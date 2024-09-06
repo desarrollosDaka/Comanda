@@ -84,5 +84,5 @@ module.exports = {
     getMasterPayment,
     filterMasterPayment,
     // updateMasterUser,
-    // deleteMasterUser
+    // deleteMasterUser 
 };

@@ -175,6 +175,10 @@ const deliveryCDD = ref([
   {
     title: 'ZOOM',
     value: 1
+  },
+  {
+    title: 'ZOOM TIENDA',
+    value: 3
   }
 ]) 
 
@@ -296,7 +300,7 @@ async function getSucursal() {
       .map((destino: Destino) => ({
         title: destino.Sucursal,
         value: destino.ID_sucursal,
-      }));
+      })); 
   } catch (error) {
     console.log(error);
   } 
@@ -489,7 +493,6 @@ function handleSelectImages(items: any) {
         >
       </v-col>
     </v-row>
-
     <v-row>
       <v-col cols="12" md="4">
         <v-label for="tipo">Tipo</v-label>
@@ -502,7 +505,7 @@ function handleSelectImages(items: any) {
           :items="['NATURAL', 'JURIDICO']"
           variant="outlined"
           :rules="tipoRules"
-          aria-label="Name Documents"
+          aria-label="Name Documents"   
           color="primary"
           v-model="tipo"
         >
@@ -879,7 +882,7 @@ function handleSelectImages(items: any) {
         <v-label for="origen">Destino</v-label>
         <v-autocomplete
           id="origen"
-          placeholder="Origen de la comanda"
+          placeholder="Destino de la comanda"
           class="mt-2 my-input"
           clearable
           chips
@@ -968,6 +971,7 @@ function handleSelectImages(items: any) {
 
       <v-col cols="12" md="4" v-if="autorizado == true">
         <v-label for="nombreDos">Nombre del Autorizado</v-label>
+
         <v-text-field
           id="nombreDos"
           type="text"
