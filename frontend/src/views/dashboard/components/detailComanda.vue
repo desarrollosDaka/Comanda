@@ -24,7 +24,7 @@ interface Document {
 
 interface Item {
   Producto: string;
-  ID_producto: number;
+  ID_producto: string;
   guiaZoom: string;
   guiaZoom2: string;
   direccionDelivery: string;
@@ -531,6 +531,7 @@ const alertaRechazar = () => {
                                 v-model="item.guiaZoom"
                                 placeholder="Guia"
                                 class="inputDelivery2"
+                                :disabled="item['ID_producto'] === 'LS-00000023'"
                               >
                               </v-text-field>
                             </td>
