@@ -74,6 +74,7 @@ const estado_rep = ref();
 const ciudad_rep = ref();
 const municipio_rep = ref();
 const itemDocument = ref<Document[]>([]);
+const ID_ticket = ref();
 
 const pagosArray = ref();
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
@@ -137,6 +138,7 @@ const fileRules = ref([(v: any) => !!v || "El archivo es requerido"]);
 const TipoDocumentoRules = ref([
   (v: any) => !!v || "El tipo de documento es requerido",
 ]);
+const ticketRules = ref([(v: any) => !!v || "El Nro de Ticket Zendesk es requerido",]);
 
 const getOrder = async () => {
   try {
@@ -155,6 +157,7 @@ const getOrder = async () => {
       municipio.value = data[0][0]["ID_municipio"];
       origen.value = data[0][0]["ID_sucursal"];
       direccion.value = data[0][0]["Direccion"];
+      ID_ticket.value = data[0][0]["ID_ticket"];
       direccionEnvio.value = data[0][0]["Direccion_envio"];
       referencia.value = data[0][0]["Referencia"];
       referenciaEnvio.value = data[0][0]["Referencia_envio"];
@@ -463,6 +466,7 @@ async function handleFormComanda() {
     telefonoDos: autorizado.value === false ? null : telefonoDos.value,
     telefonoUno: telefonoUno.value,
     ID_pago: pagosArray.value,
+    ID_ticket: ID_ticket.value,
     // ID_status: ID_status.value,
     retencion: tipo.value === "NATURAL" ? "false" : retencion.value.toString(),
     porcentaje: tipo.value === "NATURAL" ? null : porcentajeValue,
@@ -1236,6 +1240,21 @@ onMounted(async () => {
           color="primary"
         >
         </v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-label for="referencia">Ticket Zendesk</v-label>
+        <v-text-field
+          id="referencia"
+          type="text"
+          placeholder="ID Ticket Zendesk"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          :rules="ticketRules"
+          v-model="ID_ticket"
+          color="primary"
+          :disabled="Status != 1 && Status != 10"
+        ></v-text-field>
       </v-col>
     </v-row>
 
