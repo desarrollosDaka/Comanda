@@ -208,13 +208,13 @@ async function Created() {
         Id_Comanda: id.value,
         id_producto: 'LS-00000023',
         producto: 'VENTA ONLINE',
-        unidades: 0,
-        precio: 0,
+        unidades: 1,
+        precio: 0.01,
         subtotal: 0,
         name: 'VENTA ONLINE', // Añadir propiedades necesarias
         code: 'LS-00000023',
         amount: 0,
-        price: 0
+        price: 0.01
     }
 
     listProduct.value.push(articuloPorDefecto);
@@ -373,7 +373,7 @@ interface ItemRaw {
                                 Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Sub Total</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase"></th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase">eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -401,12 +401,17 @@ interface ItemRaw {
                                 ${{ item.price }}
                             </td>
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item.subtotal }}$</td>
-                            <td v-if="Status == 1" class="py-3 text-right" style="min-width: 100px" 
-                                @click="removeProduct(item.code, index)">
-                                    <v-icon  color="#D11919" style="cursor: pointer" icon="mdi-trash-can"
-                                        title="Eliminar" >
-                                    </v-icon>
+                            <td v-if="Status == 1 && item.code !== 'LS-00000023'" class="py-3 text-right" style="min-width: 100px">
+                                <v-icon
+                                    color="#D11919"
+                                    style="cursor: pointer"
+                                    icon="mdi-trash-can"
+                                    title="Eliminar"
+                                    @click="removeProduct(item.code, index)"
+                                >
+                                </v-icon>
                             </td>
+
                         </tr>
                     </tbody>
                 </v-table>

@@ -52,7 +52,7 @@ const ARRAYUSER_ROL = [
     }, 
     // ALMACENISTA    
     {   "userRol": 7 , 
-        "status":[10,4],
+        "status":[10],
         "msgButton":'Comanda Revisada por Almacen',
          "changeID_status":3,
          "printer":true
