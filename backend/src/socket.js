@@ -9,7 +9,8 @@ const {
   getMasterOrderRetencionTwo,
   filterOrderPickUp,
   filterOrderPickUpTwo,
-  filterOrderATC
+  filterOrderATC,
+  filterOrderATCOnline
 } = require("./controllers/orders.controller.js");
 const { getMasterUser,getMasterUserBySuc } = require("./controllers/user.controller.js");
 const { latestNoti, findallv2 } = require("./controllers/notifications.controllers.js");
@@ -134,11 +135,19 @@ module.exports = (server) => {
         };
 
         
-        socket.on("getSucursalATC",async  (userId) => {
 
-          
+        //socket.on("getSucursal",async  (userId) => {
+       //   console.log("userId "+ userId);
+
+        socket.on("getSucursalATC",async  (userId) => {
           const rta = await filterOrderATC(userId);
           socket.emit("get-master-order-atc", rta[0]);
+        });
+
+        socket.on("getComandaATCOnline",async  (userId) => {
+       //   console.log("userId "+ userId);
+          const rta = await filterOrderATCOnline();
+          socket.emit("get-master-atc-online", rta[0]);
         });
 
 

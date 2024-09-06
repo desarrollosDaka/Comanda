@@ -121,6 +121,11 @@ const MainRoutes = {
       path: '/DetalleComandaReporte/:id1/:id2',
       component: () => import('@/views/pages/detalleReporte.vue')
     }
+    ,{
+      name: 'comadasAtcOnline',
+      path: '/comadasAtcOnline',
+      component: () => import('@/views/pages/comandaATCOnline.vue')
+    }
   ]
 };
 

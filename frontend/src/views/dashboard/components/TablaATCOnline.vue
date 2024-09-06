@@ -17,7 +17,6 @@ const urlSocket = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
 
-
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
@@ -27,7 +26,7 @@ const jsonFromLocalStorage = sessionStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
-  USER_ROL.value = +parsedData.data.ID_rol;
+  USER_ROL.value = +parsedData.data.ID_rol; 
   USER.value = parsedData.data.ID_user;
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
@@ -38,13 +37,13 @@ const socket = io(`${baseUrlBack}`, {
 
 setInterval(() => {
   // VERIFICAR ESTO
-  socket.emit('getSucursalATC', id_sucursal.value);
+  socket.emit('getComandaATCOnline', id_sucursal.value);
 
 }, 1000);
 
 
-if(USER_ROL.value === 10){
-  urlSocket.value = 'get-master-order-atc'
+if(USER_ROL.value === 2){
+  urlSocket.value = 'get-master-atc-online'
 }else{
     alert('error');
 }
@@ -53,8 +52,7 @@ if(USER_ROL.value === 10){
 socket.on(`${urlSocket.value}`, (rta) => {
     try {
         info.value = rta;
-        console.log(info.value)
-    } catch (error) {  
+    } catch (error) { 
        console.log(error);
     } finally {
         loadingInfo.value = false; // Ocultar animación de carga
@@ -98,7 +96,7 @@ interface Table_Orders {
 //   return null;
 // };
 
-onMounted(async () => { 
+onMounted(async () => { 3
   loadingInfo.value = true; 
   socket.emit('getSucursal', id_sucursal.value);
   const { status } = await useGetStatus();
@@ -107,14 +105,14 @@ onMounted(async () => {
 
 onUnmounted(() => {
   socket.disconnect();
-  //console.log("Socket desconectado");
+  console.log("Socket desconectado");
 });
 
 // Cabezera de la comanda
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
-  { title: "CLIENTE", key: "Nombre" },
+  { title: "CLIENTE", key: "Nombre" }, 
   { title: "DELIVERY", key: "Delivery_nombre" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },
@@ -125,7 +123,6 @@ const headers = ref([
 const COLORSTATUS: any = {
   1: "#ffca3a", //creada
   10: "#fb5607", //prefactura Cargada
-  11: "#fb5608", //Guia Cargada
   2: "#0466c8", //Asignada
   3: "#965745", //Revisada
   4: "#006400", //facturada

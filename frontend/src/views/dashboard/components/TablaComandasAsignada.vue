@@ -99,7 +99,6 @@ socket.on("get-master-order", (rta) => {
 
 
 
-
 const getAsesores = async () => {
 
   try {

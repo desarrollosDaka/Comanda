@@ -209,12 +209,12 @@ async function Created() {
         id_producto: 'LS-00000023',
         producto: 'VENTA ONLINE',
         unidades: 0,
-        precio: 0,
+        precio: 0.01,
         subtotal: 0,
         name: 'VENTA ONLINE', // Añadir propiedades necesarias
         code: 'LS-00000023',
         amount: 0,
-        price: 0
+        price: 0.01
     }
 
     listProduct.value.push(articuloPorDefecto);
@@ -402,7 +402,7 @@ interface ItemRaw {
                             </td>
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item.subtotal }}$</td>
                             <td v-if="Status == 1" class="py-3 text-right" style="min-width: 100px" 
-                                @click="removeProduct(item.code, index)">
+                                @click="removeProduct(item.code, index)"> 
                                     <v-icon  color="#D11919" style="cursor: pointer" icon="mdi-trash-can"
                                         title="Eliminar" >
                                     </v-icon>
