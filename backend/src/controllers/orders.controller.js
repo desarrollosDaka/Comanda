@@ -32,10 +32,10 @@ const getMasterOrder = async (req, res) => {
               ,T0.User_mod
               ,T4.Nombre AS NombreAsesor
               ,T0.User_asing 
-              ,CAST(T0.Create_date AS DATE) Create_date
-              ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
-              ,CAST(T0.update_date AS DATE) Update_date
-              ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+              ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
+              ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.update_date), 108), 1, 8) AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -43,7 +43,8 @@ const getMasterOrder = async (req, res) => {
         LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
         LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL 
-        ORDER BY T0.[ID_order] DESC` );
+        ORDER BY T0.[ID_order] DESC
+` );
 
     if (rta) {
       return rta;
@@ -81,9 +82,9 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
         ,T0.User_mod
         ,T4.Nombre AS NombreAsesor
         ,T0.User_asing 
-        ,CAST(T0.Create_date AS DATE) Create_date
+        ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
-        ,CAST(T0.update_date AS DATE) Update_date
+      ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
         ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
 FROM [COMANDA_TEST].[dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -111,24 +112,26 @@ const getMasterOrderCDD = async (req, res) => {
       `  SELECT  T0.[ID_order]
                 ,T0.ID_detalle
                 ,T0.Caja_factura
-				        ,T3.Tipo_cedula
+                ,T3.Tipo_cedula
                 ,T0.Cedula  
                 ,T3.Nombre Cliente
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
+                ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
-        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
-        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
-        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND  T0.ID_status IN (1,2) and T0.ID_sucursal = 99 
-        ORDER BY T0.[ID_order] DESC`
+                ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+          FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+          INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+          INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+          INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+          INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+          WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND  T0.ID_status IN (1,2) and T0.ID_sucursal = 99 
+          ORDER BY T0.[ID_order] DESC`
     );
 
     if (rta) {
@@ -155,16 +158,18 @@ const getMasterOrderRetencion = async (req, res) => {
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
+                 ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
+                ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
         ORDER BY T0.[ID_order] DESC`
     );
@@ -193,16 +198,18 @@ const getMasterOrderRetencionTwo = async (req, res) => {
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
+                 ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
+                ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
         ORDER BY T0.[ID_order] DESC`
     );
@@ -238,9 +245,9 @@ const getMasterOrderForStore = async (id) => {
               ,T0.User_mod
               ,T4.Nombre AS NombreAsesor
               ,T0.User_asing 
-              ,CAST(T0.Create_date AS DATE) Create_date
+             ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
               ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
-              ,CAST(T0.update_date AS DATE) Update_date
+             ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
               ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -340,7 +347,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[Delete]
                     ,t0.[Motivo_delete]    
                     ,T2.Status
-                    ,CAST(T0.Create_date AS DATE) Create_date
+                     ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
                     ,CAST(T0.[update_date] AS DATE) [Update_date]
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
             INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -358,7 +365,7 @@ const filterMasterOrder = async (req, res) => {
             T0.[ID_order]  ,T0.ID_detalle   ,T0.Caja_factura   ,T3.Tipo_cedula  ,T0.Cedula ,T3.Tipo_cliente  ,T3.Email ,T3.Nombre ,T3.Razon_comercial ,T3.Direccion ,T1.ID_sucursal  ,T1.Sucursal  ,T4.ID_states 
             ,T4.Nombre  ,T5.ID_city  ,T5.Nombre ,T6.ID_municipio ,T6.NOMBRE ,t0.[User_crea]  ,t0.[User_mod]  ,t0.[User_asing] ,t0.[ID_rol]   ,t0.[ID_status]  ,t0.[Tipo_delivery]  ,t0.[SucursalZoom] ,t0.[Autoriza]
             ,t0.[Cedula_autoriza] ,t0.[Telefono_autoriza],t0.Nombre_autoriza ,T3.Tipo_cedula_rep  ,T3.Cedula_rep  ,T3.Nombre_rep    ,T3.Email_rep    ,T3.Telefono_rep    ,T3.Direccion_rep   ,T3.Referencia_rep, T3.ID_state_rep
-            ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,CAST(T0.Create_date AS DATE) 
+            ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,T0.Create_date 
             ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio`
         );
         if (rta) {
@@ -590,26 +597,30 @@ const filterOrderPickUp = async (id) => {
 
     const rta = await sequelize.query(
       `
-SELECT T1 .Nombre,
+      SELECT T1 .Nombre,
         T3.Sucursal,
         T2.[Status] ,
+        T9.Delivery_type , 
         T0.*,
-        CAST(T0.create_date as DATE) as Create_date
+        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
 WHERE T0.ID_status = 4 AND T0.Retencion = 0 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
     UNION ALL
-SELECT  T1 .Nombre, 
-        T3.Sucursal, 
-        T2.[Status] ,
-        T0.*, 
-        CAST(T0.create_date as DATE) as Create_date 
+SELECT T1 .Nombre,
+  T3.Sucursal,
+  T2.[Status] ,
+  T9.Delivery_type , 
+  T0.*,
+  CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
 WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
     );
     return rta;
@@ -623,26 +634,30 @@ const filterOrderPickUpTwo = async (id) => {
   try {
     const rta = await sequelize.query(
         `
-SELECT T1.Nombre, 
-        T3.Sucursal, 
-        T2.[Status] ,
-        T0.*,
-        CAST(T0.create_date as DATE) as Create_date
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
-WHERE T0.ID_status = 7 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
-  UNION ALL
-SELECT  T1.Nombre,
+  SELECT T1 .Nombre,
         T3.Sucursal,
         T2.[Status] ,
-        T0.*, 
-CAST(T0.create_date as DATE) as Create_date 
+        T9.Delivery_type , 
+        T0.*,
+        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+WHERE T0.ID_status = 7 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
+  UNION ALL
+  SELECT T1 .Nombre,
+        T3.Sucursal,
+        T2.[Status] ,
+        T9.Delivery_type , 
+        T0.*,
+        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+FROM [dbo].[ORDERS] T0
+INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
 WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
     );
     return rta;
