@@ -38,7 +38,7 @@ const socket = io(`${baseUrlBack}`, {
 
 setInterval(() => {
   // VERIFICAR ESTO
-  socket.emit('getSucursal', id_sucursal.value);
+  socket.emit('getSucursalATC', id_sucursal.value);
 
 }, 1000);
 
@@ -107,7 +107,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log("Socket desconectado");
+  //console.log("Socket desconectado");
 });
 
 // Cabezera de la comanda

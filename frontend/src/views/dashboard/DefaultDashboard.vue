@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import WidgetFive from './components/WidgetFive.vue';
 import UniqueVisitor from './components/UniqueVisitor.vue';
 import IncomeOverview from './components/IncomeOverview.vue';
@@ -14,7 +14,7 @@ const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   usuario.value = parsedData.data.Nombre;
-} 
+}
 
 const PUBLIC_VAPID_KEY: string = "BChYwJmtdx1DnCyWvAImpEzQXmNnLQavrl1CtZxwwRlxhiq5F3Uj_AmqQUKH87H7QUd-dGfMAsMwR61vUhHwAOo";
 const route: string = `${import.meta.env.VITE_URL}/api`
@@ -32,6 +32,7 @@ const subscription = async (): Promise<void> => {
   });
 
   // Send Notification
+  console.log(route)
   await fetch(route + "/subscription", {
     method: "POST",
     body: JSON.stringify(subscription),
@@ -57,10 +58,15 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray;
 }
 
-// Service Worker Support
-if ("serviceWorker" in navigator) {
-  subscription().catch((err: any) => console.log(err));
-}
+onMounted(async () => {
+   try {
+    const response = await subscription();
+    console.log(response)
+   } catch (error) {
+    console.error(error)
+   }
+})
+
 </script>
 <template>
 
@@ -68,7 +74,7 @@ if ("serviceWorker" in navigator) {
   <Banner />
   <!-- BALDOSAS -->
   <WidgetFive />
-  
+
   <!-- CHART1 -->
   <!-- <v-row class="mb-0">
   
@@ -95,15 +101,12 @@ if ("serviceWorker" in navigator) {
           <TransactionHistory />
         </v-col> -->
 
-       
+
         <v-col cols="12">
           <HelpSupport />
         </v-col>
       </v-row>
     </v-col>
-    
+
   </v-row>
 </template>
-
-
-

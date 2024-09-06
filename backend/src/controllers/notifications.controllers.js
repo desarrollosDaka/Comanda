@@ -5,6 +5,7 @@ const webpush = require("../config/webpush");
 let pushSubscription;
 
 const subscription = async (req, res) => {
+  console.log('sjbkkkkkkkkkkkkkkkkkkkkkkkkkk');
   pushSubscription = req.body;
   res.status(201).json();
 };
@@ -18,6 +19,7 @@ const notification = async (req, res) => {
   });
   res.status(200).json();
   try {
+    console.log(pushSubscription)
     await webpush.sendNotification(pushSubscription, payload);
   } catch (error) {
     console.error(error);

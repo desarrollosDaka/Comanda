@@ -72,6 +72,8 @@ const municipio_repNombre = ref();
 const itemDocument = ref<Document[]>([]);
 const idOrder = ref();
 const Id_sucursal= ref();
+const ID_ticket = ref();
+
 // URL
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -111,6 +113,7 @@ const telefonoRules = ref([(v: string) => !!v || "El telefono de la persona auto
 const metodoRules = ref([(v: string) => !!v || "El metodo de pago es requerida",]);
 const fileRules = ref([(v: any) => !!v || "El archivo es requerido"]);
 const TipoDocumentoRules = ref([(v: any) => !!v || "El tipo de documento es requerido",]);
+const ticketRules = ref([(v: any) => !!v || "El Nro de Ticket Zendesk es requerido",]);
 
 // api post
 async function Created(json: any) {
@@ -132,7 +135,7 @@ async function searchModel() {
     const { data } = await axios.get(
       `${baseUrlClients}/searchClient/${cedulaUno.value}`
     );
-//console.log(data[0][0]);
+
 
     if (data) {
       tipo.value = data[0][0].Tipo_cliente;
@@ -147,6 +150,7 @@ async function searchModel() {
       municipio.value = data[0][0].ID_municipio;
       municipioNombre.value = data[0][0].Nombre_municipio;
       direccion.value = data[0][0].Direccion;
+      ID_ticket.value = data[0][0].ID_ticket;
       referencia.value = data[0][0].Referencia;
       retencion.value = data[0][0].Retencion;
       razonComercial.value = data[0][0].Razon_comercial;
@@ -383,6 +387,7 @@ async function handleFormComanda() {
     ID_delivery: ID_Delivery.value,
     direccion:  direccion.value,
     referencia: referencia.value,
+    ID_ticket: ID_ticket.value,
     direccionEnvio: ID_Delivery.value === 3 ? null : direccionEnvio.value,
     referenciaEnvio: ID_Delivery.value === 3 ? null : referenciaEnvio.value,
     sucursalZoom:
@@ -726,6 +731,7 @@ function handleSelectImages(items: any) {
           color="primary"
         ></v-text-field>
       </v-col>
+
     </v-row>
     <br />
 
@@ -1044,6 +1050,20 @@ function handleSelectImages(items: any) {
           aria-label="Name Documents"
           class="mt-2 my-input"
           v-model="user_crea"
+          color="primary"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-label for="referencia">Ticket Zendesk</v-label>
+        <v-text-field
+          id="referencia"
+          type="text"
+          placeholder="ID Ticket Zendesk"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          :rules="ticketRules"
+          v-model="ID_ticket"
           color="primary"
         ></v-text-field>
       </v-col>

@@ -326,7 +326,9 @@ async function downLoadArchive(param: Documento) {
           <div class="tooltip">
             <div class="tooltiptext" v-if="data.mode === UPDATE_METHOD">Clic para descargar!</div>
             <v-select :id="'tipo' + index" placeholder="Tipo de archivo" :disabled="data.disabled" class="mt-2"
+
               clearable chips :items="['CEDULA', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA', 'DETALLE DE ENVIO', 'GUIA ZOOM']"
+
               density="compact" label="Indique el tipo de documento" variant="outlined" :rules="tipoRules"
               :aria-label="'TipoDocuments' + index" color="primary" theme="dark" with-background :key="index"
               v-model="document[index].type" :item-value="document[index].type"
