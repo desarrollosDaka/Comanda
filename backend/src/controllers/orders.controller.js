@@ -31,6 +31,7 @@ const getMasterOrder = async (req, res) => {
               ,T0.[User_crea]
               ,T0.User_mod
               ,T4.Nombre AS NombreAsesor
+              ,T0.Description_payment
               ,T0.User_asing 
               ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
@@ -82,6 +83,7 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
         ,T0.User_mod
         ,T4.Nombre AS NombreAsesor
         ,T0.User_asing 
+        ,T0.Description_payment
         ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
       ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
@@ -124,13 +126,14 @@ const getMasterOrderCDD = async (req, res) => {
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
+                ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
           FROM [COMANDA_TEST].[dbo].[ORDERS] T0
           INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
           INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
           INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
           INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-          WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND  T0.ID_status IN (1,2) and T0.ID_sucursal = 99 
+          WHERE T0.[Delete] IS NULL AND T0.ID_status IN (1,2) and T0.ID_sucursal = 99 
           ORDER BY T0.[ID_order] DESC`
     );
 
@@ -164,13 +167,14 @@ const getMasterOrderRetencion = async (req, res) => {
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
+                ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
+        WHERE  T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
         ORDER BY T0.[ID_order] DESC`
     );
 
@@ -204,13 +208,14 @@ const getMasterOrderRetencionTwo = async (req, res) => {
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
+                ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
+        WHERE T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
         ORDER BY T0.[ID_order] DESC`
     );
 
@@ -245,6 +250,7 @@ const getMasterOrderForStore = async (id) => {
               ,T0.User_mod
               ,T4.Nombre AS NombreAsesor
               ,T0.User_asing 
+              ,T0.Description_payment
              ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
               ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
              ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
@@ -347,6 +353,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[Delete]
                     ,t0.[Motivo_delete]    
                     ,T2.Status
+                    ,T0.Description_payment
                      ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
                     ,CAST(T0.[update_date] AS DATE) [Update_date]
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
@@ -366,7 +373,7 @@ const filterMasterOrder = async (req, res) => {
             ,T4.Nombre  ,T5.ID_city  ,T5.Nombre ,T6.ID_municipio ,T6.NOMBRE ,t0.[User_crea]  ,t0.[User_mod]  ,t0.[User_asing] ,t0.[ID_rol]   ,t0.[ID_status]  ,t0.[Tipo_delivery]  ,t0.[SucursalZoom] ,t0.[Autoriza]
             ,t0.[Cedula_autoriza] ,t0.[Telefono_autoriza],t0.Nombre_autoriza ,T3.Tipo_cedula_rep  ,T3.Cedula_rep  ,T3.Nombre_rep    ,T3.Email_rep    ,T3.Telefono_rep    ,T3.Direccion_rep   ,T3.Referencia_rep, T3.ID_state_rep
             ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,T0.Create_date 
-            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio`
+            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio, T0.Description_payment`
         );
         if (rta) {
             res.status(200);
@@ -412,7 +419,6 @@ const createMasterOrderAndDetails = async (req, res) => {
       ID_state_rep: data.estado_rep,
       ID_city_rep: data.ciudad_rep,
       ID_municipio_rep: data.municipio_rep,
-
     };
     // Crear un objeto con los datos del pedido
     const newOrder = {
@@ -434,6 +440,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         ID_ticket: data.ID_ticket,
         Direccion_envio: data.direccionEnvio,
         Referencia_envio: data.referenciaEnvio,
+        Description_payment: data.description_payment
     };
         
     //Comprobar si la cédula ya existe en la base de datos
@@ -570,7 +577,7 @@ const filterOrderATCOnline = async () => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 4 AND     T0.Tipo_delivery != 2 AND ID_sucursal != 99
+		WHERE T0.ID_status = 4 AND  T0.Retencion = 0 AND  T0.Tipo_delivery != 2 AND ID_sucursal != 99
 	UNION ALL
 	SELECT  
 		T1.Nombre,
@@ -867,6 +874,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             ID_ticket: data.ID_ticket,
             Direccion_envio: data.direccionEnvio,
             Referencia_envio: data.referenciaEnvio,
+            Description_payment: data.description_payment
         };
 
         // Comprueba si la cédula ya existe en la base de datos
@@ -1230,8 +1238,7 @@ const updateMasterAsesor = async (req, res) => {
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateStatusOrder = async (req, res) => {
   try {
-    console.log(req.body);
-    
+
     const data = {
       ID_status: req.body.status_comanda,
       User_mod: req.body.user_mod

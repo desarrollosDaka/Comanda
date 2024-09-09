@@ -94,6 +94,10 @@ const masterOrderSchema = {
     allowNull: true,
     type: DataTypes.STRING(30),
   },
+  Description_payment: {
+    allowNull: true,
+    type: DataTypes.STRING(300),
+  },
   Delete: {
     allowNull: true,
     type: DataTypes.BOOLEAN,
