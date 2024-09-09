@@ -61,7 +61,7 @@ const getOrders = async () => {
         const url = `${baseUrlProducts}/filterOrder/${id.value}`
         const { data } = await axios.get(url);
         Status.value = data[0][0]["ID_status"] 
-        //console.log("ESTATUS:",  Status.value );
+       // console.log("ESTATUS:",  Status.value );
         //console.log(data[0]);
 
         if (data[0].length <= 0) {
@@ -89,7 +89,7 @@ const getOrders = async () => {
 
 onMounted(async () => {
 
-    getOrders();
+    await getOrders();
     if (update.value) handleProductUpdate();
 
     const toastLoading = toast.loading("Cargando Productos...", {
@@ -302,7 +302,7 @@ async function handleProductUpdate() {
     try {
         const url = `${baseUrlProducts}/filterOrderDetails/${id.value}`
         const { data } = await axios.get(url);
-        console.log(data);
+        //console.log(data);
         
         articles = data[0]
 
@@ -344,7 +344,7 @@ interface ItemRaw {
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
                 variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
-                :items="infoProduct"  :disabled="loadingProducts || Status != 1" 
+                :items="infoProduct"  :disabled="loadingProducts || Status !== '1'" 
                 >
 
                 <template v-slot:item="{ props, item }">
@@ -356,7 +356,7 @@ interface ItemRaw {
 
         </v-col>
         <v-col cols="12" md="3" class="py-3">
-            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status != 1" >
+            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status !== '1'" >
                 AGREGAR
             </v-btn>
         </v-col>
@@ -375,15 +375,14 @@ interface ItemRaw {
                                 Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Sub Total</th>
-                            <th v-if="Status == 1" class="text-left text-caption font-weight-bold text-uppercase">eliminar</th>
+                            <th v-if="Status == '1'" class="text-left text-caption font-weight-bold text-uppercase">eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         <tr v-for="(item, index) in listProduct" :key="index">
                             <td class="py-3">
-                                <router-link to="/dashboard/default" class="text-secondary link-hover">{{ item.name
-                                    }}</router-link>
+                                <router-link to="/dashboard/default" class="text-secondary link-hover">{{ item.name }}</router-link>
                             </td>
                             <td class="py-3">{{ item.code }} </td>
                             <!-- <td class="py-3  m-3 text-right" style="min-width: 100px">
@@ -404,7 +403,7 @@ interface ItemRaw {
                                 ${{ item.price }}
                             </td>
                             <td class="py-3" style="min-width: 100px"> {{ item.subtotal }}$</td>
-                            <td v-if="Status == 1 && item.code !== 'LS-00000023'" class="py-3 " style="min-width: 100px">                               
+                            <td v-if="Status == '1' && item.code !== 'LS-00000023'" class="py-3 " style="min-width: 100px">                               
                                 <v-icon
                                     color="#D11919"
                                     style="cursor: pointer"
@@ -427,7 +426,7 @@ interface ItemRaw {
                 <div class="text-h4 pa-2">{{ `Total a pagar:` }}</div>
                 <div class="text-h1 pa-2 text-center ">${{ ` ${totalSubtotal}` }}</div>
                 <v-card-actions class="text-certer">
-                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status != 1" >
+                    <v-btn  :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status !== '1'" >
                         {{ update ? 'ACTUALIZAR COMANDA' : 'CREAR COMANDA' }}
                     </v-btn>
                 </v-card-actions>
