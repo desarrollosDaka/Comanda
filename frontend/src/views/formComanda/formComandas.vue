@@ -1088,7 +1088,8 @@ function handleSelectImages(items: any) {
         !email ||
         !nombreCompleto ||
         !telefonoUno ||
-        !ID_pago
+        !ID_pago ||
+        !ID_Delivery
       "
       type="submit"
     >
