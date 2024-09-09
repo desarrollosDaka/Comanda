@@ -570,7 +570,7 @@ const filterOrderATCOnline = async () => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal != 99
+		WHERE T0.ID_status = 4 AND     T0.Tipo_delivery != 2 AND ID_sucursal != 99
 	UNION ALL
 	SELECT  
 		T1.Nombre,
