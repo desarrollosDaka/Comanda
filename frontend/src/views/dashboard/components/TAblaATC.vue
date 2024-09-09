@@ -40,7 +40,7 @@ setInterval(() => {
   // VERIFICAR ESTO
   socket.emit('getSucursalATC', id_sucursal.value);
 
-}, 1000);
+}, 5000);
 
 
 if(USER_ROL.value === 10){
@@ -100,7 +100,7 @@ interface Table_Orders {
 
 onMounted(async () => { 
   loadingInfo.value = true; 
-  socket.emit('getSucursal', id_sucursal.value);
+  socket.emit('getSucursalATC', id_sucursal.value);
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });
