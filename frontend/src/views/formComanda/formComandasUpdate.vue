@@ -662,7 +662,7 @@ onMounted(async () => {
 
     <v-row>
       <v-col cols="12" md="4">
-        <v-label for="tipo">Tipo</v-label>
+        <v-label for="tipo">Tipo<span class="red">*</span></v-label>
         <v-autocomplete
           id="tipo"
           placeholder="Tipo de cliente"
@@ -698,7 +698,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-label for="cedulaUno">Cedula/Rif</v-label>
+        <v-label for="cedulaUno">Cedula/Rif<span class="red">*</span></v-label>
         <v-text-field
           id="cedulaUno"
           type="number"
@@ -717,7 +717,7 @@ onMounted(async () => {
 
     <v-row>
       <v-col cols="12" md="4">
-        <v-label for="email">Email</v-label>
+        <v-label for="email">Email<span class="red">*</span></v-label>
         <v-text-field
           id="email"
           type="email"
@@ -734,9 +734,9 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="name" v-if="tipo === 'JURIDICO'">Razon Social</v-label>
-        <v-label for="name" v-else-if="tipo === 'NATURAL'">Nombre Completo</v-label>
-        <v-label for="name" v-else>Nombre Completo</v-label>
+        <v-label for="name" v-if="tipo === 'JURIDICO'">Razon Social<span class="red">*</span></v-label>
+        <v-label for="name" v-else-if="tipo === 'NATURAL'">Nombre Completo<span class="red">*</span></v-label>
+        <v-label for="name" v-else>Nombre Completo<span class="red">*</span></v-label>
         <v-text-field
           id="name"
           type="text"
@@ -753,7 +753,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="telefonoCliente">Telefono</v-label>
+        <v-label for="telefonoCliente">Telefono<span class="red">*</span></v-label>
         <v-text-field
           id="telefonoCliente"
           type="number"
@@ -771,7 +771,7 @@ onMounted(async () => {
 
     <v-row v-if="tipo === 'JURIDICO'">
       <v-col cols="12" md="1">
-        <v-label for="retencion">Retención</v-label>
+        <v-label for="retencion">Retención<span class="red">*</span></v-label>
         <v-switch
           id="retencion"
           class="mt-3 my-input"
@@ -799,7 +799,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="razonComercial">Razon Comercial</v-label>
+        <v-label for="razonComercial">Razon Comercial<span class="red">*</span></v-label>
         <v-text-field
           id="razonComercial"
           type="text"
@@ -817,7 +817,7 @@ onMounted(async () => {
 
     <v-row>
       <v-col cols="12" md="4">
-        <v-label for="estado">Estado</v-label>
+        <v-label for="estado">Estado<span class="red">*</span></v-label>
         <v-autocomplete
           id="estado"
           placeholder="Seleccione el estado"
@@ -837,7 +837,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="municipio">Municipio</v-label>
+        <v-label for="municipio">Municipio<span class="red">*</span></v-label>
         <v-autocomplete
           id="municipio"
           placeholder="Seleccione el municipio"
@@ -857,7 +857,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="ciudad">Ciudad</v-label>
+        <v-label for="ciudad">Ciudad<span class="red">*</span></v-label>
         <v-autocomplete
           id="ciudad"
           placeholder="Seleccione la ciudad"
@@ -875,7 +875,7 @@ onMounted(async () => {
         </v-autocomplete>
       </v-col>
       <v-col cols="12" md="6">
-        <v-label for="direccion">Direccion completa del cliente</v-label>
+        <v-label for="direccion">Direccion completa del cliente<span class="red">*</span></v-label>
         <v-text-field
           id="direccion"
           type="text"
@@ -891,7 +891,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-label for="referencia">Referencia</v-label>
+        <v-label for="referencia">Referencia<span class="red">*</span></v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -931,7 +931,7 @@ onMounted(async () => {
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-label for="cedulaUno">Cedula/Rif</v-label>
+          <v-label for="cedulaUno">Cedula/Rif<span class="red">*</span></v-label>
           <v-text-field
             id="cedulaUno"
             type="number"
@@ -948,7 +948,7 @@ onMounted(async () => {
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-label for="email">Email del Representante</v-label>
+          <v-label for="email">Email del Representante<span class="red">*</span></v-label>
           <v-text-field
             id="email"
             type="email"
@@ -965,7 +965,7 @@ onMounted(async () => {
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-label for="name">Nombre Completo del Representante</v-label>
+          <v-label for="name">Nombre Completo del Representante<span class="red">*</span></v-label>
           <v-text-field
             id="name"
             type="text"
@@ -982,7 +982,7 @@ onMounted(async () => {
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-label for="telefonoCliente">Telefono del Representante</v-label>
+          <v-label for="telefonoCliente">Telefono del Representante<span class="red">*</span></v-label>
           <v-text-field
             id="telefonoCliente"
             type="number"
@@ -998,7 +998,7 @@ onMounted(async () => {
         </v-col>
 
         <v-col cols="12" md="4">
-            <v-label for="estado">Estado</v-label>
+            <v-label for="estado">Estado<span class="red">*</span></v-label>
             <v-autocomplete
               id="estado"
               placeholder="Seleccione el estado"
@@ -1018,7 +1018,7 @@ onMounted(async () => {
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-label for="municipio">Municipio</v-label>
+            <v-label for="municipio">Municipio<span class="red">*</span></v-label>
             <v-autocomplete
               id="municipio"
               placeholder="Seleccione el municipio"
@@ -1038,7 +1038,7 @@ onMounted(async () => {
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-label for="ciudad">Ciudad</v-label>
+            <v-label for="ciudad">Ciudad<span class="red">*</span></v-label>
             <v-autocomplete
               id="ciudad"
               placeholder="Seleccione la ciudad"
@@ -1066,7 +1066,7 @@ onMounted(async () => {
     <h4>Paso 2</h4>
     <v-row>
       <v-col cols="12" md="8">
-        <v-label for="origen">Destino</v-label>
+        <v-label for="origen">Destino<span class="red">*</span></v-label>
         <v-autocomplete
           id="origen"
           placeholder="Destino de la comanda"
@@ -1085,7 +1085,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="delivery">Delivery</v-label>
+        <v-label for="delivery">Delivery<span class="red">*</span></v-label>
 
         <v-autocomplete
           id="delivery"
@@ -1107,7 +1107,7 @@ onMounted(async () => {
     </v-row>
     <v-row v-if="ID_Delivery === 1 || ID_Delivery === 4">
       <v-col cols="12" md="6">
-        <v-label for="direccion">Direccion completa del envio</v-label>
+        <v-label for="direccion">Direccion completa del envio<span class="red">*</span></v-label>
         <v-text-field
           id="direccion"
           type="text"
@@ -1123,7 +1123,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-label for="referencia">Referencia</v-label>
+        <v-label for="referencia">Referencia<span class="red">*</span></v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -1140,7 +1140,7 @@ onMounted(async () => {
     </v-row>
     <v-row>
       <v-col cols="12" md="12" v-if="ID_Delivery === 3">
-        <v-label for="direccion">Direccion del Delivery</v-label>
+        <v-label for="direccion">Direccion del Delivery<span class="red">*</span></v-label>
         <v-autocomplete
           id="direccion"
           placeholder="Seleccione la Direccion del Delivery"
@@ -1164,7 +1164,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4" v-if="autorizado == true">
-        <v-label for="nombreDos">Nombre del Autorizado</v-label>
+        <v-label for="nombreDos">Nombre del Autorizado<span class="red">*</span></v-label>
         <v-text-field
           id="nombreDos"
           type="text"
@@ -1180,7 +1180,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="4" v-if="autorizado == true">
-        <v-label for="cedulaDos">Cedula/Rif del Autorizado</v-label>
+        <v-label for="cedulaDos">Cedula/Rif del Autorizado<span class="red">*</span></v-label>
         <v-text-field
           id="cedulaDos"
           type="number"
@@ -1196,7 +1196,7 @@ onMounted(async () => {
       </v-col>
 
       <v-col cols="12" md="5" v-if="autorizado == true">
-        <v-label for="telefono">Telefono del Autorizado</v-label>
+        <v-label for="telefono">Telefono del Autorizado<span class="red">*</span></v-label>
         <v-text-field
           id="telefono"
           type="number"
@@ -1212,7 +1212,7 @@ onMounted(async () => {
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
-        <v-label for="medioPago">Medio de Pago</v-label>
+        <v-label for="medioPago">Medio de Pago<span class="red">*</span></v-label>
         <v-autocomplete
           id="medioPago"
           placeholder="Seleccione el tipo de pago"
@@ -1246,7 +1246,7 @@ onMounted(async () => {
         </v-text-field>
       </v-col>
       <v-col cols="12" md="6">
-        <v-label for="referencia">Ticket Zendesk</v-label>
+        <v-label for="referencia">Ticket Zendesk<span class="red">*</span></v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -1313,5 +1313,9 @@ onMounted(async () => {
 
 .my-input input {
   text-transform: uppercase;
+}
+.red{
+  color: red;
+  font-size: 16px;
 }
 </style>

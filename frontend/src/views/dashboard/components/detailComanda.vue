@@ -228,13 +228,13 @@ const cajaFactura = async () => {
 
       if (respuesta) {
         dialog.value = false
-        return toast.error(`Caja factura asignada a la comanda`, {
+        return toast.success(`Caja factura asignada a la comanda`, {
           position: toast.POSITION.TOP_CENTER,
           transition: toast.TRANSITIONS.ZOOM,
           autoClose: 4000,
         });
       }
-    }8
+    }
 
   } catch (error) {
     console.log(error);
@@ -242,7 +242,7 @@ const cajaFactura = async () => {
 };
 
 onMounted(async () => {
-
+//hola
   const toastLoading = toast.loading("Cargando Comanada...", {
         position: toast.POSITION.BOTTOM_CENTER,
         theme: 'colored',
