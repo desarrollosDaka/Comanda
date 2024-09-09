@@ -79,6 +79,7 @@ const Type = ref()
 const razonComercial = ref();
 const guiaZoom2 = ref();
 const boxFactura = ref();
+const ID_ticket = ref();
 
 const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
@@ -132,6 +133,7 @@ const getOrder = async () => {
       User_asing.value = data[0][0]["User_asing"];
       razonComercial.value = data[0][0]["Razon_comercial"];
       boxFactura.value = data[0][0]["Caja_factura"];
+      ID_ticket.value = data[0][0]["ID_ticket"];
     }
     
   } catch (error) {
@@ -447,6 +449,7 @@ const alertaRechazar = () => {
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
             <!-- <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p> -->
             <p v-if="boxFactura"><b>Documento POS:</b> {{ boxFactura }}</p>
+            <p v-if="ID_ticket && USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 99"><b>Ticket Zendesk:</b> {{ ID_ticket }}</p>
         </v-col>
     </v-row>
 
