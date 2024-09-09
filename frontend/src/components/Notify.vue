@@ -16,6 +16,7 @@ const props = defineProps({
 });
 
 const deletee = async (ID_Notifications: string) => {
+    console.log('delete', ID_Notifications)
     const res = await axios.put(`${url}/api/update/notify/${ID_Notifications}`);
     return res;
 }
@@ -32,12 +33,13 @@ const confirmDelete = async (ID_Notifications: string) => {
 
     if (result.isConfirmed) {
         const res = await deletee(ID_Notifications);
-        return res;
+       return res;
     }
 };
 
 const redirectToCommnd = async () => {
     router.push('/dashboard');
+    await deletee(props.notifyData.ID_Notifications);
     router.push(`/viewProcessComandas/${props.notifyData.ID_detalle}/${await getIdCommad(url, props)}`)
 };
 

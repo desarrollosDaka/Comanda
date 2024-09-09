@@ -7,12 +7,33 @@ import detailComanda from '../dashboard/components/detailComanda.vue';
 
 // component content
 const page = ref({ title: 'Comanda Asignadas' });
+const ID_rol = ref();
+const ruta = ref('');
+
+// Localstorage
+const jsonFromLocalStorage = sessionStorage.getItem("user");
+if (jsonFromLocalStorage !== null) {
+  const parsedData = JSON.parse(jsonFromLocalStorage);
+  ID_rol.value = parsedData.data.ID_rol;
+
+}
+
+if(ID_rol.value === '10'){
+  
+  ruta. value = '/ComandasAtc'
+}else if(ID_rol.value === '11' || ID_rol.value === '1'){
+
+  ruta. value = '/retenciones'
+}else{
+
+  ruta. value = '/maestroComandaAsignada'
+}
 
 const breadcrumbs = ref([
   {
     title: 'Comandas Asignadas',
     disabled: false,
-    to: '/maestroComandaAsignada'
+    to: `${ruta.value}`
   },
   {
     title: 'Detalle',

@@ -266,6 +266,10 @@ const deliveryCDD = ref([
   {
     title: 'ZOOM',
     value: 1
+  },
+  {
+    title: 'ZOOM TIENDA',
+    value: 3
   }
 ]) 
 

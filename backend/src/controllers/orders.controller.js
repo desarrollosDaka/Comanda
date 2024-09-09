@@ -474,7 +474,6 @@ const createMasterOrderAndDetails = async (req, res) => {
 const filterOrderDetailsFiles = async (req, res) => {
   try {
     const id = req.params.id;
-
     const rta = await sequelize.query(
       `SELECT *
             FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
@@ -539,9 +538,9 @@ const filterOrderDetails = async (req, res) => {
 const filterOrderATC = async (id) => {
   try {
     const rta = await sequelize.query(
-      `SELECT 
+    `SELECT 
 		T1.Nombre, 
-		T2.[Status] ,
+		T2.[Status],
 		T0.*,
 		CAST(T0.create_date as DATE) as Create_date,
 		T4.Delivery_type as Delivery_nombre
@@ -549,7 +548,29 @@ const filterOrderATC = async (id) => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
+		WHERE T0.ID_status = 11 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'` 
+    );
+    return rta;
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//OBTENER DETALLES DE COMANDA
+const filterOrderATCOnline = async () => {
+  try {
+    const rta = await sequelize.query(
+      `SELECT 
+		T1.Nombre, 
+		T2.[Status],
+		T0.*,
+		CAST(T0.create_date as DATE) as Create_date, 
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal != 99
 	UNION ALL
 	SELECT  
 		T1.Nombre,
@@ -561,7 +582,7 @@ const filterOrderATC = async (id) => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal = '${id}'`
+		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal != 99`
     );
     return rta;
   } catch (e) {
@@ -1329,5 +1350,6 @@ module.exports = {
   getMasterOrderRetencion,
   getMasterOrderRetencionTwo,
   filterOrderPickUpTwo,
-  filterOrderPickUp
+  filterOrderPickUp,
+  filterOrderATCOnline
 };

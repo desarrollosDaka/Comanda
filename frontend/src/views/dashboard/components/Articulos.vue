@@ -210,7 +210,7 @@ async function Created() {
         Id_Comanda: id.value,
         id_producto: 'LS-00000023',
         producto: 'VENTA ONLINE',
-        unidades: 1,
+        unidades: 0,
         precio: 0.01,
         subtotal: 0.01,
         name: 'VENTA ONLINE', // Añadir propiedades necesarias
