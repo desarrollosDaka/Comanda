@@ -51,10 +51,6 @@ onMounted(async () => {
 
         const tipoArchivo = 'DETALLE DE ENVIO'
         url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
-      } else if(USER_ROL.value === 11){
-
-        const tipoArchivo = 'RETENCIÓN'
-        url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
 
       } else {
         url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
