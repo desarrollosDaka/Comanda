@@ -1069,7 +1069,7 @@ onMounted(async () => {
         <v-label for="origen">Destino</v-label>
         <v-autocomplete
           id="origen"
-          placeholder="Origen de la comanda"
+          placeholder="Destino de la comanda"
           class="mt-2 my-input"
           clearable
           chips
