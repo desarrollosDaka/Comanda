@@ -13,6 +13,7 @@ import { HttpHeadIcon } from "vue-tabler-icons";
 import { useUploadFilesCaja } from "@/composables/fileCajero";
 
 
+
 interface Document {
   file: File;
   type: string;
@@ -62,6 +63,9 @@ const User_asing = ref();
 const id_sucursal = ref();
 const messageStatus = ref();
 const itemDocument = ref<Document[]>([]);
+const dialog = ref(false);
+const numFactura = ref();
+const boxFactura = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -82,6 +86,7 @@ function handleSelectImages(items: any) {
 }
 
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
+const ROLEADDFILESBILL = [8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 
 const getOrder = async () => {
   try {
@@ -89,7 +94,6 @@ const getOrder = async () => {
     const { data } = await axios.get(url);
 
     if(data){
-
       cedulaUno.value = data[0][0]["Cedula"];
       tipo.value = data[0][0]["Tipo_cliente"];
       retencion.value = data[0][0]["Retencion"];
@@ -109,6 +113,7 @@ const getOrder = async () => {
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"]; 
+      boxFactura.value = data[0][0]["Caja_factura"];
 
     }
 
@@ -123,6 +128,29 @@ const getOrder = async () => {
     console.log(error);
   }
 };
+
+
+const cajaFactura = async () => {
+  try {
+    if (numFactura.value) {
+      const url = `${baseUrl}/updateCajaFactura/${id.value}`;
+      const { data: respuesta } = await axios.put(url, { caja_factura: numFactura.value });
+
+      if (respuesta) {
+        dialog.value = false
+        return toast.success(`Caja factura asignada a la comanda`, {
+          position: toast.POSITION.TOP_CENTER,
+          transition: toast.TRANSITIONS.ZOOM,
+          autoClose: 4000,
+        });
+      }
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 const getArticulos = async () => {
   loadingInfo.value = true;
@@ -162,8 +190,16 @@ const updateEstatus = async () => {
 
 const changeStatusComanda = () =>{
 
+
   const { isvalidate } = useUploadFilesCaja(itemDocument.value, ID_status.value); //Verificamos los tipos de documentos
   console.log(itemDocument.value)
+     if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value && ID_status.value  === 'Asignada') {
+    return toast.error(`Error. Debes ingresar el numero de factura`, {
+      position: toast.POSITION.TOP_CENTER,
+      transition: toast.TRANSITIONS.ZOOM,
+      autoClose: 4000,
+    });
+  }
   if (isvalidate){
     Swal.fire({
       title: ID_status.value === 'Creada' ? `Comanda Asignada correctamente` : `Comanda Facturada correctamente`,
@@ -284,10 +320,24 @@ onMounted(async () => {
         </v-row>
     </UiTitleCard>
 
+    <v-dialog v-model="dialog" width="auto">
+    <v-card max-width="600" prepend-icon="mdi-counter" title="Documento POS">
+
+      <v-text-field ref="zip" v-model="numFactura" :rules="[() => !!numFactura || 'Documento POS es requerido']"
+        placeholder="Documento POS" required></v-text-field>
+
+
+      <template v-slot:actions>
+        <v-btn class="ms-auto" text="Ok" @click="cajaFactura"></v-btn>
+      </template>
+    </v-card>
+
+  </v-dialog>
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
   <UploadImages v-if="USER_ROL === 8 || USER_ROL === 9"
   @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
- 
+
+  
     <v-container>
         <br>
         <v-row align="center" justify="start">
@@ -304,7 +354,15 @@ onMounted(async () => {
                   {{ messageStatus }}
                 </v-btn>   
             </v-col>
-         
+
+
+             <!-- BOTON PARA INGRESAR EL NUMERO DE FACTURA -->
+      <v-col cols="auto" v-if="ROLEADDFILESBILL.includes(USER_ROL) && ID_status === 'Asignada'">
+        <v-btn @click="dialog = true" append-icon="mdi-check-all" variant="elevated" color="primary">
+          Ingresar Documento POS
+        </v-btn>
+      </v-col>
+
         </v-row>
     </v-container>
 </template>
