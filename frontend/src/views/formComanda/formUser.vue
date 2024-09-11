@@ -18,6 +18,7 @@ const Id_sucursal = ref();
 const Dpto_ventas = ref(false);
 const Linea_ventas = ref();
 const User_crea = ref();
+const ID_SUCURSAL_LOCAL = ref();
 const Delete = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/auth`;
 const baseUrlRol = `${import.meta.env.VITE_URL}/api/roles`;
@@ -25,11 +26,13 @@ const baseUrlStore = `${import.meta.env.VITE_URL}/api/stores`;
 const infoSucursal = ref();
 const rolInfo = ref();
 
+
 // Localstorage
 const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User_crea.value = parsedData.data.Nombre;
+  ID_SUCURSAL_LOCAL.value = parsedData.data.Id_sucursal;
 } 
 
 // validaciones
@@ -100,6 +103,27 @@ const getSucursal = async () => {
       console.log(error)
   }
 }
+const getSucursalFilter = async () => {
+  try{
+    const url = `${baseUrlStore}/filterStores/${ID_SUCURSAL_LOCAL.value}`
+    const {data} = await axios.get(url);
+    console.log(data)
+
+    infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
+            title: sucursales.Sucursal,
+            value: sucursales.ID_sucursal
+        }));
+  } catch(error){
+      console.log(error)
+  }
+}
+const validateSucursal = async () => {
+  if (ID_SUCURSAL_LOCAL.value === 1) {
+    await getSucursal();
+  } else {
+    await getSucursalFilter();
+  }
+};
 
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -143,7 +167,7 @@ function validate(values: any, { setErrors }: any) {
  
 onMounted( async () => {
     await getRol();  
-    await getSucursal();  
+    await validateSucursal();  
 })
 
 </script>

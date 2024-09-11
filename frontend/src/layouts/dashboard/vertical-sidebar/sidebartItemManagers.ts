@@ -33,11 +33,11 @@ import {
       icon: DashboardOutlined,
       to: '/dashboard'
     },
-    {
-        title: 'Pedidos Online',
-        icon: BarcodeOutlined, 
-        to: '/maestroPedidos'
-      },
+    // {
+    //     title: 'Pedidos Online',
+    //     icon: BarcodeOutlined, 
+    //     to: '/maestroPedidos'
+    //   },
     {
       title: 'Comandas',
       icon: ClusterOutlined, 
