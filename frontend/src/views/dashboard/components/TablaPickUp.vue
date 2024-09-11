@@ -119,7 +119,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log("Socket desconectado");
+  //console.log("Socket desconectado");
 });
 
 // Cabezera de la comanda
@@ -128,6 +128,7 @@ const headers = ref([
   { title: "CEDULA", key: "Cedula" },
   { title: "SUCURSAL", key: "Sucursal" },
   { title: "CLIENTE", key: "Nombre" },
+  { title: "DELIVERY", key: "Delivery_type" },
   { title: "FECHA", key: "Create_date" },
   { title: "", sortable: false, key: "action" },
 ] as const);

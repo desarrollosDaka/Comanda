@@ -52,7 +52,7 @@ const ARRAYUSER_ROL = [
     }, 
     // ALMACENISTA    
     {   "userRol": 7 , 
-        "status":[10,4],
+        "status":[10],
         "msgButton":'Comanda Revisada por Almacen',
          "changeID_status":3,
          "printer":true
@@ -76,6 +76,13 @@ const ARRAYUSER_ROL = [
         "status":[4, 6], 
         "msgButton":'Despachada por ATC',
         "changeID_status":8,
+        "printer":false
+    },
+      //ATC ONLINE
+    {   "userRol": 2,
+        "status":[4, 6], 
+        "msgButton":'Cargar guia zoom',
+        "changeID_status":11,
         "printer":false
     },
     ];

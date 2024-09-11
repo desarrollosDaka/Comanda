@@ -1,9 +1,8 @@
 <script setup lang="ts">
-
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed  } from "vue";
 import { useRoute } from "vue-router";
 import { router } from "@/router";
 import { useUserRol } from "@/composables/users";
@@ -25,7 +24,7 @@ interface Document {
 
 interface Item {
   Producto: string;
-  ID_producto: number;
+  ID_producto: string;
   guiaZoom: string;
   guiaZoom2: string;
   direccionDelivery: string;
@@ -33,6 +32,8 @@ interface Item {
   Unidades: number;
   Subtotal: number;
   ID_order: number;
+  Direccion: number;
+  Zoom: number;
 }
 
 const route = useRoute();
@@ -78,6 +79,7 @@ const Type = ref()
 const razonComercial = ref();
 const guiaZoom2 = ref();
 const boxFactura = ref();
+const ID_ticket = ref();
 
 const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
@@ -94,10 +96,12 @@ if (jsonFromLocalStorage !== null) {
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
+
+
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
-const ROLEATC = [10]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
+const ROLEATC = [10, 2, 9]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 
 const itemDocument = ref<Document[]>([]);
 
@@ -122,7 +126,7 @@ const getOrder = async () => {
       referencia.value = data[0][0]["Referencia"];
       ID_delivery.value = data[0][0]["Delivery_type"];
       ID_status.value = data[0][0]["Status"];
-      autorizado.value = data[0][0]["Autoriza"];
+      autorizado.value = data[0][0]["Autoriza"];   
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
       nombreDos.value = data[0][0]["Nombre_autoriza"];
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
@@ -131,6 +135,7 @@ const getOrder = async () => {
       User_asing.value = data[0][0]["User_asing"];
       razonComercial.value = data[0][0]["Razon_comercial"];
       boxFactura.value = data[0][0]["Caja_factura"];
+      ID_ticket.value = data[0][0]["ID_ticket"];
     }
     
   } catch (error) {
@@ -156,6 +161,7 @@ const getArticulos = async () => {
     const url = `${baseUrl}/filterOrderDetails/${id.value}`;
     const { data } = await axios.get(url);
     info.value = data[0];
+    console.log(info.value)
 
   } catch (error) {
     console.log(error);
@@ -176,14 +182,19 @@ const updateEstatus = async () => {
     precio: item.Precio,
   }));
 
+  console.log(jsonData);
+  
+  
+
   try {
     //SOLO USUARIOS CON ROL DE CAJERAS
     // if (ROLEADDFILESBILL.includes(USER_ROL.value)) {
-    if (USER_ROL.value === 1 || USER_ROL.value === 6 || USER_ROL.value === 8) {
+    if (USER_ROL.value === 1 || USER_ROL.value === 6 || USER_ROL.value === 8 ) {
       useAddDocument(itemDocument.value, id.value, id_orders.value); //Visualizan y agregan  archivos
 
-    } else if (ROLEATC.includes(USER_ROL.value)) {
+    } else if (ROLEATC.includes(USER_ROL.value) && jsonData) {
       await axios.put(`${baseUrl}/updateOrderDetails/${id.value}`, jsonData);
+      useAddDocument(itemDocument.value, id.value, id_orders.value); //Visualizan y agregan  archivos
     }
 
     await axios.put(`${baseUrl}/updateStatusOrder/${id.value}`, {
@@ -223,7 +234,7 @@ const cajaFactura = async () => {
 
       if (respuesta) {
         dialog.value = false
-        return toast.error(`Caja factura asignada a la comanda`, {
+        return toast.success(`Caja factura asignada a la comanda`, {
           position: toast.POSITION.TOP_CENTER,
           transition: toast.TRANSITIONS.ZOOM,
           autoClose: 4000,
@@ -237,7 +248,7 @@ const cajaFactura = async () => {
 };
 
 onMounted(async () => {
-
+//hola
   const toastLoading = toast.loading("Cargando Comanada...", {
         position: toast.POSITION.BOTTOM_CENTER,
         theme: 'colored',
@@ -290,8 +301,10 @@ async function updateData() {
         }).then((result) => {
           if (result.isConfirmed && USER_ROL.value === 10) {
             router.push(`/ComandasAtc`);
-          } else if(result.isConfirmed && USER_ROL.value === 1){
+          } else if(result.isConfirmed && USER_ROL.value === 1 || USER_ROL.value === 11){
             router.push(`/retenciones`);
+          } else if(result.isConfirmed && USER_ROL.value === 2){
+            router.push(`/comadasAtcOnline`);
           }
           else {
           router.push(`/maestroComandaAsignada`);
@@ -383,6 +396,17 @@ const alertaRechazar = () => {
   });
 }
 
+const allInputsFilled = computed(() => {
+  return info.value?.every(item => {
+    if (ID_delivery.value === 'DELIVERY TIENDA') {
+      return item.direccionDelivery && item.direccionDelivery.trim() !== '';
+    } else if (ID_delivery.value === 'ZOOM' || ID_delivery.value === 'ZOOM TIENDA') {
+      return item.guiaZoom && item.guiaZoom.trim() !== '';
+    }
+    return true;
+  });
+});
+
 </script>
 
 <template>
@@ -404,7 +428,7 @@ const alertaRechazar = () => {
   <v-row class="mb-0">
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos del Cliente</h2>
-            <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p>
+            <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p> 
             <p v-else><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
             <p><b>Email:</b> {{ email }}</p>
@@ -442,6 +466,7 @@ const alertaRechazar = () => {
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
             <!-- <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p> -->
             <p v-if="boxFactura"><b>Documento POS:</b> {{ boxFactura }}</p>
+            <p v-if="ID_ticket && USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 99"><b>Ticket Zendesk:</b> {{ ID_ticket }}</p>
         </v-col>
     </v-row>
 
@@ -450,14 +475,14 @@ const alertaRechazar = () => {
     <UiTitleCard title="Productos Asociados" class-name="px-0 pb-0" >
         <!-- DEMAS USER -->
         <v-row v-if=" USER_ROL === 1 
-                    || USER_ROL === 2 
                     || USER_ROL === 3 
                     || USER_ROL === 4 
                     || USER_ROL === 5 
                     || USER_ROL === 6 
-                    || USER_ROL === 7 
+                    || USER_ROL === 7
                     || USER_ROL === 8 
                     || USER_ROL === 11 
+                    || USER_ROL === 10 
                     || USER_ROL === 99">
 
             <v-col cols="12" md="12">
@@ -466,21 +491,22 @@ const alertaRechazar = () => {
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-
-                            <th class="text-right text-caption font-weight-bold text-uppercase"
-                                style="min-width: 100px">Cantidad</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'DELIVERY TIENDA'">Direccion</th>
+                            <th class="text-left text-caption font-weight-bold text-uppercase" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">Guia Zoom</th>
+                            <th class="text-right text-caption font-weight-bold text-uppercase" style="min-width: 100px">Cantidad</th>
+                            <th class="text-right text-caption font-weight-bold text-uppercase">Precio</th>
                             <th class="text-right text-caption font-weight-bold text-uppercase">Sub Total</th>
                         </tr>
                     </thead>
                     
                     <tbody>
                         <tr v-for="(item, index) in info" :key="index">
-                            <td class="py-3 text-secondary">{{ item['Producto'] }}</td>
+                            <td class="py-3 text-secondary">{{ item['Producto']}}</td>
                             <td class="py-3">{{ item['ID_producto'] }} </td>
-                            <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades'] }}</span>
-                            </td>
-                            <td class="py-3">{{ item['Precio'] }}$</td>
+                            <td class="py-3" v-if="ID_delivery == 'DELIVERY TIENDA'">{{ item['Direccion'] }}</td>
+                            <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">{{ item['Zoom'] }}</td>
+                            <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Unidades']}}</span></td>
+                            <td class="py-3 text-right" style="min-width: 100px"><span>{{ item['Precio'] }}$</span></td>
                             <td class="py-3 text-right" style="min-width: 100px"> {{ item['Subtotal'] }}$</td>
                         </tr>
                     </tbody>
@@ -492,7 +518,7 @@ const alertaRechazar = () => {
         </v-row>
 
         <!-- ATC -->
-        <v-row v-else=" USER_ROL === 10 || USER_ROL === 9">
+        <v-row v-else="USER_ROL === 9 || USER_ROL === 2">
             <v-col cols="12" md="12">
                 <v-table class="bordered-table" hover density="comfortable" rounded="lg">
                   <thead class="bg-containerBg">
@@ -516,15 +542,19 @@ const alertaRechazar = () => {
                                 v-model="item.direccionDelivery"
                                 placeholder="Direccion"
                                 class="inputDelivery"
+                                :disabled="item['ID_producto'] === 'LS-00000023'"
+                                :value="item['ID_producto'] === 'LS-00000023' ? item.guiaZoom = '-' : item.guiaZoom"
                               >
                               </v-text-field>
                             </td>
                             <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
-                              <v-text-field 
+                              <v-text-field
                                 variant="solo-inverted"
                                 v-model="item.guiaZoom"
                                 placeholder="Guia"
                                 class="inputDelivery2"
+                                :disabled="item['ID_producto'] === 'LS-00000023'"
+                                :value="item['ID_producto'] === 'LS-00000023' ? item.guiaZoom = '-' : item.guiaZoom"
                               >
                               </v-text-field>
                             </td>
@@ -551,7 +581,7 @@ const alertaRechazar = () => {
   </tr>      -->
   
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 "
+  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 11 || USER_ROL === 2 || USER_ROL === 10"
     @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
 
   <v-row class="mb-0 mt-5">
@@ -568,7 +598,7 @@ const alertaRechazar = () => {
 
       <!-- BOTON PARA CAMBIAR DE ESATUS -->
       <v-col cols="auto">
-        <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
+        <v-btn :disabled="ID_status == 'Facturada' && !allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
           @click="USER_ROL === 4 ? asignAsesor() : updateData()">
           {{ dataUser.msgButton }}
         </v-btn>

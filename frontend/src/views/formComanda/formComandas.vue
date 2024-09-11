@@ -72,6 +72,9 @@ const municipio_repNombre = ref();
 const itemDocument = ref<Document[]>([]);
 const idOrder = ref();
 const Id_sucursal= ref();
+const ID_ticket = ref();
+const description_payment = ref();
+
 // URL
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlEstado = `${import.meta.env.VITE_URL}/api/states`;
@@ -111,6 +114,8 @@ const telefonoRules = ref([(v: string) => !!v || "El telefono de la persona auto
 const metodoRules = ref([(v: string) => !!v || "El metodo de pago es requerida",]);
 const fileRules = ref([(v: any) => !!v || "El archivo es requerido"]);
 const TipoDocumentoRules = ref([(v: any) => !!v || "El tipo de documento es requerido",]);
+const ticketRules = ref([(v: any) => !!v || "El Nro de Ticket Zendesk es requerido",]);
+const descriptionPayment = ref([(v: any) => !!v || "La descripcion del pago es requerido",]);
 
 // api post
 async function Created(json: any) {
@@ -132,7 +137,7 @@ async function searchModel() {
     const { data } = await axios.get(
       `${baseUrlClients}/searchClient/${cedulaUno.value}`
     );
-//console.log(data[0][0]);
+
 
     if (data) {
       tipo.value = data[0][0].Tipo_cliente;
@@ -147,6 +152,7 @@ async function searchModel() {
       municipio.value = data[0][0].ID_municipio;
       municipioNombre.value = data[0][0].Nombre_municipio;
       direccion.value = data[0][0].Direccion;
+      ID_ticket.value = data[0][0].ID_ticket;
       referencia.value = data[0][0].Referencia;
       retencion.value = data[0][0].Retencion;
       razonComercial.value = data[0][0].Razon_comercial;
@@ -175,6 +181,10 @@ const deliveryCDD = ref([
   {
     title: 'ZOOM',
     value: 1
+  },
+  {
+    title: 'ZOOM TIENDA',
+    value: 3
   }
 ]) 
 
@@ -296,7 +306,7 @@ async function getSucursal() {
       .map((destino: Destino) => ({
         title: destino.Sucursal,
         value: destino.ID_sucursal,
-      }));
+      })); 
   } catch (error) {
     console.log(error);
   } 
@@ -364,7 +374,13 @@ const File = (event: any) => {
 
 // api post
 async function handleFormComanda() {
+
+  if(itemDocument.value.length < 0){
+    alert('no tiene documento')
+  return
+  }
   let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
+  
   const jsonData = {
     Id_Comanda: idComandaRandom.value,
     ID_rol: ID_rol.value,
@@ -379,6 +395,7 @@ async function handleFormComanda() {
     ID_delivery: ID_Delivery.value,
     direccion:  direccion.value,
     referencia: referencia.value,
+    ID_ticket: ID_ticket.value,
     direccionEnvio: ID_Delivery.value === 3 ? null : direccionEnvio.value,
     referenciaEnvio: ID_Delivery.value === 3 ? null : referenciaEnvio.value,
     sucursalZoom:
@@ -405,6 +422,7 @@ async function handleFormComanda() {
     estado_rep: tipo.value === "NATURAL" ? null : estado_rep.value,
     ciudad_rep: tipo.value === "NATURAL" ? null : ciudad_rep.value,
     municipio_rep: tipo.value === "NATURAL" ? null : municipio_rep.value,
+    description_payment: description_payment.value
   };
 
   let rta = await Created(jsonData);
@@ -415,7 +433,7 @@ async function handleFormComanda() {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate() {
   // VALIDAMOS PRIMERO QUE EXISTAN LOS DOCUMENTOS CON SUS RESPECTIVOS TIPO DE DOCUMENTOS
-  // const isvalidateDocuments = validateDocuments()
+  // const isvalidateDocuments =  ()
 
   // if (isvalidateDocuments)
   const { isvalidate } = useUploadFiles(itemDocument.value); //Verificamos los tipos de documentos
@@ -467,6 +485,8 @@ onMounted(async () => {
 
 function handleSelectImages(items: any) {
   itemDocument.value = items;
+
+  console.log
 }
 
 </script>
@@ -482,6 +502,7 @@ function handleSelectImages(items: any) {
     <v-row>
       <v-col cols="12" md="11">
         <h4>Paso 1</h4>
+        <p><span class="red">(*) son requeridos</span></p>
       </v-col>
       <v-col cols="12" md="1">
         <v-btn :disabled="!cedulaUno" color="primary" @click="searchModel"
@@ -489,10 +510,9 @@ function handleSelectImages(items: any) {
         >
       </v-col>
     </v-row>
-
     <v-row>
       <v-col cols="12" md="4">
-        <v-label for="tipo">Tipo</v-label>
+        <v-label for="tipo">Tipo<span class="red">*</span></v-label>
         <v-autocomplete
           id="tipo"
           placeholder="Tipo de cliente"
@@ -502,7 +522,7 @@ function handleSelectImages(items: any) {
           :items="['NATURAL', 'JURIDICO']"
           variant="outlined"
           :rules="tipoRules"
-          aria-label="Name Documents"
+          aria-label="Name Documents"   
           color="primary"
           v-model="tipo"
         >
@@ -526,7 +546,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-label for="cedulaUno">Cedula/Rif</v-label>
+        <v-label for="cedulaUno">Cedula/Rif<span class="red">*</span></v-label>
         <v-text-field
           id="cedulaUno"
           type="number"
@@ -544,7 +564,7 @@ function handleSelectImages(items: any) {
 
     <v-row>
       <v-col cols="12" md="4">
-        <v-label for="email">Email</v-label>
+        <v-label for="email">Email<span class="red">*</span></v-label>
         <v-text-field
           id="email"
           type="email"
@@ -560,11 +580,11 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="name" v-if="tipo === 'JURIDICO'">Razon Social</v-label>
+        <v-label for="name" v-if="tipo === 'JURIDICO'">Razon Social<span class="red">*</span></v-label>
         <v-label for="name" v-else-if="tipo === 'NATURAL'"
-          >Nombre Completo</v-label
+          >Nombre Completo<span class="red">*</span></v-label
         >
-        <v-label for="name" v-else>Nombre Completo</v-label>
+        <v-label for="name" v-else>Nombre Completo<span class="red">*</span></v-label>
         <v-text-field
           id="name"
           type="text"
@@ -580,7 +600,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="telefonoCliente">Telefono</v-label>
+        <v-label for="telefonoCliente">Telefono<span class="red">*</span></v-label>
         <v-text-field
           id="telefonoCliente"
           type="number"
@@ -597,7 +617,7 @@ function handleSelectImages(items: any) {
 
     <v-row v-if="tipo === 'JURIDICO'">
       <v-col cols="12" md="1">
-        <v-label for="retencion">Retención</v-label>
+        <v-label for="retencion">Retención<span class="red">*</span></v-label>
         <v-switch
           id="retencion"
           class="mt-3"
@@ -623,7 +643,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="razonComercial">Razon Comercial</v-label>
+        <v-label for="razonComercial">Razon Comercial<span class="red">*</span></v-label>
         <v-text-field
           id="razonComercial"
           type="text"
@@ -640,7 +660,7 @@ function handleSelectImages(items: any) {
 
     <v-row>
       <v-col cols="12" md="4">
-        <v-label for="estado">Estado</v-label>
+        <v-label for="estado">Estado<span class="red">*</span></v-label>
         <v-autocomplete
           id="estado"
           placeholder="Seleccione el estado"
@@ -659,7 +679,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="municipio">Municipio</v-label>
+        <v-label for="municipio">Municipio<span class="red">*</span></v-label>
         <v-autocomplete
           id="municipio"
           placeholder="Seleccione el municipio"
@@ -678,7 +698,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="ciudad">Ciudad</v-label>
+        <v-label for="ciudad">Ciudad<span class="red">*</span></v-label>
         <v-autocomplete
           id="ciudad"
           placeholder="Seleccione la ciudad"
@@ -695,7 +715,7 @@ function handleSelectImages(items: any) {
         </v-autocomplete>
       </v-col>
       <v-col cols="12" md="6">
-        <v-label for="direccion">Direccion completa del cliente</v-label>
+        <v-label for="direccion">Direccion completa del cliente<span class="red">*</span></v-label>
         <v-text-field
           id="direccion"
           type="text"
@@ -710,7 +730,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-label for="referencia">Referencia</v-label>
+        <v-label for="referencia">Referencia<span class="red">*</span></v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -723,6 +743,7 @@ function handleSelectImages(items: any) {
           color="primary"
         ></v-text-field>
       </v-col>
+
     </v-row>
     <br />
 
@@ -748,7 +769,7 @@ function handleSelectImages(items: any) {
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-label for="cedulaUno">Cedula/Rif</v-label>
+            <v-label for="cedulaUno">Cedula/Rif<span class="red">*</span></v-label>
             <v-text-field
               id="cedulaUno"
               type="number"
@@ -764,7 +785,7 @@ function handleSelectImages(items: any) {
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-label for="email">Email del Representante</v-label>
+            <v-label for="email">Email del Representante<span class="red">*</span></v-label>
             <v-text-field
               id="email"
               type="email"
@@ -780,7 +801,7 @@ function handleSelectImages(items: any) {
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-label for="name">Nombre Completo del Representante</v-label>
+            <v-label for="name">Nombre Completo del Representante<span class="red">*</span></v-label>
             <v-text-field
               id="name"
               type="text"
@@ -796,7 +817,7 @@ function handleSelectImages(items: any) {
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-label for="telefonoCliente">Telefono del Representante</v-label>
+            <v-label for="telefonoCliente">Telefono del Representante<span class="red">*</span></v-label>
             <v-text-field
               id="telefonoCliente"
               type="number"
@@ -811,7 +832,7 @@ function handleSelectImages(items: any) {
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-label for="estado">Estado</v-label>
+            <v-label for="estado">Estado<span class="red">*</span></v-label>
             <v-autocomplete
               id="estado"
               placeholder="Seleccione el estado"
@@ -830,7 +851,7 @@ function handleSelectImages(items: any) {
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-label for="municipio">Municipio</v-label>
+            <v-label for="municipio">Municipio<span class="red">*</span></v-label>
             <v-autocomplete
               id="municipio"
               placeholder="Seleccione el municipio"
@@ -849,7 +870,7 @@ function handleSelectImages(items: any) {
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-label for="ciudad">Ciudad</v-label>
+            <v-label for="ciudad">Ciudad<span class="red">*</span></v-label>
             <v-autocomplete
               id="ciudad"
               placeholder="Seleccione la ciudad"
@@ -876,10 +897,10 @@ function handleSelectImages(items: any) {
     <h4>Paso 2</h4>
     <v-row>
       <v-col cols="12" md="8">
-        <v-label for="origen">Destino</v-label>
+        <v-label for="origen">Destino<span class="red">*</span></v-label>
         <v-autocomplete
           id="origen"
-          placeholder="Origen de la comanda"
+          placeholder="Destino de la comanda"
           class="mt-2 my-input"
           clearable
           chips
@@ -894,7 +915,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4">
-        <v-label for="delivery">Delivery</v-label>
+        <v-label for="delivery">Delivery<span class="red">*</span></v-label>
         
         <v-autocomplete
           id="delivery"
@@ -914,7 +935,7 @@ function handleSelectImages(items: any) {
     </v-row>
     <v-row v-if="ID_Delivery === 1 || ID_Delivery === 4">
       <v-col cols="12" md="6">
-        <v-label for="direccion">Direccion completa de envio</v-label>
+        <v-label for="direccion">Direccion completa de envio<span class="red">*</span></v-label>
         <v-text-field
           id="direccion"
           type="text"
@@ -929,7 +950,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-label for="referencia">Referencia de envio</v-label>
+        <v-label for="referencia">Referencia de envio<span class="red">*</span></v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -945,7 +966,7 @@ function handleSelectImages(items: any) {
     </v-row>
     <v-row>
       <v-col cols="12" md="12" v-if="ID_Delivery === 3">
-        <v-label for="direccion">Direccion del Delivery</v-label>
+        <v-label for="direccion">Direccion del Delivery<span class="red">*</span></v-label>
         <v-autocomplete
           id="direccion"
           placeholder="Seleccione la Direccion del Delivery"
@@ -967,7 +988,8 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4" v-if="autorizado == true">
-        <v-label for="nombreDos">Nombre del Autorizado</v-label>
+        <v-label for="nombreDos">Nombre del Autorizado<span class="red">*</span></v-label>
+
         <v-text-field
           id="nombreDos"
           type="text"
@@ -982,7 +1004,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="4" v-if="autorizado == true">
-        <v-label for="cedulaDos">Cedula/Rif del Autorizado</v-label>
+        <v-label for="cedulaDos">Cedula/Rif del Autorizado<span class="red">*</span></v-label>
         <v-text-field
           id="cedulaDos"
           type="number"
@@ -997,7 +1019,7 @@ function handleSelectImages(items: any) {
       </v-col>
 
       <v-col cols="12" md="5" v-if="autorizado == true">
-        <v-label for="telefono">Telefono del Autorizado</v-label>
+        <v-label for="telefono">Telefono del Autorizado<span class="red">*</span></v-label>
         <v-text-field
           id="telefono"
           type="number"
@@ -1012,7 +1034,7 @@ function handleSelectImages(items: any) {
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
-        <v-label for="medioPago">Medio de Pago</v-label>
+        <v-label for="medioPago">Medio de Pago<span class="red">*</span></v-label>
         <v-autocomplete
           id="medioPago"
           placeholder="Seleccione el tipo de pago"
@@ -1043,6 +1065,35 @@ function handleSelectImages(items: any) {
           color="primary"
         ></v-text-field>
       </v-col>
+
+      <v-col cols="12" >
+        <v-label for="referencia">Descripcion Pagos<span class="red">*</span></v-label>
+        <v-textarea 
+          id="referencia"
+          type="text"
+          placeholder="Coloca aqui la descripcion de pago"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          :rules="descriptionPayment"
+          v-model="description_payment"
+          color="primary"
+        ></v-textarea >
+      </v-col>
+      
+      <v-col cols="12" md="6">
+        <v-label for="referencia">Ticket Zendesk</v-label>
+        <v-text-field
+          id="referencia"
+          type="text"
+          placeholder="ID Ticket Zendesk"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          v-model="ID_ticket"
+          color="primary"
+        ></v-text-field>
+      </v-col>
     </v-row>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
@@ -1068,7 +1119,9 @@ function handleSelectImages(items: any) {
         !email ||
         !nombreCompleto ||
         !telefonoUno ||
-        !ID_pago
+        !ID_pago ||
+        !description_payment ||
+        !ID_Delivery 
       "
       type="submit"
     >
@@ -1090,5 +1143,10 @@ function handleSelectImages(items: any) {
 
 .my-input input {
   text-transform: uppercase;
+}
+
+.red{
+  color: red;
+  font-size: 16px;
 }
 </style>

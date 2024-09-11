@@ -60,7 +60,9 @@ const getOrders = async () => {
     try {
         const url = `${baseUrlProducts}/filterOrder/${id.value}`
         const { data } = await axios.get(url);
-        Status.value = data[0][0]["ID_status"]
+        Status.value = data[0][0]["ID_status"] 
+       // console.log("ESTATUS:",  Status.value );
+        //console.log(data[0]);
 
         if (data[0].length <= 0) {
 
@@ -87,7 +89,7 @@ const getOrders = async () => {
 
 onMounted(async () => {
 
-    getOrders();
+    await getOrders();
     if (update.value) handleProductUpdate();
 
     const toastLoading = toast.loading("Cargando Productos...", {
@@ -209,12 +211,12 @@ async function Created() {
         id_producto: 'LS-00000023',
         producto: 'VENTA ONLINE',
         unidades: 0,
-        precio: 0,
-        subtotal: 0,
+        precio: 0.01,
+        subtotal: 0.01,
         name: 'VENTA ONLINE', // Añadir propiedades necesarias
         code: 'LS-00000023',
-        amount: 0,
-        price: 0
+        amount: 0.01,
+        price: 0.01
     }
 
     listProduct.value.push(articuloPorDefecto);
@@ -242,8 +244,6 @@ async function Created() {
 
 async function updateComanda() {
 
-   // console.log(listProduct.value);
-
   
     
 for (const element of listProduct.value) {
@@ -257,7 +257,7 @@ for (const element of listProduct.value) {
         precio: element.price,
         subtotal: element.subtotal,
     }
-    //console.log(jsonProductos);
+
     
     try {
         await axios.put(`${baseUrlProducts}/updateOrderDetails2/${id.value}`, jsonProductos)
@@ -302,7 +302,7 @@ async function handleProductUpdate() {
     try {
         const url = `${baseUrlProducts}/filterOrderDetails/${id.value}`
         const { data } = await axios.get(url);
-        console.log(data);
+        //console.log(data);
         
         articles = data[0]
 
@@ -344,7 +344,7 @@ interface ItemRaw {
         <v-col cols="12" md="6">
             <v-autocomplete density="compact" label="Buscar Articulo" prepend-inner-icon="mdi-magnify"
                 variant="outlined" color="blue-grey-lighten-2" item-title="value" v-model="product"
-                :items="infoProduct"  :disabled="loadingProducts || Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" 
+                :items="infoProduct"  :disabled="loadingProducts || Status !== '1'" 
                 >
 
                 <template v-slot:item="{ props, item }">
@@ -356,7 +356,7 @@ interface ItemRaw {
 
         </v-col>
         <v-col cols="12" md="3" class="py-3">
-            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" >
+            <v-btn color="primary" append-icon="mdi-arrow-down" @click="addProduct(product)" variant="tonal" :disabled="loadingProducts || Status !== '1'" >
                 AGREGAR
             </v-btn>
         </v-col>
@@ -371,19 +371,18 @@ interface ItemRaw {
                         <tr class="bg-containerBg">
                             <th class="text-left text-caption font-weight-bold text-uppercase">Producto</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">SKU</th>
-                            <th v-if="Status == 1" class="text-left text-caption font-weight-bold text-uppercase" style="min-width: 100px">
+                            <th  class="text-left text-caption font-weight-bold text-uppercase" style="min-width: 100px">
                                 Cantidad</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Precio</th>
                             <th class="text-left text-caption font-weight-bold text-uppercase">Sub Total</th>
-                            <th class="text-left text-caption font-weight-bold text-uppercase"></th>
+                            <th v-if="Status == '1'" class="text-left text-caption font-weight-bold text-uppercase">eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         <tr v-for="(item, index) in listProduct" :key="index">
                             <td class="py-3">
-                                <router-link to="/dashboard/default" class="text-secondary link-hover">{{ item.name
-                                    }}</router-link>
+                                <router-link to="/dashboard/default" class="text-secondary link-hover">{{ item.name }}</router-link>
                             </td>
                             <td class="py-3">{{ item.code }} </td>
                             <!-- <td class="py-3  m-3 text-right" style="min-width: 100px">
@@ -391,24 +390,30 @@ interface ItemRaw {
                                 <span>{{ item.amount }}</span>
                                 <button class="botonCantidad" @click="increment(item)"> +</button>
                             </td> -->
-                            <td v-if="Status == 1">
+                            <td  class="py-3">{{ item.amount }} </td>
+                            <!-- <td v-if="Status == 1" >
                                 <div class="number-control">
                                     <div class="number-left" @click="decrement(item)"></div>
                                     <input type="number" v-model="item.amount" @change="amountInput(item)" name="number"
                                         class="number-quantity text-right">
                                     <div class="number-right" @click="increment(item)"></div>
                                 </div>
-                            </td>
+                            </td> -->
                             <td class="py-3">
                                 ${{ item.price }}
                             </td>
-                            <td class="py-3 text-right" style="min-width: 100px"> {{ item.subtotal }}$</td>
-                            <td v-if="Status == 1" class="py-3 text-right" style="min-width: 100px" 
-                                @click="removeProduct(item.code, index)">
-                                    <v-icon  color="#D11919" style="cursor: pointer" icon="mdi-trash-can"
-                                        title="Eliminar" >
-                                    </v-icon>
+                            <td class="py-3" style="min-width: 100px"> {{ item.subtotal }}$</td>
+                            <td v-if="Status == '1' && item.code !== 'LS-00000023'" class="py-3 " style="min-width: 100px">                               
+                                <v-icon
+                                    color="#D11919"
+                                    style="cursor: pointer"
+                                    icon="mdi-trash-can"
+                                    title="Eliminar"
+                                    @click="removeProduct(item.code, index)"                                   
+                                >
+                                </v-icon>
                             </td>
+
                         </tr>
                     </tbody>
                 </v-table>
@@ -421,7 +426,7 @@ interface ItemRaw {
                 <div class="text-h4 pa-2">{{ `Total a pagar:` }}</div>
                 <div class="text-h1 pa-2 text-center ">${{ ` ${totalSubtotal}` }}</div>
                 <v-card-actions class="text-certer">
-                    <v-btn :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status === 2 || Status === 3 || Status === 4 || Status === 5 || Status === 6 || Status === 7 || Status === 8 || Status === 9 || Status === 10" >
+                    <v-btn  :color="update ? 'primary' : 'warning'" @click="addProducts" variant="outlined" :disabled="Status !== '1'" >
                         {{ update ? 'ACTUALIZAR COMANDA' : 'CREAR COMANDA' }}
                     </v-btn>
                 </v-card-actions>

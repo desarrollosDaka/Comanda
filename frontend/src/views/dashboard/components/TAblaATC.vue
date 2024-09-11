@@ -53,7 +53,8 @@ if(USER_ROL.value === 10){
 socket.on(`${urlSocket.value}`, (rta) => {
     try {
         info.value = rta;
-    } catch (error) { 
+        console.log(info.value)
+    } catch (error) {  
        console.log(error);
     } finally {
         loadingInfo.value = false; // Ocultar animación de carga
@@ -99,14 +100,14 @@ interface Table_Orders {
 
 onMounted(async () => { 
   loadingInfo.value = true; 
-  socket.emit('getSucursal', id_sucursal.value);
+  socket.emit('getSucursalATC', id_sucursal.value);
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log("Socket desconectado");
+  //console.log("Socket desconectado");
 });
 
 // Cabezera de la comanda
@@ -124,6 +125,7 @@ const headers = ref([
 const COLORSTATUS: any = {
   1: "#ffca3a", //creada
   10: "#fb5607", //prefactura Cargada
+  11: "#fb5608", //Guia Cargada
   2: "#0466c8", //Asignada
   3: "#965745", //Revisada
   4: "#006400", //facturada

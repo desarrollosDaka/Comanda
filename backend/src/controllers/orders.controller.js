@@ -31,11 +31,12 @@ const getMasterOrder = async (req, res) => {
               ,T0.[User_crea]
               ,T0.User_mod
               ,T4.Nombre AS NombreAsesor
+              ,T0.Description_payment
               ,T0.User_asing 
-              ,CAST(T0.Create_date AS DATE) Create_date
-              ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
-              ,CAST(T0.update_date AS DATE) Update_date
-              ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+              ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
+              ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.update_date), 108), 1, 8) AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -43,7 +44,8 @@ const getMasterOrder = async (req, res) => {
         LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
         LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
         WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL 
-        ORDER BY T0.[ID_order] DESC` );
+        ORDER BY T0.[ID_order] DESC
+` );
 
     if (rta) {
       return rta;
@@ -61,8 +63,7 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
 
   const desde = jsonDesdeHasta.desde
   const hasta = jsonDesdeHasta.hasta
-  console.log(jsonDesdeHasta);
-  
+
 
 
   try {
@@ -82,9 +83,10 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
         ,T0.User_mod
         ,T4.Nombre AS NombreAsesor
         ,T0.User_asing 
-        ,CAST(T0.Create_date AS DATE) Create_date
+        ,T0.Description_payment
+        ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
-        ,CAST(T0.update_date AS DATE) Update_date
+      ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
         ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
 FROM [COMANDA_TEST].[dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -112,24 +114,27 @@ const getMasterOrderCDD = async (req, res) => {
       `  SELECT  T0.[ID_order]
                 ,T0.ID_detalle
                 ,T0.Caja_factura
-				        ,T3.Tipo_cedula
+                ,T3.Tipo_cedula
                 ,T0.Cedula  
                 ,T3.Nombre Cliente
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
+                ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
-        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
-        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
-        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND  T0.ID_status IN (1,2) and T0.ID_sucursal = 99 
-        ORDER BY T0.[ID_order] DESC`
+                ,T0.Description_payment
+                ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+          FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+          INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+          INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+          INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+          INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+          WHERE T0.[Delete] IS NULL AND T0.ID_status IN (1,2) and T0.ID_sucursal = 99 
+          ORDER BY T0.[ID_order] DESC`
     );
 
     if (rta) {
@@ -156,17 +161,20 @@ const getMasterOrderRetencion = async (req, res) => {
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
+                 ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
+                ,T0.Description_payment
+                ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
+        INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+        WHERE  T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
         ORDER BY T0.[ID_order] DESC`
     );
 
@@ -194,17 +202,20 @@ const getMasterOrderRetencionTwo = async (req, res) => {
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
+                 ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
                 ,T2.ID_status 
                 ,T0.User_asing
-                ,CAST(T0.Create_date AS DATE) Create_date
+                ,T0.Description_payment
+                ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
-        WHERE T0.[Delete] = 0 OR T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
+        INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+        WHERE T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
         ORDER BY T0.[ID_order] DESC`
     );
 
@@ -223,7 +234,6 @@ const getMasterOrderRetencionTwo = async (req, res) => {
 const getMasterOrderForStore = async (id) => {
   try {
     //const id_sucursal = req.params.id_sucursal;
-//console.log(id);
 
     const rta = await sequelize.query(
       `  SELECT  T0.[ID_order]
@@ -240,9 +250,10 @@ const getMasterOrderForStore = async (id) => {
               ,T0.User_mod
               ,T4.Nombre AS NombreAsesor
               ,T0.User_asing 
-              ,CAST(T0.Create_date AS DATE) Create_date
+              ,T0.Description_payment
+             ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
               ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
-              ,CAST(T0.update_date AS DATE) Update_date
+             ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
               ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -253,7 +264,6 @@ const getMasterOrderForStore = async (id) => {
         WHERE T0.ID_sucursal = '${id}' AND T0.[Delete] IS NULL 
         ORDER BY T0.[ID_order] DESC`
     );
-//console.log(rta);
 
     return rta;
 
@@ -343,7 +353,8 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[Delete]
                     ,t0.[Motivo_delete]    
                     ,T2.Status
-                    ,CAST(T0.Create_date AS DATE) Create_date
+                    ,T0.Description_payment
+                     ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
                     ,CAST(T0.[update_date] AS DATE) [Update_date]
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
             INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
@@ -361,8 +372,8 @@ const filterMasterOrder = async (req, res) => {
             T0.[ID_order]  ,T0.ID_detalle   ,T0.Caja_factura   ,T3.Tipo_cedula  ,T0.Cedula ,T3.Tipo_cliente  ,T3.Email ,T3.Nombre ,T3.Razon_comercial ,T3.Direccion ,T1.ID_sucursal  ,T1.Sucursal  ,T4.ID_states 
             ,T4.Nombre  ,T5.ID_city  ,T5.Nombre ,T6.ID_municipio ,T6.NOMBRE ,t0.[User_crea]  ,t0.[User_mod]  ,t0.[User_asing] ,t0.[ID_rol]   ,t0.[ID_status]  ,t0.[Tipo_delivery]  ,t0.[SucursalZoom] ,t0.[Autoriza]
             ,t0.[Cedula_autoriza] ,t0.[Telefono_autoriza],t0.Nombre_autoriza ,T3.Tipo_cedula_rep  ,T3.Cedula_rep  ,T3.Nombre_rep    ,T3.Email_rep    ,T3.Telefono_rep    ,T3.Direccion_rep   ,T3.Referencia_rep, T3.ID_state_rep
-            ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,CAST(T0.Create_date AS DATE) 
-            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio`
+            ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,T0.Create_date 
+            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio, T0.Description_payment`
         );
         if (rta) {
             res.status(200);
@@ -408,7 +419,6 @@ const createMasterOrderAndDetails = async (req, res) => {
       ID_state_rep: data.estado_rep,
       ID_city_rep: data.ciudad_rep,
       ID_municipio_rep: data.municipio_rep,
-
     };
     // Crear un objeto con los datos del pedido
     const newOrder = {
@@ -430,6 +440,7 @@ const createMasterOrderAndDetails = async (req, res) => {
         ID_ticket: data.ID_ticket,
         Direccion_envio: data.direccionEnvio,
         Referencia_envio: data.referenciaEnvio,
+        Description_payment: data.description_payment
     };
         
     //Comprobar si la cédula ya existe en la base de datos
@@ -470,7 +481,6 @@ const createMasterOrderAndDetails = async (req, res) => {
 const filterOrderDetailsFiles = async (req, res) => {
   try {
     const id = req.params.id;
-
     const rta = await sequelize.query(
       `SELECT *
             FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
@@ -535,9 +545,9 @@ const filterOrderDetails = async (req, res) => {
 const filterOrderATC = async (id) => {
   try {
     const rta = await sequelize.query(
-      `SELECT 
+    `SELECT 
 		T1.Nombre, 
-		T2.[Status] ,
+		T2.[Status],
 		T0.*,
 		CAST(T0.create_date as DATE) as Create_date,
 		T4.Delivery_type as Delivery_nombre
@@ -545,7 +555,29 @@ const filterOrderATC = async (id) => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 4 AND T0.Retencion = 0 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
+		WHERE T0.ID_status = 11 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'` 
+    );
+    return rta;
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
+//OBTENER DETALLES DE COMANDA
+const filterOrderATCOnline = async () => {
+  try {
+    const rta = await sequelize.query(
+      `SELECT 
+		T1.Nombre, 
+		T2.[Status],
+		T0.*,
+		CAST(T0.create_date as DATE) as Create_date, 
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 4 AND  T0.Retencion = 0 AND  T0.Tipo_delivery != 2 AND ID_sucursal != 99
 	UNION ALL
 	SELECT  
 		T1.Nombre,
@@ -557,7 +589,7 @@ const filterOrderATC = async (id) => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal = '${id}'`
+		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal != 99`
     );
     return rta;
   } catch (e) {
@@ -572,26 +604,30 @@ const filterOrderPickUp = async (id) => {
 
     const rta = await sequelize.query(
       `
-SELECT T1 .Nombre,
+      SELECT T1 .Nombre,
         T3.Sucursal,
         T2.[Status] ,
+        T9.Delivery_type , 
         T0.*,
-        CAST(T0.create_date as DATE) as Create_date
+        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
 WHERE T0.ID_status = 4 AND T0.Retencion = 0 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
     UNION ALL
-SELECT  T1 .Nombre, 
-        T3.Sucursal, 
-        T2.[Status] ,
-        T0.*, 
-        CAST(T0.create_date as DATE) as Create_date 
+SELECT T1 .Nombre,
+  T3.Sucursal,
+  T2.[Status] ,
+  T9.Delivery_type , 
+  T0.*,
+  CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
 WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
     );
     return rta;
@@ -604,28 +640,31 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucu
 const filterOrderPickUpTwo = async (id) => {
   try {
     const rta = await sequelize.query(
-        `
-SELECT T1.Nombre, 
-        T3.Sucursal, 
-        T2.[Status] ,
-        T0.*,
-        CAST(T0.create_date as DATE) as Create_date
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
-WHERE T0.ID_status = 7 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
-  UNION ALL
-SELECT  T1.Nombre,
+  `SELECT T1 .Nombre,
         T3.Sucursal,
-        T2.[Status] ,
-        T0.*, 
-CAST(T0.create_date as DATE) as Create_date 
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
-WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
+        T2.[Status],
+        T9.Delivery_type, 
+        T0.*,
+        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+  FROM [dbo].[ORDERS] T0
+  INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+  INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+  LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+  INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+  WHERE T0.ID_status = 7 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
+  UNION ALL
+  SELECT T1 .Nombre,
+        T3.Sucursal,
+        T2.[Status],
+        T9.Delivery_type, 
+        T0.*,
+        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+  FROM [dbo].[ORDERS] T0
+  INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+  INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+  LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+  INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+  WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
     );
     return rta;
  
@@ -634,44 +673,6 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucu
   }
 };
 
-
-// const filterOrderPickUpTwo = async (req, res) => {
-//   try {
-//     const rta = await sequelize.query(
-//         `SELECT * FROM [dbo].[ORDERS]
-//         WHERE ID_status = 7 AND Retencion = 0 and Tipo_delivery = 2
-//         UNION ALL
-//         SELECT * FROM [dbo].[ORDERS]
-//         WHERE ID_status = 6 AND Retencion = 1 and Tipo_delivery = 2`
-//     );
-//     return rta;
- 
-//   } catch (e) {
-//     console.log("Error", e);
-//   }
-// };
-/////////////////////////////////////////////////////////////////////*****************************//////////////////////////// */
-
-// const mapAndFindOrderDetails = async (data) => {
-
-//   const orderDetailDataArray = data.map(item => ({
-//     ID_detalle: item.Id_Comanda,
-//     ID_producto: item.id_producto,
-//     Producto: item.producto, 
-//     Unidades: item.unidades,
-//     Precio: item.precio,
-//     Subtotal: item.subtotal,
-//     Direccion: item.direccion,
-//     Zoom: item.zoom
-//   }));
-
-//   // Encuentra todos los productos con el ID de detalle especificado
-//   let products = await sequelize.models.modelOrdersdetails.findAll({
-//     where: { ID_detalle: data[0].Id_Comanda ,  ID_producto:data[0].id_producto }
-//   });
-
-//   return { orderDetailDataArray, products };
-// };
 
 
 //CREAR DETALLES DE ORDENES
@@ -692,23 +693,6 @@ const createOrderDetails = async (req, res) => {
       Zoom: item.zoom
     }));
 
-    //console.log(orderDetailDataArray)
-
-    // Encuentra todos los productos con el ID de detalle especificado
-//     let products = await sequelize.models.modelOrdersdetails.findAll({
-//       where: { ID_detalle: data[0].Id_Comanda , ID_producto: data[0].id_producto}
-//     });
-
-        
-// //console.log(products);
-
-//     // Elimina cada producto uno por uno
-//     for (let product of products) {
-//       await product.destroy();
-//     }
-
-
-//console.log(orderDetailDataArray);
     await sequelize.models.modelOrdersdetails.bulkCreate(orderDetailDataArray);
 
     res.status(201).json({ msj: "Productos creados exitosamente" });
@@ -780,7 +764,6 @@ const updateOrderDetails2 = async (req, res) => {
         Zoom: item.zoom
       };
 
-      //console.log(orderDetailData);
 
       // Verificar si el artículo existe
       const existingItem = await sequelize.models.modelOrdersdetails.findOne({
@@ -795,8 +778,6 @@ const updateOrderDetails2 = async (req, res) => {
       } else {
         // Si no existe, hacer create
         delete orderDetailData.ID_order
-     //   console.log("ORDER DETAIL TEST");
-     //   console.log(orderDetailData);
 
         
         return sequelize.models.modelOrdersdetails.create(orderDetailData);
@@ -892,6 +873,7 @@ const updateMasterOrderAndDetails = async (req, res) => {
             ID_ticket: data.ID_ticket,
             Direccion_envio: data.direccionEnvio,
             Referencia_envio: data.referenciaEnvio,
+            Description_payment: data.description_payment
         };
 
         // Comprueba si la cédula ya existe en la base de datos
@@ -996,7 +978,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Crea un rectángulo alrededor de la frase
     // page.drawRectangle({
-    //   x: coordenadaX - 10,
+    //   x: coordenadaX - 10,8
     //   y: coordenadaY / 1.2,
     //   width: logitudRectangulo,
     //   height: 30,
@@ -1056,11 +1038,11 @@ const download = async (req, res) => {
 };
 
 const createOrderDocument = async (req, res) => {
+
   const data = req.body;
   const files = req.files;
   const Id_Comanda = req.params.id;
   const Id_Comanda2 = req.params.idComanda;
-
 
   try {
     const results = await Promise.all(
@@ -1109,10 +1091,9 @@ const createOrderDocument = async (req, res) => {
 
 //BORRAR ARCHVIOS DE LA TABLA ARCHIVOS
 const deleteOrderDocument = async (req, res) => {
-  //const { id } = req.params;
   const Id = req.params.id;
   const imagen = req.body.imagen;
-
+  
   try {
     // Encuentra el registro en la base de datos
     const documentOrder = await sequelize.models.modelOrdersFiles.findOne({
@@ -1256,8 +1237,7 @@ const updateMasterAsesor = async (req, res) => {
 //UPDATE ASESOR ASIGNADO A COMANDA
 const updateStatusOrder = async (req, res) => {
   try {
-    console.log(req.body);
-    
+
     const data = {
       ID_status: req.body.status_comanda,
       User_mod: req.body.user_mod
@@ -1376,5 +1356,6 @@ module.exports = {
   getMasterOrderRetencion,
   getMasterOrderRetencionTwo,
   filterOrderPickUpTwo,
-  filterOrderPickUp
+  filterOrderPickUp,
+  filterOrderATCOnline
 };

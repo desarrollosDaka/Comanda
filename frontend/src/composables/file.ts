@@ -18,11 +18,11 @@ export function useUploadFiles(files: Document[]) {
             autoClose: 4000,
             theme: 'colored',
             toastStyle: {
-                fontSize: '16px',
+                fontSize: '16px', 
                 opacity: '1',
             },
         });
-        isvalidate= false;
+        isvalidate = false;
     } else {
         files.forEach((file) => {
             if (file.type === null) {

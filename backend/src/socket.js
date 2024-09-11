@@ -4,14 +4,13 @@ const {
   getMasterOrder,
   getMasterOrderFecha,
   getMasterOrderCDD,
-  //createMasterOrderAndDetails,
-  //pdateMasterOrderAndDetails,
   getMasterOrderForStore,
   getMasterOrderRetencion,
   getMasterOrderRetencionTwo,
   filterOrderPickUp,
   filterOrderPickUpTwo,
-  filterOrderATC
+  filterOrderATC,
+  filterOrderATCOnline
 } = require("./controllers/orders.controller.js");
 const { getMasterUser,getMasterUserBySuc } = require("./controllers/user.controller.js");
 const { latestNoti, findallv2 } = require("./controllers/notifications.controllers.js");
@@ -73,7 +72,7 @@ module.exports = (server) => {
       socket.emit("get-master-order-pickup-two", rta);
     });
     
-        console.log('Nuevo cliente conectado');
+        //console.log('Nuevo cliente conectado');
 
         const emitOrderData = async () => {
             try {
@@ -136,11 +135,19 @@ module.exports = (server) => {
         };
 
         
+
+        //socket.on("getSucursal",async  (userId) => {
+       //   console.log("userId "+ userId);
+
         socket.on("getSucursalATC",async  (userId) => {
-         // console.log("userId ", userId);
-          
           const rta = await filterOrderATC(userId);
           socket.emit("get-master-order-atc", rta[0]);
+        });
+
+        socket.on("getComandaATCOnline",async  (userId) => {
+       //   console.log("userId "+ userId);
+          const rta = await filterOrderATCOnline();
+          socket.emit("get-master-atc-online", rta[0]);
         });
 
 
@@ -163,26 +170,6 @@ module.exports = (server) => {
             }
         };
 
-        // const emitNotify = async () => {
-        //     try {
-        //         const rta = await findall();
-        //         socket.emit('get-master-notify', rta);
-        //         //console.log('Datos emitidos:', rta);
-        //     } catch (error) {
-        //         console.error('Error al obtener los datos:', error);
-        //     }
-        // };
-        
-        // Emitir evento cuando se actualiza una orden
-        // const updateOrderAndEmit = async (orderData) => {
-        //     try {
-        //         await updateMasterOrderAndDetails(orderData);
-        //         const updatedOrders = await getMasterOrder();
-        //         io.emit('update-master-order', updatedOrders);
-        //     } catch (error) {
-        //         console.error('Error al actualizar la orden:', error);
-        //     }
-        // };
         // Emitir datos inmediatamente al conectar  
         emitOrderData();
         emitOrderCDDData();
@@ -223,7 +210,7 @@ module.exports = (server) => {
        // socket.on('update-master-order', updateOrderAndEmit);
 
         socket.on('disconnect', () => {
-            console.log('Cliente desconectado');
+            //console.log('Cliente desconectado');
             clearInterval(intervalIdOrder); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdUser); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderRetencion); // Limpiar el intervalo cuando el cliente se desconecta

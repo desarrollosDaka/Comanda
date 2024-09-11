@@ -38,7 +38,7 @@ const filterMasterMunicipality = async (req, res) => {
         } 
 
     } catch (e) {
-      //  console.log('Error', e);
+        console.log('Error', e);
     }
 }
 
@@ -48,6 +48,4 @@ const filterMasterMunicipality = async (req, res) => {
 module.exports = {
     getMasterMunicipality,
     filterMasterMunicipality,
-    // updateMasterUser,
-    // deleteMasterUser
 };

@@ -81,7 +81,7 @@ onMounted( async () => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log('Socket desconectado');
+  //console.log('Socket desconectado');
 });
 
 function eliminardata(id:string){
@@ -106,21 +106,6 @@ function eliminardata(id:string){
     });
 }
 
-// const getUser = async () => {
-//   /*loadingInfo.value = true
-//   try{
-
-//     const url = `${baseUrl}/masterUser`
-//     const {data} = await axios.get(url);
-//       info.value =  data[0]
-//       console.log(info.value);
-      
-
-//   } catch(error){
-//       console.log(error)
-//   }
-//   loadingInfo.value = false*/
-// }
 </script>
 
 <template>
@@ -164,17 +149,21 @@ function eliminardata(id:string){
 
         <!-- update y delete -->
         <template v-slot:item.action="{item}">
-          <!-- Editar -->
-          <router-link :to="{path:`/formUpdateUser/${item['ID_user']}`}"> 
-            <v-icon size="23" class="me-4" color="warning">
-              mdi-pencil
-          </v-icon>
-          </router-link>
 
-          <!-- Eliminar -->
-          <v-icon size="23"  color="error" @click="eliminardata(item['ID_user'])">
-              mdi-delete
-          </v-icon>
+          <div class="iconosTabla">
+               <!-- Editar -->
+            <router-link :to="{path:`/formUpdateUser/${item['ID_user']}`}"> 
+              <v-icon size="23" class="me-2" color="warning">
+                mdi-pencil
+            </v-icon>
+            </router-link>
+
+            <!-- Eliminar -->
+            <v-icon size="23"  color="error" @click="eliminardata(item['ID_user'])">
+                mdi-delete
+            </v-icon>
+          </div>
+       
         </template>
 
         <!-- asesor -->
@@ -203,4 +192,10 @@ function eliminardata(id:string){
   thead{
     background-color: rgb(250, 250, 250);
   }
+
+  .iconosTabla{
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+}
 </style>

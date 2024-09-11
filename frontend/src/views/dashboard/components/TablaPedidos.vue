@@ -168,7 +168,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   socket.disconnect();
-  console.log("Socket desconectado");
+  //console.log("Socket desconectado");
 });
 
 onMounted(async () => {
@@ -183,6 +183,7 @@ const headers = ref([
   { title: "SUCURSAL", key: "Sucursal" },
   { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
+  { title: "DELIVERY", key: "Delivery_type" },
   { title: "STATUS", key: "Status" },
   { title: "", sortable: false, key: "action" },
 ] as const);
@@ -233,18 +234,21 @@ const headers = ref([
       >
         <!-- view, update y delete -->
         <template v-slot:item.action="{ item }">
-          <!-- ver -->
 
-          <!-- Editar --> 
-          <router-link
-            :to="{ path: `/formComandaUpdate/${item['ID_detalle']}/${item['ID_order']}` }"
-          >
-            <v-icon size="23" class="me-4" color="warning"> mdi-pencil </v-icon>
-          </router-link>
+          <div class="iconosTabla">
+            <!-- Editar --> 
+            <router-link
+              :to="{ path: `/formComandaUpdate/${item['ID_detalle']}/${item['ID_order']}` }">
+              <v-icon size="23" class="me-2" color="warning"> mdi-pencil </v-icon>
+            </router-link>
 
-          <v-icon size="23" class="me-4" color="error" @click="editItem(item)">
-            mdi-delete
-          </v-icon>
+            <!-- Eliminar -->
+            <v-icon size="23" class="me-2" color="error" @click="editItem(item)">
+              mdi-delete
+            </v-icon>
+
+          </div>
+     
           <v-dialog v-model="dialog" max-width="600px">
             <v-card>
               <v-card-title>
@@ -305,11 +309,6 @@ const headers = ref([
             </v-card>
           </v-dialog>
 
-          <!-- Eliminar -->
-
-          <!-- <v-icon size="23"  color="error" @click="eliminardata(item['id'])">
-            mdi-delete
-          </v-icon> -->
         </template>
 
         <!-- estado -->
@@ -333,5 +332,11 @@ const headers = ref([
 <style scoped>
 thead {
   background-color: rgb(250, 250, 250);
+}
+
+.iconosTabla{
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
 }
 </style>
