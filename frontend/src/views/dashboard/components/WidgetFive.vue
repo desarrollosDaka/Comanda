@@ -9,17 +9,14 @@ if (jsonFromLocalStorage !== null) {
   Rol.value = parsedData.data.Nombre_rol;
 } 
 
-// icons
-import { RiseOutlined, FallOutlined } from '@ant-design/icons-vue';
-
 
 </script>
 <template>
   <!-- BALDOSAS PRINCIPAl -->
-  <v-row class="my-0">
+  <v-row class="my-0" v-if="Rol == 'Admin'">
 
     <!-- CARD -->
-    <v-col cols="12" sm="6" md="4" v-if="Rol == 'Admin'">
+    <v-col cols="12" sm="6" md="4">
       <v-card elevation="0">
         <v-card variant="tonal" color="primary" rounded="lg" >
           <v-card-text>
@@ -28,10 +25,10 @@ import { RiseOutlined, FallOutlined } from '@ant-design/icons-vue';
               <div>
                 <h6 class="text-h6 text-lightText mb-1"><i class="ri-git-merge-line iconoBaldosas"></i></h6>
                 <h4 class="text-h3 d-flex align-center mb-0">
-                  Comandas
+                  Pedidos Online
                 </h4>
                 <br>
-                <router-link to="maestroComanda">
+                <router-link to="/maestroPedidos">
                   <v-btn variant="tonal" append-icon="mdi-arrow-right" size="small">Ver mas</v-btn>
                 </router-link>
               </div>
@@ -43,7 +40,7 @@ import { RiseOutlined, FallOutlined } from '@ant-design/icons-vue';
 
     <!-- CARD -->
     <v-col cols="12" sm="6" md="4" >
-      <v-card elevation="0" disabled>
+      <v-card elevation="0" >
         <v-card variant="tonal" color="primary" rounded="lg" >
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
@@ -54,7 +51,7 @@ import { RiseOutlined, FallOutlined } from '@ant-design/icons-vue';
                   Reportes <br>
                 </h4>
                 <br>
-                <router-link to="#">
+                <router-link to="/ReporteComanda">
                   <v-btn variant="tonal" append-icon="mdi-arrow-right" size="small">Ver mas</v-btn>
                 </router-link>
           
@@ -73,12 +70,12 @@ import { RiseOutlined, FallOutlined } from '@ant-design/icons-vue';
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
               <div>
-                <h6 class="text-h6 text-lightText mb-1"><i class="ri-shapes-line iconoBaldosas"></i></h6>
+                <h6 class="text-h6 text-lightText mb-1"><i class="ri-shield-user-line iconoBaldosas"></i></h6>
                 <h4 class="text-h3 d-flex align-center mb-0">
-                  Almacen 
+                  Maestro de Usuarios 
                 </h4>
                 <br>
-                <router-link to="documentacionDaka">
+                <router-link to="/masterUser">
                   <v-btn variant="tonal" append-icon="mdi-arrow-right" size="small">Ver mas</v-btn>
                 </router-link>
               </div>

@@ -10,7 +10,8 @@ import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
 import UploadImages from "@/views/formComanda/uploadImages.vue";
 import { HttpHeadIcon } from "vue-tabler-icons";
-import { useUploadFiles } from "@/composables/file";
+import { useUploadFilesCaja } from "@/composables/fileCajero";
+
 
 
 interface Document {
@@ -188,21 +189,19 @@ const updateEstatus = async () => {
 };
 
 const changeStatusComanda = () =>{
-  if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value && ID_status.value  === 'Asignada') {
+
+
+  const { isvalidate } = useUploadFilesCaja(itemDocument.value, ID_status.value); //Verificamos los tipos de documentos
+  console.log(itemDocument.value)
+     if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value && ID_status.value  === 'Asignada') {
     return toast.error(`Error. Debes ingresar el numero de factura`, {
       position: toast.POSITION.TOP_CENTER,
       transition: toast.TRANSITIONS.ZOOM,
       autoClose: 4000,
     });
   }
-
-  const { isvalidate } = ROLEADDFILESBILL.includes(USER_ROL.value)
-    ? useUploadFiles(itemDocument.value)
-    : { isvalidate: true }; //Verificamos los tipos de documentos si el rol permite cargar archivos
-
-
-if (isvalidate)
-  Swal.fire({
+  if (isvalidate){
+    Swal.fire({
       title: ID_status.value === 'Creada' ? `Comanda Asignada correctamente` : `Comanda Facturada correctamente`,
       text: "La comanda va a cambiar de estatus",
       icon: "warning",
@@ -216,7 +215,7 @@ if (isvalidate)
         updateEstatus();
         Swal.fire({
           title: "la comanda ha cambiado de estatus!",
-          text: "!",
+          text: "No podras revertir esto",
           icon: "success",
         }).then((result) => {
           if (result.isConfirmed) {
@@ -225,6 +224,8 @@ if (isvalidate)
         });
       }
     });
+  }
+ 
 }
 
 onMounted(async () => {
@@ -346,7 +347,7 @@ onMounted(async () => {
                 <v-btn 
                   :disabled="ID_status == 2" 
                   append-icon="mdi-check-all" 
-                  variant="elevated" 
+                  variant="elevated"
                   color="primary"
                   @click="changeStatusComanda()"
                 >

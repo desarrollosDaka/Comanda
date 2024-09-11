@@ -257,8 +257,9 @@ async function downLoadArchive(param: Documento) {
         cancelButtonText: `<i class="fa fa-thumbs-down"></i>`,
         cancelButtonAriaLabel: "Thumbs down"
       });
+
     } catch (error) {
-      toast.warn(`Error: No se pudo descargar el archivo`, {
+      toast.warn(`Error: No se pudo descargar el archivo`,{
         delay: 1000,
         position: toast.POSITION.BOTTOM_CENTER,
         transition: toast.TRANSITIONS.ZOOM,
@@ -277,17 +278,19 @@ async function downLoadArchive(param: Documento) {
   <v-row v-if="USER_ROL != 10 && USER_ROL != 11">
     <v-col cols="12">
       <br>
+
       <v-file-input 
-        multiple 
+        multiple
         clearable 
         label="Haga click para seleccionar todos los archivos necesarios"
         variant="outlined" 
-        color="primary" 
+        color="primary"
         required 
         @change="viewImages" 
         accept="image/* application/pdf"
         prepend-icon="mdi-camera">
       </v-file-input>
+
     </v-col>
   </v-row>
 
@@ -304,32 +307,61 @@ async function downLoadArchive(param: Documento) {
         <v-img
           :lazy-src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : `${URLIMAGEPDF}`"
           :src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : URLIMAGEPDF"
-          aspect-ratio="1" class="bg-grey-lighten-2 pl-2" cover>
+          aspect-ratio="1" 
+          class="bg-grey-lighten-2 pl-2" 
+          cover
+        >
 
           <!-- ICONO DE ELIMINAR -->
-          <v-btn density="compact" @click="deldata(data, index)" icon="mdi-delete-forever-outline" :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11 "
+          <v-btn 
+            density="compact" 
+            @click="deldata(data, index)" 
+            icon="mdi-delete-forever-outline" 
+            :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11"
             color="error">
           </v-btn>
 
+          <!-- circulo de cargar -->
           <template v-slot:placeholder>
             <v-row align="center" class="fill-height ma-0" justify="center">
               <v-progress-circular color="grey-lighten-5" indeterminate></v-progress-circular>
             </v-row>
           </template>
+
         </v-img>
 
         <v-col cols="12" md="12" @click="downLoadArchive(data)" style="cursor:pointer;">
+
           <div class="tooltip">
-            <div class="tooltiptext" v-if="data.mode === UPDATE_METHOD">Clic para descargar!</div>
-            <v-select :id="'tipo' + index" placeholder="Tipo de archivo" :disabled="data.disabled" class="mt-2"
 
-              clearable chips :items="['CEDULA O RIF', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA', 'DETALLE DE ENVIO', 'GUIA ZOOM']"
+            <div 
+              class="tooltiptext" 
+              v-if="data.mode === UPDATE_METHOD">
+              Clic para descargar!
+            </div>
 
-              density="compact" label="Indique el tipo de documento" variant="outlined" :rules="tipoRules"
-              :aria-label="'TipoDocuments' + index" color="primary" theme="dark" with-background :key="index"
-              v-model="document[index].type" :item-value="document[index].type"
+            <v-select 
+              :id="'tipo' + index" 
+              placeholder="Tipo de archivo" 
+              :disabled="data.disabled" 
+              class="mt-2"
+              clearable 
+              chips
+              :items="['CEDULA O RIF', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA', 'DETALLE DE ENVIO', 'GUIA ZOOM']"
+              density="compact"
+              label="Indique el tipo de documento"
+              variant="outlined"
+              :rules="tipoRules"
+              :aria-label="'TipoDocuments' + index" 
+              color="primary" 
+              theme="dark" 
+              with-background 
+              :key="index"
+              v-model="document[index].type" 
+              :item-value="document[index].type"
               @update:modelValue="typeValue(index, $event)">
             </v-select>
+
           </div>
         </v-col>
       </v-sheet>
