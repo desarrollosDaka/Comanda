@@ -15,6 +15,7 @@ const props = defineProps({
     }
 });
 
+// Esta es la funcion que actualiza las notificaciones
 const deletee = async (ID_Notifications: string) => {
     console.log('delete', ID_Notifications)
     const res = await axios.put(`${url}/api/update/notify/${ID_Notifications}`);
