@@ -144,6 +144,7 @@ onMounted(async () => {
   await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;
+  console.log(USER_ROL.value)
 });
 
 onUnmounted(() => {

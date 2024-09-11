@@ -10,7 +10,7 @@ import UploadImages from "@/views/formComanda/uploadImages.vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
-import { useUploadFiles } from "@/composables/file";
+import { useUploadFilesValidacion } from "@/composables/fileValidacionTwo";
 
 // Pinia
 import { useAuthStore } from "@/stores/auth";
@@ -80,6 +80,12 @@ const razonComercial = ref();
 const guiaZoom2 = ref();
 const boxFactura = ref();
 const ID_ticket = ref();
+const itemDocument = ref<Document[]>([]);
+const description_payment = ref();
+
+function handleSelectImages(items: any) {
+  itemDocument.value = items;
+}
 
 
 const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
@@ -101,10 +107,10 @@ if (jsonFromLocalStorage !== null) {
 
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
-const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
+const ROLEADDFILESBILL = [6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
 const ROLEATC = [10, 2, 9]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 
-const itemDocument = ref<Document[]>([]);
+
 
 const getOrder = async () => {
   try {
@@ -137,6 +143,7 @@ const getOrder = async () => {
       razonComercial.value = data[0][0]["Razon_comercial"];
       boxFactura.value = data[0][0]["Caja_factura"];
       ID_ticket.value = data[0][0]["ID_ticket"];
+      description_payment.value = data[0][0]["Description_payment"];
     }
     
   } catch (error) {
@@ -152,7 +159,7 @@ const getDocumentsATC = async () => {
     Type.value = data[0][0].Type_File;
 
   } catch (error) {
-    console.log('No posee detalle de envio');
+    console.log('.');
   }
 };
 
@@ -162,7 +169,6 @@ const getArticulos = async () => {
     const url = `${baseUrl}/filterOrderDetails/${id.value}`;
     const { data } = await axios.get(url);
     info.value = data[0];
-    console.log(info.value)
 
   } catch (error) {
     console.log(error);
@@ -184,7 +190,6 @@ const updateEstatus = async () => {
   }));
 
   console.log(jsonData);
-  
   
 
   try {
@@ -213,8 +218,8 @@ interface Asesores {
 }
 
 const getAsesores = async () => {
-  try {
 
+  try {
     const url = `${baseUrlAsesor}/filterMasterAsesorSuc/${id_sucursal.value}`;
     const { data } = await axios.get(url);
 
@@ -265,7 +270,7 @@ onMounted(async () => {
   await getOrder();
   await getArticulos(); 
   await getAsesores();
-  await getDocumentsATC();  
+  await getDocumentsATC();
   toast.remove(toastLoading)
 });
 
@@ -278,9 +283,7 @@ async function updateData() {
     });
   }
 
-  const { isvalidate } = ROLEADDFILESBILL.includes(USER_ROL.value)
-    ? useUploadFiles(itemDocument.value)
-    : { isvalidate: true }; //Verificamos los tipos de documentos si el rol permite cargar archivos
+  const { isvalidate } = useUploadFilesValidacion(itemDocument.value, USER_ROL.value) //Verificamos los tipos de documentos si el rol permite cargar archivos
 
   if (isvalidate)
     Swal.fire({
@@ -315,9 +318,7 @@ async function updateData() {
     });
 }
 
-function handleSelectImages(items: any) {
-  itemDocument.value = items;
-}
+
 
 const asignAsesor = async () => {
   if (!selectedAsesor.value) {
@@ -468,6 +469,7 @@ const allInputsFilled = computed(() => {
             <p v-if="User_asing"><b>Asesor Asignado:</b> {{ getNameAsesor(User_asing) }} </p>
             <p v-if="boxFactura"><b>Documento POS:</b> {{ boxFactura }}</p>
             <p v-if="ID_ticket && USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 99"><b>Ticket Zendesk:</b> {{ ID_ticket }}</p>
+            <p v-if="description_payment && USER_ROL == 6"><b>Descripcion de pagos:</b> {{ description_payment }}</p>
         </v-col>
     </v-row>
 
@@ -600,7 +602,7 @@ const allInputsFilled = computed(() => {
 
       <!-- BOTON PARA CAMBIAR DE ESATUS -->
       <v-col cols="auto">
-        <v-btn :disabled="ID_status == 'Facturada' && !allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
+        <v-btn :disabled="ID_status == 'Facturada' && USER_ROL == 9 && !allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
           @click="USER_ROL === 4 ? asignAsesor() : updateData()">
           {{ dataUser.msgButton }}
         </v-btn>

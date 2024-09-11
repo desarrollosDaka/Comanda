@@ -34,6 +34,18 @@ const findallv2 = async (id, limit) => {
   return response;
 };
 
+const findOne = async (req, res) => {
+  const { ID_detalle} = req.params;
+  const response = await sequelize.models.modelNotifications.findOne(
+    {
+      where: {
+        ID_detalle: ID_detalle,
+      },
+    }
+  );
+  res.json(response.ID_Notifications);
+};
+
 const latestNoti = async (id) => {
   const response =
     await sequelize.query(`select t0.* from [dbo].[ORDER_NOTIFICATIONS] t0
@@ -79,4 +91,5 @@ module.exports = {
   latestNoti,
   update,
   idUsers,
+  findOne
 };
