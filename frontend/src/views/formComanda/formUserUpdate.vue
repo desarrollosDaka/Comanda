@@ -19,6 +19,7 @@ const ID_rol = ref();
 const Id_sucursal = ref();
 const Dpto_ventas = ref(false);
 const Linea_ventas = ref();
+const ID_SUCURSAL_LOCAL = ref();
 // const User_crea = ref();
 const User_mod = ref();
 const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
@@ -33,6 +34,7 @@ const jsonFromLocalStorage = sessionStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User_mod.value = parsedData.data.Nombre;
+  ID_SUCURSAL_LOCAL.value = parsedData.data.Id_sucursal;
 } 
 
 // URL
@@ -119,7 +121,27 @@ const getSucursal = async () => {
       console.log(error)
   }
 }
+const getSucursalFilter = async () => {
+  try{
+    const url = `${baseUrlStore}/filterStores/${ID_SUCURSAL_LOCAL.value}`
+    const {data} = await axios.get(url);
+    console.log(data)
 
+    infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
+            title: sucursales.Sucursal,
+            value: sucursales.ID_sucursal
+        }));
+  } catch(error){
+      console.log(error)
+  }
+}
+const validateSucursal = async () => {
+  if (ID_SUCURSAL_LOCAL.value === 1) {
+    await getSucursal();
+  } else {
+    await getSucursalFilter();
+  }
+};
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function validate(values: any, { setErrors }: any) {
@@ -163,7 +185,7 @@ onMounted( async () => {
          
     await userFilter();  
     await getRol(); 
-    await getSucursal(); 
+    await validateSucursal();   
 
     Nombre.value = infoFilter.value.Nombre
     Email.value = infoFilter.value.Email
