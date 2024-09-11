@@ -115,6 +115,7 @@ const metodoRules = ref([(v: string) => !!v || "El metodo de pago es requerida",
 const fileRules = ref([(v: any) => !!v || "El archivo es requerido"]);
 const TipoDocumentoRules = ref([(v: any) => !!v || "El tipo de documento es requerido",]);
 const ticketRules = ref([(v: any) => !!v || "El Nro de Ticket Zendesk es requerido",]);
+const descriptionPayment = ref([(v: any) => !!v || "La descripcion del pago es requerido",]);
 
 // api post
 async function Created(json: any) {
@@ -373,7 +374,13 @@ const File = (event: any) => {
 
 // api post
 async function handleFormComanda() {
+
+  if(itemDocument.value.length < 0){
+    alert('no tiene documento')
+  return
+  }
   let porcentajeValue = porcentaje.value ? porcentaje.value : 0;
+  
   const jsonData = {
     Id_Comanda: idComandaRandom.value,
     ID_rol: ID_rol.value,
@@ -415,6 +422,7 @@ async function handleFormComanda() {
     estado_rep: tipo.value === "NATURAL" ? null : estado_rep.value,
     ciudad_rep: tipo.value === "NATURAL" ? null : ciudad_rep.value,
     municipio_rep: tipo.value === "NATURAL" ? null : municipio_rep.value,
+    description_payment: description_payment.value
   };
 
   let rta = await Created(jsonData);
@@ -425,7 +433,7 @@ async function handleFormComanda() {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate() {
   // VALIDAMOS PRIMERO QUE EXISTAN LOS DOCUMENTOS CON SUS RESPECTIVOS TIPO DE DOCUMENTOS
-  // const isvalidateDocuments = validateDocuments()
+  // const isvalidateDocuments =  ()
 
   // if (isvalidateDocuments)
   const { isvalidate } = useUploadFiles(itemDocument.value); //Verificamos los tipos de documentos
@@ -477,6 +485,8 @@ onMounted(async () => {
 
 function handleSelectImages(items: any) {
   itemDocument.value = items;
+
+  console.log
 }
 
 </script>
@@ -1065,14 +1075,14 @@ function handleSelectImages(items: any) {
           variant="outlined"
           aria-label="Name Documents"
           class="mt-2 my-input"
-          :rules="ticketRules"
+          :rules="descriptionPayment"
           v-model="description_payment"
           color="primary"
         ></v-textarea >
       </v-col>
       
       <v-col cols="12" md="6">
-        <v-label for="referencia">Ticket Zendesk<span class="red">*</span></v-label>
+        <v-label for="referencia">Ticket Zendesk</v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -1080,7 +1090,6 @@ function handleSelectImages(items: any) {
           variant="outlined"
           aria-label="Name Documents"
           class="mt-2 my-input"
-          :rules="ticketRules"
           v-model="ID_ticket"
           color="primary"
         ></v-text-field>
@@ -1111,7 +1120,8 @@ function handleSelectImages(items: any) {
         !nombreCompleto ||
         !telefonoUno ||
         !ID_pago ||
-        !ID_Delivery
+        !description_payment ||
+        !ID_Delivery 
       "
       type="submit"
     >

@@ -7,23 +7,41 @@ interface Document {
     mode: string;
 }
 
-export function useUploadFiles(files: Document[]) {
+export function useUploadFilesCaja(files: Document[], status: string ) {
 
     let isvalidate :boolean = true;
+    const types = files.map(item => item.type);
 
-    if (files.length <= 0) {
-        toast.error("Error: Debes seleccionar al menos un archivo", {
+    if (!types.some(type => type === 'ORDEN DE VENTA') && status === 'Creada') {
+
+        toast.error("Error: Debes Adjutar la Orden de Venta", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
             autoClose: 4000,
             theme: 'colored',
             toastStyle: {
-                fontSize: '16px', 
+                fontSize: '16px',
                 opacity: '1',
             },
         });
         isvalidate = false;
-    } else {
+
+    }else if (!types.some(type => type === 'FACTURA') && status === 'Asignada') {
+
+        toast.error("Error: Debes Adjutar la Factura", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
+        isvalidate = false;
+
+    }else{
+
         files.forEach((file) => {
             if (file.type === null) {
                 isvalidate = false;
