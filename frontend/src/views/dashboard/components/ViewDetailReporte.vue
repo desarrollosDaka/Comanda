@@ -62,6 +62,7 @@ const id_sucursal = ref();
 const messageStatus = ref();
 const itemDocument = ref<Document[]>([]);
   const ID_ticket = ref();
+  const description_payment = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -110,6 +111,7 @@ const getOrder = async () => {
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
       ID_ticket.value = data[0][0]["ID_ticket"];
+      description_payment.value = data[0][0]["Description_payment"];
     }
   } catch (error) {
     console.log(error);
@@ -255,6 +257,7 @@ onMounted(async () => {
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
             <!-- <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p>  -->
             <p v-if="ID_ticket"><b>Ticket Zendesk:</b> {{ ID_ticket }}</p>
+            <p v-if="description_payment"><b>Descripcion de pagos:</b> {{ description_payment }}</p>
         </v-col>
     </v-row>
 
