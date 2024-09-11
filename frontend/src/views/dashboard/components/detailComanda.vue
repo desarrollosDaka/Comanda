@@ -2,7 +2,7 @@
 import UiTitleCard from "@/components/shared/UiTitleCard.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed  } from "vue";
 import { useRoute } from "vue-router";
 import { router } from "@/router";
 import { useUserRol } from "@/composables/users";
@@ -96,10 +96,12 @@ if (jsonFromLocalStorage !== null) {
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
 
+
+
 const { dataUser } = useUserRol(USER_ROL.value); // buscamos los datos para el tipo de asesor
 const ROLESNOTMEDIOPAGO = [1, 5]; //ESTE ARREGLO INDICA QUIEN NO VA VER LA INFO MEDIO DE PAGO
 const ROLEADDFILESBILL = [6, 8]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA
-const ROLEATC = [10, 2]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
+const ROLEATC = [10, 2, 9]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 
 const itemDocument = ref<Document[]>([]);
 
@@ -179,6 +181,10 @@ const updateEstatus = async () => {
     direccionDelivery: item.direccionDelivery,
     precio: item.Precio,
   }));
+
+  console.log(jsonData);
+  
+  
 
   try {
     //SOLO USUARIOS CON ROL DE CAJERAS
@@ -390,6 +396,17 @@ const alertaRechazar = () => {
   });
 }
 
+const allInputsFilled = computed(() => {
+  return info.value?.every(item => {
+    if (ID_delivery.value === 'DELIVERY TIENDA') {
+      return item.direccionDelivery && item.direccionDelivery.trim() !== '';
+    } else if (ID_delivery.value === 'ZOOM' || ID_delivery.value === 'ZOOM TIENDA') {
+      return item.guiaZoom && item.guiaZoom.trim() !== '';
+    }
+    return true;
+  });
+});
+
 </script>
 
 <template>
@@ -525,16 +542,19 @@ const alertaRechazar = () => {
                                 v-model="item.direccionDelivery"
                                 placeholder="Direccion"
                                 class="inputDelivery"
+                                :disabled="item['ID_producto'] === 'LS-00000023'"
+                                :value="item['ID_producto'] === 'LS-00000023' ? item.guiaZoom = '-' : item.guiaZoom"
                               >
                               </v-text-field>
                             </td>
                             <td class="py-3" v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'">
-                              <v-text-field 
+                              <v-text-field
                                 variant="solo-inverted"
                                 v-model="item.guiaZoom"
                                 placeholder="Guia"
                                 class="inputDelivery2"
                                 :disabled="item['ID_producto'] === 'LS-00000023'"
+                                :value="item['ID_producto'] === 'LS-00000023' ? item.guiaZoom = '-' : item.guiaZoom"
                               >
                               </v-text-field>
                             </td>
@@ -578,7 +598,7 @@ const alertaRechazar = () => {
 
       <!-- BOTON PARA CAMBIAR DE ESATUS -->
       <v-col cols="auto">
-        <v-btn :disabled="ID_status == 2" append-icon="mdi-check-all" variant="elevated" color="primary"
+        <v-btn :disabled="ID_status == 'Facturada' && !allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
           @click="USER_ROL === 4 ? asignAsesor() : updateData()">
           {{ dataUser.msgButton }}
         </v-btn>

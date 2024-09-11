@@ -640,32 +640,31 @@ WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucu
 const filterOrderPickUpTwo = async (id) => {
   try {
     const rta = await sequelize.query(
-        `
-  SELECT T1 .Nombre,
+  `SELECT T1 .Nombre,
         T3.Sucursal,
-        T2.[Status] ,
-        T9.Delivery_type , 
+        T2.[Status],
+        T9.Delivery_type, 
         T0.*,
         CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
-INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-WHERE T0.ID_status = 7 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
+  FROM [dbo].[ORDERS] T0
+  INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+  INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+  LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+  INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+  WHERE T0.ID_status = 7 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
   UNION ALL
   SELECT T1 .Nombre,
         T3.Sucursal,
-        T2.[Status] ,
-        T9.Delivery_type , 
+        T2.[Status],
+        T9.Delivery_type, 
         T0.*,
         CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
-FROM [dbo].[ORDERS] T0
-INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
-INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
-LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
-INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
+  FROM [dbo].[ORDERS] T0
+  INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+  INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+  LEFT JOIN [dbo].[MASTER_STORES] T3 ON T0.ID_sucursal = T3.ID_sucursal
+  INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
+  WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'`
     );
     return rta;
  
@@ -979,7 +978,7 @@ const addWaterMarkPDF = async (f, id) => {
 
     // Crea un rectángulo alrededor de la frase
     // page.drawRectangle({
-    //   x: coordenadaX - 10,
+    //   x: coordenadaX - 10,8
     //   y: coordenadaY / 1.2,
     //   width: logitudRectangulo,
     //   height: 30,
@@ -1039,11 +1038,11 @@ const download = async (req, res) => {
 };
 
 const createOrderDocument = async (req, res) => {
+
   const data = req.body;
   const files = req.files;
   const Id_Comanda = req.params.id;
   const Id_Comanda2 = req.params.idComanda;
-
 
   try {
     const results = await Promise.all(
@@ -1094,7 +1093,7 @@ const createOrderDocument = async (req, res) => {
 const deleteOrderDocument = async (req, res) => {
   const Id = req.params.id;
   const imagen = req.body.imagen;
-
+  
   try {
     // Encuentra el registro en la base de datos
     const documentOrder = await sequelize.models.modelOrdersFiles.findOne({

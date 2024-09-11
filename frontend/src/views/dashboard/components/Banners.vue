@@ -26,7 +26,7 @@ if (jsonFromLocalStorage !== null) {
                     <h1>Bienvenido {{ user }}</h1>
                     <p>Explora la aplicacion Comanda online de tiendas daka.
                     </p>
-                    <router-link to="PageInfo">
+                    <router-link to="/PageInfo">
                         <v-btn 
                         color="lightsecondary"
                         variant="outlined"

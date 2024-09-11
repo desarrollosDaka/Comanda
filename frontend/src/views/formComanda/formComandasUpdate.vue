@@ -47,8 +47,6 @@ const info_ciudad = ref();
 const info_estadoRl = ref();
 const info_muniRl = ref();
 const info_ciudadRl = ref();
-// const ID_status = ref("1");
-// const idComandaRandom = ref();
 const Status = ref();
 const info_Zoom = ref();
 const porcentaje = ref();
@@ -57,10 +55,6 @@ const ID_Delivery = ref();
 const info_tiendas = ref();
 const info_Delivery = ref();
 const info_Payment = ref();
-// const valorSeleccionado = ref();
-// const valorSeleccionadoTwo = ref();
-// const valorSeleccionadoRl = ref();
-// const valorSeleccionadoTwoRl = ref();
 const ID_rol = ref();
 const tipoDocumento = ref();
 const tipoDocumentoRL = ref();
@@ -75,6 +69,7 @@ const ciudad_rep = ref();
 const municipio_rep = ref();
 const itemDocument = ref<Document[]>([]);
 const ID_ticket = ref();
+const description_payment = ref();
 
 const pagosArray = ref();
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
@@ -139,6 +134,7 @@ const TipoDocumentoRules = ref([
   (v: any) => !!v || "El tipo de documento es requerido",
 ]);
 const ticketRules = ref([(v: any) => !!v || "El Nro de Ticket Zendesk es requerido",]);
+const descriptionPayment = ref([(v: any) => !!v || "La descripcion del pago es requerido",]);
 
 const getOrder = async () => {
   try {
@@ -182,6 +178,8 @@ const getOrder = async () => {
       municipio_rep.value = data[0][0]["ID_municipio_rep"]; 
       ciudad_rep.value = data[0][0]["ID_city_rep"]; 
       Status.value = data[0][0]["ID_status"]
+      description_payment.value = data[0][0]["Description_payment"]
+
     }
 
   } catch (error) {
@@ -485,6 +483,7 @@ async function handleFormComanda() {
     estado_rep: tipo.value === "NATURAL" ? null : estado_rep.value,
     ciudad_rep: tipo.value === "NATURAL" ? null : ciudad_rep.value,
     municipio_rep: tipo.value === "NATURAL" ? null : municipio_rep.value,
+    description_payment: description_payment.value
   };
 
   // ACTUALIZAMOS PRIMERO LA DATA DEL FORMULARIO
@@ -1235,7 +1234,7 @@ onMounted(async () => {
         <v-text-field
           disabled
           id="creado"
-          placeholder="Creado por"
+          placeholder="modificado por"
           variant="outlined"
           required
           aria-label="Name Documents"
@@ -1245,6 +1244,22 @@ onMounted(async () => {
         >
         </v-text-field>
       </v-col>
+
+      <v-col cols="12" >
+        <v-label for="referencia">Descripcion Pagos<span class="red">*</span></v-label>
+        <v-textarea 
+          id="referencia"
+          type="text"
+          placeholder="Coloca aqui la descripcion de pago"
+          variant="outlined"
+          aria-label="Name Documents"
+          class="mt-2 my-input"
+          :rules="descriptionPayment"
+          v-model="description_payment"
+          color="primary"
+        ></v-textarea >
+      </v-col>
+
       <v-col cols="12" md="6">
         <v-label for="referencia">Ticket Zendesk<span class="red">*</span></v-label>
         <v-text-field
@@ -1282,6 +1297,7 @@ onMounted(async () => {
         !email ||
         !nombreCompleto ||
         !telefonoUno ||
+        !description_payment ||
         !ID_pago"
       type="submit"
     >

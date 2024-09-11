@@ -10,6 +10,7 @@ import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
 import UploadImages from "@/views/formComanda/uploadImages.vue";
 import { HttpHeadIcon } from "vue-tabler-icons";
+import { useUploadFilesCaja } from "@/composables/fileCajero";
 
 
 interface Document {
@@ -160,7 +161,11 @@ const updateEstatus = async () => {
 };
 
 const changeStatusComanda = () =>{
-  Swal.fire({
+
+  const { isvalidate } = useUploadFilesCaja(itemDocument.value, ID_status.value); //Verificamos los tipos de documentos
+  console.log(itemDocument.value)
+  if (isvalidate){
+    Swal.fire({
       title: ID_status.value === 'Creada' ? `Comanda Asignada correctamente` : `Comanda Facturada correctamente`,
       text: "La comanda va a cambiar de estatus",
       icon: "warning",
@@ -174,7 +179,7 @@ const changeStatusComanda = () =>{
         updateEstatus();
         Swal.fire({
           title: "la comanda ha cambiado de estatus!",
-          text: "!",
+          text: "No podras revertir esto",
           icon: "success",
         }).then((result) => {
           if (result.isConfirmed) {
@@ -183,6 +188,8 @@ const changeStatusComanda = () =>{
         });
       }
     });
+  }
+ 
 }
 
 onMounted(async () => {
@@ -290,7 +297,7 @@ onMounted(async () => {
                 <v-btn 
                   :disabled="ID_status == 2" 
                   append-icon="mdi-check-all" 
-                  variant="elevated" 
+                  variant="elevated"
                   color="primary"
                   @click="changeStatusComanda()"
                 >
