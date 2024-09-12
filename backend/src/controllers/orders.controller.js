@@ -353,6 +353,7 @@ const filterMasterOrder = async (req, res) => {
                     ,t0.[Delete]
                     ,t0.[Motivo_delete]    
                     ,T2.Status
+                    ,T0.Porc_retencion
                     ,T0.Description_payment
                      ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
                     ,CAST(T0.[update_date] AS DATE) [Update_date]
@@ -373,7 +374,7 @@ const filterMasterOrder = async (req, res) => {
             ,T4.Nombre  ,T5.ID_city  ,T5.Nombre ,T6.ID_municipio ,T6.NOMBRE ,t0.[User_crea]  ,t0.[User_mod]  ,t0.[User_asing] ,t0.[ID_rol]   ,t0.[ID_status]  ,t0.[Tipo_delivery]  ,t0.[SucursalZoom] ,t0.[Autoriza]
             ,t0.[Cedula_autoriza] ,t0.[Telefono_autoriza],t0.Nombre_autoriza ,T3.Tipo_cedula_rep  ,T3.Cedula_rep  ,T3.Nombre_rep    ,T3.Email_rep    ,T3.Telefono_rep    ,T3.Direccion_rep   ,T3.Referencia_rep, T3.ID_state_rep
             ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,T0.Create_date 
-            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio, T0.Description_payment`
+            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio, T0.Description_payment, T0.Porc_retencion`
         );
         if (rta) {
             res.status(200);

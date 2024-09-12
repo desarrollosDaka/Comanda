@@ -59,6 +59,7 @@ const ID_delivery = ref();
 const User_asing = ref();
 const id_sucursal = ref();
 const messageStatus = ref();
+const porcentajeRetencion = ref();
 const itemDocument = ref<Document[]>([]);
 
 
@@ -104,6 +105,7 @@ const getOrder = async () => {
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
+      porcentajeRetencion.value = data[0][0]["Porc_retencion"];
     }
   } catch (error) {
     console.log(error);
@@ -217,6 +219,7 @@ onMounted(async () => {
             <h2>Datos del Cliente</h2>
             <p><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
+            <p v-if="porcentajeRetencion"><b>%</b> {{ porcentajeRetencion }}</p>
             <p><b>Email:</b> {{ email }}</p>
             <p><b>Cliente:</b> {{ nombreCompleto }}</p>
             <p><b>Estados:</b> {{ estado }}</p>
