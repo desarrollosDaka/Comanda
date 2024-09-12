@@ -144,6 +144,7 @@ onMounted(async () => {
   await getAsesores();
   const { status } = await useGetStatus();
   infogetStatus.value = status;
+  console.log(USER_ROL.value)
 });
 
 onUnmounted(() => {
@@ -219,12 +220,12 @@ const COLORSTATUS: any = {
             }"
           >
           <v-icon size="23" class="me-4" color="primary" v-if="USER_ROL ===  5 && (item as any).ID_status === 2 || (item as any).ID_status === 3 && USER_ROL ===  6  
-          || (item as any).ID_status === 10 && USER_ROL ===  7   || (item as any).ID_status === 4 && USER_ROL ===  7 || (item as any).ID_status === 1 && USER_ROL ===  4 || (item as any).ID_status === 4 && USER_ROL ===  9"  >
+          || (item as any).ID_status === 10 && USER_ROL ===  7   || (item as any).ID_status === 4 && USER_ROL ===  7 || (item as any).ID_status === 1 && USER_ROL ===  4 || (item as any).ID_status === 4 && USER_ROL ===  9 || (item as any).ID_status === 2 && USER_ROL ===  4"  >
               mdi-eye-check
             </v-icon>
           </router-link>
         </template>
-
+        <!-- || (item as any).ID_status === 2 && USER_ROL ===  4  -->
         <!-- status -->
         <template v-slot:item.Status="{ item }">
           <v-chip

@@ -18,7 +18,7 @@ const getStore = async () => {
 
     const url = `${baseUrl}/filterStores/${id_sucursal.value}`
     const {data} = await axios.get(url);
-      info.value =  data.Sucursal
+      info.value =  data[0][0].Sucursal
   } catch(error){
       console.log(error)
   }

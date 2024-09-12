@@ -27,11 +27,13 @@ const getMasterStores = async (req, res) => {
 const filterMasterStores = async (req, res) => {
     try {
         const id = req.params.id; 
-        const rta = await sequelize.models.modelStores.findOne({
-            where: {
-                ID_sucursal : id,
-            }, 
-        });
+        const rta = await sequelize.query(
+            `SELECT ID_sucursal
+            ,Sucursal
+            ,SucursalZoom 
+        FROM [dbo].[MASTER_STORES]
+        WHERE SucursalZoom != ' ' AND ID_sucursal = '${id}'`
+        );
 
         if(rta){
             res.status(200)

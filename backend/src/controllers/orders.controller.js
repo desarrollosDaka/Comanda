@@ -1205,33 +1205,52 @@ const updateMasterAsesor = async (req, res) => {
       ID_status: req.body.ID_status,
     };
 
-    const notify = {     
+    const notify = {
       ID_detalle: req.params.id,
       Notifications: 'Comanda Asignada',
-      Read:'0' ,
+      Read: '0',
       User_crea: req.body.User_crea,
       ID_user: req.body.User_asing,
     };
 
     const id = req.params.id;
 
+    // Actualizar el modelo de orders
     const rta = await sequelize.models.modelOrders.update(data, {
       where: { ID_detalle: id },
     });
 
-    const notifications = await sequelize.models.modelNotifications.create(notify);
+    // Verificar si existe la notificación
+    const existingNotification = await sequelize.models.modelNotifications.findOne({
+      where: { ID_detalle: id },
+    });
+
+    let notifications;
+    if (existingNotification) {
+      // Actualizar la notificación existente
+      notifications = await sequelize.models.modelNotifications.update(
+        { User_crea: req.body.User_crea,
+          ID_user: req.body.User_asing, 
+          Read: '0'
+        },
+        { where: { ID_detalle: id } }
+      );
+    } else {
+      // Crear una nueva notificación
+      notifications = await sequelize.models.modelNotifications.create(notify);
+    }
 
     if (rta && notifications) {
-      res.status(200);
-      res.json(rta);
+      res.status(200).json(rta);
     } else {
-      res.status(404);
-      res.json({ msj: "Error en la consulta" });
+      res.status(404).json({ msj: "Error en la consulta" });
     }
   } catch (e) {
     console.log("Error", e);
+    res.status(500).json({ msj: "Error interno del servidor" });
   }
 };
+
 
 
 //UPDATE ASESOR ASIGNADO A COMANDA

@@ -87,6 +87,7 @@ function handleSelectImages(items: any) {
   itemDocument.value = items;
 }
 
+
 const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -465,7 +466,7 @@ const allInputsFilled = computed(() => {
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Estatus</h2>
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
-            <!-- <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p> -->
+            <p v-if="User_asing"><b>Asesor Asignado:</b> {{ getNameAsesor(User_asing) }} </p>
             <p v-if="boxFactura"><b>Documento POS:</b> {{ boxFactura }}</p>
             <p v-if="ID_ticket && USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 99"><b>Ticket Zendesk:</b> {{ ID_ticket }}</p>
             <p v-if="description_payment && USER_ROL == 6"><b>Descripcion de pagos:</b> {{ description_payment }}</p>
@@ -588,7 +589,8 @@ const allInputsFilled = computed(() => {
 
   <v-row class="mb-0 mt-5">
     <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
-      <v-label text="Asignar Asesor"></v-label>
+      <v-label v-if="ID_status === 'Creada'" text="Asignar Asesor"></v-label>
+      <p v-if="User_asing || USER_ROL === 4"><b v-if="ID_status === 'Asignada' ">Asesor Asignado Previamente:</b> {{ getNameAsesor(User_asing) }} </p>
       <br>
       <v-autocomplete id="tipo" placeholder="Asesores de ventas" clearable chips :items="infoAsesores"
         variant="outlined" class="mt-2" color="primary" v-model="selectedAsesor"></v-autocomplete>
