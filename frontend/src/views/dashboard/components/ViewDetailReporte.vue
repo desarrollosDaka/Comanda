@@ -111,6 +111,7 @@ const getOrder = async () => {
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
       ID_ticket.value = data[0][0]["ID_ticket"];
+      // cambios
       description_payment.value = data[0][0]["Description_payment"];
     }
   } catch (error) {
