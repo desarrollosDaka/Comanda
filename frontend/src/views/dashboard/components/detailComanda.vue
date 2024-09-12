@@ -82,6 +82,7 @@ const boxFactura = ref();
 const ID_ticket = ref();
 const itemDocument = ref<Document[]>([]);
 const description_payment = ref();
+const porcentajeRetencion = ref();
 
 function handleSelectImages(items: any) {
   itemDocument.value = items;
@@ -144,6 +145,7 @@ const getOrder = async () => {
       boxFactura.value = data[0][0]["Caja_factura"];
       ID_ticket.value = data[0][0]["ID_ticket"];
       description_payment.value = data[0][0]["Description_payment"];
+      porcentajeRetencion.value = data[0][0]["Porc_retencion"];
     }
     
   } catch (error) {
@@ -433,6 +435,7 @@ const allInputsFilled = computed(() => {
             <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p> 
             <p v-else><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
+            <p v-if="porcentajeRetencion"><b>%</b> {{ porcentajeRetencion }}</p>
             <p><b>Email:</b> {{ email }}</p>
             <p v-if="tipo === 'JURIDICO'"><b>Razon Social:</b> {{ nombreCompleto }}</p>
             <p v-else><b>Cliente:</b> {{ nombreCompleto }}</p>

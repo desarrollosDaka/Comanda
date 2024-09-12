@@ -63,6 +63,7 @@ const messageStatus = ref();
 const itemDocument = ref<Document[]>([]);
   const ID_ticket = ref();
   const description_payment = ref();
+  const porcentajeRetencion = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -111,6 +112,7 @@ const getOrder = async () => {
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
       ID_ticket.value = data[0][0]["ID_ticket"];
+      porcentajeRetencion.value = data[0][0]["Porc_retencion"];
       // cambios
       description_payment.value = data[0][0]["Description_payment"];
     }
@@ -225,6 +227,7 @@ onMounted(async () => {
             <h2>Datos del Cliente</h2>
             <p><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
+            <p v-if="porcentajeRetencion"><b>%</b> {{ porcentajeRetencion }}</p>
             <p><b>Email:</b> {{ email }}</p>
             <p><b>Cliente:</b> {{ nombreCompleto }}</p>
             <p><b>Estados:</b> {{ estado }}</p>
