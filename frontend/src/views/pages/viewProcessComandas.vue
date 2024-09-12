@@ -52,8 +52,6 @@ onMounted(async () => {
   if (ID_rol.value == 5) {
     const { data } = await axios.get(`${baseUrlBack}/api/findOne/notify/${route.params.id}`);
     const response = await axios.put(`${baseUrlBack}/api/update/notify/${data}`);
-    console.log(`${baseUrlBack}/api/update/notify/${data}`);
-    
     console.log("id_notification", response)
   }
 })
