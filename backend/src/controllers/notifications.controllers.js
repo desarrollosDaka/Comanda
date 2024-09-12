@@ -57,6 +57,8 @@ const latestNoti = async (id) => {
 
 const update = async (req, res) => {
   const { ID_Notifications } = req.params;
+  console.log(ID_Notifications);
+  
   const response = await sequelize.models.modelNotifications.update(
     { Read: true },
     {
