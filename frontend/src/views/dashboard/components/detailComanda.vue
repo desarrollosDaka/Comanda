@@ -550,7 +550,7 @@ const allInputsFilled = computed(() => {
                                 placeholder="Direccion"
                                 class="inputDelivery"
                                 :disabled="item['ID_producto'] === 'LS-00000023'"
-                                :value="item['ID_producto'] === 'LS-00000023' ? item.guiaZoom = '-' : item.guiaZoom"
+                                :value="item['ID_producto'] === 'LS-00000023' ? item.direccionDelivery = '-' : item.direccionDelivery"
                               >
                               </v-text-field>
                             </td>
@@ -606,7 +606,7 @@ const allInputsFilled = computed(() => {
 
       <!-- BOTON PARA CAMBIAR DE ESATUS -->
       <v-col cols="auto">
-        <v-btn :disabled="ID_status == 'Facturada' && USER_ROL == 9 && !allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
+        <v-btn :disabled="ID_status == 'Facturada' &&  USER_ROL == 9 || USER_ROL == 2 && !allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
           @click="USER_ROL === 4 ? asignAsesor() : updateData()">
           {{ dataUser.msgButton }}
         </v-btn>
