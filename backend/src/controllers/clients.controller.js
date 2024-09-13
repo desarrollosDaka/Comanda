@@ -73,12 +73,12 @@ const filterMasterClientsForCI = async (req, res) => {
             ,T0.[ID_state_rep]
 			,ID_city_rep
 			,ID_municipio_rep
-            ,(select top 1 T1.Nombre FROM [QA_COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_CITIES] T1 ON T0.ID_city_rep = T1.ID_city WHERE T0.Cedula = '${CI}') as Nombre_city_rep
-            ,(select top 1 T1.Nombre FROM [QA_COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.[ID_state_rep] = T1.ID_municipio WHERE T0.Cedula = '${CI}') as Nombre_municipio_rep
+            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_CITIES] T1 ON T0.ID_city_rep = T1.ID_city WHERE T0.Cedula = '${CI}') as Nombre_city_rep
+            ,(select top 1 T1.Nombre FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0 INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.[ID_state_rep] = T1.ID_municipio WHERE T0.Cedula = '${CI}') as Nombre_municipio_rep
             ,T0.[Delete]
             ,T0.[Create_date]
             ,T0.[Update_date]
-        FROM [QA_COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0
+        FROM [COMANDA_TEST].[dbo].[MASTER_CLIENTS] T0
         INNER JOIN [dbo].[MASTER_MUNICIPALITY] T1 ON T0.ID_municipio = T1.ID_municipio
         INNER JOIN  [dbo].[MASTER_CITIES] T2 ON T0.ID_city = T2.ID_city 
         WHERE T0.Cedula = '${CI}'`
