@@ -340,8 +340,14 @@ const filterMasterOrder = async (req, res) => {
                     ,T3.Telefono_rep    
                     ,T3.Direccion_rep   
                     ,T3.Referencia_rep
+					,(SELECT T4.Nombre from  [COMANDA_TEST].[dbo].[ORDERS] T0 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula INNER JOIN [dbo].[MASTER_STATES] T4 ON T1.ID_state_rep = T4.ID_states	
+					WHERE T0.ID_detalle = '${id}') AS Estado_rep
                     ,T3.ID_state_rep
+					,(SELECT T3.Nombre from  [COMANDA_TEST].[dbo].[ORDERS] T0 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula INNER JOIN [dbo].[MASTER_CITIES] T3 ON T1.ID_city_rep = T3.ID_city	
+					WHERE T0.ID_detalle = '${id}') AS Ciudad_rep
                     ,T3.ID_city_rep
+					,(SELECT T6.Nombre from  [COMANDA_TEST].[dbo].[ORDERS] T0 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula INNER JOIN [dbo].[MASTER_MUNICIPALITY] T6 ON T1.ID_municipio_rep = T6.ID_municipio	
+					WHERE T0.ID_detalle = '${id}') AS Municipio_rep
                     ,T3.ID_municipio_rep
                     ,T3.[Telefono]
                     ,T0.Direccion_envio
