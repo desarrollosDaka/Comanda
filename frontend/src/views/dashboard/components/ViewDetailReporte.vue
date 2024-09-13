@@ -63,6 +63,7 @@ const messageStatus = ref();
 const itemDocument = ref<Document[]>([]);
   const ID_ticket = ref();
   const description_payment = ref();
+  const Tipo_cedula = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -112,6 +113,7 @@ const getOrder = async () => {
       User_asing.value = data[0][0]["User_asing"];
       ID_ticket.value = data[0][0]["ID_ticket"];
       description_payment.value = data[0][0]["Description_payment"];
+      Tipo_cedula.value = data[0][0]["Tipo_cedula"];
     }
   } catch (error) {
     console.log(error);
@@ -222,6 +224,7 @@ onMounted(async () => {
 
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos del Cliente</h2>
+            <p><b>Tipo Documento:</b> {{ Tipo_cedula }}</p>
             <p><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
             <p><b>Email:</b> {{ email }}</p>
