@@ -237,9 +237,9 @@ onMounted(async () => {
 
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos de la comanda</h2>
-             <p><b>Origen:</b> {{ origen }}</p> 
-             <p><b>Direccion Completa:</b> {{ direccion }}</p> 
-            <p><b>Referencia:</b> {{ referencia }}</p>
+            <p v-if="origen"><b>Destino:</b> {{ origen }}</p> 
+            <p v-if="direccion"><b>Direccion Completa:</b> {{ direccion }}</p> 
+            <p v-if="referencia"><b>Referencia:</b> {{ referencia }}</p>
             <p><b>Delivery:</b> {{ ID_delivery }}</p>
             <p><b>Autorizado para recibir:</b>
                 <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"

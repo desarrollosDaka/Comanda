@@ -47,15 +47,15 @@ onMounted(async () => {
     route_upload.value=`${import.meta.env.VITE_URL}/public/`
     try {
 
-      if(USER_ROL.value === 10){
+      // if(USER_ROL.value === 10){
 
-        const tipoArchivo = 'DETALLE DE ENVIO'
-        url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
+      //   const tipoArchivo = 'DETALLE DE ENVIO'
+      //   url.value = `${baseUrl}/filterOrderDetailsfilesEnvio/${props.ID_detalle}/${tipoArchivo}`
 
-      } else {
+      // } else {
         url.value = `${baseUrl}/filterOrderDetailsFiles/${props.ID_detalle}`
         
-      }
+      // }
       const { data } = await axios.get(url.value);
 
       data[0].forEach((data: DocumentData) => {
@@ -275,7 +275,7 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row v-if="USER_ROL != 10 && USER_ROL != 11">
+  <v-row v-if="USER_ROL != 11 && USER_ROL != 10">
     <v-col cols="12">
       <br>
 
