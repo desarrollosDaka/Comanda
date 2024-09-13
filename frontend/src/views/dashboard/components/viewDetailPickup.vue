@@ -113,6 +113,7 @@ const getOrder = async () => {
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
       nombreDos.value = data[0][0]["Nombre_autoriza"];
       telefonoUno.value = data[0][0]["Telefono_autoriza"];
+      telefonoDos.value = data[0][0]["Telefono"];
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
       Tipo_cedula.value = data[0][0]["Tipo_cedula"];
