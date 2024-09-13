@@ -82,6 +82,7 @@ const boxFactura = ref();
 const ID_ticket = ref();
 const itemDocument = ref<Document[]>([]);
 const description_payment = ref();
+const Tipo_cedula = ref();
 const porcentajeRetencion = ref();
 
 function handleSelectImages(items: any) {
@@ -145,6 +146,7 @@ const getOrder = async () => {
       boxFactura.value = data[0][0]["Caja_factura"];
       ID_ticket.value = data[0][0]["ID_ticket"];
       description_payment.value = data[0][0]["Description_payment"];
+      Tipo_cedula.value = data[0][0]["Tipo_cedula"];
       porcentajeRetencion.value = data[0][0]["Porc_retencion"];
     }
     
@@ -432,6 +434,7 @@ const allInputsFilled = computed(() => {
   <v-row class="mb-0">
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos del Cliente</h2>
+            <p><b>Tipo Documento:</b> {{ Tipo_cedula }}</p>
             <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p> 
             <p v-else><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
@@ -443,6 +446,7 @@ const allInputsFilled = computed(() => {
             <p><b>Estados:</b> {{ estado }}</p>
             <p><b>Ciudad:</b> {{ ciudad }}</p>
             <p><b>Municipio:</b> {{ municipio }}</p>
+        
             <p v-if="ROLESTELEFONO.includes(USER_ROL)"><b>Telefono:</b> {{ telefonoDos }}</p>
 
         </v-col>
