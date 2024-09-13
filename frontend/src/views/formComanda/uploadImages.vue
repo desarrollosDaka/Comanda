@@ -129,7 +129,7 @@ function typeValue(index: number, valor: string): void {
 
 async function deldata(data: any, index: number) {
 
-  if (!props?.deleteImageUpdate && data.mode === 'update' && sort === 'viewProcessComandas') return
+  if (!props?.deleteImageUpdate && data.mode === UPDATE_METHOD && sort === 'viewProcessComandas') return
 
   if (data.Id > 0) { // SI LA DATA VIENE DEL FORMULARIO DE ACTUALIZAR
 
@@ -309,7 +309,7 @@ async function downLoadArchive(param: Documento) {
           :src="data.typefile !== DOCUMENT_PDF ? data.mode === UPDATE_METHOD ? `${route_upload}${document[index].imagen}` : `${document[index].imagen}` : URLIMAGEPDF"
           aspect-ratio="1" 
           class="bg-grey-lighten-2 pl-2" 
-          cover
+          contain
         >
 
           <!-- ICONO DE ELIMINAR -->

@@ -90,7 +90,7 @@ const getOrders = async () => {
 onMounted(async () => {
 
     await getOrders();
-    if (update.value) handleProductUpdate();
+    if (update.value) await handleProductUpdate();
 
     const toastLoading = toast.loading("Cargando Productos...", {
         position: toast.POSITION.BOTTOM_CENTER,

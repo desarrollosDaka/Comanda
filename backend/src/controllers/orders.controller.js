@@ -37,9 +37,9 @@ const getMasterOrder = async (req, res) => {
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
               ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.update_date), 108), 1, 8) AS HoraUpdate
-        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        FROM [QA_COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [QA_COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
         LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
@@ -88,9 +88,9 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
         ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
       ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
         ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
-FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+FROM [QA_COMANDA_TEST].[dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+INNER JOIN [QA_COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
 INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
 LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
 LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
@@ -128,9 +128,9 @@ const getMasterOrderCDD = async (req, res) => {
                 ,T0.User_asing
                 ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
-          FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+          FROM [QA_COMANDA_TEST].[dbo].[ORDERS] T0
           INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-          INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+          INNER JOIN [QA_COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
           INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
           INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
           WHERE T0.[Delete] IS NULL AND T0.ID_status IN (1,2) and T0.ID_sucursal = 99 
@@ -169,9 +169,9 @@ const getMasterOrderRetencion = async (req, res) => {
                 ,T0.User_asing
                 ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
-        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        FROM [QA_COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [QA_COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
         WHERE  T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 4 
@@ -210,9 +210,9 @@ const getMasterOrderRetencionTwo = async (req, res) => {
                 ,T0.User_asing
                 ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
-        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        FROM [QA_COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [QA_COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
         WHERE T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
@@ -255,9 +255,9 @@ const getMasterOrderForStore = async (id) => {
               ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
              ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
               ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
-        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        FROM [QA_COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [QA_COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
         LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
@@ -357,9 +357,9 @@ const filterMasterOrder = async (req, res) => {
                     ,T0.Description_payment
                      ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
                     ,CAST(T0.[update_date] AS DATE) [Update_date]
-            FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+            FROM [QA_COMANDA_TEST].[dbo].[ORDERS] T0
             INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
-            INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+            INNER JOIN [QA_COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
             INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
             INNER JOIN [dbo].[MASTER_STATES] T4 ON T3.ID_state = T4.ID_states
             INNER JOIN [dbo].[MASTER_CITIES] T5 ON T3.ID_city = T5.ID_city
@@ -484,7 +484,7 @@ const filterOrderDetailsFiles = async (req, res) => {
     const id = req.params.id;
     const rta = await sequelize.query(
       `SELECT *
-            FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+            FROM [QA_COMANDA_TEST].[dbo].[ORDERS_FILES]
             WHERE [ID_detalle] = '${id}'`
     );
     if (rta) {
@@ -505,7 +505,7 @@ const filterOrderDetailsFilesEnvio = async (req, res) => {
     const id = req.params.id;
     const tipoArchivo = req.params.tipoArchivo;
     const rta = await sequelize.query(
-      `SELECT * FROM [COMANDA_TEST].[dbo].[ORDERS_FILES]
+      `SELECT * FROM [QA_COMANDA_TEST].[dbo].[ORDERS_FILES]
             WHERE [ID_detalle] = '${id}' AND Type_File = '${tipoArchivo}'`
     );
     if (rta) {
@@ -527,7 +527,7 @@ const filterOrderDetails = async (req, res) => {
 
     const rta = await sequelize.query(
       `SELECT *
-            FROM [COMANDA_TEST].[dbo].[ORDERS_DETAILS]
+            FROM [QA_COMANDA_TEST].[dbo].[ORDERS_DETAILS]
             WHERE [ID_detalle] = '${id}'`
     );
     if (rta) {
@@ -550,7 +550,7 @@ const filterOrderATC = async (id) => {
 		T1.Nombre, 
 		T2.[Status],
 		T0.*,
-		CAST(T0.create_date as DATE) as Create_date,
+		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 		T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
@@ -572,7 +572,7 @@ const filterOrderATCOnline = async () => {
 		T1.Nombre, 
 		T2.[Status],
 		T0.*,
-		CAST(T0.create_date as DATE) as Create_date, 
+	CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date , 
 		T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
@@ -584,7 +584,7 @@ const filterOrderATCOnline = async () => {
 		T1.Nombre,
 		T2.[Status],
 		T0.*, 
-		CAST(T0.create_date as DATE) as Create_date, 
+CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 		T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
@@ -916,10 +916,16 @@ const updateMasterOrderAndDetails = async (req, res) => {
 
 };
 
-const addwatermark = async (f, id) => {
+const addWatermark = async (f, id) => {
   try {
-    const width = 720;
-    const height = 1000;
+
+    //Conocemos las dimensiones de la imagen a traves de las metadatas
+    //para anexarle la marca de agua en base a esa dimension
+    const metadata = await sharp(f.path).metadata();
+    const width = metadata.width;
+    const height = metadata.height;
+
+    //Marca de agua
     const text = `DAKA ONLINE # ${id}`;
 
     const svgImage = `
@@ -933,7 +939,7 @@ const addwatermark = async (f, id) => {
     const svgBuffer = Buffer.from(svgImage); // creamos la marca de agua en formato svg
     //Buscamos la imagen a la cual vamos agregarle la marca de agua
     const image = await sharp(
-      path.join(__dirname, "../../resizeImages", f.filename)
+      path.join(__dirname, "../../uploads", f.filename)
     )
       .composite([
         {
@@ -1011,8 +1017,10 @@ const addWaterMarkPDF = async (f, id) => {
   }
 };
 
+
 const resizeImage = async (f) => {
   try {
+    //Ruta de almacenamiento
     const outputPath = path.join(__dirname, "../../resizeImages", f.filename);
     await sharp(f.path) //agarramos la imagen original
       .resize({
@@ -1050,8 +1058,7 @@ const createOrderDocument = async (req, res) => {
       files.map(async (file, index) => {
         try {
           if (file.mimetype.includes("image")) {
-            await resizeImage(file); //comprimimos la imagen
-            await addwatermark(file, Id_Comanda2);
+            await addWatermark(file, Id_Comanda2);
           } else {
             await addWaterMarkPDF(file, Id_Comanda2);
           }
@@ -1130,7 +1137,7 @@ const filterMasterAsesor = async (req, res) => {
             ,[Nombre] as [Name]
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
-    FROM [COMANDA_TEST].[dbo].[MASTER_USER]
+    FROM [QA_COMANDA_TEST].[dbo].[MASTER_USER]
     WHERE ID_rol = '5' `
     );
 
@@ -1157,7 +1164,7 @@ const filterMasterAsesorSucursal = async (req, res) => {
             ,[Nombre] as [Name]
             ,[Nombre] + ' - ' + [Linea_ventas] as [Nombre]
             ,[Id_sucursal]
-    FROM [COMANDA_TEST].[dbo].[MASTER_USER]
+    FROM [QA_COMANDA_TEST].[dbo].[MASTER_USER]
     WHERE ID_rol = '5' and Id_sucursal = '${id_sucursal}'`);
 
     if (rta) {
