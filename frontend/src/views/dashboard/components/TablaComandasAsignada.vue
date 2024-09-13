@@ -202,7 +202,7 @@ const COLORSTATUS: any = {
         <v-spacer></v-spacer>
       </v-card-title>
 
-      <!-- datatable -->
+      <!-- datatable cambios -->
       <v-data-table
         hover
         density="comfortable"
@@ -223,7 +223,7 @@ const COLORSTATUS: any = {
           || (item as any).ID_status === 10 && USER_ROL ===  7   || (item as any).ID_status === 4 && USER_ROL ===  7 || (item as any).ID_status === 1 && USER_ROL ===  4 || (item as any).ID_status === 4 && USER_ROL ===  9 || (item as any).ID_status === 2 && USER_ROL ===  4 || (item as any).ID_status === 6 && USER_ROL ===  9"  >
               mdi-eye-check
             </v-icon>
-          </router-link>
+          </router-link> 
         </template>
         <!-- || (item as any).ID_status === 2 && USER_ROL ===  4  -->
         <!-- status -->
