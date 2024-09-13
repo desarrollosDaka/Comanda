@@ -57,6 +57,8 @@ const latestNoti = async (id) => {
 
 const update = async (req, res) => {
   const { ID_Notifications } = req.params;
+  console.log(ID_Notifications);
+  
   const response = await sequelize.models.modelNotifications.update(
     { Read: true },
     {
@@ -77,7 +79,7 @@ const idUsers = async (req, res) => {
   const response = await sequelize.query(`
     SELECT TOP (1) [ID_order] ID
     ,[ID_detalle] ID_INTERNO
-    FROM [COMANDA_TEST].[dbo].[ORDERS]
+    FROM [QA_COMANDA_TEST].[dbo].[ORDERS]
     WHERE ID_detalle = '${hasdUser}'`);
 
   res.json(response[0]);

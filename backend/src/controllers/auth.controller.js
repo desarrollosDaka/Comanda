@@ -29,7 +29,7 @@ const singIn = async (req, res) => {
               ,T0.[Delete]
               ,T0.[Create_date]
               ,T0.[Update_date]
-          FROM [COMANDA_TEST].[dbo].[MASTER_USER] T0
+          FROM [QA_COMANDA_TEST].[dbo].[MASTER_USER] T0
           INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.Id_sucursal = T1.ID_sucursal
 		  INNER JOIN [dbo].[MASTER_ROLS] T2 ON T0.ID_rol = T2.ID_rol
           WHERE [Delete] = 0 AND T0.[Email] = '${Email}'`);

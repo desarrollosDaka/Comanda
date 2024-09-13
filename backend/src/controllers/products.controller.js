@@ -13,7 +13,7 @@ const getMasterProducts = async (req, res) => {
                 ,convert(numeric (10,0),[Precio]) AS [Precio]
                 ,[create_date]
                 ,[update_date]
-            FROM [COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]`);//and [ID_producto] LIKE '%${id}%'
+            FROM [QA_COMANDA_TEST].[dbo].[PRODUCTS_REPLICA]`);//and [ID_producto] LIKE '%${id}%'
 
         if (rta) {
             res.status(201)
