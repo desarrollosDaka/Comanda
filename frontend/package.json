@@ -20,6 +20,7 @@
     "@fontsource/roboto": "^5.0.8",
     "@tiptap/starter-kit": "2.1.7",
     "@tiptap/vue-3": "2.1.7",
+    "@vueuse/core": "^11.0.3",
     "ant-design-vue": "^4.0.3",
     "apexcharts": "^3.44.2",
     "axios": "^1.7.7",
