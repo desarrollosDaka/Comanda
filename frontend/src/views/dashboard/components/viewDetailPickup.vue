@@ -51,6 +51,7 @@ const autorizado = ref(false);
 const cedulaDos = ref("");
 const nombreDos = ref("");
 const telefonoUno = ref("");
+const telefonoDos = ref("");
 const ID_pago = ref();
 const ID_status = ref();
 const porcentaje = ref();
@@ -62,7 +63,15 @@ const messageStatus = ref();
 const porcentajeRetencion = ref();
 const itemDocument = ref<Document[]>([]);
 const Tipo_cedula = ref();
-
+const Tipo_cedula_rep = ref();
+const cedulaUno_rep = ref();
+const nombreCompleto_rep = ref("");
+const email_rep = ref("");
+const telefono_rep = ref("");
+const direccion_rep = ref("");
+const estado_rep = ref();
+const ciudad_rep  = ref();
+const municipio_rep  = ref();
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
@@ -108,6 +117,16 @@ const getOrder = async () => {
       User_asing.value = data[0][0]["User_asing"];
       Tipo_cedula.value = data[0][0]["Tipo_cedula"];
       porcentajeRetencion.value = data[0][0]["Porc_retencion"];
+
+      Tipo_cedula_rep.value = data[0][0]["Tipo_cedula_rep"];
+      cedulaUno_rep.value = data[0][0]["Cedula_rep"];
+      nombreCompleto_rep.value = data[0][0]["Nombre_rep"];
+      email_rep.value = data[0][0]["Email_rep"];
+      telefono_rep.value = data[0][0]["Telefono_rep"];
+      direccion_rep.value = data[0][0]["Direccion_rep"];
+      estado_rep.value = data[0][0]["Estado_rep"];
+      ciudad_rep.value  = data[0][0]["Ciudad_rep"];
+      municipio_rep.value  = data[0][0]["Municipio_rep"];
     }
   } catch (error) {
     console.log(error);
@@ -228,6 +247,7 @@ onMounted(async () => {
             <p><b>Estados:</b> {{ estado }}</p>
             <p><b>Ciudad:</b> {{ ciudad }}</p>
             <p><b>Municipio:</b> {{ municipio }}</p>
+            <p v-if="telefonoDos"><b>Telefono:</b> {{ telefonoDos }}</p>
         </v-col>
 
         <v-col cols="12" md="4" class="px-10 py-5">
@@ -256,6 +276,16 @@ onMounted(async () => {
             <h2>Estatus</h2>
             <p><b>Status de comanda:</b> {{ ID_status }}</p>
             <!-- <p><b>Asesor:</b> {{ getNameAsesor(User_asing) }} </p> -->
+
+            <h2 v-if="cedulaUno_rep"  class="py-3">Datos Representante legal</h2>
+            <p v-if="Tipo_cedula_rep"><b>Tipo Documento:</b> {{ Tipo_cedula_rep }}</p>
+            <p v-if="cedulaUno_rep"><b>Cedula Representate:</b> {{ cedulaUno_rep }}</p>
+            <p v-if="nombreCompleto_rep"><b>Nombre:</b> {{ nombreCompleto_rep }}</p>
+            <p v-if="email_rep"><b>Email:</b> {{ email_rep }}</p>       
+            <p v-if="estado_rep"><b>Estados:</b> {{ estado_rep }}</p>
+            <p v-if="ciudad_rep"><b>Ciudad:</b> {{ ciudad_rep }}</p>
+            <p v-if="municipio_rep"><b>Municipio:</b> {{ municipio_rep }}</p>       
+            <p v-if="telefono_rep"><b>Telefono:</b> {{ telefono_rep }}</p>
         </v-col>
     </v-row>
 

@@ -84,6 +84,15 @@ const itemDocument = ref<Document[]>([]);
 const description_payment = ref();
 const Tipo_cedula = ref();
 const porcentajeRetencion = ref();
+const Tipo_cedula_rep = ref();
+const cedulaUno_rep = ref();
+const nombreCompleto_rep = ref("");
+const email_rep = ref("");
+const telefono_rep = ref("");
+const direccion_rep = ref("");
+const estado_rep = ref();
+const ciudad_rep  = ref();
+const municipio_rep  = ref();
 
 function handleSelectImages(items: any) {
   itemDocument.value = items;
@@ -148,6 +157,16 @@ const getOrder = async () => {
       description_payment.value = data[0][0]["Description_payment"];
       Tipo_cedula.value = data[0][0]["Tipo_cedula"];
       porcentajeRetencion.value = data[0][0]["Porc_retencion"];
+
+      Tipo_cedula_rep.value = data[0][0]["Tipo_cedula_rep"];
+      cedulaUno_rep.value = data[0][0]["Cedula_rep"];
+      nombreCompleto_rep.value = data[0][0]["Nombre_rep"];
+      email_rep.value = data[0][0]["Email_rep"];
+      telefono_rep.value = data[0][0]["Telefono_rep"];
+      direccion_rep.value = data[0][0]["Direccion_rep"];
+      estado_rep.value = data[0][0]["Estado_rep"];
+      ciudad_rep.value  = data[0][0]["Ciudad_rep"];
+      municipio_rep.value  = data[0][0]["Municipio_rep"];
     }
     
   } catch (error) {
@@ -445,8 +464,7 @@ const allInputsFilled = computed(() => {
             <p v-if="tipo === 'JURIDICO'"><b>Razon Comercial:</b> {{ razonComercial }}</p>
             <p><b>Estados:</b> {{ estado }}</p>
             <p><b>Ciudad:</b> {{ ciudad }}</p>
-            <p><b>Municipio:</b> {{ municipio }}</p>
-        
+            <p><b>Municipio:</b> {{ municipio }}</p>       
             <p v-if="ROLESTELEFONO.includes(USER_ROL)"><b>Telefono:</b> {{ telefonoDos }}</p>
 
         </v-col>
@@ -478,6 +496,16 @@ const allInputsFilled = computed(() => {
             <p v-if="boxFactura"><b>Documento POS:</b> {{ boxFactura }}</p>
             <p v-if="ID_ticket && USER_ROL === 1 || USER_ROL === 2 || USER_ROL === 99"><b>Ticket Zendesk:</b> {{ ID_ticket }}</p>
             <p v-if="description_payment && USER_ROL == 6"><b>Descripcion de pagos:</b> {{ description_payment }}</p>
+             
+            <h2 v-if="cedulaUno_rep" class="py-3">Datos Representante legal</h2>
+            <p v-if="Tipo_cedula_rep"><b>Tipo Documento:</b> {{ Tipo_cedula_rep }}</p>
+            <p v-if="cedulaUno_rep"><b>Cedula Representate:</b> {{ cedulaUno_rep }}</p>
+            <p v-if="nombreCompleto_rep"><b>Nombre:</b> {{ nombreCompleto_rep }}</p>
+            <p v-if="email_rep"><b>Email:</b> {{ email_rep }}</p>       
+            <p v-if="estado_rep"><b>Estados:</b> {{ estado_rep }}</p>
+            <p v-if="ciudad_rep"><b>Ciudad:</b> {{ ciudad_rep }}</p>
+            <p v-if="municipio_rep"><b>Municipio:</b> {{ municipio_rep }}</p>       
+            <p v-if="telefono_rep"><b>Telefono:</b> {{ telefono_rep }}</p>
         </v-col>
     </v-row>
 
