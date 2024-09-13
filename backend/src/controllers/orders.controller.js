@@ -549,7 +549,7 @@ const filterOrderATC = async (id) => {
 		T1.Nombre, 
 		T2.[Status],
 		T0.*,
-		CAST(T0.create_date as DATE) as Create_date,
+		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 		T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
@@ -571,7 +571,7 @@ const filterOrderATCOnline = async () => {
 		T1.Nombre, 
 		T2.[Status],
 		T0.*,
-		CAST(T0.create_date as DATE) as Create_date, 
+	CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date , 
 		T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
@@ -583,7 +583,7 @@ const filterOrderATCOnline = async () => {
 		T1.Nombre,
 		T2.[Status],
 		T0.*, 
-		CAST(T0.create_date as DATE) as Create_date, 
+CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 		T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula

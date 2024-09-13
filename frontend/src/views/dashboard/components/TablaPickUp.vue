@@ -46,7 +46,7 @@ if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
 }
 //id_sucursal.value
 setInterval(() => {
-  socket.emit(`${urlSocketEmit.value}`, '4');
+  socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
 }, 5000);
 
 // Listen for events from the server
