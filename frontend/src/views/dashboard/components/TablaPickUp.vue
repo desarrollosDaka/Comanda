@@ -46,15 +46,15 @@ if(USER_ROL.value === 4 || USER_ROL.value === 6 || USER_ROL.value === 11){
 }
 //id_sucursal.value
 setInterval(() => {
-  socket.emit(`${urlSocketEmit.value}`, '4');
-}, 5000);
+  socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
+}, 1000);
 
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
 
     try {
-      
         info.value = rta[0]
+
         loadingInfo.value = false; 
     } catch (error) { 
        console.log(error);
