@@ -275,7 +275,7 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row v-if="USER_ROL != 11 && USER_ROL != 10">
+  <v-row v-if="USER_ROL != 11 && USER_ROL != 10 && USER_ROL != 9">
     <v-col cols="12">
       <br>
 

@@ -588,7 +588,7 @@ const allInputsFilled = computed(() => {
   </tr>      -->
   
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 || USER_ROL === 2"
+  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 || USER_ROL === 2 || USER_ROL === 9"
     @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
 
   <v-row class="mb-0 mt-5">
