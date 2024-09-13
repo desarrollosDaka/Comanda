@@ -203,7 +203,7 @@ const changeStatusComanda = () =>{
   const { isvalidate } = useUploadFilesCaja(itemDocument.value, ID_status.value); //Verificamos los tipos de documentos
   console.log(itemDocument.value)
      if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value && ID_status.value  === 'Asignada') {
-    return toast.error(`Error. Debes ingresar el numero de factura`, {
+    return toast.error(`Error. Debes ingresar El Documento POS`, {
       position: toast.POSITION.TOP_CENTER,
       transition: toast.TRANSITIONS.ZOOM,
       autoClose: 4000,
