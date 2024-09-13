@@ -59,6 +59,7 @@ const ID_delivery = ref();
 const User_asing = ref();
 const id_sucursal = ref();
 const messageStatus = ref();
+const porcentajeRetencion = ref();
 const itemDocument = ref<Document[]>([]);
 const Tipo_cedula = ref();
 
@@ -106,6 +107,7 @@ const getOrder = async () => {
       ID_pago.value = data[0][0]["Pago"];
       User_asing.value = data[0][0]["User_asing"];
       Tipo_cedula.value = data[0][0]["Tipo_cedula"];
+      porcentajeRetencion.value = data[0][0]["Porc_retencion"];
     }
   } catch (error) {
     console.log(error);
@@ -220,6 +222,7 @@ onMounted(async () => {
             <p><b>Tipo Documento:</b> {{ Tipo_cedula }}</p>
             <p><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
+            <p v-if="porcentajeRetencion"><b>%</b> {{ porcentajeRetencion }}</p>
             <p><b>Email:</b> {{ email }}</p>
             <p><b>Cliente:</b> {{ nombreCompleto }}</p>
             <p><b>Estados:</b> {{ estado }}</p>
@@ -229,9 +232,9 @@ onMounted(async () => {
 
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos de la comanda</h2>
-            <!-- <p><b>Origen:</b> {{ origen }}</p> -->
-            <!-- <p><b>Direccion Completa:</b> {{ direccion }}</p> -->
-            <!-- <p><b>Referencia:</b> {{ referencia }}</p> -->
+            <p v-if="origen"><b>Destino:</b> {{ origen }}</p> 
+            <p v-if="direccion"><b>Direccion Completa:</b> {{ direccion }}</p> 
+            <p v-if="referencia"><b>Referencia:</b> {{ referencia }}</p>
             <p><b>Delivery:</b> {{ ID_delivery }}</p>
             <!-- <p><b>Autorizado para recibir:</b>
                 <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"

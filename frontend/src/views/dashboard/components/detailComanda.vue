@@ -83,13 +83,14 @@ const ID_ticket = ref();
 const itemDocument = ref<Document[]>([]);
 const description_payment = ref();
 const Tipo_cedula = ref();
+const porcentajeRetencion = ref();
 
 function handleSelectImages(items: any) {
   itemDocument.value = items;
 }
 
 
-const ROLESTELEFONO = [1,2,3,4,5,6]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
+const ROLESTELEFONO = [1,2,3,4,5,6, 8, 10, 11, 9, 99]; // ROLES CON ACCESO A CARGAR DOCUMENTOS y CARGAR NUMERO DE FACTURA 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
@@ -146,6 +147,7 @@ const getOrder = async () => {
       ID_ticket.value = data[0][0]["ID_ticket"];
       description_payment.value = data[0][0]["Description_payment"];
       Tipo_cedula.value = data[0][0]["Tipo_cedula"];
+      porcentajeRetencion.value = data[0][0]["Porc_retencion"];
     }
     
   } catch (error) {
@@ -436,6 +438,7 @@ const allInputsFilled = computed(() => {
             <p v-if="tipo === 'JURIDICO'"><b>Rif:</b> {{ cedulaUno }}</p> 
             <p v-else><b>Cedula:</b> {{ cedulaUno }}</p>
             <p><b>Tipo:</b> {{ tipo }}</p>
+            <p v-if="porcentajeRetencion"><b>%</b> {{ porcentajeRetencion }}</p>
             <p><b>Email:</b> {{ email }}</p>
             <p v-if="tipo === 'JURIDICO'"><b>Razon Social:</b> {{ nombreCompleto }}</p>
             <p v-else><b>Cliente:</b> {{ nombreCompleto }}</p>
@@ -445,10 +448,11 @@ const allInputsFilled = computed(() => {
             <p><b>Municipio:</b> {{ municipio }}</p>
         
             <p v-if="ROLESTELEFONO.includes(USER_ROL)"><b>Telefono:</b> {{ telefonoDos }}</p>
+
         </v-col>
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos de la comanda</h2>
-            <p><b>Origen:</b> {{ origen }}</p>
+            <p><b>Destino:</b> {{ origen }}</p>
             <p v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'"><b>Direccion Completa:</b> {{ direccion }}</p>
             <p v-if="ID_delivery == 'ZOOM' || ID_delivery == 'ZOOM TIENDA'"><b>Referencia:</b> {{ referencia }}</p>
             <p><b>Delivery:</b> {{ ID_delivery }}</p>
@@ -550,7 +554,7 @@ const allInputsFilled = computed(() => {
                                 placeholder="Direccion"
                                 class="inputDelivery"
                                 :disabled="item['ID_producto'] === 'LS-00000023'"
-                                :value="item['ID_producto'] === 'LS-00000023' ? item.guiaZoom = '-' : item.guiaZoom"
+                                :value="item['ID_producto'] === 'LS-00000023' ? item.direccionDelivery = '-' : item.direccionDelivery"
                               >
                               </v-text-field>
                             </td>
@@ -588,7 +592,7 @@ const allInputsFilled = computed(() => {
   </tr>      -->
   
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 11 || USER_ROL === 2 || USER_ROL === 10"
+  <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 || USER_ROL === 2"
     @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
 
   <v-row class="mb-0 mt-5">
@@ -606,7 +610,7 @@ const allInputsFilled = computed(() => {
 
       <!-- BOTON PARA CAMBIAR DE ESATUS -->
       <v-col cols="auto">
-        <v-btn :disabled="ID_status == 'Facturada' && USER_ROL == 9 && !allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
+        <v-btn :disabled="ID_status == 'Facturada' && !allInputsFilled && USER_ROL != 1" append-icon="mdi-check-all" variant="elevated" color="primary"
           @click="USER_ROL === 4 ? asignAsesor() : updateData()">
           {{ dataUser.msgButton }}
         </v-btn>
