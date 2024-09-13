@@ -49,12 +49,13 @@ setInterval(() => {
   socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
 }, 5000);
 
+
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
 
     try {
-      
         info.value = rta[0]
+
         loadingInfo.value = false; 
     } catch (error) { 
        console.log(error);
