@@ -76,7 +76,7 @@ function handleSelectImages(items: any) {
 }
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage); 
   user_crea.value = parsedData.data.Nombre;

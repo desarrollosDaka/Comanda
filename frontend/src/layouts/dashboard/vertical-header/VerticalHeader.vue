@@ -31,7 +31,7 @@ const route1: string = `${import.meta.env.VITE_URL}/api`
 
 const infoArray = ref<any>([]);
 
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User.value = parsedData.data.Nombre;

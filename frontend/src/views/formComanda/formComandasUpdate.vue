@@ -84,7 +84,7 @@ const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 const INSERT_METHOD = "insert";
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_mod.value = parsedData.data.Nombre;
@@ -1297,6 +1297,7 @@ onMounted(async () => {
         !email ||
         !nombreCompleto ||
         !telefonoUno ||
+        !ID_ticket ||
         !description_payment ||
         !ID_pago"
       type="submit"

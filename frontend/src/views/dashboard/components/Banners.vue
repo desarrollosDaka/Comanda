@@ -8,7 +8,7 @@ const theme = useTheme();
 const user = ref()
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user.value = parsedData.data.Nombre;

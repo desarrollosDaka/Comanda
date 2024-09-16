@@ -9,7 +9,7 @@ export const useAuthStore = defineStore({ id: 'auth',
     // inicializar el estado desde el almacenamiento local para permitir que el usuario permanezca conectado
     /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
     // @ts-ignore
-    user: JSON.parse(sessionStorage.getItem('user')),
+    user: JSON.parse(localStorage.getItem('user')),
     returnUrl: null
   }),
   actions: {
@@ -19,13 +19,13 @@ export const useAuthStore = defineStore({ id: 'auth',
       // actualizar estado pinia
       this.user = user;
       // almacene los detalles del usuario y jwt en el almacenamiento local para mantener al usuario conectado entre actualizaciones de la página
-      sessionStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user));
       // redirigir a la URL anterior o por defecto a la página de inicio
       router.push(this.returnUrl || '/dashboard');
     },
     logout() {
       this.user = null;
-      sessionStorage.removeItem('user');
+      localStorage.removeItem('user');
       router.push('/');
     }
   }
