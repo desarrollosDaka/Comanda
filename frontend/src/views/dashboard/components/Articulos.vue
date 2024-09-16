@@ -39,8 +39,10 @@ const getProduct = async () => {
             value: product.ID_producto,
             precio: product.Precio
         }));
+        loadingProducts.value = false;
 
     } catch (error) {
+        loadingProducts.value = false;
         toast.error("Ocurrio un error al consultar los datos de los productos", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
@@ -51,8 +53,6 @@ const getProduct = async () => {
                 opacity: '1',
             },
         });
-    } finally {
-        loadingProducts.value = false;
     }
 }
 
@@ -89,9 +89,8 @@ const getOrders = async () => {
 
 onMounted(async () => {
 
-    await getOrders();
-    if (update.value) await handleProductUpdate();
 
+    if (update.value) await handleProductUpdate();
     const toastLoading = toast.loading("Cargando Productos...", {
         position: toast.POSITION.BOTTOM_CENTER,
         theme: 'colored',
@@ -104,9 +103,10 @@ onMounted(async () => {
             background: '#1778ff'
         },        
     });
-
-
     await getProduct();
+    await getOrders();
+
+   
     toast.remove(toastLoading)
 });
 
