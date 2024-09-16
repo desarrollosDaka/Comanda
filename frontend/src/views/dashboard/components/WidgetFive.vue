@@ -3,7 +3,7 @@ import { shallowRef, ref } from 'vue';
 
 const Rol = ref('')
 
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   Rol.value = parsedData.data.Nombre_rol;

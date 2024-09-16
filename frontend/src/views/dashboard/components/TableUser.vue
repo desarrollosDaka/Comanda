@@ -19,7 +19,7 @@ const socket = io(import.meta.env.VITE_BACK_URL, {
 let info = ref<any[]>([]);
 
 // DATA DEL LOCAL STORAGE
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   id_sucursal.value = parsedData.data.Id_sucursal;

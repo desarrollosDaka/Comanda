@@ -32,7 +32,7 @@ const props = defineProps({
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   USER_ROL.value = +parsedData.data.ID_rol;

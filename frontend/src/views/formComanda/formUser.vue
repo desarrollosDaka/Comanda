@@ -28,7 +28,7 @@ const rolInfo = ref();
 
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User_crea.value = parsedData.data.Nombre;

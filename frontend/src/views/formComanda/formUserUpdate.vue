@@ -30,7 +30,7 @@ const infoSucursal = ref();
 const rolInfo = ref();
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User_mod.value = parsedData.data.Nombre;

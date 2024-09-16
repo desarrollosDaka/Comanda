@@ -29,7 +29,7 @@ let editedItem = ref({
 })
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
     const parsedData = JSON.parse(jsonFromLocalStorage);
     id_sucursal.value = parsedData.data.Id_sucursal;

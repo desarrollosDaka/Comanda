@@ -87,7 +87,7 @@ const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
@@ -114,7 +114,7 @@ const telefonoRules = ref([(v: string) => !!v || "El telefono de la persona auto
 const metodoRules = ref([(v: string) => !!v || "El metodo de pago es requerida",]);
 const fileRules = ref([(v: any) => !!v || "El archivo es requerido"]);
 const TipoDocumentoRules = ref([(v: any) => !!v || "El tipo de documento es requerido",]);
-const ticketRules = ref([(v: any) => !!v || "El Nro de Ticket Zendesk es requerido",]);
+const ticketRules = ref([(v: any) => !!v || "El Ticket Zendesk es requerido",]);
 const descriptionPayment = ref([(v: any) => !!v || "La descripcion del pago es requerido",]);
 
 // api post
@@ -1082,7 +1082,7 @@ function handleSelectImages(items: any) {
       </v-col>
       
       <v-col cols="12" md="6">
-        <v-label for="referencia">Ticket Zendesk</v-label>
+        <v-label for="referencia">Ticket Zendesk<span class="red">*</span></v-label>
         <v-text-field
           id="referencia"
           type="text"
@@ -1090,6 +1090,7 @@ function handleSelectImages(items: any) {
           variant="outlined"
           aria-label="Name Documents"
           class="mt-2 my-input"
+          :rules="ticketRules"
           v-model="ID_ticket"
           color="primary"
         ></v-text-field>
@@ -1120,6 +1121,7 @@ function handleSelectImages(items: any) {
         !nombreCompleto ||
         !telefonoUno ||
         !ID_pago ||
+        !ID_ticket ||
         !description_payment ||
         !ID_Delivery 
       "

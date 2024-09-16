@@ -38,7 +38,7 @@ const Rol = ref<number>(0)
 const ADVISORS_STORERS_CASHIER = [5, 9] //rol asesores, almacenistas, cajeras
 const MANAGERS = [4] //rol gerentes
 
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User.value = parsedData.data.Nombre;

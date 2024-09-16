@@ -10,7 +10,7 @@ import SalesReport from './components/SalesReport.vue';
 import Banner from './components/Banners.vue';
 
 const usuario = ref();
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   usuario.value = parsedData.data.Nombre;
