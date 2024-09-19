@@ -10,7 +10,9 @@ const {
   filterOrderPickUp,
   filterOrderPickUpTwo,
   filterOrderATC,
-  filterOrderATCOnline
+  filterOrderATCOnline,
+  getMasterOrderReport,
+  getMasterOrderReportFilter
 } = require("./controllers/orders.controller.js");
 const { getMasterUser,getMasterUserBySuc } = require("./controllers/user.controller.js");
 const { latestNoti, findallv2 } = require("./controllers/notifications.controllers.js");
@@ -37,7 +39,17 @@ module.exports = (server) => {
       //console.log(sucId);
       const rta = await getMasterOrderForStore(sucId);
       socket.emit("get-master-order-suc", rta);
-    });0
+    });
+
+    socket.on("getComandaReporte",async  (sucId) => {
+      const rta = await getMasterOrderReport();
+      socket.emit("get-master-order-report", rta);
+    });
+
+    socket.on("getComandaReporteFilter",async  (id) => {
+      const rta = await getMasterOrderReportFilter(id);
+      socket.emit("get-master-order-report-filter", rta);
+    });
     
     // filter User con ID SUC
     socket.on("getUsuario",async  (sucId) => {

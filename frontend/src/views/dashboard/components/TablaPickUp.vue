@@ -55,7 +55,6 @@ socket.on(`${urlSocket.value}`, (rta) => {
 
     try {
         info.value = rta[0]
-
         loadingInfo.value = false; 
     } catch (error) { 
        console.log(error);

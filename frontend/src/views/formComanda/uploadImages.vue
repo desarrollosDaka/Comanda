@@ -28,7 +28,14 @@ const props = defineProps({
     type: Boolean as () => boolean,
     required: false,
   },
+  tipoDelivery: {
+    type: String as () => string,
+    required: false,
+  }
 })
+
+const delivery = ref()
+delivery.value = props.tipoDelivery
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 // Localstorage
@@ -275,17 +282,16 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row v-if="USER_ROL != 11 && USER_ROL != 10 && USER_ROL != 9">
+  <v-row v-if="USER_ROL != 11 && USER_ROL != 9 && props.tipoDelivery == 'DELIVERY TIENDA'">
     <v-col cols="12">
       <br>
-
       <v-file-input 
         multiple
         clearable 
         label="Haga click para seleccionar todos los archivos necesarios"
         variant="outlined" 
         color="primary"
-        required 
+        required
         @change="viewImages" 
         accept="image/* application/pdf"
         prepend-icon="mdi-camera">
@@ -347,7 +353,7 @@ async function downLoadArchive(param: Documento) {
               class="mt-2"
               clearable 
               chips
-              :items="['CEDULA O RIF', 'PAGO', 'RETENCIÓN', 'FACTURA', 'DESPACHO', 'ORDEN DE VENTA', 'DETALLE DE ENVIO', 'GUIA ZOOM']"
+              :items="['CEDULA O RIF', 'PAGO', 'RETENCIÓN', 'FACTURA', 'GUIA DESPACHO', 'ORDEN DE VENTA', 'DETALLE DE ENVIO', 'GUIA ZOOM']"
               density="compact"
               label="Indique el tipo de documento"
               variant="outlined"

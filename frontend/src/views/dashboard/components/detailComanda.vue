@@ -306,7 +306,7 @@ async function updateData() {
     });
   }
 
-  const { isvalidate } = useUploadFilesValidacion(itemDocument.value, USER_ROL.value) //Verificamos los tipos de documentos si el rol permite cargar archivos
+  const { isvalidate } = useUploadFilesValidacion(itemDocument.value, USER_ROL.value, ID_delivery.value) //Verificamos los tipos de documentos si el rol permite cargar archivos
 
   if (isvalidate)
     Swal.fire({
@@ -621,7 +621,7 @@ const allInputsFilled = computed(() => {
   
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
   <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 || USER_ROL === 2 || USER_ROL === 9"
-    @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
+    @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false :tipoDelivery="ID_delivery"/>
 
   <v-row class="mb-0 mt-5">
     <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">

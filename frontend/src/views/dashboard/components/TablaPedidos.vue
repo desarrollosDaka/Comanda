@@ -18,9 +18,11 @@ const id_sucursal = ref();
 const selectedMotivo = ref();
 const idDocuments = ref("");
 const estatus = ref();
+const estatusNumber = ref(9);
 const infogetStatus = ref();
 const infoMotivo = ref();
 let urlSocket = ref();
+let USER_ROL = ref();
 
 const COLORSTATUS: any = {
   1: "#ffca3a", //creada
@@ -57,9 +59,11 @@ interface Table_Orders {
 const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
-
+  USER_ROL.value = +parsedData.data.ID_rol;
   id_sucursal.value = parsedData.data.Id_sucursal;
 }
+
+
 
 
 const socket = io(import.meta.env.VITE_BACK_URL, {
@@ -68,12 +72,11 @@ const socket = io(import.meta.env.VITE_BACK_URL, {
 
 // Emitir evento para solicitar datos del servidor
 const requestMasterOrder = () => {
-
   setInterval(() => {
-  socket.emit('getComanda', id_sucursal.value);
-}, 5000);
-
+    socket.emit('getComanda', id_sucursal.value);
+  }, 5000);
 };
+
 if(id_sucursal.value === 1){
   urlSocket.value = 'get-master-order'
 }else {
@@ -138,6 +141,7 @@ const deleteDocuments = async (id: string) => {
     const response = await axios.put(`${baseUrl}/deleteOrder/${id}`, {
       status: estatus.value.toString(),
       motivo: selectedMotivo.value,
+      statusNumber: estatusNumber.value
     });
     if (response) {
       dialog.value = false;
@@ -243,7 +247,8 @@ const headers = ref([
             </router-link>
 
             <!-- Eliminar -->
-            <v-icon size="23" class="me-2" color="error" @click="editItem(item)">
+            <v-icon size="23" class="me-2" color="error" @click="editItem(item)" 
+              v-if="item.ID_status == '1'">
               mdi-delete
             </v-icon>
 
