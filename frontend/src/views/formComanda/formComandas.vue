@@ -4,7 +4,7 @@ import { ref, onMounted } from "vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { router } from "@/router";
-import UploadImages from "./uploadImages.vue";
+import UploadImages from "./uploadimagesTwo.vue";
 // import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { useAddDocument } from "@/composables/addDocuments";
