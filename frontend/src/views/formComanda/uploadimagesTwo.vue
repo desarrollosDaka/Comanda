@@ -282,7 +282,7 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row v-if="USER_ROL != 11 && USER_ROL != 9 && props.tipoDelivery == 'DELIVERY TIENDA'">
+  <v-row>
     <v-col cols="12">
       <br>
       <v-file-input 
@@ -323,7 +323,7 @@ async function downLoadArchive(param: Documento) {
             density="compact" 
             @click="deldata(data, index)" 
             icon="mdi-delete-forever-outline" 
-            :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11"
+            disabled
             color="error">
           </v-btn>
 

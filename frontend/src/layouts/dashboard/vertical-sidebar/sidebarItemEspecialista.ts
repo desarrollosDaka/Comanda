@@ -1,11 +1,7 @@
 // icons
 import {
     DashboardOutlined,
-    LoginOutlined,
-    FontSizeOutlined,
-    ClusterOutlined,
-    SnippetsOutlined,
-    UserOutlined,
+    ContainerOutlined,
     BarcodeOutlined
   } from '@ant-design/icons-vue';
   
@@ -31,6 +27,11 @@ import {
       title: 'Panel de control',
       icon: DashboardOutlined,
       to: '/dashboard'
+    },
+    {
+      title: 'Reporte',
+      icon: ContainerOutlined, 
+      to: '/ReporteComanda'
     },
     {
       title: 'Retencion',
