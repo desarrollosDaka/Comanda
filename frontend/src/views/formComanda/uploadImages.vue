@@ -282,7 +282,7 @@ async function downLoadArchive(param: Documento) {
 
 <template>
 
-  <v-row v-if="USER_ROL != 11 && USER_ROL != 9 && props.tipoDelivery == 'DELIVERY TIENDA'">
+  <v-row v-if="USER_ROL != 11 && USER_ROL != 9">
     <v-col cols="12">
       <br>
       <v-file-input 
@@ -294,6 +294,7 @@ async function downLoadArchive(param: Documento) {
         required
         @change="viewImages" 
         accept="image/* application/pdf"
+        :disabled="props.tipoDelivery != 'DELIVERY TIENDA' && USER_ROL == 10"
         prepend-icon="mdi-camera">
       </v-file-input>
 
