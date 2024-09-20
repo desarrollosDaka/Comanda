@@ -1080,7 +1080,7 @@ function handleSelectImages(items: any) {
           color="primary"
         ></v-textarea >
       </v-col>
-      
+      <!-- a -->
       <v-col cols="12" md="6">
         <v-label for="referencia">Ticket Zendesk<span class="red">*</span></v-label>
         <v-text-field
