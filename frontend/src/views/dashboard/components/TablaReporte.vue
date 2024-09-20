@@ -57,7 +57,7 @@ const socket = io(`${baseUrlBack}`, {
 // }
 
 
-if(USER_ROL.value === 11 || USER_ROL.value === 4){
+if(USER_ROL.value === 11 || USER_ROL.value === 4 || USER_ROL.value === 8){
   urlSocket.value = 'get-master-order-report-filter'
   urlSocketEmit.value = 'getComandaReporteFilter'
 }else if(USER_ROL.value === 99){
