@@ -321,7 +321,7 @@ async function downLoadArchive(param: Documento) {
             density="compact" 
             @click="deldata(data, index)" 
             icon="mdi-delete-forever-outline" 
-            :disabled="props.statusComanda != '1' || props.statusComanda == null"
+            :disabled="props.statusComanda != '1'"
             color="error">
           </v-btn>
 
