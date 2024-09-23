@@ -74,6 +74,7 @@ const idOrder = ref();
 const Id_sucursal= ref();
 const ID_ticket = ref();
 const description_payment = ref();
+const Status = ref('0');
 
 // URL
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
@@ -1102,6 +1103,7 @@ function handleSelectImages(items: any) {
     <UploadImages
       @isSelectImages="handleSelectImages"
       :ID_detalle="idComandaRandom"
+      :statusComanda="ID_status"
     />
 
     <v-btn
