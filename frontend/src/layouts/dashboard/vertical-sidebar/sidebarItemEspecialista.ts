@@ -28,11 +28,11 @@ import {
       icon: DashboardOutlined,
       to: '/dashboard'
     },
-    {
-      title: 'Reporte',
-      icon: ContainerOutlined, 
-      to: '/ReporteComanda'
-    },
+    // {
+    //   title: 'Reporte',
+    //   icon: ContainerOutlined, 
+    //   to: '/ReporteComanda'
+    // },
     {
       title: 'Retencion',
       icon: BarcodeOutlined, 

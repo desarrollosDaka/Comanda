@@ -636,6 +636,7 @@ function handleSelectImages(items: any) {
           variant="outlined"
           v-model="porcentaje"
           required
+          :disabled="retencion === false"
           color="primary"
           class="mt-2 my-input"
         >
