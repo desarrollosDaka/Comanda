@@ -28,14 +28,13 @@ const props = defineProps({
     type: Boolean as () => boolean,
     required: false,
   },
-  tipoDelivery: {
+  statusComanda: {
     type: String as () => string,
     required: false,
   }
 })
 
-const delivery = ref()
-delivery.value = props.tipoDelivery
+
 
 let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 // Localstorage
@@ -281,7 +280,6 @@ async function downLoadArchive(param: Documento) {
 </script>
 
 <template>
-
   <v-row v-if="USER_ROL != 11 && USER_ROL != 9">
     <v-col cols="12">
       <br>
@@ -323,7 +321,7 @@ async function downLoadArchive(param: Documento) {
             density="compact" 
             @click="deldata(data, index)" 
             icon="mdi-delete-forever-outline" 
-            disabled
+            :disabled="props.statusComanda != '1' || props.statusComanda == null"
             color="error">
           </v-btn>
 

@@ -113,6 +113,7 @@ const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Nombre" }, 
+  { title: "SUCURSAL", key: "Sucursal" },
   { title: "DELIVERY", key: "Delivery_nombre" },
   { title: "FECHA", key: "Create_date" },
   { title: "STATUS", key: "Status" },

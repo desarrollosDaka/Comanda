@@ -792,7 +792,7 @@ onMounted(async () => {
           required
           color="primary"
           class="mt-2 my-input"
-          :disabled="Status != 1 && Status != 10"
+          :disabled="Status != 1 && Status != 10 || retencion === false"
         >
         </v-autocomplete>
       </v-col>
@@ -1278,7 +1278,7 @@ onMounted(async () => {
     </v-row>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages @isSelectImages="handleSelectImages" :ID_detalle="id" />
+    <UploadImages @isSelectImages="handleSelectImages" :ID_detalle="id" :statusComanda="Status"/>
 
     <v-btn
       color="primary"
