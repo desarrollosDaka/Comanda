@@ -34,14 +34,19 @@ import {
       to: '/dashboard'
     },
     {
+      title: 'Comandas',
+      icon: ClusterOutlined, 
+      to: '/ComandasCDD'
+    },
+    {
       title: 'Reporte',
       icon: ContainerOutlined, 
       to: '/ReporteComanda'
     },
     {
-      title: 'Comandas',
-      icon: ClusterOutlined, 
-      to: '/ComandasCDD'
+      title: 'Retencion',
+      icon: BarcodeOutlined, 
+      to: '/retenciones'
     }
   ];
   

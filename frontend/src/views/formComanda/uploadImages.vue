@@ -324,7 +324,7 @@ async function downLoadArchive(param: Documento) {
             density="compact" 
             @click="deldata(data, index)" 
             icon="mdi-delete-forever-outline" 
-            :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11"
+            :disabled="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 10 || USER_ROL === 11 || USER_ROL === 4"
             color="error">
           </v-btn>
 

@@ -276,7 +276,7 @@ const getMasterOrderRetencion = async (req, res) => {
   }
 };
 
-const getMasterOrderRetencionTwo = async (req, res) => {
+const  getMasterOrderRetencionTwo = async (id) => {
   try {
     // const rta = await sequelize.models.modelOrders.findAll();
     const rta = await sequelize.query(
@@ -289,7 +289,7 @@ const getMasterOrderRetencionTwo = async (req, res) => {
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
-                 ,T9.Delivery_type
+                ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
@@ -302,15 +302,12 @@ const getMasterOrderRetencionTwo = async (req, res) => {
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-        WHERE T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
+        WHERE T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 AND T0.ID_sucursal = '${id}'
         ORDER BY T0.[ID_order] DESC`
     );
 
     if (rta) {
       return rta;
-    } else {
-      res.status(404);
-      res.json({ msj: "Error en la consulta" });
     }
   } catch (e) {
     console.log("Error", e);

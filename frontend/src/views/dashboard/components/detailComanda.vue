@@ -328,7 +328,7 @@ async function updateData() {
         }).then((result) => {
           if (result.isConfirmed && USER_ROL.value === 10) {
             router.push(`/ComandasAtc`);
-          } else if(result.isConfirmed && USER_ROL.value === 1 || USER_ROL.value === 11){
+          } else if(result.isConfirmed && USER_ROL.value === 1 || USER_ROL.value === 11 ||  USER_ROL.value === 8){
             router.push(`/retenciones`);
           } else if(result.isConfirmed && USER_ROL.value === 2){
             router.push(`/comadasAtcOnline`);
@@ -652,7 +652,7 @@ const allInputsFilled = computed(() => {
       </v-col>
 
       <!-- BOTON PARA RECHAZAR COMANDA -->
-      <v-col cols="auto" v-if="USER_ROL === 11">
+      <v-col cols="auto" v-if="USER_ROL === 11 || USER_ROL === 8">
         <v-btn @click="alertaRechazar" append-icon="mdi-delete-sweep" variant="elevated" color="error">
           Rechazar Retencion
         </v-btn>
