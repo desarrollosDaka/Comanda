@@ -14,11 +14,12 @@ const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const urlSocket = ref();
+const urlSocketEmit = ref();
 const infoAsesores = ref();
 const infogetStatus = ref();
 const id_sucursal = ref();
 
-let USER_ROL = ref<number>(0); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
+const USER_ROL = ref(); //Variable donde se almacena el ROL DEL USUARIO que vendria del localstorage
 let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendria del localstorage
 let user_crea = ref<string>("");
 
@@ -38,34 +39,30 @@ const socket = io(`${baseUrlBack}`, {
   reconnection: false, // Deshabilitar la reconexión automática
 });
 
-if(USER_ROL.value === 1){
+if(USER_ROL.value == '1'){
   urlSocket.value = 'get-master-order-retencion'
-}else if(USER_ROL.value === 11){
-  urlSocket.value = 'get-master-order-retencion-two'
+  urlSocketEmit.value = 'getComandaRetencion'
+}else if(USER_ROL.value == '11' || USER_ROL.value == '8'){
+  urlSocket.value = 'get-master-order-retencion-filter'
+  urlSocketEmit.value = 'getComandaRetencionFilter'
+  
 }
+
+// Emitir evento para solicitar datos del servidor
+
+setInterval(() => {
+  socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
+}, 1000);
+
 
 // Listen for events from the server
 socket.on(`${urlSocket.value}`, (rta) => {
-
-//   if (Array.isArray(rta)) {
-//   const dataFilterStatus: any = rta[0].filter((item: Table_Orders) => {
-//       if (ROLFILTERUSER.includes(USER_ROL.value)) { //FILTRAMOS POR ASESORES ASIGNADOS
-//         return dataUser.status.includes(item.ID_status) &&
-//           item.User_asing.toString() === USER.value.toString() &&
-//           item.ID_Sucursal === id_sucursal.value
-
-//       } else {//FILTRAMOS SOLO POR ESTATUS
-//         return (
-//           dataUser.status.includes(item.ID_status) &&
-//           item.ID_Sucursal === id_sucursal.value
-//         );
-//       }
-//     });
-// } else {
-//     console.error("La respuesta no es un array:", rta);
-// } 
-    info.value = rta[0]
-    loadingInfo.value = false;
+    try {
+        info.value = rta[0]
+        loadingInfo.value = false;
+    } catch (error) { 
+       console.log(error);
+    }
 });
 
 const ROLFILTERUSER = [1, 5]; //ESTE ARREGLO INDICA QUE ROLES DE USUARIO, VA FILTRAR POR  item.User_asing
@@ -120,6 +117,7 @@ const getNameAsesor = (id: number) => {
 onMounted(async () => {
   //await getOrders();
   loadingInfo.value = true;
+  socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });

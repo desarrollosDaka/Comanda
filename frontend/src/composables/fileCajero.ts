@@ -14,7 +14,7 @@ export function useUploadFilesCaja(files: Document[], status: string ) {
 
     if (!types.some(type => type === 'ORDEN DE VENTA') && status === 'Creada') {
 
-        toast.error("Error: Debes Adjutar la Orden de Venta", {
+        toast.error("Error: Debes Adjuntar la Orden de Venta", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
             autoClose: 4000,
@@ -28,7 +28,7 @@ export function useUploadFilesCaja(files: Document[], status: string ) {
 
     }else if (!types.some(type => type === 'FACTURA') && status === 'Asignada') {
 
-        toast.error("Error: Debes Adjutar la Factura", {
+        toast.error("Error: Debes Adjuntar la Factura", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
             autoClose: 4000,
