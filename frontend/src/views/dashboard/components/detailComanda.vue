@@ -637,8 +637,8 @@ const allInputsFilled = computed(() => {
     <v-row align="center" justify="start">
 
       <!-- BOTON PARA CAMBIAR DE ESATUS -->
-      <v-col cols="auto">
-        <v-btn :disabled="ID_status == 'Facturada' || ID_status == 'Ret. Aceptada' && !allInputsFilled && USER_ROL != 1 && USER_ROL != 10" append-icon="mdi-check-all" variant="elevated" color="primary"
+      <v-col cols="auto" >
+        <v-btn :disabled="!allInputsFilled" append-icon="mdi-check-all" variant="elevated" color="primary"
           @click="USER_ROL === 4 ? asignAsesor() : updateData()">
           {{ dataUser.msgButton }}
         </v-btn>
