@@ -9,7 +9,6 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
-const { log } = require("console");
 const internal = require("stream");
 
 
@@ -725,6 +724,7 @@ const filterOrderPickUp = async (id) => {
     const rta = await sequelize.query(
       `
       SELECT T1 .Nombre,
+        T1.Tipo_cedula,
         T3.Sucursal,
         T2.[Status] ,
         T9.Delivery_type , 
@@ -738,6 +738,7 @@ INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
 WHERE T0.ID_status = 4 AND T0.Retencion = 0 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
     UNION ALL
 SELECT T1 .Nombre,
+T1.Tipo_cedula,
   T3.Sucursal,
   T2.[Status] ,
   T9.Delivery_type , 

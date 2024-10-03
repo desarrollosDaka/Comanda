@@ -672,7 +672,6 @@ const allInputsFilled = computed(() => {
         <v-btn class="ms-auto" text="Ok" @click="cajaFactura"></v-btn>
       </template>
     </v-card>
-
   </v-dialog>
 </template>
 
