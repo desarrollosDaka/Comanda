@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form } from "vee-validate";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { router } from "@/router";
@@ -75,6 +75,7 @@ const Id_sucursal= ref();
 const ID_ticket = ref();
 const description_payment = ref();
 const Status = ref('0');
+const tiposDeDoc = ref();
 
 // URL
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
@@ -86,6 +87,28 @@ const baseUrlClients = `${import.meta.env.VITE_URL}/api/clients`;
 const baseUrlDelivery = `${import.meta.env.VITE_URL}/api/delivery`;
 const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 
+const tipoNatural = ref([
+  'V',
+  'E'
+])
+
+const tipoJuridico = ref([
+  'J',
+  'V',
+  'G',
+  'E',
+  'C',
+  'P'
+])
+
+watch(tipo, (newValue) => {
+  if (newValue === 'NATURAL') {
+    tiposDeDoc.value = tipoNatural.value;
+  } else if (newValue === 'JURIDICO') {
+    tiposDeDoc.value = tipoJuridico.value;
+  }
+});
+
 
 // Localstorage
 const jsonFromLocalStorage = localStorage.getItem("user");
@@ -94,7 +117,6 @@ if (jsonFromLocalStorage !== null) {
   user_crea.value = parsedData.data.Nombre;
   ID_rol.value = parsedData.data.ID_rol;
   Id_sucursal.value = parsedData.data.Id_sucursal;
-
 }
 
 /// validaciones
@@ -433,10 +455,6 @@ async function handleFormComanda() {
 // Function para enviar form
 /* eslint-disable @typescript-eslint/no-explicit-any */
 async function validate() {
-  // VALIDAMOS PRIMERO QUE EXISTAN LOS DOCUMENTOS CON SUS RESPECTIVOS TIPO DE DOCUMENTOS
-  // const isvalidateDocuments =  ()
-
-  // if (isvalidateDocuments)
   const { isvalidate } = useUploadFiles(itemDocument.value); //Verificamos los tipos de documentos
 
   if (isvalidate)
@@ -486,7 +504,6 @@ onMounted(async () => {
 
 function handleSelectImages(items: any) {
   itemDocument.value = items;
-
   console.log
 }
 
@@ -534,7 +551,7 @@ function handleSelectImages(items: any) {
         <v-label for="tipoDocumento"></v-label>
         <v-autocomplete
           id="tipoDocumento"
-          :items="['V', 'J', 'G', 'E', 'C', 'P']"
+          :items="tiposDeDoc"
           variant="outlined"
           v-model="tipoDocumento"
           required

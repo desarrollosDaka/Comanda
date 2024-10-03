@@ -130,6 +130,7 @@ onUnmounted(() => {
 // Cabezera de la comanda
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
+  { title: "TIPO", align: "end", key: "Tipo_cedula" },
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Cliente" },
   { title: "DELIVERY", key: "Delivery_type" },
