@@ -5,6 +5,7 @@ import {
     FontSizeOutlined,
     ClusterOutlined,
     SnippetsOutlined,
+    ContainerOutlined,
     CarOutlined,
     BarcodeOutlined,
   } from '@ant-design/icons-vue';
@@ -36,6 +37,16 @@ import {
       title: 'Comandas',
       icon: ClusterOutlined, 
       to: '/ComandasCDD'
+    },
+    {
+      title: 'Reporte',
+      icon: ContainerOutlined, 
+      to: '/ReporteComanda'
+    },
+    {
+      title: 'Retencion',
+      icon: BarcodeOutlined, 
+      to: '/retenciones'
     }
   ];
   

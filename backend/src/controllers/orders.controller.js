@@ -9,7 +9,6 @@ const fontkit = require("@pdf-lib/fontkit"); // Importa fontkit
 const uploadsDirectory = require("../../uploads/index.js");
 const folderWaterMarkDirectory = require("../../imagesWatermark/index.js");
 const fontsDirectory = require("../assets/fonts/index.js");
-const { log } = require("console");
 const internal = require("stream");
 
 
@@ -58,6 +57,93 @@ const getMasterOrder = async (req, res) => {
   }
 };
 
+//CONSULTA DE ORDENES PARA REPORTE
+const getMasterOrderReport = async (req, res) => {
+  try {
+    // const rta = await sequelize.models.modelOrders.findAll();
+    const rta = await sequelize.query(
+      `SELECT  T0.[ID_order]
+              ,T0.ID_detalle
+              ,T2.Status
+              ,T2.ID_status 
+              ,T3.Tipo_cedula
+              ,T0.Cedula  
+              ,T5.Delivery_type
+              ,T3.Nombre Cliente
+              ,T1.Sucursal
+              ,T1.ID_Sucursal
+              ,T0.[User_crea]
+              ,T0.User_mod
+              ,T4.Nombre AS NombreAsesor
+              ,T0.Description_payment
+              ,T0.User_asing 
+			  ,T0.[Delete]
+              ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
+              ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.update_date), 108), 1, 8) AS HoraUpdate
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
+        LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
+        ORDER BY T0.[ID_order] DESC
+` );
+
+    if (rta) {
+      return rta;
+    } else {
+      res.status(404);
+      res.json({ msj: "Error en la consulta" });
+    }
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+//CONSULTA DE ORDENES PARA REPORTE filter
+const getMasterOrderReportFilter = async (id) => {
+  try {
+    // const rta = await sequelize.models.modelOrders.findAll();
+    const rta = await sequelize.query(
+      `SELECT  T0.[ID_order]
+              ,T0.ID_detalle
+              ,T2.Status
+              ,T2.ID_status 
+              ,T3.Tipo_cedula
+              ,T0.Cedula  
+              ,T5.Delivery_type
+              ,T3.Nombre Cliente
+              ,T1.Sucursal
+              ,T1.ID_Sucursal
+              ,T0.[User_crea]
+              ,T0.User_mod
+              ,T4.Nombre AS NombreAsesor
+              ,T0.Description_payment
+              ,T0.User_asing 
+			  ,T0.[Delete]
+              ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
+              ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+              ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.update_date), 108), 1, 8) AS HoraUpdate
+        FROM [COMANDA_TEST].[dbo].[ORDERS] T0
+        INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
+        INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
+        INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
+        LEFT JOIN [dbo].[MASTER_USER] T4 ON T0.User_asing = T4.ID_user
+        LEFT JOIN [dbo].[DELIVERY_TYPE] T5 ON T0.Tipo_delivery = T5.ID_Delivery
+		WHERE T0.ID_sucursal = '${id}'
+        ORDER BY T0.[ID_order] DESC
+` );
+
+    if (rta) {
+      return rta;
+    } 
+  } catch (e) {
+    console.log("Error", e);
+  }
+};
+
 //CONSULTA DE ORDENES
 const getMasterOrderFecha = async (jsonDesdeHasta) => {
 
@@ -72,7 +158,7 @@ const getMasterOrderFecha = async (jsonDesdeHasta) => {
       `SELECT  T0.[ID_order]
         ,T0.ID_detalle
         ,T2.Status
-        ,T2.ID_status 
+        ,T2.ID_status
         ,T3.Tipo_cedula
         ,T0.Cedula  
         ,T5.Delivery_type
@@ -189,7 +275,7 @@ const getMasterOrderRetencion = async (req, res) => {
   }
 };
 
-const getMasterOrderRetencionTwo = async (req, res) => {
+const  getMasterOrderRetencionTwo = async (id) => {
   try {
     // const rta = await sequelize.models.modelOrders.findAll();
     const rta = await sequelize.query(
@@ -202,7 +288,7 @@ const getMasterOrderRetencionTwo = async (req, res) => {
                 ,T3.Razon_comercial
                 ,T1.Sucursal
                 ,T1.ID_Sucursal
-                 ,T9.Delivery_type
+                ,T9.Delivery_type
                 ,T0.[User_crea]
                 ,T0.[User_asing] Asesor 
                 ,T2.Status
@@ -215,15 +301,12 @@ const getMasterOrderRetencionTwo = async (req, res) => {
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
         INNER JOIN [dbo].[MASTER_CLIENTS] T3 ON T0.Cedula = T3.Cedula
         INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
-        WHERE T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 
+        WHERE T0.[Delete] IS NULL AND T0.Retencion = 1 AND T0.ID_status = 5 AND T0.ID_sucursal = '${id}'
         ORDER BY T0.[ID_order] DESC`
     );
 
     if (rta) {
       return rta;
-    } else {
-      res.status(404);
-      res.json({ msj: "Error en la consulta" });
     }
   } catch (e) {
     console.log("Error", e);
@@ -552,7 +635,8 @@ const filterOrderDetails = async (req, res) => {
 const filterOrderATC = async (id) => {
   try {
     const rta = await sequelize.query(
-    `SELECT 
+    `
+		SELECT 
 		T1.Nombre, 
 		T2.[Status],
 		T0.*,
@@ -562,7 +646,31 @@ const filterOrderATC = async (id) => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 11 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'` 
+		WHERE T0.ID_status = 11 and T0.Tipo_delivery != 2 AND ID_sucursal = '${id}'
+		UNION ALL
+	SELECT  
+		T1.Nombre,
+		T2.[Status],
+		T0.*, 
+CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 4 and Tipo_delivery = 4 AND T0.Retencion = 0 AND ID_sucursal = '${id}'
+		UNION ALL
+	SELECT  
+		T1.Nombre,
+		T2.[Status],
+		T0.*, 
+CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
+		T4.Delivery_type as Delivery_nombre
+		FROM [dbo].[ORDERS] T0
+		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
+		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
+		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
+		WHERE T0.ID_status = 6 and Tipo_delivery = 4 AND T0.Retencion = 1 AND ID_sucursal = '${id}'` 
     );
     return rta;
   } catch (e) {
@@ -577,6 +685,7 @@ const filterOrderATCOnline = async () => {
       `SELECT 
 		T1.Nombre, 
 		T2.[Status],
+		T5.Sucursal,
 		T0.*,
 	CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date , 
 		T4.Delivery_type as Delivery_nombre
@@ -584,11 +693,13 @@ const filterOrderATCOnline = async () => {
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 4 AND  T0.Retencion = 0 AND  T0.Tipo_delivery != 2 AND ID_sucursal != 99
+		INNER JOIN [dbo].[MASTER_STORES] T5 ON T0.ID_sucursal = T5.ID_sucursal
+		WHERE T0.ID_status = 4 AND  T0.Retencion = 0 AND  T0.Tipo_delivery in(1,3) AND T0.ID_sucursal != 99
 	UNION ALL
 	SELECT  
 		T1.Nombre,
 		T2.[Status],
+		T5.Sucursal,
 		T0.*, 
 CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 		T4.Delivery_type as Delivery_nombre
@@ -596,7 +707,8 @@ CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
 		INNER JOIN [dbo].[DELIVERY_TYPE] T4 ON T0.Tipo_delivery = T4.ID_Delivery
-		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery != 2 AND ID_sucursal != 99`
+		INNER JOIN [dbo].[MASTER_STORES] T5 ON T0.ID_sucursal = T5.ID_sucursal
+		WHERE T0.ID_status = 6 AND T0.Retencion = 1 and Tipo_delivery in(1,3) AND T0.ID_sucursal != 99`
     );
     return rta;
   } catch (e) {
@@ -612,6 +724,7 @@ const filterOrderPickUp = async (id) => {
     const rta = await sequelize.query(
       `
       SELECT T1 .Nombre,
+        T1.Tipo_cedula,
         T3.Sucursal,
         T2.[Status] ,
         T9.Delivery_type , 
@@ -625,6 +738,7 @@ INNER JOIN [dbo].[DELIVERY_TYPE] T9 ON T0.Tipo_delivery = T9.ID_Delivery
 WHERE T0.ID_status = 4 AND T0.Retencion = 0 and Tipo_delivery = 2 and T0.ID_sucursal = '${id}'
     UNION ALL
 SELECT T1 .Nombre,
+T1.Tipo_cedula,
   T3.Sucursal,
   T2.[Status] ,
   T9.Delivery_type , 
@@ -1337,6 +1451,7 @@ const deleteMasterOrder = async (req, res) => {
       // body: req.body,
       Delete: req.body.status,
       Motivo_delete: req.body.motivo,
+      ID_status: req.body.statusNumber,
     };
 
     const idOrder = req.params.id;
@@ -1390,5 +1505,7 @@ module.exports = {
   getMasterOrderRetencionTwo,
   filterOrderPickUpTwo,
   filterOrderPickUp,
-  filterOrderATCOnline
+  filterOrderATCOnline,
+  getMasterOrderReport,
+  getMasterOrderReportFilter
 };

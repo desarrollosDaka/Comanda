@@ -1,11 +1,7 @@
 // icons
 import {
     DashboardOutlined,
-    LoginOutlined,
-    FontSizeOutlined,
-    ClusterOutlined,
-    SnippetsOutlined,
-    UserOutlined,
+    ContainerOutlined,
     BarcodeOutlined
   } from '@ant-design/icons-vue';
   
@@ -25,6 +21,7 @@ import {
     subCaption?: string;
   }
   
+  //cambio
   const sidebarItem: menu[] = [
     { header: 'Comanda' },
     {
@@ -32,6 +29,11 @@ import {
       icon: DashboardOutlined,
       to: '/dashboard'
     },
+    // {
+    //   title: 'Reporte',
+    //   icon: ContainerOutlined, 
+    //   to: '/ReporteComanda'
+    // },
     {
       title: 'Retencion',
       icon: BarcodeOutlined, 

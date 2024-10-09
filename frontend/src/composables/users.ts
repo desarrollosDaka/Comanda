@@ -16,7 +16,7 @@ const ARRAYUSER_ROL = [
         "printer":false
     }, 
     //COORDINADOR ONLINE
-    {   "userRol": 11, 
+    {   "userRol": 11,
         "status": 5,
         "msgButton":'Aceptar Retencion', 
         "changeID_status": 6,
@@ -60,8 +60,8 @@ const ARRAYUSER_ROL = [
     //ADM CAJA ONLINE    
     {   "userRol": 8 , 
         "status":[3],
-        "msgButton":'Facturar Pedido', 
-        "changeID_status":4,
+        "msgButton":'Aceptar Retencion', 
+        "changeID_status":6,
         "printer":false
     },
     //ALMACENIST ONLINE
@@ -75,7 +75,7 @@ const ARRAYUSER_ROL = [
     {   "userRol": 10,
         "status":[4, 6], 
         "msgButton":'Despachada por ATC',
-        "changeID_status":8,
+        "changeID_status":8, 
         "printer":false
     },
       //ATC ONLINE

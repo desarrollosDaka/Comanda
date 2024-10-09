@@ -14,7 +14,7 @@ const Email = ref('');
 const Nombre_rol = ref('');
 
 
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User.value = parsedData.data.Nombre;

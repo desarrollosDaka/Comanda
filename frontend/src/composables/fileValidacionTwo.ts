@@ -7,14 +7,14 @@ interface Document {
     mode: string;
 }
 
-export function useUploadFilesValidacion(files: Document[], rol: string | number ) {
+export function useUploadFilesValidacion(files: Document[], rol: string | number, delivery: string ) {
 
     let isvalidate :boolean = true;
     const types = files.map(item => item.type);
 
     if (!types.some(type => type === 'FACTURA') && rol == '6') {
 
-        toast.error("Error: Debes Adjutar la Factura", {
+        toast.error("Error: Debes Adjuntar la Factura", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
             autoClose: 4000,
@@ -27,7 +27,7 @@ export function useUploadFilesValidacion(files: Document[], rol: string | number
         isvalidate = false;
     }else if (!types.some(type => type === 'RETENCIÓN') && rol == '1') {
 
-        toast.error("Error: Debes Adjutar la Retencion", {
+        toast.error("Error: Debes Adjntar la Retencion", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
             autoClose: 4000,
@@ -41,7 +41,22 @@ export function useUploadFilesValidacion(files: Document[], rol: string | number
 
     }else if (!types.some(type => type === 'GUIA ZOOM') && rol == '2') {
 
-        toast.error("Error: Debes Adjutar la Guia Zoom", {
+        toast.error("Error: Debes Adjuntar la Guia Zoom", {
+            position: toast.POSITION.TOP_CENTER,
+            transition: toast.TRANSITIONS.ZOOM,
+            autoClose: 4000,
+            theme: 'colored',
+            toastStyle: {
+                fontSize: '16px',
+                opacity: '1',
+            },
+        });
+        isvalidate = false;
+
+
+    }else if (!types.some(type => type === 'GUIA DESPACHO') && rol == '10' && delivery == 'DELIVERY TIENDA') {
+
+        toast.error("Error: Debes Adjuntar la Guia Despacho", {
             position: toast.POSITION.TOP_CENTER,
             transition: toast.TRANSITIONS.ZOOM,
             autoClose: 4000,

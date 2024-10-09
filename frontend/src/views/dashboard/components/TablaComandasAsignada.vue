@@ -25,7 +25,7 @@ let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendri
 let user_crea = ref<string>("");
 
 // DATA DEL LOCAL STORAGE
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
@@ -155,6 +155,7 @@ onUnmounted(() => {
 // Cabezera de la comanda
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
+  { title: "TIPO", align: "end", key: "Tipo_cedula" },
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },
@@ -202,7 +203,7 @@ const COLORSTATUS: any = {
         <v-spacer></v-spacer>
       </v-card-title>
 
-      <!-- datatable -->
+      <!-- datatable cambios -->
       <v-data-table
         hover
         density="comfortable"
@@ -223,7 +224,7 @@ const COLORSTATUS: any = {
           || (item as any).ID_status === 10 && USER_ROL ===  7   || (item as any).ID_status === 4 && USER_ROL ===  7 || (item as any).ID_status === 1 && USER_ROL ===  4 || (item as any).ID_status === 4 && USER_ROL ===  9 || (item as any).ID_status === 2 && USER_ROL ===  4 || (item as any).ID_status === 6 && USER_ROL ===  9"  >
               mdi-eye-check
             </v-icon>
-          </router-link>
+          </router-link> 
         </template>
         <!-- || (item as any).ID_status === 2 && USER_ROL ===  4  -->
         <!-- status -->

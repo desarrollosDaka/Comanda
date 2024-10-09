@@ -25,14 +25,16 @@ const baseUrlRol = `${import.meta.env.VITE_URL}/api/roles`;
 const baseUrlStore = `${import.meta.env.VITE_URL}/api/stores`;
 const infoSucursal = ref();
 const rolInfo = ref();
+const USER_ROL = ref();
 
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   User_crea.value = parsedData.data.Nombre;
   ID_SUCURSAL_LOCAL.value = parsedData.data.Id_sucursal;
+  USER_ROL.value = +parsedData.data.ID_rol;
 } 
 
 // validaciones
@@ -76,10 +78,22 @@ const getRol = async () => {
     const url = `${baseUrlRol}/masterRoles`
     const {data} = await axios.get(url);
 
-    rolInfo.value =  data.map((rol: Roles) => ({
+    if(USER_ROL.value == 4){
+        rolInfo.value = data
+        .filter((rol: Roles) =>  rol.ID_rol !== 1 && rol.ID_rol !== 2 && rol.ID_rol !== 3 && rol.ID_rol !== 8 && rol.ID_rol !== 9 && rol.ID_rol !== 99)
+        .map((rol: Roles) => ({
             title: rol.Nombre_rol,
             value: rol.ID_rol
         }));
+    }else{
+        rolInfo.value = data
+        .map((rol: Roles) => ({
+            title: rol.Nombre_rol,
+            value: rol.ID_rol
+        }));
+    }
+
+        
   } catch(error){
       console.log(error)
   }
@@ -107,12 +121,12 @@ const getSucursalFilter = async () => {
   try{
     const url = `${baseUrlStore}/filterStores/${ID_SUCURSAL_LOCAL.value}`
     const {data} = await axios.get(url);
-    console.log(data)
 
-    infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
+        infoSucursal.value =  data[0].map((sucursales: Sucursales) => ({
             title: sucursales.Sucursal,
             value: sucursales.ID_sucursal
         }));
+   
   } catch(error){
       console.log(error)
   }

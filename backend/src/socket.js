@@ -10,7 +10,9 @@ const {
   filterOrderPickUp,
   filterOrderPickUpTwo,
   filterOrderATC,
-  filterOrderATCOnline
+  filterOrderATCOnline,
+  getMasterOrderReport,
+  getMasterOrderReportFilter
 } = require("./controllers/orders.controller.js");
 const { getMasterUser,getMasterUserBySuc } = require("./controllers/user.controller.js");
 const { latestNoti, findallv2 } = require("./controllers/notifications.controllers.js");
@@ -37,7 +39,27 @@ module.exports = (server) => {
       //console.log(sucId);
       const rta = await getMasterOrderForStore(sucId);
       socket.emit("get-master-order-suc", rta);
-    });0
+    });
+
+    socket.on("getComandaReporte",async  (sucId) => {
+      const rta = await getMasterOrderReport();
+      socket.emit("get-master-order-report", rta);
+    });
+
+    socket.on("getComandaReporteFilter",async  (id) => {
+      const rta = await getMasterOrderReportFilter(id);
+      socket.emit("get-master-order-report-filter", rta);
+    });
+
+    socket.on("getComandaRetencion",async  (id) => {
+      const rta = await getMasterOrderRetencion();
+      socket.emit("get-master-order-retencion", rta);
+    });
+
+    socket.on("getComandaRetencionFilter",async  (id) => {
+      const rta = await getMasterOrderRetencionTwo(id);
+      socket.emit("get-master-order-retencion-filter", rta);
+    });
     
     // filter User con ID SUC
     socket.on("getUsuario",async  (sucId) => {
@@ -104,16 +126,6 @@ module.exports = (server) => {
             }
         };
 
-        const emitOrderDataConRetencionTwo = async () => {
-            try {
-                const rta = await getMasterOrderRetencionTwo();
-                socket.emit('get-master-order-retencion-two', rta);
-                //console.log('Datos emitidos:', rta);
-            } catch (error) {    
-                console.error('Error al obtener los datos:', error);
-            }
-        };
-
 
         const emitOrderDataConPickup = async () => {
         //     try {
@@ -176,7 +188,6 @@ module.exports = (server) => {
         emitUserData();
         emitOrderDataConRetencion();
        // emitNotify();
-        emitOrderDataConRetencionTwo();
         emitOrderDataConPickup();
         emitOrderDataConPickupTwo();
         emitOrderDataATC();
@@ -188,7 +199,6 @@ module.exports = (server) => {
         const intervalIdUser = setInterval(emitUserData, 5000);
         const intervalIdOrderRetencion = setInterval(emitOrderDataConRetencion, 5000);
         //const intervalNotifications = setInterval(emitNotify, 5000);
-        const intervalIdOrderRetencionTwo = setInterval(emitOrderDataConRetencionTwo, 5000);
         const intervalIdOrderPickup = setInterval(emitOrderDataConPickup, 5000);
         const intervalIdOrderPickupTwo = setInterval(emitOrderDataConPickupTwo, 5000);
         const intervalIdOrderATC = setInterval(emitOrderDataATC, 5000);
@@ -198,7 +208,6 @@ module.exports = (server) => {
         socket.on('request-master-user', emitUserData);
         socket.on('request-master-order-retencion', emitOrderDataConRetencion);
       //  socket.on('request-master-notifications', emitNotify);
-        socket.on('request-master-order-retencion-two', emitOrderDataConRetencionTwo);
         socket.on('request-master-order-pickup', emitOrderDataConPickup);
         socket.on('request-master-order-pickupTwo', emitOrderDataConPickupTwo);
         socket.on('request-master-order-ATC', emitOrderDataATC);
@@ -215,7 +224,6 @@ module.exports = (server) => {
             clearInterval(intervalIdUser); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderRetencion); // Limpiar el intervalo cuando el cliente se desconecta
           //  clearInterval(intervalNotifications); // Limpiar el intervalo cuando el cliente se desconecta
-            clearInterval(intervalIdOrderRetencionTwo); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderPickup); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderPickupTwo); // Limpiar el intervalo cuando el cliente se desconecta
             clearInterval(intervalIdOrderATC); // Limpiar el intervalo cuando el cliente se desconecta

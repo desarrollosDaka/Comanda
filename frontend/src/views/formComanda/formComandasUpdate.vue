@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import { router } from "@/router";
-import UploadImages from "./uploadImages.vue";
+import UploadImages from "./uploadimagesTwo.vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
@@ -84,7 +84,7 @@ const baseUrlPayment = `${import.meta.env.VITE_URL}/api/payment`;
 const INSERT_METHOD = "insert";
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_mod.value = parsedData.data.Nombre;
@@ -792,7 +792,7 @@ onMounted(async () => {
           required
           color="primary"
           class="mt-2 my-input"
-          :disabled="Status != 1 && Status != 10"
+          :disabled="Status != 1 && Status != 10 || retencion === false"
         >
         </v-autocomplete>
       </v-col>
@@ -1278,7 +1278,7 @@ onMounted(async () => {
     </v-row>
 
     <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
-    <UploadImages @isSelectImages="handleSelectImages" :ID_detalle="id" />
+    <UploadImages @isSelectImages="handleSelectImages" :ID_detalle="id" :statusComanda="Status"/>
 
     <v-btn
       color="primary"
@@ -1297,6 +1297,7 @@ onMounted(async () => {
         !email ||
         !nombreCompleto ||
         !telefonoUno ||
+        !ID_ticket ||
         !description_payment ||
         !ID_pago"
       type="submit"

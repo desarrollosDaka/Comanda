@@ -22,7 +22,7 @@ let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendri
 let user_crea = ref<string>("");
 
 // DATA DEL LOCAL STORAGE
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
@@ -87,6 +87,7 @@ onUnmounted(() => {
 // Cabezera de la comanda
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
+  { title: "TIPO", align: "end", key: "Tipo_cedula" },
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Cliente" },
   { title: "FECHA", key: "Create_date" },

@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import WidgetFive from './components/WidgetFive.vue';
-import UniqueVisitor from './components/UniqueVisitor.vue';
 import IncomeOverview from './components/IncomeOverview.vue';
 import AnalyticsReport from './components/AnalyticsReport.vue';
 import HelpSupport from './components/HelpSupport.vue';
-import TransactionHistory from './components/TransactionHistory.vue';
 import SalesReport from './components/SalesReport.vue';
 import Banner from './components/Banners.vue';
 
 const usuario = ref();
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   usuario.value = parsedData.data.Nombre;

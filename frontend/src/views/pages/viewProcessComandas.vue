@@ -17,7 +17,7 @@ const ID_rol = ref();
 const ruta = ref('');
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   ID_rol.value = parsedData.data.ID_rol;

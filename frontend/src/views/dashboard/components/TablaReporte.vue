@@ -14,6 +14,7 @@ const loadingInfo = ref(false);
 const baseUrl = `${import.meta.env.VITE_URL}/api/orders`;
 const baseUrlBack = `${import.meta.env.VITE_BACK_URL}`;
 const urlSocket = ref();
+const urlSocketEmit = ref();
 const infoAsesores = ref();
 const infogetStatus = ref(); 
 const id_sucursal = ref();
@@ -34,7 +35,7 @@ let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendri
 let user_crea = ref<string>("");
 
 // DATA DEL LOCAL STORAGE
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
@@ -55,8 +56,24 @@ const socket = io(`${baseUrlBack}`, {
 //   }, 1000);
 // }
 
+
+if(USER_ROL.value === 11 || USER_ROL.value === 4 || USER_ROL.value === 8){
+  urlSocket.value = 'get-master-order-report-filter'
+  urlSocketEmit.value = 'getComandaReporteFilter'
+}else if(USER_ROL.value === 99){
+  urlSocket.value = 'get-master-order-report'
+  urlSocketEmit.value = 'getComandaReporte'
+}
+
+// Emitir evento para solicitar datos del servidor
+const requestMasterOrder = () => {
+  setInterval(() => {
+    socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
+  }, 3000);
+};
+
 // Listen for events from the server
-socket.on(`get-master-order`, (rta) => {
+socket.on(`${urlSocket.value}`, (rta) => {
     try {
         info.value = rta[0]
         loadingInfo.value = false;
@@ -102,38 +119,29 @@ const getMessageStatus = (id: number) => {
   return null;
 };
 
-const getNameAsesor = (id: number) => {
-  if (infoAsesores && infoAsesores.value) {
-    const asesor = infoAsesores.value.find(
-      (item: any) => item.value == id
-    )?.title;
-    return asesor;
-  }
-  return null;
-};
-
 onMounted(async () => {
   loadingInfo.value = true;
-  // socket.emit('getOrderFecha', desde.value, hasta.value);
+  socket.emit(`${urlSocketEmit.value}`, id_sucursal.value);
   const { status } = await useGetStatus();
   infogetStatus.value = status;
 });
 
 onUnmounted(() => {
   socket.disconnect();
-  //console.log("Socket desconectado");
 });
 
 // Cabezera de la comanda
 const headers = ref([
   { title: "COMANDA", align: "start", key: "ID_order" },
+  { title: "TIPO", align: "end", key: "Tipo_cedula" },
   { title: "CEDULA", key: "Cedula" },
   { title: "SUCURSAL", key: "Sucursal" },
   { title: "DELIVERY", key: "Delivery_type"},
+  { title: "CLIENTE", key: "Cliente" },
   { title: "CREADOR", key: "User_crea" },
   { title: "FECHA", key: "Create_date"},
-  { title: "H. CREA", key: "Hora" },
-  { title: "H. ACTUALIZA", key: "HoraUpdate" },
+  { title: "H. CREA", key: "Hora"},
+  { title: "H. ACTUALIZA", key: "HoraUpdate"},
   { title: "STATUS", key: "Status" },
   { title: "", sortable: false, key: "action"},
 ] as const);
@@ -243,6 +251,15 @@ const COLORSTATUS: any = {
           >
             <p class="mb-0">{{ getMessageStatus((item as any).ID_status) }}</p>
           </v-chip>
+        </template>
+
+        <template v-slot:item.Delete="{item}">
+          <v-chip variant="elevated" color="error" size="x-small" prepend-icon="mdi-alert-decagram-outline"  v-if="(item as any).Delete == true">
+              <p class="mb-0">eliminada</p>
+            </v-chip>
+            <v-chip variant="elevated" color="#38b000" size="x-small" prepend-icon="mdi-check" v-else>
+              <p class="mb-0">activo</p>
+            </v-chip>
         </template>
 
       </v-data-table>

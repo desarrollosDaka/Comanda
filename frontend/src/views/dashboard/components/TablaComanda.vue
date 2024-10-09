@@ -29,7 +29,7 @@ let editedItem = ref({
 })
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem('user');
+const jsonFromLocalStorage = localStorage.getItem('user');
 if (jsonFromLocalStorage !== null) {
     const parsedData = JSON.parse(jsonFromLocalStorage);
     id_sucursal.value = parsedData.data.Id_sucursal;
@@ -103,6 +103,7 @@ onMounted(async () => {
 
 const headers = ref([
   { title: 'COMANDA', align: 'start', key: 'ID_order' },
+  { title: "TIPO", align: "end", key: "Tipo_cedula" },
   { title: 'CEDULA', key: 'Cedula' },
   { title: 'SUCURSAL', key: 'Sucursal' },
   { title: 'CLIENTE', key: 'Cliente' },

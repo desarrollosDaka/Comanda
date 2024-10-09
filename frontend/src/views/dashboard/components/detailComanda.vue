@@ -105,7 +105,7 @@ let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendri
 let user_crea = ref<string>("");
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   user_crea.value = parsedData.data.Nombre;
@@ -306,7 +306,7 @@ async function updateData() {
     });
   }
 
-  const { isvalidate } = useUploadFilesValidacion(itemDocument.value, USER_ROL.value) //Verificamos los tipos de documentos si el rol permite cargar archivos
+  const { isvalidate } = useUploadFilesValidacion(itemDocument.value, USER_ROL.value, ID_delivery.value) //Verificamos los tipos de documentos si el rol permite cargar archivos
 
   if (isvalidate)
     Swal.fire({
@@ -328,7 +328,7 @@ async function updateData() {
         }).then((result) => {
           if (result.isConfirmed && USER_ROL.value === 10) {
             router.push(`/ComandasAtc`);
-          } else if(result.isConfirmed && USER_ROL.value === 1 || USER_ROL.value === 11){
+          } else if(result.isConfirmed && USER_ROL.value === 1 || USER_ROL.value === 11 ||  USER_ROL.value === 8){
             router.push(`/retenciones`);
           } else if(result.isConfirmed && USER_ROL.value === 2){
             router.push(`/comadasAtcOnline`);
@@ -621,7 +621,7 @@ const allInputsFilled = computed(() => {
   
   <!-- COMPONENTE QUE PERMITE AGREGAR LOS ARCHIVOS DE IMAGENES -->
   <UploadImages v-if="USER_ROL === 6 || USER_ROL === 8 || USER_ROL === 1 || USER_ROL === 10 || USER_ROL === 11 || USER_ROL === 2 || USER_ROL === 9"
-    @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false />
+    @isSelectImages=handleSelectImages :ID_detalle=id :deleteImageUpdate=false :tipoDelivery="ID_delivery"/>
 
   <v-row class="mb-0 mt-5">
     <v-col v-if="USER_ROL === 4" cols="12" md="12" sm="6">
@@ -637,8 +637,8 @@ const allInputsFilled = computed(() => {
     <v-row align="center" justify="start">
 
       <!-- BOTON PARA CAMBIAR DE ESATUS -->
-      <v-col cols="auto">
-        <v-btn :disabled="ID_status == 'Facturada' && !allInputsFilled && USER_ROL != 1" append-icon="mdi-check-all" variant="elevated" color="primary"
+      <v-col cols="auto" >
+        <v-btn  append-icon="mdi-check-all" variant="elevated" color="primary"
           @click="USER_ROL === 4 ? asignAsesor() : updateData()">
           {{ dataUser.msgButton }}
         </v-btn>
@@ -652,7 +652,7 @@ const allInputsFilled = computed(() => {
       </v-col>
 
       <!-- BOTON PARA RECHAZAR COMANDA -->
-      <v-col cols="auto" v-if="USER_ROL === 11">
+      <v-col cols="auto" v-if="USER_ROL === 11 || USER_ROL === 8">
         <v-btn @click="alertaRechazar" append-icon="mdi-delete-sweep" variant="elevated" color="error">
           Rechazar Retencion
         </v-btn>
@@ -672,7 +672,6 @@ const allInputsFilled = computed(() => {
         <v-btn class="ms-auto" text="Ok" @click="cajaFactura"></v-btn>
       </template>
     </v-card>
-
   </v-dialog>
 </template>
 

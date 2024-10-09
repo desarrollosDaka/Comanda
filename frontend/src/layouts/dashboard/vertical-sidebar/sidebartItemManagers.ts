@@ -1,13 +1,10 @@
 // icons
 import {
     DashboardOutlined,
-    LoginOutlined,
-    FontSizeOutlined,
     ClusterOutlined,
-    SnippetsOutlined,
+    ContainerOutlined,
     UserOutlined,
     CarOutlined,
-    BarcodeOutlined,
   } from '@ant-design/icons-vue';
   
   export interface menu {
@@ -42,6 +39,11 @@ import {
       title: 'Comandas',
       icon: ClusterOutlined, 
       to: '/maestroComandaAsignada'
+    },
+    {
+      title: 'Reporte',
+      icon: ContainerOutlined, 
+      to: '/ReporteComanda'
     },
     {
       title: 'Pick-Up',

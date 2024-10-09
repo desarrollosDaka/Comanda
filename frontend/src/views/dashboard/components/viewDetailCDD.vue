@@ -86,7 +86,7 @@ let USER = ref<number>(0); //Variable donde se almacena el ID USUARIO que vendri
 let user_crea = ref<string>("");
 
 // Localstorage
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage); 
   user_crea.value = parsedData.data.Nombre;
@@ -223,7 +223,7 @@ const changeStatusComanda = () =>{
   const { isvalidate } = useUploadFilesCaja(itemDocument.value, ID_status.value); //Verificamos los tipos de documentos
   console.log(itemDocument.value)
      if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value && ID_status.value  === 'Asignada') {
-    return toast.error(`Error. Debes ingresar el numero de factura`, {
+    return toast.error(`Error. Debes ingresar El Documento POS`, {
       position: toast.POSITION.TOP_CENTER,
       transition: toast.TRANSITIONS.ZOOM,
       autoClose: 4000,

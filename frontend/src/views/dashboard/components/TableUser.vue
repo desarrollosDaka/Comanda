@@ -11,6 +11,8 @@ const Delete = ref(true);
 const baseUrl = `${import.meta.env.VITE_URL}/api/users`;
 const id_sucursal = ref();
 let urlSocket = ref();
+const emailUsuario = ref();
+
 
 const socket = io(import.meta.env.VITE_BACK_URL, {
   reconnection: false // Deshabilitar la reconexión automática
@@ -19,10 +21,11 @@ const socket = io(import.meta.env.VITE_BACK_URL, {
 let info = ref<any[]>([]);
 
 // DATA DEL LOCAL STORAGE
-const jsonFromLocalStorage = sessionStorage.getItem("user");
+const jsonFromLocalStorage = localStorage.getItem("user");
 if (jsonFromLocalStorage !== null) {
   const parsedData = JSON.parse(jsonFromLocalStorage);
   id_sucursal.value = parsedData.data.Id_sucursal;
+  emailUsuario.value = parsedData.data.Email;
 }
 if(id_sucursal.value === 1){
 urlSocket.value = 'get-master-user' 
@@ -44,7 +47,6 @@ socket.on( `${urlSocket.value}`, (rta:string) => {
   
   if (Array.isArray(rta)) {
     info.value = rta[0];
-    console.log(rta);
     loadingInfo.value = false;
   } else {
     console.error('La respuesta no es un array:', rta);
@@ -159,7 +161,7 @@ function eliminardata(id:string){
             </router-link>
 
             <!-- Eliminar -->
-            <v-icon size="23"  color="error" @click="eliminardata(item['ID_user'])">
+            <v-icon size="23" v-if="item.Email != emailUsuario"  color="error" @click="eliminardata(item['ID_user'])">
                 mdi-delete
             </v-icon>
           </div>
