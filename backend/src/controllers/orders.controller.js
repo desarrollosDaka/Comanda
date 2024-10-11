@@ -77,7 +77,7 @@ const getMasterOrderReport = async (req, res) => {
               ,T4.Nombre AS NombreAsesor
               ,T0.Description_payment
               ,T0.User_asing 
-			  ,T0.[Delete]
+			        ,T0.[Delete]
               ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
               ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
@@ -214,6 +214,9 @@ const getMasterOrderCDD = async (req, res) => {
                 ,T0.User_asing
                 ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+                ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+                ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+                ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
           FROM [COMANDA_TEST].[dbo].[ORDERS] T0
           INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
           INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -255,6 +258,9 @@ const getMasterOrderRetencion = async (req, res) => {
                 ,T0.User_asing
                 ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+                ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+                ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+                ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -267,8 +273,8 @@ const getMasterOrderRetencion = async (req, res) => {
     if (rta) {
       return rta;
     } else {
-      res.status(404);
-      res.json({ msj: "Error en la consulta" });
+      res.status(404).json({ msj: "Error en la consulta" });;
+    
     }
   } catch (e) {
     console.log("Error", e);
@@ -296,6 +302,9 @@ const  getMasterOrderRetencionTwo = async (id) => {
                 ,T0.User_asing
                 ,T0.Description_payment
                 ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+                ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+                ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+                ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -445,7 +454,9 @@ const filterMasterOrder = async (req, res) => {
                     ,T0.Porc_retencion
                     ,T0.Description_payment
                      ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
-                    ,CAST(T0.[update_date] AS DATE) [Update_date]
+                    ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+                    ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+                    ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
             FROM [COMANDA_TEST].[dbo].[ORDERS] T0
             INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
             INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -463,7 +474,7 @@ const filterMasterOrder = async (req, res) => {
             ,T4.Nombre  ,T5.ID_city  ,T5.Nombre ,T6.ID_municipio ,T6.NOMBRE ,t0.[User_crea]  ,t0.[User_mod]  ,t0.[User_asing] ,t0.[ID_rol]   ,t0.[ID_status]  ,t0.[Tipo_delivery]  ,t0.[SucursalZoom] ,t0.[Autoriza]
             ,t0.[Cedula_autoriza] ,t0.[Telefono_autoriza],t0.Nombre_autoriza ,T3.Tipo_cedula_rep  ,T3.Cedula_rep  ,T3.Nombre_rep    ,T3.Email_rep    ,T3.Telefono_rep    ,T3.Direccion_rep   ,T3.Referencia_rep, T3.ID_state_rep
             ,T3.ID_city_rep  ,T3.ID_municipio_rep ,T3.[Telefono] ,t0.[Retencion] ,T3.Referencia ,t0.[Porc_retencion] ,t0.ID_ticket  ,t0.[Delete]  ,t0.[Motivo_delete]   ,T2.[Status] ,T0.Create_date 
-            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio, T0.Description_payment, T0.Porc_retencion`
+            ,CAST(T0.[update_date] AS DATE),T9.Delivery_type ,T0.Direccion_envio ,T0.Referencia_envio, T0.Description_payment, T0.Porc_retencion,T0.update_date`
         );
         if (rta) {
             res.status(200);
@@ -640,8 +651,11 @@ const filterOrderATC = async (id) => {
 		T1.Nombre, 
 		T2.[Status],
 		T0.*,
-		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
-		T4.Delivery_type as Delivery_nombre
+		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+		,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+		,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+		,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+		,T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -652,8 +666,11 @@ const filterOrderATC = async (id) => {
 		T1.Nombre,
 		T2.[Status],
 		T0.*, 
-CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
-		T4.Delivery_type as Delivery_nombre
+		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+		,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+		,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+		,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+		,T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -664,8 +681,11 @@ CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 		T1.Nombre,
 		T2.[Status],
 		T0.*, 
-CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
-		T4.Delivery_type as Delivery_nombre
+		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+		,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+		,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+		,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+		,T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -682,13 +702,17 @@ CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
 const filterOrderATCOnline = async () => {
   try {
     const rta = await sequelize.query(
-      `SELECT 
+    `SELECT 
 		T1.Nombre, 
 		T2.[Status],
 		T5.Sucursal,
+		T1.Tipo_cedula,
 		T0.*,
-	CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date , 
-		T4.Delivery_type as Delivery_nombre
+		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+		,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+		,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+		,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+		,T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -700,9 +724,13 @@ const filterOrderATCOnline = async () => {
 		T1.Nombre,
 		T2.[Status],
 		T5.Sucursal,
+		T1.Tipo_cedula,
 		T0.*, 
-CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date ,
-		T4.Delivery_type as Delivery_nombre
+		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+		,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+		,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+		,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
+		,T4.Delivery_type as Delivery_nombre
 		FROM [dbo].[ORDERS] T0
 		INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 		INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -729,7 +757,10 @@ const filterOrderPickUp = async (id) => {
         T2.[Status] ,
         T9.Delivery_type , 
         T0.*,
-        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+    		CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+		,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+		,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+		,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -744,6 +775,9 @@ T1.Tipo_cedula,
   T9.Delivery_type , 
   T0.*,
   CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+  ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+  ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+  ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
 FROM [dbo].[ORDERS] T0
 INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
 INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -766,7 +800,10 @@ const filterOrderPickUpTwo = async (id) => {
         T2.[Status],
         T9.Delivery_type, 
         T0.*,
-        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+      CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+      ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+      ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+      ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
   FROM [dbo].[ORDERS] T0
   INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
   INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status
@@ -779,7 +816,10 @@ const filterOrderPickUpTwo = async (id) => {
         T2.[Status],
         T9.Delivery_type, 
         T0.*,
-        CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+      CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
+      ,SUBSTRING(CONVERT(VARCHAR, T0.Create_date, 108), 1, 8)  AS Hora
+      ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
+      ,SUBSTRING(CONVERT(VARCHAR, T0.update_date, 108), 1, 8)  AS HoraUpdate
   FROM [dbo].[ORDERS] T0
   INNER JOIN [dbo].[MASTER_CLIENTS] T1 ON T0.Cedula = T1.Cedula
   INNER JOIN [dbo].[MASTER_STATUS] T2 ON T0.ID_status = T2.ID_status

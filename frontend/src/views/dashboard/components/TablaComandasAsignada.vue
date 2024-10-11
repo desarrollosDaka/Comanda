@@ -158,9 +158,11 @@ const headers = ref([
   { title: "TIPO", align: "end", key: "Tipo_cedula" },
   { title: "CEDULA", key: "Cedula" },
   { title: "CLIENTE", key: "Cliente" },
-  { title: "FECHA", key: "Create_date" },
   { title: "DELIVERY", key: "Delivery_type" },
   { title: "STATUS", key: "Status" },
+  { title: "FECHA", key: "Create_date" },
+  { title: "H. CREA", key: "Hora"},
+  { title: "H. ACTUALIZA", key: "HoraUpdate"},
   { title: "", sortable: false, key: "action" },
 ] as const);
 
