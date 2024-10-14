@@ -30,11 +30,10 @@ const filterMasterMunicipality = async (req, res) => {
         );
 
         if(rta){
-            res.status(200)
-            res.json(rta)
+            res.status(200).json(rta)
         }else{
-            res.status(404)
-            res.json({msj: 'Error en la consulta'})
+            res.status(404).json({msj: 'Error en la consulta'})
+            
         } 
 
     } catch (e) {

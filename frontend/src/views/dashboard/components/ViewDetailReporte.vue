@@ -58,6 +58,7 @@ const ID_status = ref();
 const porcentaje = ref();
 const retencion = ref(false);
 const ID_delivery = ref();
+const sucZoom = ref();
 const User_asing = ref();
 const id_sucursal = ref();
 const messageStatus = ref();
@@ -117,6 +118,7 @@ const getOrder = async () => {
       direccion.value = data[0][0]["Direccion"];
       referencia.value = data[0][0]["Referencia"];
       ID_delivery.value = data[0][0]["Delivery_type"];
+      sucZoom.value = data[0][0]["SucursalZoom"];
       ID_status.value = data[0][0]["Status"];
       autorizado.value = data[0][0]["Autoriza"];
       cedulaDos.value = data[0][0]["Cedula_autoriza"];
@@ -185,31 +187,6 @@ if(USER_ROL.value === 7){
     
 }
 
-// const changeStatusComanda = () =>{
-//   Swal.fire({
-//       title: USER_ROL.value === 7 ? `Deseas Cambiar el Estatus a Despacho` : `Deseas Cambiar el Estatus a Pre-Despacho`,
-//       text: "La comanda va a cambiar de estatus",
-//       icon: "warning",
-//       showCancelButton: true,
-//       confirmButtonColor: "#3085d6",
-//       cancelButtonColor: "#d33",
-//       cancelButtonText: "Cancelar",
-//       confirmButtonText: "Si",
-//     }).then((result) => {
-//       if (result.isConfirmed) {
-//         updateEstatus();
-//         Swal.fire({
-//           title: "alo",
-//           text: "la comanda ha cambiado de estatus!",
-//           icon: "success",
-//         }).then((result) => {
-//           if (result.isConfirmed) {
-//             router.push(`/pickups`);
-//           }
-//         });
-//       }
-//     });
-// }
 
 onMounted(async () => {
   const toastLoading = toast.loading("Cargando Comanada...", {
@@ -265,8 +242,8 @@ onMounted(async () => {
         <v-col cols="12" md="4" class="px-10 py-5">
             <h2>Datos de la comanda</h2>
             <p v-if="origen"><b>Destino:</b> {{ origen }}</p> 
-            <p v-if="direccion"><b>Direccion Completa:</b> {{ direccion }}</p> 
-            <p v-if="referencia"><b>Referencia:</b> {{ referencia }}</p>
+            <p v-if="direccion"><b>Direccion Completa:</b> {{ ID_delivery === 'ZOOM TIENDA' ? sucZoom : direccion }}</p> 
+            <p v-if="referencia"><b>Referencia:</b> {{ ID_delivery === 'ZOOM TIENDA' ? ' ' : referencia }}</p>
             <p><b>Delivery:</b> {{ ID_delivery }}</p>
             <p><b>Autorizado para recibir:</b>
                 <v-chip variant="tonal" color="warning" size="x-small" prepend-icon="mdi-timer-sand"
