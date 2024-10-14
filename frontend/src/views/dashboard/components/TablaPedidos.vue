@@ -191,6 +191,7 @@ const headers = ref([
   { title: "STATUS", key: "Status" },
   { title: "FECHA", key: "Create_date" },
   { title: "H. CREA", key: "Hora"},
+  { title: "FECHA ACTUALIZA", key: "Update_date" },
   { title: "H. ACTUALIZA", key: "HoraUpdate"},
 
   { title: "", sortable: false, key: "action" },
