@@ -42,11 +42,14 @@ module.exports = (server) => {
     });
 
     socket.on("getComandaReporte",async  (sucId) => {
+     // console.log("se murio lian payne :(");
       const rta = await getMasterOrderReport();
       socket.emit("get-master-order-report", rta);
     });
 
     socket.on("getComandaReporteFilter",async  (id) => {
+      //console.log("esta llegando aqui mdfoca");
+      
       const rta = await getMasterOrderReportFilter(id);
       socket.emit("get-master-order-report-filter", rta);
     });

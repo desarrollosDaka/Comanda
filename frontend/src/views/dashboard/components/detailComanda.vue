@@ -298,6 +298,19 @@ onMounted(async () => {
 });
 
 async function updateData() {
+
+  // Validación de Guia Zoom
+  if ([9, 10, 2].includes(USER_ROL.value)) {
+    const guiaZoomEmpty = info.value.some(item => (ID_delivery.value === 'ZOOM' || ID_delivery.value === 'ZOOM TIENDA') && !item.guiaZoom);
+    if (guiaZoomEmpty) {
+      return toast.error('Debe añadir una guia Zoom al campo.', {
+        position: toast.POSITION.TOP_CENTER,
+        transition: toast.TRANSITIONS.ZOOM,
+        autoClose: 4000,
+      });
+    }
+  }
+
   if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value) {
     return toast.error(`Error. Debes ingresar el numero de factura`, {
       position: toast.POSITION.TOP_CENTER,
@@ -305,6 +318,14 @@ async function updateData() {
       autoClose: 4000,
     });
   }
+// async function updateDespacho() {
+//   if (ROLEADDFILESBILL.includes(USER_ROL.value) && !numFactura.value) {
+//     return toast.error(`Error. Debes ingresar el numero de factura`, {
+//       position: toast.POSITION.TOP_CENTER,
+//       transition: toast.TRANSITIONS.ZOOM,
+//       autoClose: 4000,
+//     });
+//   }
 
   const { isvalidate } = useUploadFilesValidacion(itemDocument.value, USER_ROL.value, ID_delivery.value) //Verificamos los tipos de documentos si el rol permite cargar archivos
 
