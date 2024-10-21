@@ -82,6 +82,8 @@ const getMasterOrderReport = async (req, res) => {
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
               ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.update_date), 108), 1, 8) AS HoraUpdate
+              ,T0.Create_date as Create_date2
+			        ,T0.Update_date as Update_date2
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -121,11 +123,13 @@ const getMasterOrderReportFilter = async (id) => {
               ,T4.Nombre AS NombreAsesor
               ,T0.Description_payment
               ,T0.User_asing 
-			  ,T0.[Delete]
+			        ,T0.[Delete]
               ,CAST(DATEADD(DAY, 1, T0.Create_date) AS DATE) AS Create_date 
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.Create_date), 108), 1, 8) AS Hora
               ,CAST(DATEADD(DAY, 1, T0.update_date) AS DATE) AS Update_date
               ,SUBSTRING(CONVERT(VARCHAR, DATEADD(DAY, 1, T0.update_date), 108), 1, 8) AS HoraUpdate
+              ,T0.Create_date as Create_date2
+			        ,T0.Update_date as Update_date2
         FROM [COMANDA_TEST].[dbo].[ORDERS] T0
         INNER JOIN [dbo].[MASTER_STORES] T1 ON T0.ID_sucursal = T1.ID_sucursal
         INNER JOIN [COMANDA_TEST].[dbo].[MASTER_STATUS] T2 ON T2.ID_status = T0.ID_status
@@ -1114,6 +1118,70 @@ const addWatermark = async (f, id) => {
   }
 };
 
+// const addWaterMarkPDF = async (f, id) => {
+//   try {
+//     // Capturar la ruta de entrada y destino de los archivos PDF.
+//     let directory = uploadsDirectory();
+//     let destinationDirectory = folderWaterMarkDirectory();
+
+//     // Lee el PDF original. 
+//     const pdfBytes = fs1.readFileSync(`${directory}/${f.filename}`);
+//     const fontBytes = fs1.readFileSync(`${fontsDirectory()}/SELENA MARIN/SELENA MARIN.ttf`);
+//     const pdfDoc = await PDFDocument.load(pdfBytes);
+
+//     // Registra fontkit.
+//     pdfDoc.registerFontkit(fontkit);
+
+//     // Obtiene la primera página.
+//     const page = pdfDoc.getPages()[0];
+
+//     // Obtiene las dimensiones de la pagina.
+//     const { width, height } = page.getSize();
+
+//     // Ajusta las coordenadas del logo en el eje X && Y.
+//     let coordenadaX = width - width * 0.5;
+//     let coordenadaY = height - height * 0.98;
+
+//     // Prepara el contenido que va a ser agregado.
+//     let waterInPdf = `DAKA ONLINE: #${id}`;
+//     let waterInPdfLon = `DAKA ONLINE: #${id}`.length;
+//     let logitudRectangulo = waterInPdfLon * 10;
+
+//     // Crea un rectángulo alrededor de la frase
+//     // page.drawRectangle({
+//     //   x: coordenadaX - 10,8
+//     //   y: coordenadaY / 1.2,
+//     //   width: logitudRectangulo,
+//     //   height: 30,
+//     //   borderWidth: 1,
+//     //   borderColor: rgb(0.15, 0.15, 0.15),
+//     //   color: rgb(1, 1, 1),
+//     // });
+
+//     // Crea una anotación de texto libre
+//     page.drawText(waterInPdf, {
+//       x: coordenadaX,
+//       y: coordenadaY,
+//       size: 16,
+//       color: rgb(0.15, 0.15, 0.15),
+//       font: await pdfDoc.embedFont(fontBytes),
+//       bold: true,
+//       italic: true,
+//     });
+
+//     // Guarda el PDF modificado en disco
+//     const modifiedPdfBytes = await pdfDoc.save();
+
+//     fs1.writeFileSync(
+//       `${destinationDirectory}/${f.filename}`,
+//       modifiedPdfBytes
+//     );
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+
+
 const addWaterMarkPDF = async (f, id) => {
   try {
     // Capturar la ruta de entrada y destino de los archivos PDF.
@@ -1128,41 +1196,28 @@ const addWaterMarkPDF = async (f, id) => {
     // Registra fontkit.
     pdfDoc.registerFontkit(fontkit);
 
-    // Obtiene la primera página.
-    const page = pdfDoc.getPages()[0];
-
-    // Obtiene las dimensiones de la pagina.
-    const { width, height } = page.getSize();
-
-    // Ajusta las coordenadas del logo en el eje X && Y.
-    let coordenadaX = width - width * 0.5;
-    let coordenadaY = height - height * 0.98;
+    // Obtiene todas las páginas.
+    const pages = pdfDoc.getPages();
 
     // Prepara el contenido que va a ser agregado.
     let waterInPdf = `DAKA ONLINE: #${id}`;
-    let waterInPdfLon = `DAKA ONLINE: #${id}`.length;
-    let logitudRectangulo = waterInPdfLon * 10;
+    const font = await pdfDoc.embedFont(fontBytes);
 
-    // Crea un rectángulo alrededor de la frase
-    // page.drawRectangle({
-    //   x: coordenadaX - 10,8
-    //   y: coordenadaY / 1.2,
-    //   width: logitudRectangulo,
-    //   height: 30,
-    //   borderWidth: 1,
-    //   borderColor: rgb(0.15, 0.15, 0.15),
-    //   color: rgb(1, 1, 1),
-    // });
+    // Itera sobre todas las páginas y agrega la marca de agua.
+    pages.forEach(page => {
+      const { width, height } = page.getSize();
+      let coordenadaX = width - width * 0.5;
+      let coordenadaY = height - height * 0.98;
 
-    // Crea una anotación de texto libre
-    page.drawText(waterInPdf, {
-      x: coordenadaX,
-      y: coordenadaY,
-      size: 16,
-      color: rgb(0.15, 0.15, 0.15),
-      font: await pdfDoc.embedFont(fontBytes),
-      bold: true,
-      italic: true,
+      page.drawText(waterInPdf, {
+        x: coordenadaX,
+        y: coordenadaY,
+        size: 16,
+        color: rgb(0.15, 0.15, 0.15),
+        font: font,
+        bold: true,
+        italic: true,
+      });
     });
 
     // Guarda el PDF modificado en disco
@@ -1176,7 +1231,6 @@ const addWaterMarkPDF = async (f, id) => {
     console.error(error);
   }
 };
-
 
 const resizeImage = async (f) => {
   try {

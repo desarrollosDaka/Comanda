@@ -776,7 +776,7 @@ function handleSelectImages(items: any) {
             <v-label for="tipoDocumento"></v-label>
             <v-autocomplete
               id="tipoDocumento"
-              :items="['V', 'J', 'G', 'E', 'C', 'P']"
+              :items="['V', 'E']"
               variant="outlined"
               v-model="tipoDocumentoRL" 
               required 

@@ -5,7 +5,7 @@ const webpush = require("../config/webpush");
 let pushSubscription;
 
 const subscription = async (req, res) => {
-  console.log('sjbkkkkkkkkkkkkkkkkkkkkkkkkkk');
+ // console.log('sjbkkkkkkkkkkkkkkkkkkkkkkkkkk');
   pushSubscription = req.body;
   res.status(201).json();
 };
